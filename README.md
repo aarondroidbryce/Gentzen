@@ -1,2 +1,2 @@
 # peano-arithmetic-consistency
-Coq implementation of a consistency proof of the consistency of Peano Arithmetic (PA), using Primitive Recursive Arithmetic and the well-foundedness of all ordinals below Epsilon_0.
+Coq implementation of a consistency proof of the consistency of Peano Arithmetic (PA), using Primitive Recursive Arithmetic and the well-foundedness of all ordinals below Epsilon_0. The proof idea is due to Gentzen, the version of the proof we are implementing is exposited in Mendelson's textbook. As of October 2018, this implementation is very much a work in progress.
