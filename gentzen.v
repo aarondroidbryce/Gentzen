@@ -3,24 +3,6 @@ Notation "b1 || b2" := (orb b1 b2).
 
 (* Basic properties of natural numbers *)
 (* *)
-Definition pred (n : nat) : nat :=
-  match n with
-    O => O
-  | S n' => n'
-  end.
-
-Fixpoint add (n m : nat) : nat :=
-  match n with
-    O => m
-  | S n' => S (add n' m)
-  end.
-
-Fixpoint mult (n m : nat) : nat :=
-  match n with
-    O => O
-  | S n' => add m (mult n' m)
-  end.
-
 Notation beq_nat := Nat.eqb.
 
 Theorem beq_nat_refl : forall (n : nat), true = beq_nat n n.
@@ -150,14 +132,14 @@ Fixpoint eval (t : term) : nat :=
         (O, O) => O
       | (S n, O) => O
       | (O, S m) => O
-      | (S n, S m) => S (add n m)
+      | (S n, S m) => S (n + m)
       end)
   | times t_1 t_2 =>
       (match (eval t_1, eval t_2) with
         (O, O) => O
       | (S n, O) => O
       | (O, S m) => O
-      | (S n, S m) => S (mult n m)
+      | (S n, S m) => S (n * m)
       end)
   | f_var n => O
   | b_var n => O
@@ -376,7 +358,7 @@ Fixpoint closed_term_list (a : formula) : list term :=
 
 
 
-(* Defining subsitution of a term t for all free occurrences of a
+(* Defining substitution of a term t for all free occurrences of a
    variable x_n in a formula f *)
 (* *)
 Fixpoint substitution_t (f : term) (n : nat) (t : term) : term :=
@@ -508,14 +490,7 @@ Compute logical_axiom_6 (atom (equ (b_var 1) (b_var 0))) 0 1.
 Compute logical_axiom_6 (atom (equ (b_var 0) zero)) 0 1.
 Compute logical_axiom_6 (atom (equ (b_var 1) zero)) 0 1.
 
-(*
-Inductive PA_axiom : Type :=
-  
 
-Inductive PA_proof : Type :=
-  axiom : proof
-
-*)
 
 (* Axioms of Peano Arithmetic (PA) *)
 (* *)
@@ -562,25 +537,6 @@ Definition peano_axiom_9 (f : formula) (x : nat) : formula :=
   else atom (equ zero zero).
 
 
-(* Axioms of S-infinity *)
-(* *)
-
-Inductive s_infinity_axiom : Type :=
-| cor : forall (a : atomic_formula), atomic_formula ->
-                  correctness a = correct -> s_infinity_axiom
-| inc : forall (a : atomic_formula), atomic_formula ->
-                  correctness a = incorrect -> s_infinity_axiom.
-
-
-Definition s_infinity_axioms (a : atomic_formula) : formula :=
-  match (correctness a) with
-    correct => atom a
-  | incorrect => neg (atom a)
-  | undefined => atom (equ zero zero)
-  end.
-
-
-
 
 
 (* Defining ordinals *)
@@ -622,26 +578,6 @@ where  "o < o'" := (lt o o') : cantor_scope.
    in strict decreasing order *)
 
 
-Inductive btree : nat -> Type :=
-| leaf : forall n, btree n
-| unary : forall n, btree n -> btree (S n)
-| binary : forall n, btree n -> btree n -> btree (n * n)
-.
-
-Definition tree : Type := { n : nat & btree n }.
-
-Example foo : tree := existT _ _
-  (unary _ (binary _ (binary _ (unary _ (leaf 1))
-                               (leaf 2))
-                     (unary _ (leaf 3)))).
-
-Check foo.
-Compute foo.
-
-
-
-
-
 Inductive nf : ord -> Prop :=
 | zero_nf : nf Zero
 | single_nf : forall a n, nf a ->  nf (cons a n Zero)
@@ -663,43 +599,8 @@ Check (Zero Zero_nf).
 *)
 
 
-(* Defining proof trees *)
+(* Defining formula trees *)
 (* *)
-Definition f (n : nat) : formula := atom (equ (represent n) (represent n)).
-Check f.
-Compute f 5.
-
-Theorem f_stuff1 : forall (m n : nat),
-          true = eq_f (f m) (substitution (atom (equ (f_var n) (f_var n)))
-                                                n (represent m)).
-Proof.
-intros m n.
-unfold f.
-unfold substitution.
-unfold substitution_a.
-unfold substitution_t.
-destruct (beq_nat n n) as []eqn:H.
-- apply eq_f_refl.
-- rewrite <- beq_nat_refl in H. inversion H.
-Qed.
-
-Theorem f_stuff2 : forall (m n : nat),
-          true = transformable_with_list (atom (equ (f_var n) (f_var n)))
-                                          (f m) n [represent m].
-Proof.
-intros m n.
-unfold f.
-unfold transformable_with_list.
-unfold substitution.
-unfold substitution_a.
-unfold substitution_t.
-rewrite <- beq_nat_refl.
-simpl.
-assert (true = (eq_term (represent m) (represent m))).
-- apply eq_term_refl.
-- rewrite <- H. reflexivity.
-Qed.
-
 Inductive ftree : Type :=
 | node : formula -> ftree
 | one_prem : formula -> ftree -> ftree
@@ -844,6 +745,13 @@ Fixpoint valid (t : ftree) : Prop :=
                     /\ (forall (n : nat), valid (g n))
   end.
 
+
+Inductive ptree : Type :=
+| validate : forall t : ftree, valid t -> ptree.
+
+
+
+
 Theorem hered_one : forall (t t' : ftree) (f : formula),
                 valid t -> t = one_prem f t' -> valid t'.
 Proof.
@@ -903,6 +811,16 @@ split.
     apply H0.
 Qed.
 
+Theorem hered_one' : forall (t : ftree) (f : formula),
+                valid (one_prem f t) -> valid t.
+Proof.
+intros t f.
+intros H.
+unfold valid in H.
+simpl.
+destruct H.
+apply H0.
+Qed.
 
 Definition f_exmp : formula := (atom (equ zero zero)).
 Definition t_exmp_0 : ftree := node f_exmp.
@@ -935,16 +853,45 @@ Proof.
 tauto.
 Qed.
 
-Check x. Compute x.
-
+Check x.
+Compute x.
 
 Check hered_one t_exmp t_exmp_0 (lor f_exmp f_exmp) valid_t_exmp.
+
+Check hered_one'.
+
+Check hered_one' t_exmp_0 (lor f_exmp f_exmp) valid_t_exmp.
+
+Compute max 3 4.
+
+(* Compute degree of an ftree. The degree function demands a proof that the
+ftree is valid, then passes its recursive descendents to degree', which doesn't *)
+
+
+
+Fixpoint degree (t : ftree) : (valid t) -> nat :=
+  match t return (valid t -> nat) with
+  | node f => (fun (p:valid (node f))=> 0)
+  | one_prem f t' => (fun p:valid (one_prem f t') => degree t' (hered_one' t' f p))
+  (* how to insert a proof of [t = one_prem f t']? *)
+  | two_prem f t1 t2 =>  (fun (p:valid(two_prem f t1 t2))=>
+    (match (cut f (root_f t1) (root_f t2)) with
+    | true =>
+      (match (root_f t1) with
+      | lor c a => 1 + (num_conn a)
+      | _ => 0
+      end)
+    | _ => 0
+    end))
+  | _ => (fun(p:valid(_)) =>0)
+  end.
 
 
 Fixpoint degree (t : ftree) (p : valid t) : nat :=
   match t with
   | node f => 0
-  | one_prem f t' as xxx => degree t' (hered_one t t' f p xxx)
+  | one_prem f t' => degree t' (hered_one' t' f p)
+  (* how to insert a proof of [t = one_prem f t']? *)
   | two_prem f t1 t2 =>
     (match (cut f (root_f t1) (root_f t2)) with
     | true =>
@@ -958,17 +905,48 @@ Fixpoint degree (t : ftree) (p : valid t) : nat :=
   end.
 
 
-  match (cut f (root_f t1) (root_f t2)) with
-  | false => 0
-  | true => 
+(* Defining proof-trees, which are decorated with ordinals as well as formulas *)
+(* *)
+Inductive ptree : Type :=
+| node : formula -> ord -> ptree
+| one_prem : formula -> -> ord -> ptree -> ptree
+| two_prem : formula -> ord -> ptree -> ptree -> ptree
+| inf_prem : formula -> ord -> (nat -> ptree) -> ptree.
+
+Fixpoint root_form (t : ptree) : formula :=
+match t with
+| node f a | one_prem f a t' | two_prem f a t1 t2 | inf_prem f a g => f
+end.
+
+Fixpoint root_ord (t : ptree) : ord :=
+match t with
+| node f a | one_prem f a t' | two_prem f a t1 t2 | inf_prem f a g => a
+end.
 
 
-
+Fixpoint finite_valid_p (t : ptree) : bool :=
   match t with
-  | node f => 0
-  | one_prem f t' => 0
-  | inf_prem f g => 0
-  | two_prem f t1 t2 => match (true = cut f (root_f t1) (root_f t2)) with
+  | node f a =>
+    (match f with
+    | atom a => correct_a a
+    | neg a => (match a with
+               | atom a' => incorrect_a a'
+               | _ => false
+                end)
+    | _ => false
+      end)
+  | weak_one_prem f t' => ((exchange f (root_f t')) || (contraction f (root_f t'))
+                    && (finite_valid_p t') && (leq_ord a (root_ord t'))
+
+  | strong_one_prem f t' => ((exchange f (root_f t')) || (contraction f (root_f t'))
+                      || (weakening f (root_f t')) || (negation f (root_f t'))
+                        || (quantification f (root_f t')))
+                    && (finite_valid_p t')
+
+  | two_prem f t1 t2 => demorgan f (root_f t1) (root_f t2)
+                    && (finite_valid t1) && (finite_valid t2)
+  | inf_prem f g => false
+  end.
 
 
 
