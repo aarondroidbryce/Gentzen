@@ -587,12 +587,19 @@ Inductive nf : ord -> Prop :=
                              nf (cons a n (cons a' n' b)).
 Hint Resolve zero_nf single_nf cons_nf : ord.
 
-Definition e_0 : Set := {a : ord & nf a}.
+Definition e_0 : Type := {a : ord | nf a}.
 
-Check Zero.
 
 Theorem Zero_nf : nf Zero.
 Proof. apply zero_nf. Qed.
+
+Check exist nf Zero Zero_nf.
+
+
+
+Check exist.
+Check exist nf.
+
 
 (*
 Check (Zero Zero_nf).
@@ -601,18 +608,30 @@ Check (Zero Zero_nf).
 
 (* Defining formula trees *)
 (* *)
+
+(*
+Each tree will get a bound b on the degree of any cuts within its
+*)
 Inductive ftree : Type :=
-| node : formula -> ftree
-| one_prem : formula -> ftree -> ftree
-| two_prem : formula -> ftree -> ftree -> ftree
-| inf_prem : formula -> (nat -> ftree) -> ftree.
+| node : formula -> nat -> ftree
+| one_prem : formula -> nat -> ftree -> ftree
+| two_prem : formula -> nat -> ftree -> ftree -> ftree
+| inf_prem : formula -> nat -> (nat -> ftree) -> ftree.
 
 Fixpoint root_f (t : ftree) : formula :=
 match t with
-| node f => f
-| one_prem f t' => f
-| two_prem f t1 t2 => f
-| inf_prem f g => f
+| node f n => f
+| one_prem f n t' => f
+| two_prem f n t1 t2 => f
+| inf_prem f n g => f
+end.
+
+Fixpoint bound (t : ftree) : nat :=
+match t with
+| node f n => n
+| one_prem f n t' => n
+| two_prem f n t1 t2 => n
+| inf_prem f n g => n
 end.
 
 (* Determine if a formula c follows from some premises based on the
@@ -674,10 +693,15 @@ end.
 
 
 (* Determine if a given ftree is a valid proof tree, with or without
-the cut and infinite induction rules *)
+the cut and infinite induction rules. This involves verifying that:
+1) Any parent-child pair matches an inference rule
+2) The number of connectives in a cut formula is no bigger than the bound b
+3) The bound of the subtree(s) are no larger than the bound b
+4) The subtree(s) are valid
+ *)
 Fixpoint finite_valid (t : ftree) : bool :=
   match t with
-  | node f =>
+  | node f n =>
     (match f with
     | atom a => correct_a a
     | neg a => (match a with
@@ -686,19 +710,30 @@ Fixpoint finite_valid (t : ftree) : bool :=
                 end)
     | _ => false
       end)
-  | one_prem f t' => ((exchange f (root_f t')) || (contraction f (root_f t'))
-                      || (weakening f (root_f t')) || (negation f (root_f t'))
-                        || (quantification f (root_f t')))
-                    && (finite_valid t')
-  | two_prem f t1 t2 => demorgan f (root_f t1) (root_f t2)
-                    && (finite_valid t1) && (finite_valid t2)
-  | inf_prem f g => false
+
+  | one_prem f n t' => (exchange f (root_f t')
+                        || contraction f (root_f t')
+                        || weakening f (root_f t')
+                        || negation f (root_f t')
+                        || quantification f (root_f t'))
+                    && finite_valid t'
+                    && bgeq_nat n (num_conn f)
+                    && bgeq_nat n (bound t')
+
+  | two_prem f n t1 t2 => demorgan f (root_f t1) (root_f t2)
+                    && finite_valid t1
+                    && finite_valid t2
+                    && bgeq_nat n (num_conn f)
+                    && bgeq_nat n (bound t1)
+                    && bgeq_nat n (bound t2)
+
+  | inf_prem f g n => false
   end.
 
 
 Fixpoint cut_free_valid (t : ftree) : Prop :=
   match t with
-  | node f =>
+  | node f n =>
     (match f with
     | atom a => true = correct_a a
     | neg a => (match a with
@@ -707,23 +742,33 @@ Fixpoint cut_free_valid (t : ftree) : Prop :=
                 end)
     | _ => False
       end)
-  | one_prem f t' => ((true = exchange f (root_f t')) \/
-                      (true = contraction f (root_f t')) \/
-                      (true = weakening f (root_f t')) \/
-                      (true = negation f (root_f t')) \/
-                      (true = quantification f (root_f t')))
-                    /\ (cut_free_valid t')
-  | two_prem f t1 t2 => (true = demorgan f (root_f t1) (root_f t2))
-                    /\ (cut_free_valid t1) /\ (cut_free_valid t2)
-  | inf_prem f g => (infinite_induction f g)
-                    /\ (forall (n : nat), cut_free_valid (g n))
-  end.
 
+  | one_prem f n t' => (true = (exchange f (root_f t')
+                                || contraction f (root_f t')
+                                || weakening f (root_f t')
+                                || negation f (root_f t')
+                                || quantification f (root_f t')))
+                      /\ cut_free_valid t'
+                      /\ n >= bound t'
+
+  | two_prem f n t1 t2 =>
+                    true = demorgan f (root_f t1) (root_f t2)
+                    /\ cut_free_valid t1
+                    /\ cut_free_valid t2
+                    /\ n >= num_conn f
+                    /\ n >= bound t1
+                    /\ n >= bound t2
+
+  | inf_prem f n g =>
+                    infinite_induction f g
+                    /\ forall (m : nat), cut_free_valid (g m)
+                    /\ forall (m : nat), n >= bound (g m)
+  end.
 
 
 Fixpoint valid (t : ftree) : Prop :=
   match t with
-  | node f =>
+  | node f n =>
     (match f with
     | atom a => true = correct_a a
     | neg a => (match a with
@@ -732,25 +777,34 @@ Fixpoint valid (t : ftree) : Prop :=
                 end)
     | _ => False
       end)
-  | one_prem f t' => ((true = exchange f (root_f t')) \/
-                      (true = contraction f (root_f t')) \/
-                      (true = weakening f (root_f t')) \/
-                      (true = negation f (root_f t')) \/
-                      (true = quantification f (root_f t')))
-                    /\ (valid t')
-  | two_prem f t1 t2 => ((true = demorgan f (root_f t1) (root_f t2)) \/
-                         (true = cut f (root_f t1) (root_f t2)))
-                        /\ (valid t1) /\ (valid t2)
-  | inf_prem f g => (infinite_induction f g)
-                    /\ (forall (n : nat), valid (g n))
+
+  | one_prem f n t' => (true = (exchange f (root_f t')
+                                || contraction f (root_f t')
+                                || weakening f (root_f t')
+                                || negation f (root_f t')
+                                || quantification f (root_f t')))
+                    /\ valid t'
+                    /\ n >= bound t'
+
+  | two_prem f n t1 t2 => true = (demorgan f (root_f t1) (root_f t2)
+                                  || (cut f (root_f t1) (root_f t2)
+                                      && bgeq_nat n (num_conn f)))
+                          /\ valid t1
+                          /\ valid t2
+                          /\ n >= bound t1
+                          /\ n >= bound t2
+
+  | inf_prem f n g =>
+                    infinite_induction f g
+                    /\ forall (m : nat), valid (g m)
+                    /\ forall (m : nat), n >= bound (g m)
   end.
 
 
-Inductive ptree : Type :=
-| validate : forall t : ftree, valid t -> ptree.
-
-
-
+(*
+Here we prove some simple lemmas showing that if a tree is valid,
+then so are its subtrees
+*)
 
 Theorem hered_one : forall (t t' : ftree) (f : formula),
                 valid t -> t = one_prem f t' -> valid t'.
@@ -822,6 +876,28 @@ destruct H.
 apply H0.
 Qed.
 
+Theorem hered_two' : forall (t1 t2 : ftree) (f : formula),
+                valid (two_prem f t1 t2) -> valid t1.
+Proof.
+intros t1 t2 f.
+intros H.
+unfold valid in H.
+simpl.
+destruct H.
+apply H0.
+Qed.
+
+Theorem hered_two'' : forall (t1 t2 : ftree) (f : formula),
+                valid (two_prem f t1 t2) -> valid t2.
+Proof.
+intros t1 t2 f.
+intros H.
+unfold valid in H.
+simpl.
+destruct H.
+apply H0.
+Qed.
+
 Definition f_exmp : formula := (atom (equ zero zero)).
 Definition t_exmp_0 : ftree := node f_exmp.
 Definition t_exmp : ftree := one_prem (lor f_exmp f_exmp) t_exmp_0.
@@ -862,31 +938,43 @@ Check hered_one'.
 
 Check hered_one' t_exmp_0 (lor f_exmp f_exmp) valid_t_exmp.
 
-Compute max 3 4.
 
 (* Compute degree of an ftree. The degree function demands a proof that the
 ftree is valid, then passes its recursive descendents to degree', which doesn't *)
+(* *)
 
-
+(*
 
 Fixpoint degree (t : ftree) : (valid t) -> nat :=
   match t return (valid t -> nat) with
-  | node f => (fun (p:valid (node f))=> 0)
-  | one_prem f t' => (fun p:valid (one_prem f t') => degree t' (hered_one' t' f p))
-  (* how to insert a proof of [t = one_prem f t']? *)
-  | two_prem f t1 t2 =>  (fun (p:valid(two_prem f t1 t2))=>
-    (match (cut f (root_f t1) (root_f t2)) with
-    | true =>
-      (match (root_f t1) with
-      | lor c a => 1 + (num_conn a)
-      | _ => 0
-      end)
-    | _ => 0
-    end))
-  | _ => (fun(p:valid(_)) =>0)
+  | node f => fun (p : valid (node f)) => 0
+
+  | one_prem f t' => fun (p : valid (one_prem f t')) =>
+                        degree t' (hered_one' t' f p)
+
+  | two_prem f t1 t2 => fun (p : valid (two_prem f t1 t2)) =>
+                          (match (cut f (root_f t1) (root_f t2)) with
+                          | true =>
+                            (match (root_f t1, root_f t2) with
+                            | (lor c a, lor (neg a') d) =>
+                                max (1 + (num_conn a))
+                                  (max (degree t1 (hered_two' t1 t2 f p))
+                                       (degree t2 (hered_two'' t1 t2 f p)))
+                            | _ => 0
+                            end)
+                          | false => max (degree t1 (hered_two' t1 t2 f p))
+                                         (degree t2 (hered_two'' t1 t2 f p))
+                          end)
+
+  | inf_prem f g => fun (p : valid _) => 0
+    (* need to deal with maximum cut of infinitely many trees *)
+
   end.
 
+*)
 
+
+(*
 Fixpoint degree (t : ftree) (p : valid t) : nat :=
   match t with
   | node f => 0
@@ -903,10 +991,95 @@ Fixpoint degree (t : ftree) (p : valid t) : nat :=
     end)
   | _ => 0
   end.
+*)
 
 
 (* Defining proof-trees, which are decorated with ordinals as well as formulas *)
 (* *)
+Inductive ptree : Type :=
+| node_p : formula -> e_0 -> ptree
+| one_prem_p : formula -> e_0 -> ptree -> ptree
+| two_prem_p : formula -> e_0 -> ptree -> ptree -> ptree
+| inf_prem_p : formula -> e_0 -> (nat -> ptree) -> ptree.
+
+
+Fixpoint finite_valid_p (t : ptree) : Prop :=
+  match t with
+  | node_p f alpha =>
+    (match f with
+    | atom a => (correct_a a = true) /\ (alpha = (exist nf Zero Zero_nf))
+    | neg a => (match a with
+               | atom a' => (incorrect_a a' = true)
+                            /\ (alpha = (exist nf Zero Zero_nf))
+               | _ => False
+                end)
+    | _ => False
+      end)
+  | one_prem_p f n t' => ((true = exchange f (root_f t')) \/
+                          (true = contraction f (root_f t')) \/
+                          (true = weakening f (root_f t')) \/
+                          (true = negation f (root_f t')) \/
+                          (true = quantification f (root_f t')))
+
+
+
+
+
+
+Fixpoint cut_free_valid (t : ftree) : Prop :=
+  match t with
+  | node f =>
+    (match f with
+    | atom a => true = correct_a a
+    | neg a => (match a with
+               | atom a' => true = incorrect_a a'
+               | _ => False
+                end)
+    | _ => False
+      end)
+  | one_prem f t' => ((true = exchange f (root_f t')) \/
+                      (true = contraction f (root_f t')) \/
+                      (true = weakening f (root_f t')) \/
+                      (true = negation f (root_f t')) \/
+                      (true = quantification f (root_f t')))
+                    /\ (cut_free_valid t')
+  | two_prem f t1 t2 => (true = demorgan f (root_f t1) (root_f t2))
+                    /\ (cut_free_valid t1) /\ (cut_free_valid t2)
+  | inf_prem f g => (infinite_induction f g)
+                    /\ (forall (n : nat), cut_free_valid (g n))
+  end.
+
+
+Fixpoint valid (t : ftree) : Prop :=
+  match t with
+  | node f =>
+    (match f with
+    | atom a => true = correct_a a
+    | neg a => (match a with
+               | atom a' => true = incorrect_a a'
+               | _ => False
+                end)
+    | _ => False
+      end)
+  | one_prem f t' => ((true = exchange f (root_f t')) \/
+                      (true = contraction f (root_f t')) \/
+                      (true = weakening f (root_f t')) \/
+                      (true = negation f (root_f t')) \/
+                      (true = quantification f (root_f t')))
+                    /\ (valid t')
+  | two_prem f t1 t2 => ((true = demorgan f (root_f t1) (root_f t2)) \/
+                         (true = cut f (root_f t1) (root_f t2)))
+                        /\ (valid t1) /\ (valid t2)
+  | inf_prem f g => (infinite_induction f g)
+                    /\ (forall (n : nat), valid (g n))
+  end.
+
+
+
+
+
+
+
 Inductive ptree : Type :=
 | node : formula -> ord -> ptree
 | one_prem : formula -> -> ord -> ptree -> ptree
