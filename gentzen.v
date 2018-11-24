@@ -636,16 +636,7 @@ Inductive ord : Set :=
   Zero : ord
 | cons : ord -> nat -> ord -> ord.
 
-Definition finite (n:nat) : ord :=
- match n with  0 => Zero
-             | S p => cons Zero p Zero
-         end.
-
-Notation "'F' n" := (finite n)(at level 29) : cantor_scope.
-
 (* A total strict order on ord *)
-
-Open Scope cantor_scope.
 
 Inductive lt : ord -> ord -> Prop :=
 |  zero_lt : forall a n b, Zero < cons a n b
@@ -656,9 +647,12 @@ Inductive lt : ord -> ord -> Prop :=
                                  cons a n b < cons a n' b'
 |  tail_lt : forall a n b b', b < b' ->
                              cons a n b < cons a n b'
-where  "o < o'" := (lt o o') : cantor_scope.
+where "o < o'" := (lt o o') : cantor_scope.
 
+Open Scope cantor_scope.
 
+Definition leq (alpha beta : ord) := alpha = beta \/ alpha < beta.
+Notation "alpha <= beta" := (leq alpha beta) : cantor_scope.
 
 (* The predicate "to be in normal form" *)
 
@@ -726,15 +720,18 @@ match alpha, beta with
 | _, Zero => false
 | Zero, _ => true
 | cons a n b, cons a' n' b' =>
-    (match (ord_lt a a') with
-    | true => true
-    | false =>
-        (match (lt_nat n n') with
-        | true => true
-        | false => ord_lt b b'
+    (match (ord_lt a a', ord_eq a a') with
+    | (true, _) => true
+    | (_, false) => false
+    | (_, true) =>
+        (match (lt_nat n n', lt_nat n' n) with
+        | (true, _) => true
+        | (_, true) => false
+        | (_, _) => ord_lt b b'
         end)
     end)
 end.
+
 
 Fixpoint ord_succ (alpha : ord) : ord :=
   match alpha with
@@ -752,7 +749,7 @@ match alpha, beta with
     | true => beta
     | false =>
       (match (ord_eq a a') with
-      | true => cons a (n + n' + 1) b'
+      | true => cons a' (n + n' + 1) b'
       | false => cons a n (ord_add b beta)
       end)
     end)
@@ -762,7 +759,11 @@ Fixpoint ord_mult_by_n (alpha : ord) (m : nat) : ord :=
 match alpha with
 | Zero => Zero
 | cons Zero n b => nat_ord ((n + 1) * m)
-| cons a n b => cons a ((n + 1) * m - 1) (ord_mult_by_n b m)
+| cons a n b => 
+    (match m with
+    | 0 => Zero
+    | _ => cons a ((n + 1) * m - 1) (ord_mult_by_n b m)
+    end)
 end.
 
 Fixpoint ord_mult (alpha : ord) (beta : ord) : ord :=
@@ -774,15 +775,14 @@ match alpha, beta with
 end.
 
 (* Here we show that addition and multiplication for ordinal numbers
-agrees with the usual definitions *)
+agrees with the usual definitions for natural numbers *)
 (* *)
-Lemma ord_add_nat_zero : forall (n:nat), ord_add (nat_ord n) Zero = nat_ord n.
+Lemma ord_add_zero : forall (alpha : ord), ord_add alpha Zero = alpha.
 Proof.
-intros n.
-unfold ord_add.
-destruct (nat_ord n).
-- reflexivity.
-- reflexivity.
+intros alpha.
+destruct alpha.
+- simpl. reflexivity.
+- simpl. reflexivity.
 Qed.
 
 Lemma ord_add_nat : forall (n m : nat),
@@ -790,7 +790,7 @@ Lemma ord_add_nat : forall (n m : nat),
 Proof.
 intros n m.
 induction m as [| m' IH].
-- rewrite ord_add_nat_zero.
+- rewrite ord_add_zero.
   rewrite plus_n_0.
   reflexivity.
 - induction n as [| n' IHn].
@@ -854,9 +854,178 @@ induction m as [| m' IH].
   reflexivity.
 Qed.
 
+(* Some miscellaneous lemmas about ordinals *)
+(* *)
+Lemma nf_scalar : forall (a b : ord) (n n' : nat),
+  nf (cons a n b) -> nf (cons a n' b).
+Proof.
+intros a b n n' H.
+inversion H.
+- apply single_nf. apply H1.
+- apply cons_nf.
+  + apply H3.
+  + apply H4.
+  + apply H5.
+Qed.
+
+Lemma nf_hered_third : forall (a b : ord) (n : nat),
+  nf (cons a n b) -> nf b.
+Proof.
+intros a b n H.
+destruct b as [Zero | a' n' b'].
+- apply Zero_nf.
+- destruct b' as [Zero | a'' n'' b''].
+  + apply single_nf. inversion H. inversion H7. apply H9.
+  + inversion H. apply H7.
+Qed.
+
+Lemma nf_hered_first : forall (a b : ord) (n : nat),
+  nf (cons a n b) -> nf a.
+Proof.
+intros a b n H.
+destruct b as [Zero | a' n' b'].
+- inversion H. apply H1.
+- inversion H. apply H6.
+Qed.
+
+Lemma lt_irrefl : forall (alpha : ord), ~ (alpha < alpha).
+Proof.
+intros alpha H.
+induction alpha as [Zero | a IHa n b IHb].
+- inversion H.
+- inversion H.
+  + apply IHa. apply H1.
+  + omega.
+  + apply IHb. apply H1.
+Qed.
+
+Lemma zero_minimal : forall (alpha : ord), ~ (alpha < Zero).
+intros alpha.
+destruct alpha as [Zero | a n b].
+- apply lt_irrefl.
+- intros H. inversion H.
+Qed.
+
+Lemma nf_cons_decr : forall (a a' b b' : ord) (n n' : nat),
+  nf (cons a n (cons a' n' b')) -> cons a' n' b' < cons a n b.
+Proof.
+intros a a' b b' n n' H.
+inversion H.
+apply head_lt.
+apply H3.
+Qed.
+
+Lemma cons_monot : forall (a b : ord) (n : nat),
+  cons a 0 Zero <= cons a n b.
+Proof.
+intros a b n.
+destruct n.
+- destruct b as [Zero | a'' n'' b''].
+  + unfold leq. left. reflexivity.
+  + unfold leq. right. apply tail_lt. apply zero_lt.
+- unfold leq. right. apply coeff_lt. omega.
+Qed.
+
+(* lt is a strict total order *)
+(* *)
+Lemma lt_strict : forall (alpha beta : ord),
+  alpha < beta -> ~ (alpha = beta).
+Proof.
+intros alpha beta H_a H_b.
+destruct alpha as [Zero | a n b].
+- rewrite <- H_b in H_a. inversion H_a.
+- rewrite H_b in H_a. apply lt_irrefl in H_a. inversion H_a.
+Qed.
+
+Lemma lt_trans : forall (alpha beta gamma : ord),
+  alpha < beta -> beta < gamma -> alpha < gamma.
+Admitted.
+
+
+Lemma omega_exp_incr : forall (a : ord), a < cons a 0 Zero.
+Proof.
+intros a.
+induction a as [Zero | a' IHa' n' b' IHb'].
+- apply zero_lt.
+- apply head_lt.
+  assert (cons a' 0 Zero <= cons a' n' b').
+  { apply cons_monot. }
+  inversion H.
+  + rewrite <- H0. apply IHa'.
+  + apply (lt_trans a' (cons a' 0 Zero) (cons a' n' b') IHa' H0).
+Qed.
+
+Lemma omega_exp_incr' : forall (a b : ord) (n : nat), a < cons a n b.
+Proof.
+intros a b n.
+pose proof (omega_exp_incr a).
+pose proof (cons_monot a b n).
+destruct H0.
+- rewrite H0 in H. apply H.
+- apply (lt_trans a (cons a 0 Zero) (cons a n b) H H0).
+Qed.
+
+Lemma lt_asymm : forall (alpha beta : ord),
+  alpha < beta -> ~ (beta < alpha).
+Proof.
+intros alpha beta H_a H_b.
+pose proof (lt_trans alpha beta alpha H_a H_b).
+apply (lt_irrefl alpha H).
+Qed.
+
+
+
+Lemma nf_trichotomy : forall (alpha beta : ord),
+  nf alpha -> nf beta -> alpha < beta \/ beta < alpha \/ alpha = beta.
+Proof.
+intros alpha beta nf_alpha nf_beta.
+induction beta as [ Zero | a' IHa' n' b' IHb'].
+- destruct alpha as [ Zero | a n b].
+  + right. right. simpl. reflexivity.
+  + right. left. apply zero_lt.
+- induction alpha as [ Zero | a IHa n b IHb].
+  + left. apply zero_lt.
+  + assert (nf a') as nf_a'. { inversion nf_beta. apply H0. apply H3. }
+    assert (nf b') as nf_b'. { inversion nf_beta. apply Zero_nf. apply H4. }
+    apply IHa' in nf_a'. apply IHb' in nf_b'. 
+    destruct nf_a'.
+    * left. inversion H.
+      { pose proof (omega_exp_incr' a'0 b'0 n'0). apply head_lt.
+        apply (lt_trans a a'0 (cons a'0 n'0 b'0) H4 H5). }
+      { apply head_lt. apply (omega_exp_incr' a b'0 n'0). }
+      { apply head_lt. apply (omega_exp_incr' a b'0 n). }
+    * destruct H.
+        { assert (nf a) as nf_a. { admit. } assert (nf b) as nf_b. { admit. }
+          apply IHa in nf_a. apply IHb in nf_b. clear IHa' IHb' IHa IHb.
+          { admit. }
+          { admit. }
+          { admit. }
+          { admit. }
+          { admit. } }
+        { left. rewrite H. apply (omega_exp_incr' a' b' n'). }
+Admitted.
+
+Lemma nf_add_one : forall (alpha : ord),
+  nf alpha -> ord_succ alpha = ord_add alpha (cons Zero 0 Zero).
+Proof.
+intros alpha nf_alpha.
+induction alpha as [Zero | a IHa n b IHb].
+- simpl. reflexivity.
+- destruct a as [Zero | a' n' b'].
+  + simpl. assert (S n = n + 0 + 1). { omega. } rewrite H.
+    assert (b = Zero).
+    { inversion nf_alpha. reflexivity. inversion H3. }
+    rewrite H0. reflexivity.
+  + simpl. rewrite IHb. reflexivity. inversion nf_alpha.
+    * apply Zero_nf.
+    * apply H4.
+Qed.
+
+
 
 (* Carry over the ordinal arithmetic results to the e0 type *)
 (* *)
+
 Definition e0_ord (alpha : e0) : ord :=
 match alpha with
 | exist _ alpha' pf => alpha'
@@ -871,8 +1040,6 @@ induction n.
   apply single_nf.
   apply Zero_nf.
 Qed.
-
-Check exist nf (nat_ord 5) (nf_nat 5).
 
 Definition nat_e0 (n : nat) : e0 := exist nf (nat_ord n) (nf_nat n).
 
@@ -919,81 +1086,53 @@ induction alpha as [Zero | a IHa n b IHb].
       }
 Qed.
 
+Lemma nf_add : forall (alpha beta : ord),
+  nf alpha -> nf beta -> nf (ord_add alpha beta).
+Proof.
+intros alpha beta nf_alpha nf_beta.
+induction beta as [Zero | a' IHa' n' b' IHb'].
+- rewrite ord_add_zero. apply nf_alpha.
+- destruct alpha as [Zero | a n b].
+  + simpl. apply nf_beta.
+  + simpl. case (ord_lt a a').
+    * apply nf_beta.
+    * case (ord_eq a a').
+      { apply (nf_scalar a' b' n' (n + n' + 1)). apply nf_beta. }
+      { assert (nf (ord_add b (cons a' n' b'))).
+        { admit. }
+        { admit. }
+      }
+Admitted.
 
 
+Lemma nf_mult_by_n : forall (alpha : ord) (m : nat),
+  nf alpha -> nf (ord_mult_by_n alpha m).
+Admitted.
 
 
+Lemma nf_mult : forall (alpha beta : ord),
+  nf alpha -> nf beta -> nf (ord_mult alpha beta).
+Admitted.
 
-
-
-Inductive nf : ord -> Prop :=
-| zero_nf : nf Zero
-| single_nf : forall a n, nf a ->  nf (cons a n Zero)
-| cons_nf : forall a n a' n' b, a' < a ->
-                             nf a ->
-                             nf (cons a' n' b)->
-                             nf (cons a n (cons a' n' b)).
-Hint Resolve zero_nf single_nf cons_nf : ord.
-
-
-Fixpoint ord_succ (alpha : ord) : ord :=
-  match alpha with
-  | Zero => nat_ord 1
-  | cons Zero n b => cons Zero (S n) b
-  | cons a n b => cons a n (ord_succ b)
-  end.
-
-
-
-Definition e0_succ (alpha : e0) : bool :=
-  exist nf (ord_succ (e0_ord alpha))
-
-Definition e0_eq (alpha : e0) (beta : e0) : bool :=
-  ord_eq (e0_ord alpha) (e0_ord beta).
-
-Definition e0_eq (alpha : e0) (beta : e0) : bool :=
-  ord_eq (e0_ord alpha) (e0_ord beta).
-
-
-
-
-Fixpoint ord_succ (alpha : ord) : ord :=
-  match alpha with
-  | Zero => nat_ord 1
-  | cons Zero n b => cons Zero (S n) b
-  | cons a n b => cons a n (ord_succ b)
-  end.
-
-Fixpoint ord_add (alpha : ord) (beta : ord) : ord :=
-match alpha, beta with
-| _, Zero => alpha
-| Zero, _ => beta
-| cons a n b, cons a' n' b' =>
-    (match (ord_lt a a') with
-    | true => beta
-    | false =>
-      (match (ord_eq a a') with
-      | true => cons a (n + n' + 1) b'
-      | false => cons a n (ord_add b beta)
-      end)
-    end)
-end.
-
-Fixpoint ord_mult_by_n (alpha : ord) (m : nat) : ord :=
+Definition e0_pf (alpha : e0) : (nf (e0_ord alpha)) :=
 match alpha with
-| Zero => Zero
-| cons Zero n b => nat_ord ((n + 1) * m)
-| cons a n b => cons a ((n + 1) * m - 1) (ord_mult_by_n b m)
+| exist _ alpha' pf => pf
 end.
 
-Fixpoint ord_mult (alpha : ord) (beta : ord) : ord :=
-match alpha, beta with
-| _, Zero => Zero
-| Zero, _ => Zero
-| cons a n b, cons Zero n' b' => ord_mult_by_n alpha (n' + 1)
-| cons a n b, cons a' n' b' => cons (ord_add a a') n' (ord_mult alpha b')
-end.
+Definition e0_succ (alpha : e0) : e0 :=
+  exist nf (ord_succ (e0_ord alpha)) (nf_succ (e0_ord alpha) (e0_pf alpha)).
 
+Definition e0_add (alpha beta : e0) : e0 :=
+  exist nf (ord_add (e0_ord alpha) (e0_ord beta))
+    (nf_add (e0_ord alpha) (e0_ord beta) (e0_pf alpha) (e0_pf beta)).
+
+Definition e0_mult_by_n (alpha : e0) (m : nat) : e0 :=
+  exist nf (ord_mult_by_n (e0_ord alpha) m)
+    (nf_mult_by_n (e0_ord alpha) m (e0_pf alpha)).
+
+Definition e0_mult (alpha beta : e0) : e0 :=
+  exist nf (ord_mult (e0_ord alpha) (e0_ord beta))
+    (nf_mult (e0_ord alpha) (e0_ord beta) (e0_pf alpha) (e0_pf beta)).
 
 
 
