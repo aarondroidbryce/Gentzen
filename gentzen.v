@@ -627,6 +627,18 @@ Definition peano_axiom_9 (f : formula) (x : nat) : formula :=
 
 
 
+
+
+Theorem nat_semiconnex : forall (m n : nat), m < n \/ n < m \/ m = n.
+Proof.
+intros. omega.
+Qed.
+
+Lemma nat_transitive : forall (n n' n'' : nat), n < n' -> n' < n'' -> n < n''.
+Proof.
+intros. omega.
+Qed.
+
 (* Defining ordinals *)
 (* *)
 
@@ -638,21 +650,132 @@ Inductive ord : Set :=
 
 (* A total strict order on ord *)
 
-Inductive lt : ord -> ord -> Prop :=
+Inductive ord_lt : ord -> ord -> Prop :=
 |  zero_lt : forall a n b, Zero < cons a n b
 |  head_lt :
-    forall a a' n n' b b', lt a a' ->
+    forall a a' n n' b b', a < a' ->
                            cons a n b < cons a' n' b'
 |  coeff_lt : forall a n n' b b', (n < n')%nat ->
                                  cons a n b < cons a n' b'
 |  tail_lt : forall a n b b', b < b' ->
                              cons a n b < cons a n b'
-where "o < o'" := (lt o o') : cantor_scope.
+where "o < o'" := (ord_lt o o') : cantor_scope.
 
 Open Scope cantor_scope.
 
 Definition leq (alpha beta : ord) := alpha = beta \/ alpha < beta.
 Notation "alpha <= beta" := (leq alpha beta) : cantor_scope.
+
+Definition semiconnex (alpha : ord) :=
+  forall (beta : ord), alpha < beta \/ beta < alpha \/ alpha = beta.
+
+
+Theorem ordinal_semiconnex : forall (alpha : ord), semiconnex alpha.
+Proof.
+intros alpha.
+induction alpha.
+- unfold semiconnex.
+  induction beta.
+  + right. right. reflexivity.
+  + left. apply zero_lt.
+- unfold semiconnex.
+  unfold semiconnex in IHalpha1.
+  unfold semiconnex in IHalpha2.
+  induction beta.
+  + right. left. apply zero_lt.
+  + destruct (IHalpha1 beta1).
+    * left. apply head_lt. apply H.
+    * destruct H.
+      { right. left. apply head_lt. apply H. }
+      { destruct (nat_semiconnex n n0).
+        { left. rewrite H. apply coeff_lt. apply H0. }
+        { destruct H0.
+          { right. left. rewrite H. apply coeff_lt. apply H0. }
+          { destruct (IHalpha2 beta2).
+            { left. rewrite H. rewrite H0. apply tail_lt. apply H1. }
+            { destruct H1.
+              { right. left. rewrite H. rewrite H0. apply tail_lt. apply H1. }
+              { right. right. rewrite H. rewrite H0. rewrite H1. auto. }}}}}
+Qed.
+
+Definition transitive (alpha : ord) := forall (beta gamma : ord),
+  (beta < gamma -> alpha < beta -> alpha < gamma).
+
+
+Lemma cons_lt_aux : forall (a a' b b' : ord) (n n' : nat),
+  cons a n b < cons a' n' b' ->
+  (a < a' \/ (a = a' /\ lt n n') \/ (a = a' /\ n = n' /\ b < b')).
+Proof.
+intros.
+inversion H.
+- left. apply H1.
+- right. left. split.
+  + auto.
+  + apply H1.
+- right. right. split.
+  + auto.
+  + split.
+    * auto.
+    * apply H1.
+Qed.
+
+
+Theorem ordinal_transitivity : forall (alpha : ord), transitive alpha.
+Proof.
+intros.
+induction alpha as [| a IHa n b IHb].
+- unfold transitive.
+  intros.
+  destruct gamma as [| a'' n'' b''].
+  * inversion H.
+  * apply zero_lt.
+- unfold transitive.
+  intros.
+  destruct beta as [| a' n' b'].
+  + inversion H0.
+  + destruct gamma as [| a'' n'' b''].
+    * inversion H.
+    * apply cons_lt_aux in H0. apply cons_lt_aux in H.
+      { destruct H0. 
+        { destruct H.
+          { unfold transitive in IHa. specialize IHa with a' a''.
+          apply head_lt. apply IHa. apply H. apply H0. }
+        { destruct H.
+          { unfold transitive in IHa. specialize IHa with a' a''.
+            apply head_lt. destruct H. rewrite H in H0. apply H0. }
+          { apply head_lt. unfold transitive in IHa. specialize IHa with a' a''.
+            destruct H. rewrite <- H. apply H0. } } }
+        destruct H0.
+        { destruct H0. rewrite H0. destruct H.
+          { apply head_lt. apply H. }
+          { destruct H.
+            { destruct H. rewrite <- H. apply coeff_lt.
+              pose proof (nat_transitive n n' n''). apply H3. apply H1. apply H2. }
+            { destruct H. destruct H2. rewrite H. rewrite <- H2.
+              apply coeff_lt. apply H1. } } }
+            destruct H. destruct H0. rewrite H0. apply head_lt. apply H.
+            destruct H. destruct H. destruct H0. destruct H2.
+            rewrite H0. rewrite H. rewrite H2. apply coeff_lt. apply H1.
+
+            destruct H. destruct H. destruct H0. destruct H0.
+            rewrite H. rewrite H0. destruct H1. rewrite H1.
+            apply tail_lt. unfold transitive in IHb. specialize IHb with b' b''.
+            apply IHb. apply H3. apply H2. }
+Qed.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 (* The predicate "to be in normal form" *)
 
@@ -682,7 +805,7 @@ Check exist nf.
 
 Definition lt_e0 (alpha beta : e0) : Prop :=
   match (alpha, beta) with
-  | (exist _ alpha' _, exist _ beta' _) => lt alpha' beta'
+  | (exist _ alpha' _, exist _ beta' _) => alpha' < beta'
   end.
 
 Definition leq_e0 (alpha beta : e0) : Prop := lt_e0 alpha beta \/ alpha = beta.
@@ -696,43 +819,104 @@ Definition nat_ord (n : nat) : ord :=
   end.
 
 
-(* ord_eq, ord_lt, ord_succ, ord_add, and ord_mult will all assume normal form *)
+(* defining boolean equality and less than, assuming normal form. *)
 (* *)
-Fixpoint ord_eq (alpha : ord) (beta : ord) : bool :=
+Fixpoint ord_eqb (alpha : ord) (beta : ord) : bool :=
 match (alpha, beta) with
 | (Zero, Zero) => true
 | (_, Zero) => false
 | (Zero, _) => false
 | (cons a n b, cons a' n' b') =>
-    (match (ord_eq a a') with
+    (match (ord_eqb a a') with
     | false => false
     | true =>
         (match (beq_nat n n') with
         | false => false
-        | true => ord_eq b b'
+        | true => ord_eqb b b'
         end)
     end)
 end.
 
-Fixpoint ord_lt (alpha : ord) (beta : ord) : bool :=
+Fixpoint ord_ltb (alpha : ord) (beta : ord) : bool :=
 match alpha, beta with
 | Zero, Zero => false
 | _, Zero => false
 | Zero, _ => true
 | cons a n b, cons a' n' b' =>
-    (match (ord_lt a a', ord_eq a a') with
+    (match (ord_ltb a a', ord_eqb a a') with
     | (true, _) => true
     | (_, false) => false
     | (_, true) =>
         (match (lt_nat n n', lt_nat n' n) with
         | (true, _) => true
         | (_, true) => false
-        | (_, _) => ord_lt b b'
+        | (_, _) => ord_ltb b b'
         end)
     end)
 end.
 
+Definition ord_semiconnex_bool_aux' (alpha : ord) :=
+  forall (beta : ord), alpha < beta -> ord_ltb alpha beta = true.
 
+Lemma ord_semiconnex_bool_aux :
+  forall (alpha : ord), ord_semiconnex_bool_aux' alpha.
+Proof.
+intros.
+induction alpha.
+- unfold ord_semiconnex_bool_aux'.
+  intros.
+  destruct beta.
+  + inversion H.
+  + simpl. auto.
+- unfold ord_semiconnex_bool_aux'.
+  intros.
+  destruct beta.
+  + inversion H.
+  + inversion H.
+    * unfold ord_semiconnex_bool_aux' in IHalpha1. simpl.
+      specialize IHalpha1 with beta1.
+      apply IHalpha1 in H1.
+      rewrite H1. auto.
+    * simpl. case (ord_ltb beta1 beta1). auto. simpl.
+      assert (ord_eqb beta1 beta1 = true). { admit. }
+      rewrite H7.
+      assert rewrite H1.
+
+
+
+
+
+Lemma ord_semiconnex_bool_aux : forall (alpha beta : ord),
+  alpha < beta -> ord_ltb alpha beta = true.
+Proof.
+intros.
+induction alpha.
+- inversion H. simpl. auto.
+- simpl.
+
+
+induction alpha.
+- destruct beta.
+  + inversion H.
+
+
+
+Lemma ord_semiconnex_bool : forall (alpha beta : ord),
+  ord_ltb alpha beta = true \/ ord_ltb beta alpha = true \/
+  ord_eqb alpha beta = true.
+Proof.
+intros.
+pose proof (ordinal_semiconnex alpha).
+unfold semiconnex in H.
+specialize H with beta.
+inversion H.
+- left.
+
+
+
+
+(* ord_succ, ord_add, and ord_mult will all assume normal form *)
+(* *)
 Fixpoint ord_succ (alpha : ord) : ord :=
   match alpha with
   | Zero => nat_ord 1
@@ -745,10 +929,10 @@ match alpha, beta with
 | _, Zero => alpha
 | Zero, _ => beta
 | cons a n b, cons a' n' b' =>
-    (match (ord_lt a a') with
+    (match (ord_ltb a a') with
     | true => beta
     | false =>
-      (match (ord_eq a a') with
+      (match (ord_eqb a a') with
       | true => cons a' (n + n' + 1) b'
       | false => cons a n (ord_add b beta)
       end)
@@ -966,44 +1150,19 @@ destruct H0.
 Qed.
 
 Lemma lt_asymm : forall (alpha beta : ord),
-  alpha < beta -> ~ (beta < alpha).
+  alpha < beta -> (~(beta < alpha) /\ ~(alpha = beta)).
 Proof.
-intros alpha beta H_a H_b.
-pose proof (lt_trans alpha beta alpha H_a H_b).
-apply (lt_irrefl alpha H).
+intros alpha beta H.
+split.
+- intros H0.
+  pose proof (lt_trans alpha beta alpha H H0).
+  apply (lt_irrefl alpha H1).
+- intros H0.
+  rewrite H0 in H.
+  apply (lt_irrefl beta H).
 Qed.
 
 
-
-Lemma nf_trichotomy : forall (alpha beta : ord),
-  nf alpha -> nf beta -> alpha < beta \/ beta < alpha \/ alpha = beta.
-Proof.
-intros alpha beta nf_alpha nf_beta.
-induction beta as [ Zero | a' IHa' n' b' IHb'].
-- destruct alpha as [ Zero | a n b].
-  + right. right. simpl. reflexivity.
-  + right. left. apply zero_lt.
-- induction alpha as [ Zero | a IHa n b IHb].
-  + left. apply zero_lt.
-  + assert (nf a') as nf_a'. { inversion nf_beta. apply H0. apply H3. }
-    assert (nf b') as nf_b'. { inversion nf_beta. apply Zero_nf. apply H4. }
-    apply IHa' in nf_a'. apply IHb' in nf_b'. 
-    destruct nf_a'.
-    * left. inversion H.
-      { pose proof (omega_exp_incr' a'0 b'0 n'0). apply head_lt.
-        apply (lt_trans a a'0 (cons a'0 n'0 b'0) H4 H5). }
-      { apply head_lt. apply (omega_exp_incr' a b'0 n'0). }
-      { apply head_lt. apply (omega_exp_incr' a b'0 n). }
-    * destruct H.
-        { assert (nf a) as nf_a. { admit. } assert (nf b) as nf_b. { admit. }
-          apply IHa in nf_a. apply IHb in nf_b. clear IHa' IHb' IHa IHb.
-          { admit. }
-          { admit. }
-          { admit. }
-          { admit. }
-          { admit. } }
-        { left. rewrite H. apply (omega_exp_incr' a' b' n'). }
-Admitted.
 
 Lemma nf_add_one : forall (alpha : ord),
   nf alpha -> ord_succ alpha = ord_add alpha (cons Zero 0 Zero).
@@ -1044,10 +1203,10 @@ Qed.
 Definition nat_e0 (n : nat) : e0 := exist nf (nat_ord n) (nf_nat n).
 
 Definition e0_eq (alpha : e0) (beta : e0) : bool :=
-  ord_eq (e0_ord alpha) (e0_ord beta).
+  ord_eqb (e0_ord alpha) (e0_ord beta).
 
 Definition e0_lt (alpha : e0) (beta : e0) : bool :=
-  ord_lt (e0_ord alpha) (e0_ord beta).
+  ord_ltb (e0_ord alpha) (e0_ord beta).
 
 Lemma nf_succ : forall (alpha : ord), nf alpha -> nf (ord_succ alpha).
 Proof.
@@ -1086,23 +1245,67 @@ induction alpha as [Zero | a IHa n b IHb].
       }
 Qed.
 
-Lemma nf_add : forall (alpha beta : ord),
-  nf alpha -> nf beta -> nf (ord_add alpha beta).
+Lemma ord_add_aux : forall (a a' a'' b b' b'' : ord) (n n' n'' : nat),
+  cons a n b = ord_add (cons a' n' b') (cons a'' n'' b'') -> (a = a' \/ a = a'').
 Proof.
-intros alpha beta nf_alpha nf_beta.
-induction beta as [Zero | a' IHa' n' b' IHb'].
-- rewrite ord_add_zero. apply nf_alpha.
-- destruct alpha as [Zero | a n b].
-  + simpl. apply nf_beta.
-  + simpl. case (ord_lt a a').
-    * apply nf_beta.
-    * case (ord_eq a a').
-      { apply (nf_scalar a' b' n' (n + n' + 1)). apply nf_beta. }
-      { assert (nf (ord_add b (cons a' n' b'))).
-        { admit. }
-        { admit. }
-      }
-Admitted.
+intros a a' a'' b b' b'' n n' n''.
+simpl.
+case (ord_ltb a' a'').
+- intros H. inversion H. right. auto.
+- case (ord_eqb a' a'').
+  + intros H. inversion H. right. auto.
+  + intros H. inversion H. left. auto.
+Qed.
+
+Definition normal_add (alpha : ord) :=
+  forall (beta : ord), nf alpha -> nf beta -> nf (ord_add alpha beta).
+
+Lemma nf_add : forall (alpha : ord), normal_add alpha.
+Proof.
+intros.
+induction alpha.
+- unfold normal_add.
+  intros.
+  simpl.
+  destruct beta.
+  + simpl. apply zero_nf.
+  + apply H0.
+- unfold normal_add.
+  intros.
+  simpl.
+  destruct beta.
+  + apply H.
+  + remember (ord_ltb alpha1 beta1) as c1.
+    case c1 as [T | F].
+    * apply H0.
+    * remember (ord_eqb alpha1 beta1) as c2.
+      case c2 as [T | F].
+      { apply (nf_scalar beta1 beta2 n0 (n + n0 + 1)). apply H0. }
+      { assert (ord_ltb beta1 alpha1 = true). { admit. }
+        remember (ord_add alpha2 (cons beta1 n0 beta2)) as A.
+        destruct A.
+        { apply single_nf. inversion H. apply H3. apply H6. }
+        { apply cons_nf.
+          { destruct alpha2 as [| a'' n'' b''].
+            { simpl in HeqA. assert (A1 = beta1). { inversion HeqA. auto. }
+              rewrite H2. admit. }
+            { destruct (ordinal_trichotomy a'' beta1).
+              { apply (ord_add_aux A1 a'' beta1 A2 b'' beta2 n1 n'' n0) in HeqA.
+                destruct HeqA.
+                { rewrite H3. inversion H. apply H7. }
+                { rewrite H3. admit. } }
+              { apply (ord_add_aux A1 a'' beta1 A2 b'' beta2 n1 n'' n0) in HeqA.
+                destruct HeqA.
+                { rewrite H3. inversion H. apply H7. }
+                { rewrite H3. admit. } } } }
+          { inversion H. apply H3. apply H6. }
+          { rewrite HeqA. unfold normal_add in IHalpha2.
+            specialize IHalpha2 with (cons beta1 n0 beta2). apply IHalpha2.
+            inversion H. apply Zero_nf. apply H7. apply H0. }
+
+
+Lemma ord_trich : forall (alpha beta : ord),
+  
 
 
 Lemma nf_mult_by_n : forall (alpha : ord) (m : nat),
