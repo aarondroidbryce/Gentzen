@@ -1301,13 +1301,70 @@ match alpha, beta with
 | cons a n b, cons a' n' b' => cons (ord_add a a') n' (ord_mult alpha b')
 end.
 
-Compute 2^3.
-
 Fixpoint ord_finite_power (alpha : ord) (m : nat) : ord :=
 match m with
 | 0 => cons Zero 0 Zero
 | S m' => ord_mult alpha (ord_finite_power alpha m')
 end.
+
+Fixpoint ord_minus_1 (alpha : ord) : ord :=
+match alpha with
+| Zero => Zero
+| cons Zero n _ => nat_ord n
+| cons a n b => cons a n (ord_minus_1 b)
+end.
+
+Compute nat_ord 1.
+
+Fixpoint exp (alpha beta : ord) : ord :=
+match alpha, beta with
+| _, Zero => nat_ord 1
+| cons Zero 0 _ , _ => nat_ord 1
+| Zero, _  => Zero
+| alpha , cons Zero n' _ => ord_finite_power alpha (S n')
+
+
+
+| cons Zero n _, cons (cons Zero 0 Zero) n' b' =>
+      ord_mult
+        (cons (nat_ord (n' + 1)) 0 Zero)
+        (exp (nat_ord (n + 1)) b')
+
+
+
+| cons Zero n _, cons a' n' b' =>
+      ord_mult
+        (cons (cons (ord_minus_1 a') n' Zero) 0 Zero)
+        (exp (nat_ord (n + 1)) b')
+
+
+
+| cons a n b, cons a' n' b' =>
+      ord_mult
+        (cons (ord_mult a (cons a' n' Zero)) 0 Zero)
+        (exp (cons a n b) b')
+end.
+
+Definition two_exp (alpha : ord) : ord := exp (nat_ord 2) alpha.
+
+Fixpoint ord_two_exp (alpha : ord) : ord :=
+match alpha with
+| Zero => cons Zero 0 Zero
+
+| cons Zero n' _ => nat_ord (2 ^ (S n'))
+
+| cons (cons Zero 0 Zero) n' b' =>
+      ord_mult
+        (cons (nat_ord (n' + 1)) 0 Zero)
+        (ord_two_exp b')
+
+| cons a' n' b' =>
+      ord_mult
+        (cons (cons (ord_minus_1 a') n' Zero) 0 Zero)
+        (ord_two_exp b')
+end.
+
+
 
 
 (*
@@ -1320,6 +1377,10 @@ match alpha with
 | cons (cons Zero 0 Zero) n Zero => cons (nat_ord (S n)) 0 Zero
 |
 *)
+
+
+
+
 
 (* Here we show that addition and multiplication for ordinal numbers
 agrees with the usual definitions for natural numbers *)
@@ -1768,6 +1829,65 @@ Proof. intros. apply (nf_mult_aux alpha). apply H. apply H0. Qed.
 
 
 
+Lemma nf_minus_1 : forall (alpha : ord), nf alpha -> nf (ord_minus_1 alpha).
+Proof.
+intros.
+induction alpha as [| alpha1 IHalpha1 n_alpha alpha2 IHalpha2].
+- simpl. apply zero_nf.
+- destruct alpha1 as [| a n b].
+  + simpl. apply nf_nat.
+  + simpl.
+    destruct alpha2 as [| a' n' b'].
+    * simpl. apply single_nf. apply (nf_hered_first _ _ _ H).
+    * assert (nf (ord_minus_1 (cons a' n' b'))) as A.
+      { apply IHalpha2. apply (nf_hered_third _ _ _ H). }
+      simpl. destruct a' as [| a'' n'' b''].
+      { unfold nat_ord. case n'.
+        { apply single_nf. apply (nf_hered_first _ _ _ H). }
+        { intros. apply cons_nf. apply zero_lt.
+          apply (nf_hered_first _ _ _ H). apply single_nf, zero_nf. } }
+      { apply cons_nf.
+        { inversion H. apply H3. }
+        { apply (nf_hered_first _ _ _ H). }
+        { apply A. } }
+Qed.
+
+Lemma nf_exp : forall (alpha : ord), nf alpha -> nf (ord_two_exp alpha).
+Proof.
+intros.
+induction alpha as [| alpha1 IHalpha1 n_alpha alpha2 IHalpha2].
+- simpl. apply single_nf. apply zero_nf.
+- destruct alpha1 as [| a'' n'' b''].
+  + simpl. apply nf_nat.
+  + destruct a'' as [| a''' n''' b'''].
+    * simpl. case n''.
+      { assert (b'' = Zero).
+        { apply nf_hered_first in H. inversion H. auto. inversion H3. }
+        rewrite H0. apply nf_mult.
+        { apply single_nf, nf_nat. }
+        { apply IHalpha2, (nf_hered_third _ _ _ H). } }
+      { intros. apply nf_mult.
+        { apply single_nf, single_nf. apply nf_nat. }
+        { apply IHalpha2, (nf_hered_third _ _ _ H). } }
+    * simpl. apply nf_mult.
+      { apply single_nf, single_nf.
+        pose proof (nf_hered_first _ _ _ H). apply nf_hered_first in H0.
+        destruct b'' as [| a_b'' n_b'' b_b''].
+        { simpl. apply single_nf. apply H0. }
+        { assert (nf (ord_minus_1 (cons a_b'' n_b'' b_b''))) as A.
+          { apply nf_hered_first in H. apply nf_hered_third in H.
+            apply nf_minus_1, H. }
+            destruct a_b''.
+          { simpl. unfold nat_ord. case n_b''.
+            { apply single_nf. apply H0. }
+            { intros. apply cons_nf. apply zero_lt. apply H0.
+              apply single_nf, zero_nf. } }
+          { simpl. apply cons_nf.
+            { apply nf_hered_first in H. inversion H. apply H4. }
+            { apply H0. }
+            { apply A. } } } }
+      { apply IHalpha2. apply (nf_hered_third _ _ _ H). }
+Qed.
 
 
 Definition e0_pf (alpha : e0) : (nf (e0_ord alpha)) :=
