@@ -1276,15 +1276,8 @@ Qed.
 
 
 
-(* ord_succ, ord_add, and ord_mult will all assume normal form *)
+(* ord_add, ord_mult, and ord_exp will all assume normal form *)
 (* *)
-Fixpoint ord_succ (alpha : ord) : ord :=
-  match alpha with
-  | Zero => nat_ord 1
-  | cons Zero n b => cons Zero (S n) b
-  | cons a n b => cons a n (ord_succ b)
-  end.
-
 Fixpoint ord_add (alpha beta : ord) : ord :=
 match alpha, beta with
 | _, Zero => alpha
@@ -1307,6 +1300,26 @@ match alpha, beta with
 | cons a n b, cons Zero n' b' => cons a ((S n) * (S n') - 1) (ord_mult alpha b')
 | cons a n b, cons a' n' b' => cons (ord_add a a') n' (ord_mult alpha b')
 end.
+
+Compute 2^3.
+
+Fixpoint ord_finite_power (alpha : ord) (m : nat) : ord :=
+match m with
+| 0 => cons Zero 0 Zero
+| S m' => ord_mult alpha (ord_finite_power alpha m')
+end.
+
+
+(*
+
+Fixpoint ord_2_exp (alpha : ord) : ord :=
+match alpha with
+| Zero => cons Zero 0 Zero
+| cons Zero n b => ord_mult (nat_ord (2^(S n))) (ord_2_exp b)
+| cons (cons Zero 0 Zero) 0 Zero => cons (cons Zero 0 Zero) 0 Zero
+| cons (cons Zero 0 Zero) n Zero => cons (nat_ord (S n)) 0 Zero
+|
+*)
 
 (* Here we show that addition and multiplication for ordinal numbers
 agrees with the usual definitions for natural numbers *)
@@ -1337,50 +1350,6 @@ Qed.
 Lemma nat_ord_0 : nat_ord 0 = Zero.
 Proof. simpl. reflexivity. Qed.
 
-Lemma ord_mult_succ : forall (n m : nat),
-  ord_mult (nat_ord n) (ord_succ (nat_ord m)) = nat_ord (n * (S m)).
-Proof.
-intros n m.
-induction n as [| n' IH].
-- simpl.
-  destruct m.
-  + simpl. reflexivity.
-  + simpl. reflexivity.
-- simpl.
-  destruct m.
-  + simpl.
-    rewrite mult_1_r.
-    rewrite minus_n_0.
-    auto.
-  + simpl.
-    assert ((n' + 1) * S (m + 1) = S (S (m + n' * S (S m)))) as aux. { ring. }
-    auto.
-Qed.
-
-Lemma ord_succ_nat : forall (n : nat),
-  nat_ord (S n) = ord_succ (nat_ord n).
-Proof.
-intros n.
-induction n.
-- simpl. reflexivity.
-- simpl. reflexivity.
-Qed.
-
-Lemma ord_mult_nat : forall (n m : nat),
-  nat_ord (n * m) = ord_mult (nat_ord n) (nat_ord m).
-Proof.
-intros n m.
-induction m as [| m' IH].
-- rewrite nat_ord_0.
-  rewrite mult_0_r.
-  rewrite nat_ord_0.
-  destruct n.
-  + simpl. reflexivity.
-  + simpl. reflexivity.
-- rewrite ord_succ_nat.
-  rewrite ord_mult_succ.
-  reflexivity.
-Qed.
 
 (* Some miscellaneous lemmas about ordinals *)
 (* *)
@@ -1477,22 +1446,6 @@ destruct H0.
 - apply (lt_trans a (cons a 0 Zero) (cons a n b) H H0).
 Qed.
 
-Lemma nf_add_one : forall (alpha : ord),
-  nf alpha -> ord_succ alpha = ord_add alpha (cons Zero 0 Zero).
-Proof.
-intros alpha nf_alpha.
-induction alpha as [Zero | a IHa n b IHb].
-- simpl. reflexivity.
-- destruct a as [Zero | a' n' b'].
-  + simpl. assert (S n = n + 0 + 1). { omega. } rewrite H.
-    assert (b = Zero).
-    { inversion nf_alpha. reflexivity. inversion H3. }
-    rewrite H0. reflexivity.
-  + simpl. rewrite IHb. reflexivity. inversion nf_alpha.
-    * apply Zero_nf.
-    * apply H4.
-Qed.
-
 
 
 (* Carry over the ordinal arithmetic results to the e0 type *)
@@ -1521,42 +1474,6 @@ Definition e0_eq (alpha : e0) (beta : e0) : bool :=
 Definition e0_lt (alpha : e0) (beta : e0) : bool :=
   ord_ltb (e0_ord alpha) (e0_ord beta).
 
-Lemma nf_succ : forall (alpha : ord), nf alpha -> nf (ord_succ alpha).
-Proof.
-intros alpha H.
-induction alpha as [Zero | a IHa n b IHb].
-- simpl. apply single_nf. apply Zero_nf.
-- destruct b as [Zero | a' n' b'].
-  + destruct a as [Zero | a' n' b'].
-    * simpl. apply single_nf. apply Zero_nf.
-    * inversion H. simpl. apply cons_nf.
-        { apply zero_lt. }
-        { apply H1. }
-        { apply single_nf. apply Zero_nf. }
-  + destruct a as [Zero | a'' n'' b''].
-    * simpl. inversion H. inversion H3.
-    * assert (ord_succ (cons (cons a'' n'' b'') n (cons a' n' b')) = 
-                    (cons (cons a'' n'' b'') n (ord_succ (cons a' n' b')))).
-      { simpl. reflexivity. }
-      rewrite H0.
-      destruct a' as [Zero | a''' n''' b'''].
-      { simpl. apply cons_nf.
-        { apply zero_lt. }
-        { inversion H. apply H7. }
-        { inversion H. inversion H8.
-          { apply single_nf. apply Zero_nf. }
-          rewrite <- H11 in H8.
-          inversion H8.
-          inversion H12. }
-      }
-      { assert (nf (ord_succ (cons (cons a''' n''' b''') n' b'))).
-        { apply IHb. inversion H. apply H8. }
-          apply cons_nf.
-        { inversion H. apply H5. }
-        { inversion H. apply H8. }
-        { apply H1. }
-      }
-Qed.
 
 Lemma nf_add_aux2 : forall (a a' a'' b b' b'' : ord) (n n' n'' : nat),
   cons a n b = ord_add (cons a' n' b') (cons a'' n'' b'') -> (a = a' \/ a = a'').
@@ -1569,7 +1486,6 @@ case (ord_ltb a' a'').
   + intros H. inversion H. right. auto.
   + intros H. inversion H. left. auto.
 Qed.
-
 
 Definition nf_add_aux' (alpha : ord) :=
   forall (beta : ord), nf alpha -> nf beta -> nf (ord_add alpha beta).
@@ -1622,7 +1538,6 @@ induction alpha.
             specialize IHalpha2 with (cons beta1 n0 beta2). apply IHalpha2.
             inversion H. apply Zero_nf. apply H7. apply H0. } } }
 Qed.
-
 
 Lemma nf_add : forall (alpha beta : ord),
   nf alpha -> nf beta -> nf (ord_add alpha beta).
@@ -1805,7 +1720,6 @@ Qed.
 Definition nf_mult_aux' (alpha : ord) := forall (beta : ord),
   nf alpha -> nf beta -> nf (ord_mult alpha beta).
 
-
 Lemma nf_mult_aux : forall (alpha : ord), nf_mult_aux' alpha.
 Proof.
 intros.
@@ -1861,16 +1775,9 @@ match alpha with
 | exist _ alpha' pf => pf
 end.
 
-Definition e0_succ (alpha : e0) : e0 :=
-  exist nf (ord_succ (e0_ord alpha)) (nf_succ (e0_ord alpha) (e0_pf alpha)).
-
 Definition e0_add (alpha beta : e0) : e0 :=
   exist nf (ord_add (e0_ord alpha) (e0_ord beta))
     (nf_add (e0_ord alpha) (e0_ord beta) (e0_pf alpha) (e0_pf beta)).
-
-Definition e0_mult_by_n (alpha : e0) (m : nat) : e0 :=
-  exist nf (ord_mult_by_n (e0_ord alpha) m)
-    (nf_mult_by_n (e0_ord alpha) m (e0_pf alpha)).
 
 Definition e0_mult (alpha beta : e0) : e0 :=
   exist nf (ord_mult (e0_ord alpha) (e0_ord beta))
@@ -2059,9 +1966,7 @@ Qed.
 (* Axiom of induction up to epsilon_0 *)
 (* *)
 (*
-Axiom stuff 
-
-Axiom transfinite_induction_e0        :=
+Axiom transfinite_induction_e0 :=
 *)
 
 
@@ -2086,9 +1991,6 @@ Lemma nat_e0 : forall (n : nat)
 Theorem lemma_1 : forall (A : formula) (n : nat), n = (num_conn A) ->
     exists (t : ptree), (tree_form T = (lor (neg A lor A)))
                     /\  (leq_e0 (tree_ord T) 
-
-
-
 
 
 
