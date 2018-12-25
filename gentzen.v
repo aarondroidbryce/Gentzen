@@ -130,12 +130,11 @@ Qed.
 
 Lemma mult_right_incr_aux_aux : forall (n m p : nat),
   n < m -> n + p * (S n) < m + p * (S m).
-Proof.
-intros.
-induction p.
-- lia.
-- lia.
-Qed.
+Proof. intros. induction p; lia. Qed.
+
+Lemma mult_left_incr_aux_aux : forall (n m p : nat),
+  n < m -> p + n * (S p) < p + m * (S p).
+Proof. intros. induction p; lia. Qed.
 
 Theorem minus_n_0 : forall (n : nat), n - 0 = n.
 Proof. intros. omega. Qed.
@@ -1297,7 +1296,7 @@ Fixpoint ord_mult (alpha beta : ord) : ord :=
 match alpha, beta with
 | _, Zero => Zero
 | Zero, _ => Zero
-| cons a n b, cons Zero n' b' => cons a ((S n) * (S n') - 1) (ord_mult alpha b')
+| cons a n b, cons Zero n' b' => cons a ((S n) * (S n') - 1) b
 | cons a n b, cons a' n' b' => cons (ord_add a a') n' (ord_mult alpha b')
 end.
 
@@ -1313,39 +1312,6 @@ match alpha with
 | cons Zero n _ => nat_ord n
 | cons a n b => cons a n (ord_minus_1 b)
 end.
-
-Compute nat_ord 1.
-
-Fixpoint exp (alpha beta : ord) : ord :=
-match alpha, beta with
-| _, Zero => nat_ord 1
-| cons Zero 0 _ , _ => nat_ord 1
-| Zero, _  => Zero
-| alpha , cons Zero n' _ => ord_finite_power alpha (S n')
-
-
-
-| cons Zero n _, cons (cons Zero 0 Zero) n' b' =>
-      ord_mult
-        (cons (nat_ord (n' + 1)) 0 Zero)
-        (exp (nat_ord (n + 1)) b')
-
-
-
-| cons Zero n _, cons a' n' b' =>
-      ord_mult
-        (cons (cons (ord_minus_1 a') n' Zero) 0 Zero)
-        (exp (nat_ord (n + 1)) b')
-
-
-
-| cons a n b, cons a' n' b' =>
-      ord_mult
-        (cons (ord_mult a (cons a' n' Zero)) 0 Zero)
-        (exp (cons a n b) b')
-end.
-
-Definition two_exp (alpha : ord) : ord := exp (nat_ord 2) alpha.
 
 Fixpoint ord_two_exp (alpha : ord) : ord :=
 match alpha with
@@ -1363,21 +1329,6 @@ match alpha with
         (cons (cons (ord_minus_1 a') n' Zero) 0 Zero)
         (ord_two_exp b')
 end.
-
-
-
-
-(*
-
-Fixpoint ord_2_exp (alpha : ord) : ord :=
-match alpha with
-| Zero => cons Zero 0 Zero
-| cons Zero n b => ord_mult (nat_ord (2^(S n))) (ord_2_exp b)
-| cons (cons Zero 0 Zero) 0 Zero => cons (cons Zero 0 Zero) 0 Zero
-| cons (cons Zero 0 Zero) n Zero => cons (nat_ord (S n)) 0 Zero
-|
-*)
-
 
 
 
@@ -1611,9 +1562,9 @@ Lemma nf_multy_aux : forall (a a' b b' : ord) (n n' : nat),
 Proof.
 intros.
 simpl.
-case_eq a'.
-- intros. rewrite H0 in H. inversion H.
-- intros. auto.
+case_eq a'; intros.
+- rewrite H0 in H. inversion H.
+- auto.
 Qed.
 
 
@@ -1710,11 +1661,11 @@ Qed.
 
 Definition mult_right_nice (gamma : ord) := 
   gamma = Zero \/ forall (alpha beta : ord),
-  alpha < beta -> ord_mult gamma alpha < ord_mult gamma beta.
+  alpha < beta -> nf beta -> ord_mult gamma alpha < ord_mult gamma beta.
 
 Definition mult_right_nice2 (alpha gamma : ord) := 
   gamma = Zero \/ forall (beta : ord),
-  alpha < beta -> ord_mult gamma alpha < ord_mult gamma beta.
+  alpha < beta -> nf beta -> ord_mult gamma alpha < ord_mult gamma beta.
 
 Lemma mult_right_incr_aux : forall (gamma : ord), mult_right_nice gamma.
 Proof.
@@ -1732,20 +1683,18 @@ induction gamma as [| gamma1 IHgamma1 n_gamma gamma2 IHgamma2].
           { unfold nat_ord. apply zero_lt. }
           { apply zero_lt. } }
         { simpl. apply zero_lt. } } }
-    { unfold mult_right_nice2. right. intros.
+    { unfold mult_right_nice2. right. intros beta H nf_beta.
       destruct beta as [| beta1 n_beta beta2].
       { inversion H. }
       { destruct alpha1.
         { destruct beta1.
-          { inversion H.
-            { inversion H1. }
+          { assert (beta2 = Zero). { inversion nf_beta. auto. inversion H3. }
+            rewrite H0 in H. inversion H.
+            { inversion H2. }
             { simpl. apply coeff_lt.
               rewrite minus_n_0. rewrite minus_n_0.
-              apply mult_right_incr_aux_aux. apply H1. }
-            { simpl. apply tail_lt. unfold mult_right_nice2 in IHalpha2.
-              destruct IHalpha2.
-              { inversion H6. }
-              { apply H6. apply H1. } } }
+              apply mult_right_incr_aux_aux. apply H2. }
+            { inversion H2. } }
           { simpl. apply head_lt. apply add_right_incr_corr. apply zero_lt. } }
         { destruct beta1.
           { inversion H. inversion H1. }
@@ -1756,7 +1705,9 @@ induction gamma as [| gamma1 IHgamma1 n_gamma gamma2 IHgamma2].
               { apply tail_lt. unfold mult_right_nice2 in IHalpha2.
                 inversion IHalpha2.
                 { inversion H9. }
-                { apply (H9 beta2). apply H1. } } }
+                { apply (H9 beta2).
+                  { apply H1. }
+                  { apply (nf_hered_third _ _ _ nf_beta). } } } }
             { apply zero_lt. }
             { apply zero_lt. } } } } } }
   unfold mult_right_nice. right. intros alpha. unfold mult_right_nice2 in H.
@@ -1764,16 +1715,15 @@ induction gamma as [| gamma1 IHgamma1 n_gamma gamma2 IHgamma2].
 Qed.
 
 Lemma mult_right_incr : forall (alpha beta a b : ord) (n : nat),
-  alpha < beta -> ord_mult (cons a n b) alpha < ord_mult (cons a n b) beta.
+  alpha < beta -> nf beta ->
+  ord_mult (cons a n b) alpha < ord_mult (cons a n b) beta.
 Proof.
 intros.
 pose proof (mult_right_incr_aux (cons a n b)).
-unfold mult_right_nice in H0.
-destruct H0.
-- inversion H0.
-- specialize H0 with alpha beta.
-  apply H0.
-  apply H.
+unfold mult_right_nice in H1.
+destruct H1.
+- inversion H1.
+- apply (H1 _ _ H H0).
 Qed.
 
 
@@ -1796,7 +1746,9 @@ induction alpha as [| a IHa n b IHb].
         { inversion H. apply H2. apply H5. }
         { inversion H0. apply H2. apply H5. } }
     { assert (ord_mult (cons a n b) b' < ord_mult (cons a n b) (cons a' n' Zero)).
-      { apply mult_right_incr. apply nf_cons_decr. apply H0. }
+      { apply mult_right_incr. apply nf_cons_decr.
+        { apply H0. }
+        { apply single_nf. apply (nf_hered_first _ _ _ H0). } }
       case_eq (ord_mult (cons a n b) b').
       { intros. apply single_nf. apply H1. }
       { intros a'' n'' b'' H3. apply cons_nf.
@@ -1812,20 +1764,15 @@ induction alpha as [| a IHa n b IHb].
       { apply nf_add.
         apply (nf_hered_first a b n H).
         apply (nf_hered_first a' b' n' H0). }
-      { rewrite <- H3. apply IHb'. apply (nf_hered_third a' b' n' H0). } } } }
+      { rewrite <- H3. apply IHb'. apply (nf_hered_third _ _ _ H0). } } } }
     destruct a' as [| a'' n'' b''].
-    { simpl. assert (b' = Zero). { inversion H0. auto. inversion H5. }
-      rewrite H2. simpl. apply single_nf. inversion H. apply H4. apply H7. }
+    { simpl. apply (nf_scalar _ _ _ _ H). }
     { rewrite nf_multy_aux. apply H1. apply zero_lt. }
 Qed.
 
 Lemma nf_mult : forall (alpha beta : ord),
   nf alpha -> nf beta -> nf (ord_mult alpha beta).
 Proof. intros. apply (nf_mult_aux alpha). apply H. apply H0. Qed.
-
-
-
-
 
 
 
@@ -1852,7 +1799,7 @@ induction alpha as [| alpha1 IHalpha1 n_alpha alpha2 IHalpha2].
         { apply A. } }
 Qed.
 
-Lemma nf_exp : forall (alpha : ord), nf alpha -> nf (ord_two_exp alpha).
+Lemma nf_two_exp : forall (alpha : ord), nf alpha -> nf (ord_two_exp alpha).
 Proof.
 intros.
 induction alpha as [| alpha1 IHalpha1 n_alpha alpha2 IHalpha2].
@@ -1888,6 +1835,327 @@ induction alpha as [| alpha1 IHalpha1 n_alpha alpha2 IHalpha2].
             { apply A. } } } }
       { apply IHalpha2. apply (nf_hered_third _ _ _ H). }
 Qed.
+
+
+Fixpoint two_exp (alpha : ord) : ord :=
+match alpha with
+| Zero => cons Zero 0 Zero
+
+| cons a n b => 
+
+  (match a, n, b with
+  | Zero, n, _ => nat_ord (2 ^ (S n))
+
+  | (cons Zero 0 Zero), n, b =>
+      ord_mult
+        (cons (nat_ord (n + 1)) 0 Zero)
+        (ord_two_exp b)
+
+  | a, n, b =>
+      ord_mult
+        (cons (cons (ord_minus_1 a) n Zero) 0 Zero)
+        (ord_two_exp b)
+  end)
+end.
+
+
+Lemma one_right_mult_ident : forall (alpha : ord),
+  alpha = ord_mult alpha (nat_ord 1).
+Proof.
+intros.
+induction alpha as [| alpha1 IHalpha1 n_alpha alpha2 IHalpha2].
+- auto.
+- simpl. assert (n_alpha * 1 - 0 = n_alpha). { omega. } rewrite H. auto.
+Qed.
+
+Lemma ord_mult_monot : forall (a b beta : ord) (n : nat),
+  nat_ord 1 < beta -> nf beta -> cons a n b < ord_mult (cons a n b) beta.
+Proof.
+intros.
+pose proof (mult_right_incr (nat_ord 1) beta a b n H H0).
+rewrite <- one_right_mult_ident in H1.
+apply H1.
+Qed.
+
+Lemma ord_mult_monot_corr : forall (alpha beta b : ord),
+  alpha < beta -> alpha < ord_mult beta (ord_two_exp b).
+Proof.
+intros.
+assert (beta <= ord_mult beta (ord_two_exp b)).
+{ admit. }
+destruct H0.
+- rewrite H0 in H. apply H.
+- apply (lt_trans _ _ _ H H0).
+Admitted.
+
+
+
+Definition add_left_nice (gamma : ord) := forall (alpha beta : ord),
+  alpha < beta -> ord_add alpha gamma <= ord_mult beta gamma.
+
+Lemma add_left_incr_aux : forall (gamma : ord), add_left_nice gamma.
+Admitted.
+
+
+Definition mult_left_nice (gamma : ord) := forall (alpha beta : ord),
+  alpha < beta -> ord_mult alpha gamma <= ord_mult beta gamma.
+
+Lemma mult_left_incr_aux : forall (gamma : ord), mult_left_nice gamma.
+Proof.
+intros.
+induction gamma as [| gamma1 IHgamma1 n_gamma gamma2 IHgamma2].
+- unfold mult_left_nice. intros. admit.
+- unfold mult_left_nice. intros. destruct alpha as [| alpha1 n_alpha alpha2].
+  + simpl. admit.
+  + destruct beta as [| beta1 n_beta beta2].
+    * inversion H.
+    * destruct gamma1 as [| g1 n_g g2].
+      { simpl. unfold leq. right. inversion H.
+        { apply head_lt, H1. }
+        { apply coeff_lt. rewrite minus_n_0. rewrite minus_n_0.
+          apply (mult_left_incr_aux_aux _ _ _ H1). }
+        { apply tail_lt, H1. } }
+      { simpl. destruct gamma2.
+        { simpl. inversion H. admit. }
+        { admit. }
+Admitted.
+
+Lemma mult_left_incr : forall (alpha beta gamma : ord),
+  alpha < beta -> ord_mult alpha gamma <= ord_mult beta gamma.
+Proof. intros. apply (mult_left_incr_aux gamma alpha beta H). Qed.
+
+
+Lemma x : forall (a b : ord),
+  Zero < b -> cons a 0 b < ord_mult (cons a 0 Zero) (ord_two_exp b).
+Proof.
+intros.
+induction b as [| a' IHa' n' b' IHb'].
+- inversion H.
+- destruct a' as [| a'' n'' b''].
+  + simpl. unfold nat_ord. admit.
+  + destruct a'' as [| a''' n''' b'''].
+    * simpl. admit.
+    * simpl. admit.
+Admitted.
+
+
+
+
+Fixpoint omega_mult (alpha : ord) : ord :=
+match alpha with
+| Zero => Zero
+| cons a n b => cons (ord_add (cons Zero 0 Zero) a) n (omega_mult b)
+end.
+
+
+Lemma omega_mult_correct : forall (alpha : ord),
+  nf alpha -> omega_mult alpha = ord_mult (cons (nat_ord 1) 0 Zero) alpha.
+Proof.
+intros.
+induction alpha as [| a IHa n b IHb].
+- auto.
+- destruct a as [| a' n' b'].
+  + simpl. assert (b = Zero). { inversion H. auto. inversion H3. }
+    rewrite H0. simpl. assert (n + 0 - 0 = n). { omega. }
+    rewrite H1. auto.
+  + simpl. assert (nf b). { apply (nf_hered_third _ _ _ H). }
+    rewrite (IHb (nf_hered_third _ _ _ H)). unfold nat_ord. auto.
+Qed.
+
+Lemma nf_omega_mult : forall (alpha : ord),
+  nf alpha -> nf (omega_mult alpha).
+Proof.
+intros.
+rewrite (omega_mult_correct _ H).
+apply nf_mult.
+- apply single_nf, nf_nat.
+- apply H.
+Qed.
+
+Lemma ord_two_exp_fp_aux1 : forall (alpha : ord), Zero < alpha -> nf alpha ->
+  ~(cons (cons Zero 0 Zero) 0 alpha = omega_mult (ord_two_exp alpha)).
+Proof.
+intros alpha H nf_alpha.
+induction alpha as [| a IHa n b IHb].
+- inversion H.
+- destruct a as [| a' n' b'].
+  + simpl. case_eq (2 ^ n + (2 ^ n + 0)).
+    * intros. simpl. unfold not. intros. inversion H1.
+    * intros. simpl. destruct n0.
+      { assert (cons (cons Zero 0 Zero) 0 Zero <
+                cons (cons Zero 0 Zero) 0 (cons Zero n b)).
+        { apply tail_lt, zero_lt. }
+        unfold not. intros. rewrite H2 in H1. apply (lt_irrefl _ H1). }
+      { assert (cons (cons Zero 0 Zero) 0 (cons Zero n b) <
+                cons (cons Zero 0 Zero) (S n0) Zero).
+        { apply coeff_lt. omega. }
+        unfold not. intros. rewrite H2 in H1. apply (lt_irrefl _ H1). }
+  + assert (nf (omega_mult (ord_two_exp (cons (cons a' n' b') n b)))).
+    { apply nf_omega_mult, nf_two_exp, nf_alpha. }
+    assert (~(nf (cons (cons Zero 0 Zero) 0 (cons (cons a' n' b') n b)))).
+    { unfold not. intros. inversion H1. inversion H5; inversion H11. }
+    unfold not. intros. rewrite H2 in H1. contradiction.
+Qed.
+
+
+
+
+
+
+
+
+Theorem ord_two_exp_fp : forall (alpha : ord), nf alpha ->
+  ~(alpha = ord_two_exp alpha) \/ alpha = cons (nat_ord 1) 0 Zero.
+Proof.
+intros alpha nf_alpha. unfold not.
+induction alpha as [| a IHa n b IHb].
+- left. intros. inversion H.
+- destruct a as [| a' n' b'].
+  + left. simpl. unfold nat_ord. case_eq (2 ^ n + (2 ^ n + 0)).
+    * intros. inversion H0.
+    * intros. admit.    (* arithmetic *)
+  + simpl. destruct a' as [| a'' n'' b''].
+    * destruct n' as [| m].
+      { destruct b' as [| a''' n''' b'''].
+        { case_eq b.
+          { simpl. destruct n.
+            { right. auto. }
+            { left. intros. inversion H0. } }
+          { left. rewrite <- H. assert (n + 1 = S n). { omega. } rewrite H0.
+            destruct n; simpl.
+            { pose proof (nf_two_exp _ (nf_hered_third _ _ _ nf_alpha)).
+              pose proof (omega_mult_correct _ H1). unfold nat_ord in H2.
+              rewrite <- H2. apply (ord_two_exp_fp_aux1 b).
+              { rewrite H. apply zero_lt. }
+              { apply (nf_hered_third _ _ _ nf_alpha). } }
+            { assert (cons (cons Zero 0 Zero) (S n) b <
+                      cons (cons Zero (S n) Zero) 0 Zero).
+              { apply head_lt, coeff_lt. omega. }
+              pose proof (ord_mult_monot_corr _ _ b H1).
+              intros. rewrite H3 in H2. apply (lt_irrefl _ H2). } } }
+        { left. simpl. admit. } } (* annoying *)
+      { left.
+        assert (cons (cons Zero (S m) b') n b <
+                cons (cons (nat_ord (S m)) n Zero) 0 Zero).
+        { apply head_lt, head_lt, zero_lt. }
+        assert    (cons (cons (nat_ord (S m)) n Zero) 0 Zero <=
+         ord_mult (cons (cons (nat_ord (S m)) n Zero) 0 Zero) (ord_two_exp b)).
+        { case_eq (ord_eqb (ord_two_exp b) (nat_ord 1)); intros.
+          { apply ord_eqb_eq in H0. rewrite H0.
+            rewrite <- one_right_mult_ident. unfold leq. left. auto. }
+          { assert (nat_ord 1 < ord_two_exp b).
+            { admit. }   (* 1 != ord_two_exp b -> 1 < ord_two_exp b *)
+            unfold leq. right.
+            apply (ord_mult_monot _ _ _ _ H1). apply nf_two_exp.
+            apply (nf_hered_third _ _ _ nf_alpha). } }
+        intros A. rewrite A in H. destruct H0.
+        { rewrite <- H0 in H. apply lt_irrefl in H. contradiction. }
+        { apply (lt_irrefl _ (lt_trans _ _ _ H H0)). } }
+    * left.
+
+pose proof (ord_mult_monot (cons (cons a'' n'' b'') n' b') b (ord_two_exp b) n).
+
+assert (cons (cons (cons a'' n'' b'') n' b') n b <
+        ord_mult (cons (cons (cons a'' n'' b'') n' b') n b) (ord_two_exp b)).
+{ apply H. 
+  { admit. }
+  { apply nf_two_exp. apply nf_hered_third in nf_alpha. apply nf_alpha. } }
+
+
+
+
+Admitted.
+
+Lemma ord_two_exp_fp_aux3 : forall (b : ord), Zero < ord_two_exp b.
+Proof.
+intros.
+induction b as [| b1 IHb1 n_b b2 IHb2].
+- simpl. apply zero_lt.
+- simpl. admit.
+Admitted.
+
+Lemma one_right_mult_ident : forall (alpha : ord),
+  alpha = ord_mult alpha (nat_ord 1).
+Proof.
+intros.
+induction alpha as [| alpha1 IHalpha1 n_alpha alpha2 IHalpha2].
+- auto.
+- simpl. assert (n_alpha * 1 - 0 = n_alpha). { omega. } rewrite H. auto.
+Qed.
+
+
+
+Lemma ord_two_exp_fp_aux2 : forall (alpha beta : ord),
+  Zero < beta -> alpha <= ord_mult alpha beta.
+Proof.
+intros.
+induction alpha as [| alpha1 IHalpha1 n_alpha alpha2 IHalpha2].
+- pose proof (zero_minimal (ord_mult Zero beta)). admit.
+- induction beta as [| beta1 IHbeta1 n_beta beta2 IHbeta2].
+  + inversion H.
+  + simpl. destruct beta1 as [| a n b].
+    * unfold leq.
+
+
+
+
+Lemma ord_two_exp_fp_aux2 : forall (alpha beta b : ord),
+  alpha < beta -> alpha < ord_mult beta (ord_two_exp b).
+Proof.
+intros.
+induction beta as [| beta1 IHbeta1 n_beta beta2 IHbeta2].
+- inversion H.
+- induction b as [| b1 IHb1 n_b b2 IHb2].
+  + intros. unfold ord_two_exp. admit.
+  + 
+
+simpl. induction o.
+    * 
+
+
+
+
+  ord_mult (cons (cons a' n' b') n_a a2) (ord_two_exp b) = 
+  ord_mult (cons (cons a' n' b') (n_a a2) (ord_two_exp b)
+
+
+
+
+
+Theorem ord_two_exp_fp : forall (alpha : ord),
+  alpha = ord_two_exp alpha -> alpha = cons (nat_ord 1) 0 Zero.
+Proof.
+intros.
+induction alpha as [| a IHa n b IHb].
+- simpl in H. inversion H.
+- destruct a as [| a' n' b'].
+  + simpl in H. unfold nat_ord in H. admit.
+  + simpl in H. destruct a' as [| a'' n'' b''].
+    * destruct n' as [| m].
+      { destruct b' as [| a''' n''' b'''].
+        { destruct b.
+          { simpl in H. destruct n.
+            { simpl in H. unfold nat_ord. apply H. }
+            { inversion H. } }
+          { admit. } }
+        { simpl in H. admit. } }
+      { admit. }
+    * 
+
+
+
+
+Lemma x : forall (a : ord),
+  a = Zero \/ a = cons Zero 0 Zero \/ a = cons a' n' b'.
+Admitted.
+
+
+
+Theorem ord_two_exp_fp : forall (alpha : ord),
+  alpha = cons (nat_ord 1) 0 Zero \/ ~ (alpha = ord_two_exp alpha).
+Proof.
+Admitted.
+
 
 
 Definition e0_pf (alpha : e0) : (nf (e0_ord alpha)) :=
