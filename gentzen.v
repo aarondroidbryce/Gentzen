@@ -652,18 +652,6 @@ Compute free_for (b_var 1) 0 (univ 1 (atom (equ (b_var 0) (b_var 0)))).
 
 (* Lemma 2 *)
 (* *)
-Lemma stuff : forall (T s : term) (n : nat),
-  eval T > 0 -> eval (substitution_t T n s) > 0.
-Proof.
-intros.
-induction T.
-- auto.
-- case_eq (eval T); intros.
-  + inversion H.
-Admitted.
-
-
-
 Lemma x : forall (T s t : term) (n : nat),
   eval s = eval t -> eval (substitution_t T n s) = eval (substitution_t T n t).
 Proof.
