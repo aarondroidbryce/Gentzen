@@ -652,7 +652,7 @@ Compute free_for (b_var 1) 0 (univ 1 (atom (equ (b_var 0) (b_var 0)))).
 
 (* Lemma 2 *)
 (* *)
-Lemma x : forall (T s t : term) (n : nat),
+Lemma lemma_2_atomic_aux1 : forall (T s t : term) (n : nat),
   eval s = eval t -> eval (substitution_t T n s) = eval (substitution_t T n t).
 Proof.
 intros.
@@ -678,7 +678,7 @@ induction T.
 - simpl. case (beq_nat n0 n). apply H. auto.
 Qed.
 
-Lemma x1 : forall (a : atomic_formula) (s t : term) (n : nat),
+Lemma lemma_2_atomic_aux2 : forall (a : atomic_formula) (s t : term) (n : nat),
   eval s = eval t ->
   correctness (substitution_a a n s) = correct ->
   correctness (substitution_a a n t) = correct.
@@ -689,8 +689,8 @@ intros t1 t2 H1.
 rewrite H1 in H0.
 unfold substitution_a in H0.
 unfold substitution_a.
-pose proof (x t1 s t n H) as Ht1.
-pose proof (x t2 s t n H) as Ht2.
+pose proof (lemma_2_atomic_aux1 t1 s t n H) as Ht1.
+pose proof (lemma_2_atomic_aux1 t2 s t n H) as Ht2.
 case_eq (eval (substitution_t t1 n t));
 case_eq (eval (substitution_t t2 n t)); intros;
 unfold correctness in H0;
@@ -699,8 +699,7 @@ rewrite H2 in H0; rewrite H3 in H0; inversion H0.
 simpl. rewrite H2. rewrite H3. auto.
 Qed.
 
-
-Lemma x2 : forall (s t : term),
+Lemma lemma_2_atomic_aux3 : forall (s t : term),
   correct_a (equ s t) = true -> eval s = eval t.
 Proof.
 intros s t.
@@ -715,20 +714,18 @@ case_eq (eval s); case_eq (eval t); intros.
   + intros. rewrite H2 in H1. inversion H1.
 Qed.
 
-
-
 Theorem lemma_2_atomic : forall (s t : term) (a : atomic_formula) (n : nat),
   correct_a (equ s t) = true ->
   pa_omega_axiom (substitution (atom a) n s) = true ->
   pa_omega_axiom (substitution (atom a) n t) = true.
 Proof.
 simpl. intros.
-assert (eval s = eval t). { apply x2. apply H. }
+assert (eval s = eval t). { apply lemma_2_atomic_aux3. apply H. }
 assert (correctness (substitution_a a n s) = correct).
 { inversion H0. unfold correct_a in H3.
   case_eq (correctness (substitution_a a n s)); intros;
   rewrite H2 in H3; inversion H3; auto. }
-pose proof (x1 a s t n H1 H2).
+pose proof (lemma_2_atomic_aux2 a s t n H1 H2).
 unfold correct_a.
 rewrite H3. auto.
 Qed.
@@ -2228,7 +2225,7 @@ Definition inf_prem_valid (f : formula) (deg : nat) (alpha : e0)
                           (g : nat -> ptree) : Prop :=
 
 infinite_induction f g
-/\ forall (n : nat), deg >= tree_degree (g 5)
+/\ forall (n : nat), deg >= tree_degree (g n)
 /\ forall (n : nat), gt_e0 alpha (tree_ord (g n)).
 
 
