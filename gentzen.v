@@ -1699,11 +1699,12 @@ Definition e0_mult (alpha beta : e0) : e0 :=
 
 (*
 ###############################################################################
-Section 3: Axioms and Rules of inference in PA and PA_omega
+Section 3: FOL machinery. Here we define and prove basic facts about terms
+and formulas in first-order logic and the language of PA/PA_omega.
 ###############################################################################
 *)
 
-(* Definition of PA formulas *)
+(* Definition of formulas in the language of PA/PA_omega*)
 (* *)
 Inductive term : Type :=
     zero : term
@@ -1886,15 +1887,6 @@ match (correctness a) with
 end.
 
 
-(* Axioms of PA_omega *)
-(* *)
-Definition pa_omega_axiom (a : formula) : bool :=
-match a with
-| atom a' => correct_a a'
-| _ => false
-end.
-
-
 
 (* Free variable lists *)
 (* *)
@@ -2065,6 +2057,228 @@ Compute free_for (b_var 1) 0 (univ 1 (atom (equ (b_var 0) (b_var 0)))).
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(*
+###############################################################################
+Section 4: Axioms and Rules of inference in PA and PA_omega
+###############################################################################
+*)
+
+(* Axioms of PA_omega *)
+(* *)
+Definition pa_omega_axiom (a : formula) : bool :=
+match a with
+| atom a' => correct_a a'
+| _ => false
+end.
+
+
+
+
+
+
+
+
+Inductive pa_omega_theorem : formula -> Prop :=
+| axiom : forall (a : formula), pa_omega_axiom a = true -> pa_omega_theorem a
+
+| exchange1 : forall (a b : formula),
+  pa_omega_theorem (lor a b) ->
+  pa_omega_theorem (lor b a)
+
+| exchange2 : forall (c a b : formula),
+  pa_omega_theorem (lor (lor c a) b) ->
+  pa_omega_theorem (lor (lor c b) a)
+
+| exchange3 : forall (a b d : formula),
+  pa_omega_theorem (lor (lor a b) d) ->
+  pa_omega_theorem (lor (lor b a) d)
+
+| exchange4 : forall (c a b d : formula),
+  pa_omega_theorem (lor (lor (lor c a) b) d) ->
+  pa_omega_theorem (lor (lor (lor c b) a) d).
+
+
+
+
+
+
+Lemma associativity1 : forall (c a b : formula),
+  pa_omega_theorem (lor (lor c a) b) ->
+  pa_omega_theorem (lor c (lor a b)).
+Proof.
+intros.
+apply exchange3 in H.
+apply exchange2 in H.
+apply exchange1 in H.
+apply H.
+Qed.
+
+
+Lemma associativity2 : forall (c a b : formula),
+  pa_omega_theorem (lor c (lor a b)) ->
+  pa_omega_theorem (lor (lor c a) b).
+Proof.
+intros.
+apply exchange1 in H.
+apply exchange2 in H.
+apply exchange3 in H.
+apply H.
+Qed.
+
+
+
+
+
+| negation : forall (a d : formula), pa_omega_theorem (lor a d) ->
+             pa_omega_theorem (lor (neg (neg a)) d)
+
+| weakening : forall (a d : formula), pa_omega_theorem d ->
+             pa_omega_theorem (lor a d).
+
+
+
+
+
+Inductive pa_omega_theorem : Type :=
+
+
+
+
+
+Fixpoint weakening (p : formula) : formula := 
+match p with
+| 
+end.
+
+Fixpoint negation (p : formula) : formula := 
+match p with
+| lor a d => lor (neg (neg a)) d
+| _ => atom (equ zero zero)
+end.
+
+
+
+
+
+
+
+
+
+
+Fixpoint exchange (c p : formula) : bool :=
+  match (c, p) with
+  | (lor (lor (lor c b) a) d, lor (lor (lor c' a') b') d') =>
+        (eq_f a a') && (eq_f b b') && (eq_f c c') && (eq_f d d')
+  | (_,_) => false
+end.
+
+Fixpoint contraction (c p : formula) : bool :=
+  match (c, p) with
+  | (lor a d, lor (lor a' a'') d') =>
+        (eq_f a a') && (eq_f a' a'') && (eq_f d d')
+  | (_,_) => false
+end.
+
+Fixpoint weakening (c p : formula) : bool :=
+  match (c, p) with
+  | (lor a d, d') => eq_f d d'
+  | (_,_) => false
+end.
+
+Fixpoint negation (c p : formula) : bool :=
+  match (c, p) with
+  | (lor (neg (neg a)) d, lor a' d') => (eq_f a a') && (eq_f d d')
+  | (_,_) => false
+end.
+
+Fixpoint quantification (c p : formula) : bool :=
+  match (c, p) with
+  | (lor (neg (univ n a)) d, lor (neg a') d') =>
+        (eq_f a a') && (eq_f d d') && (transformable a a' n)
+  | (_,_) => false
+end.
+
+Fixpoint demorgan (c p1 p2 : formula) : bool :=
+  match (c, p1, p2) with
+  | (lor (neg (lor a b)) d, lor (neg a') d', lor (neg b') d'') =>
+      (eq_f a a') && (eq_f b b') && (eq_f d d') && (eq_f d' d'')
+  | (_,_,_) => false
+end.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 (* Logical axioms of FOL *)
 (* *)
 Definition implies (a b : formula) : formula :=
@@ -2120,7 +2334,7 @@ Compute logical_axiom_6 (atom (equ (b_var 1) zero)) 0 1.
 
 
 
-(* Axioms of Peano Arithmetic (PA) *)
+(* Axioms of PA *)
 (* *)
 Definition peano_axiom_1 (x y z : nat) : formula :=
   univ x (univ y (univ z (
@@ -2373,6 +2587,14 @@ Qed.
 Section 5: Proof trees and ordinal assignments for PA_omega proofs
 ###############################################################################
 *)
+
+
+
+
+
+
+
+
 
 (* Determine if a formula c follows from some premises based on the
 inference rules *)
