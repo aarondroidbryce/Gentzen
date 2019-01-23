@@ -1711,8 +1711,7 @@ Inductive term : Type :=
   | succ : term -> term
   | plus : term -> term -> term
   | times : term -> term -> term
-  | f_var : nat -> term
-  | b_var : nat -> term.
+  | var : nat -> term.
 
 Inductive atomic_formula : Type :=
     equ : term -> term -> atomic_formula.
@@ -1742,8 +1741,7 @@ Fixpoint eq_term (s t : term) : bool :=
   | (succ s', succ t') => eq_term s' t'
   | (plus s1 s2, plus t1 t2) => (eq_term s1 t1) && (eq_term s2 t2)
   | (times s1 s2, times t1 t2) => (eq_term s1 t1) && (eq_term s2 t2)
-  | (f_var m, f_var n) => beq_nat m n
-  | (b_var m, b_var n) => beq_nat m n
+  | (var m, var n) => beq_nat m n
   | (_,_) => false
 end.
 
@@ -1776,7 +1774,6 @@ induction t.
 - simpl. apply IHt.
 - simpl. rewrite <- IHt1. apply IHt2.
 - simpl. rewrite <- IHt1. apply IHt2.
-- simpl. apply beq_nat_refl.
 - simpl. apply beq_nat_refl.
 Qed.
 
@@ -1824,15 +1821,14 @@ Fixpoint eval (t : term) : nat :=
       | (O, S m) => O
       | (S n, S m) => S (n * m)
       end)
-  | f_var n => O
-  | b_var n => O
+  | var n => O
   end.
 
 Compute eval zero.
-Compute eval (f_var O).
+Compute eval (var O).
 Compute eval (succ zero).
-Compute eval (succ (f_var O)).
-Compute eval (plus (succ zero) (f_var O)).
+Compute eval (succ (var O)).
+Compute eval (plus (succ zero) (var O)).
 
 Inductive ternary : Type :=
     correct : ternary
@@ -1871,7 +1867,7 @@ Definition correctness (a : atomic_formula) : ternary :=
 Compute correctness (equ zero zero).
 Compute correctness (equ zero (succ zero)).
 Compute correctness (equ (plus (succ zero) (succ zero)) (succ (succ zero))).
-Compute correctness (equ zero (f_var O)).
+Compute correctness (equ zero (var O)).
 
 
 Definition correct_a (a : atomic_formula) : bool :=
@@ -1896,8 +1892,7 @@ Fixpoint free_list_t (t : term) : list nat :=
   | succ t_1 => free_list_t t_1
   | plus t_1 t_2 => concat (free_list_t t_1) (free_list_t t_2)
   | times t_1 t_2 => concat (free_list_t t_1) (free_list_t t_2)
-  | f_var n => nil
-  | b_var n => [n]
+  | var n => [n]
   end.
 
 Definition free_list_a (a : atomic_formula) : list nat :=
@@ -1914,7 +1909,7 @@ Fixpoint free_list (f : formula) : list nat :=
   end.
 
 Compute remove 1 [1,2,3].
-Compute free_list_a (equ(b_var 1)(b_var 2)).
+Compute free_list_a (equ(var 1)(var 2)).
 
 Definition closed_t (t : term) : bool :=
   match (free_list_t t) with
@@ -1956,7 +1951,7 @@ Fixpoint closed_term_list_t (t : term) : list term :=
   | (_, _) => nil
   end.
 
-Compute closed_term_list_t (plus (b_var 3) zero).
+Compute closed_term_list_t (plus (var 3) zero).
 Compute closed_term_list_t (succ (succ zero)).
 Compute closed_term_list_t (plus (times zero (succ (succ zero))) zero).
 
@@ -1985,12 +1980,7 @@ match f with
 | succ f_1 => succ (substitution_t f_1 n t)
 | plus f_1 f_2 => plus (substitution_t f_1 n t) (substitution_t f_2 n t)
 | times f_1 f_2 => times (substitution_t f_1 n t) (substitution_t f_2 n t)
-| f_var m =>
-    (match (beq_nat m n) with
-    | true => t
-    | false => f
-    end)
-| b_var m =>
+| var m =>
     (match (beq_nat m n) with
     | true => t
     | false => f
@@ -2031,9 +2021,9 @@ appropriate substitution of some closed term for all instances of x_n in a *)
 Definition transformable (a b : formula) (n : nat) : bool :=
   transformable_with_list a b n (closed_term_list b).
 
-Compute transformable (atom (equ zero (f_var 9)))
+Compute transformable (atom (equ zero (var 9)))
                       (atom (equ zero (succ zero))) 9.
-Compute transformable (atom (equ zero (f_var 9)))
+Compute transformable (atom (equ zero (var 9)))
                       (atom (equ (succ zero) (succ zero))) 9.
 
 (* Define inductively what it means for a term t to be free for a variable x_n
@@ -2051,8 +2041,8 @@ match f with
     else free_for t n f_1
 end.
 
-Compute free_for zero 0 (univ 1 (atom (equ (b_var 0) (b_var 0)))).
-Compute free_for (b_var 1) 0 (univ 1 (atom (equ (b_var 0) (b_var 0)))).
+Compute free_for zero 0 (univ 1 (atom (equ (var 0) (var 0)))).
+Compute free_for (var 1) 0 (univ 1 (atom (equ (var 0) (var 0)))).
 
 
 
@@ -2133,23 +2123,202 @@ end.
 
 
 Inductive pa_omega_theorem : formula -> Prop :=
-| axiom : forall (a : formula), pa_omega_axiom a = true -> pa_omega_theorem a
+| axiom : forall (a : formula),
+    pa_omega_axiom a = true ->
+    pa_omega_theorem a
+
 
 | exchange1 : forall (a b : formula),
-  pa_omega_theorem (lor a b) ->
-  pa_omega_theorem (lor b a)
+    pa_omega_theorem (lor a b) ->
+    pa_omega_theorem (lor b a)
 
 | exchange2 : forall (c a b : formula),
-  pa_omega_theorem (lor (lor c a) b) ->
-  pa_omega_theorem (lor (lor c b) a)
+    pa_omega_theorem (lor (lor c a) b) ->
+    pa_omega_theorem (lor (lor c b) a)
 
 | exchange3 : forall (a b d : formula),
-  pa_omega_theorem (lor (lor a b) d) ->
-  pa_omega_theorem (lor (lor b a) d)
+    pa_omega_theorem (lor (lor a b) d) ->
+    pa_omega_theorem (lor (lor b a) d)
 
 | exchange4 : forall (c a b d : formula),
-  pa_omega_theorem (lor (lor (lor c a) b) d) ->
-  pa_omega_theorem (lor (lor (lor c b) a) d).
+    pa_omega_theorem (lor (lor (lor c a) b) d) ->
+    pa_omega_theorem (lor (lor (lor c b) a) d)
+
+| contraction1 : forall (a : formula),
+    pa_omega_theorem (lor a a) ->
+    pa_omega_theorem a
+
+| contraction2 : forall (a d : formula),
+    pa_omega_theorem (lor a (lor a d)) ->
+    pa_omega_theorem (lor a d)
+
+
+
+| weakening : forall (a d : formula),
+    closed a = true ->
+    pa_omega_theorem d ->
+    pa_omega_theorem (lor a d)
+
+| demorgan1 : forall (a b : formula),
+    pa_omega_theorem (neg a) ->
+    pa_omega_theorem (neg a) ->
+    pa_omega_theorem (neg (lor a b))
+
+| demorgan2 : forall (a b d : formula),
+    pa_omega_theorem (lor (neg a) d) ->
+    pa_omega_theorem (lor (neg b) d) ->
+    pa_omega_theorem (lor (neg (lor a b)) d)
+
+| negation1 : forall (a : formula),
+    pa_omega_theorem a ->
+    pa_omega_theorem (neg (neg a))
+
+| negation2 : forall (a d : formula),
+    pa_omega_theorem (lor a d) ->
+    pa_omega_theorem (lor (neg (neg a)) d)
+
+| quantification1 : forall (a : formula) (n : nat) (t : term),
+    pa_omega_theorem (substitution a n t) ->
+    pa_omega_theorem (neg (univ n a))
+
+| quantification2 : forall (a d : formula) (n : nat) (t : term),
+    pa_omega_theorem (lor (substitution a n t) d) ->
+    pa_omega_theorem (lor (neg (univ n a)) d)
+
+| w_rule_1 : forall (a : formula) (n : nat) (g : nat -> formula),
+    (forall (m : nat),
+      transformable_with_list a (g m) n [represent m] = true) ->
+    (forall (m : nat), pa_omega_theorem (g m)) ->
+    pa_omega_theorem (univ n a)
+
+| w_rule_2 : forall (a d : formula) (n : nat) (g : nat -> formula),
+    (forall (m : nat),
+      transformable_with_list (lor a d) (g m) n [represent m] = true) ->
+    (forall (m : nat), pa_omega_theorem (g m)) ->
+    pa_omega_theorem (lor (univ n a) d)
+
+
+| cut1 : forall (c a : formula),
+    pa_omega_theorem (lor c a) ->
+    pa_omega_theorem (neg a) ->
+    pa_omega_theorem c
+
+| cut2 : forall (a d : formula),
+    pa_omega_theorem a ->
+    pa_omega_theorem (lor (neg a) d) ->
+    pa_omega_theorem d
+
+| cut3 : forall (c a d : formula),
+    pa_omega_theorem (lor c a) ->
+    pa_omega_theorem (lor (neg a) d) ->
+    pa_omega_theorem (lor c d).
+
+
+Definition g_exmp (n : nat) : formula :=
+  atom (equ (represent n) (represent n)).
+
+Lemma eval_refl : forall (t : term),
+  eval t = eval t.
+Proof. auto. Qed.
+
+Lemma stuff : forall (t : term),
+  eval t > 0 -> correctness (equ t t) = correct.
+Proof.
+intros.
+case_eq (eval t); intros.
+- rewrite H0 in H. inversion H.
+- unfold correctness. rewrite H0. rewrite <- beq_nat_refl. auto.
+Qed.
+
+
+
+Lemma stuff2 : forall (t : term),
+  eval t > 0 -> correct_a (equ t t) = true.
+Proof.
+intros.
+pose proof (stuff t H).
+unfold correct_a. rewrite H0. auto.
+Qed.
+
+Lemma stuff3 : forall (n : nat),
+  eval (represent n) > 0.
+Proof.
+intros.
+induction n.
+- auto.
+- simpl. case_eq (eval (represent n)); intros.
+  + rewrite H in IHn. inversion IHn.
+  + omega.
+Qed.
+
+
+
+
+Lemma stuff4 : forall (n : nat),
+  pa_omega_theorem (univ n (atom (equ (var n) (var n)))).
+Proof.
+intros.
+apply (w_rule_1 (atom (equ (var n) (var n))) n g_exmp); intros.
+- simpl. auto. assert (beq_nat n n = true). { symmetry. apply beq_nat_refl. }
+  rewrite H. 
+  assert (eq_term (represent m) (represent m) = true).
+  { symmetry. apply (eq_term_refl (represent m)). }
+  rewrite H0. auto.
+- unfold g_exmp. apply axiom. simpl.
+  apply (stuff2 (represent m) (stuff3 m)).
+Qed.
+
+
+
+
+
+
+
+Lemma stuff : forall (A : nat -> Prop) (B : Prop),
+  (forall (m : nat) 
+Proof.
+
+forall (a : formula) (n : nat) (t : term),
+    pa_omega_theorem (substitution a n t) ->
+    pa_omega_theorem (neg (univ n a))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Inductive pa_omega_proves : formula -> nat -> e0 -> Prop :=
+| greater_degree : forall (a : formula) (n m : nat) (alpha : e0),
+    pa_omega_proves a n alpha ->
+    m > n ->
+    pa_omega_proves a m alpha
+
+| greater_ordinal : forall (a : formula) (n : nat) (alpha beta : e0),
+    pa_omega_proves a n alpha ->
+    gt_e0 beta alpha ->
+    pa_omega_proves a n beta
+
+
+
+| axiom' : forall (a : formula),
+    pa_omega_axiom a = true ->
+    pa_omega_proves a 0 (exist nf Zero Zero_nf)
+
+
+
+| exchange1' : forall (a b : formula) (n : nat) (alpha : e0),
+    pa_omega_proves (lor a b) n alpha ->
+    pa_omega_proves (lor b a) n alpha.
 
 
 
@@ -2179,36 +2348,78 @@ apply exchange3 in H.
 apply H.
 Qed.
 
+Lemma x : forall (s t : term),
+  correct_a (equ s t) = true -> eval s > 0 /\ eval t > 0.
+Proof.
+intros s t.
+unfold correct_a.
+assert (correctness (equ s t) = correct). { admit. }
+rewrite H. intros. clear H0.
+unfold correctness in H.
+case_eq (eval s); case_eq (eval t); intros;
+rewrite H0 in H; rewrite H1 in H; inversion H.
+split; omega.
+Admitted.
+
+Lemma x2 : forall (s t : term) (a : atomic_formula) (n : nat),
+  eval s > 0 ->
+  eq_term s (substitution_t s n t) = true.
+Proof.
+intros.
+induction s.
+- auto.
+- simpl. apply IHs. case_eq (eval s).
+  + intros. inversion H. rewrite H0 in H2. lia. inversion H2. intros.
+
+inversion H. auto.
+- auto.
+- auto.
+
+
+unfold substitution_a. case_eq a. intros t1 t2 Ha.
+rewrite Ha in H. apply x in H. simpl.
 
 
 
 
-| negation : forall (a d : formula), pa_omega_theorem (lor a d) ->
-             pa_omega_theorem (lor (neg (neg a)) d)
-
-| weakening : forall (a d : formula), pa_omega_theorem d ->
-             pa_omega_theorem (lor a d).
-
-
-
-
-
-Inductive pa_omega_theorem : Type :=
+Lemma x2 : forall (s : term) (a : atomic_formula) (n : nat),
+  correct_a a = true ->
+  eq_atom a (substitution_a a n s) = true.
+Proof.
+intros.
+unfold substitution_a. case_eq a. intros t1 t2 Ha.
+rewrite Ha in H. apply x in H. simpl.
 
 
+Lemma stuff : forall (s : term) (a : atomic_formula) (n : nat),
+  correct_a a = true ->
+  correct_a (substitution_a a n s) = true.
+Proof.
+intros.
+unfold substitution_a. case_eq a. intros t1 t2 Ha.
+unfold correct_a in H. simpl in H.
+
+
+Lemma substitution_lemma : forall (s t : term) (A : formula) (n : nat),
+  correct_a (equ s t) = true ->
+  pa_omega_theorem (lor (neg (substitution A n s)) (substitution A n t)).
+Proof.
+intros.
+induction A.
+- case_eq (correct_a a); intros.
+  + assert (pa_omega_axiom (substitution (atom a) n s) = true).
+    { simpl.  unfold substitution_a.
+Admitted.
 
 
 
-Fixpoint weakening (p : formula) : formula := 
-match p with
-| 
-end.
+(*
 
-Fixpoint negation (p : formula) : formula := 
-match p with
-| lor a d => lor (neg (neg a)) d
-| _ => atom (equ zero zero)
-end.
+
+
+
+
+
 
 
 
@@ -2264,7 +2475,7 @@ end.
 
 
 
-
+*)
 
 
 
@@ -2305,12 +2516,12 @@ Definition logical_axiom_4 (a : formula) (n : nat) (t : term) : formula :=
   then implies (univ n a) (substitution a n t)
   else atom (equ zero zero).
 
-Compute logical_axiom_4 (atom (equ (b_var 0) (b_var 0))) 0 zero.
+Compute logical_axiom_4 (atom (equ (var 0) (var 0))) 0 zero.
 Compute logical_axiom_4 (atom (equ zero zero)) 0 zero.
-Compute logical_axiom_4 (atom (equ (b_var 1) (b_var 1))) 0 zero.
-Compute logical_axiom_4 (atom (equ (b_var 0) (b_var 0))) 0 zero.
-Compute logical_axiom_4 (exis 1 (atom (equ (b_var 1) (plus (b_var 0) (succ zero)))))
-                        1 (succ (b_var 1)).
+Compute logical_axiom_4 (atom (equ (var 1) (var 1))) 0 zero.
+Compute logical_axiom_4 (atom (equ (var 0) (var 0))) 0 zero.
+Compute logical_axiom_4 (exis 1 (atom (equ (var 1) (plus (var 0) (succ zero)))))
+                        1 (succ (var 1)).
 
 
 Definition logical_axiom_5 (a b : formula) (n : nat) : formula :=
@@ -2319,18 +2530,18 @@ Definition logical_axiom_5 (a b : formula) (n : nat) : formula :=
   else atom (equ zero zero).
 
 Compute logical_axiom_5 (atom (equ zero zero)) (atom (equ zero zero)) 0.
-Compute logical_axiom_5 (atom (equ (b_var 1) zero)) (atom (equ zero zero)) 1.
+Compute logical_axiom_5 (atom (equ (var 1) zero)) (atom (equ zero zero)) 1.
 
 Definition logical_axiom_6 (a : formula) (x y : nat) : formula :=
   if (member y (free_list a)) && (negb (member x (free_list a)))
-  then implies a (univ x (substitution a y (b_var x)))
+  then implies a (univ x (substitution a y (var x)))
   else atom (equ zero zero).
 
-Compute logical_axiom_6 (atom (equ (b_var 1) (b_var 1))) 0 1.
-Compute logical_axiom_6 (univ 1 (atom (equ (b_var 1) (b_var 1)))) 0 1.
-Compute logical_axiom_6 (atom (equ (b_var 1) (b_var 0))) 0 1.
-Compute logical_axiom_6 (atom (equ (b_var 0) zero)) 0 1.
-Compute logical_axiom_6 (atom (equ (b_var 1) zero)) 0 1.
+Compute logical_axiom_6 (atom (equ (var 1) (var 1))) 0 1.
+Compute logical_axiom_6 (univ 1 (atom (equ (var 1) (var 1)))) 0 1.
+Compute logical_axiom_6 (atom (equ (var 1) (var 0))) 0 1.
+Compute logical_axiom_6 (atom (equ (var 0) zero)) 0 1.
+Compute logical_axiom_6 (atom (equ (var 1) zero)) 0 1.
 
 
 
@@ -2338,43 +2549,43 @@ Compute logical_axiom_6 (atom (equ (b_var 1) zero)) 0 1.
 (* *)
 Definition peano_axiom_1 (x y z : nat) : formula :=
   univ x (univ y (univ z (
-    implies (land (atom (equ (b_var x) (b_var y)))
-                  (atom (equ (b_var y) (b_var z))))
-            (atom (equ (b_var x) (b_var z)))))).
+    implies (land (atom (equ (var x) (var y)))
+                  (atom (equ (var y) (var z))))
+            (atom (equ (var x) (var z)))))).
 
 Definition peano_axiom_2 (x y : nat) : formula :=
   univ x (univ y (
-    implies (atom (equ (b_var x) (b_var y)))
-            (atom (equ (succ (b_var x)) (succ (b_var y)))))).
+    implies (atom (equ (var x) (var y)))
+            (atom (equ (succ (var x)) (succ (var y)))))).
 
 Definition peano_axiom_3 (x : nat) : formula :=
-  univ x (neg (atom (equ (succ (b_var x)) zero))).
+  univ x (neg (atom (equ (succ (var x)) zero))).
 
 Definition peano_axiom_4 (x y : nat) : formula :=
   univ x (univ y (
-    implies (atom (equ (succ (b_var x)) (succ (b_var y))))
-            (atom (equ (b_var x) (b_var y))))).
+    implies (atom (equ (succ (var x)) (succ (var y))))
+            (atom (equ (var x) (var y))))).
 
 Definition peano_axiom_5 (x : nat) : formula :=
-  univ x (atom (equ (plus (b_var x) zero) (b_var x))).
+  univ x (atom (equ (plus (var x) zero) (var x))).
 
 Definition peano_axiom_6 (x y : nat) : formula :=
   univ x (univ y (
-    atom (equ (plus (b_var x) (succ (b_var y)))
-                    (succ (plus (b_var x) (b_var y)))))).
+    atom (equ (plus (var x) (succ (var y)))
+                    (succ (plus (var x) (var y)))))).
 
 Definition peano_axiom_7 (x : nat) : formula :=
-  univ x (atom (equ (times (b_var x) zero) zero)).
+  univ x (atom (equ (times (var x) zero) zero)).
 
 Definition peano_axiom_8 (x y : nat) : formula :=
   univ x (univ y (
-    atom (equ (times (b_var x) (succ (b_var y)))
-              (plus (times (b_var x) (b_var y)) (b_var x))))).
+    atom (equ (times (var x) (succ (var y)))
+              (plus (times (var x) (var y)) (var x))))).
 
 Definition peano_axiom_9 (f : formula) (x : nat) : formula :=
   if member x (free_list f)
   then implies (land (substitution f x zero)
-                     (univ x (implies f (substitution f x (succ (b_var x))))))
+                     (univ x (implies f (substitution f x (succ (var x))))))
                (univ x f)
   else atom (equ zero zero).
 
@@ -2515,9 +2726,9 @@ Proof.
 simpl. intros.
 assert (eval s = eval t). { apply lemma_2_atomic_aux3. apply H. }
 assert (correctness (substitution_a a n s) = correct).
-{ inversion H0. unfold correct_a in H3.
+{ unfold correct_a in H0.
   case_eq (correctness (substitution_a a n s)); intros;
-  rewrite H2 in H3; inversion H3; auto. }
+  rewrite H2 in H0; inversion H0; auto. }
 pose proof (lemma_2_atomic_aux2 a s t n H1 H2).
 unfold correct_a.
 rewrite H3. auto.
