@@ -2097,10 +2097,6 @@ Compute free_for (var 1) 0 (univ 1 (atom (equ (var 0) (var 0)))).
 
 
 
-
-
-
-
 (*
 ###############################################################################
 Section 4: Axioms and Rules of inference in PA and PA_omega
@@ -2118,14 +2114,14 @@ end.
 
 
 
-
-
-
-
+(* A theorem of PA_omega is either an axiom, or the result of applying a rule
+    of inference to another theorem *)
+(* *)
 Inductive pa_omega_theorem : formula -> Prop :=
 | axiom : forall (a : formula),
     pa_omega_axiom a = true ->
     pa_omega_theorem a
+
 
 
 | exchange1 : forall (a b : formula),
@@ -2198,6 +2194,7 @@ Inductive pa_omega_theorem : formula -> Prop :=
     pa_omega_theorem (lor (univ n a) d)
 
 
+
 | cut1 : forall (c a : formula),
     pa_omega_theorem (lor c a) ->
     pa_omega_theorem (neg a) ->
@@ -2214,14 +2211,14 @@ Inductive pa_omega_theorem : formula -> Prop :=
     pa_omega_theorem (lor c d).
 
 
+
+(* Extended example of using the w_rule to show "forall x (x = x)"
+   is a theorem of PA_omega *)
+(* *)
 Definition g_exmp (n : nat) : formula :=
   atom (equ (represent n) (represent n)).
 
-Lemma eval_refl : forall (t : term),
-  eval t = eval t.
-Proof. auto. Qed.
-
-Lemma stuff : forall (t : term),
+Lemma w_rule_exmp_aux1 : forall (t : term),
   eval t > 0 -> correctness (equ t t) = correct.
 Proof.
 intros.
@@ -2230,17 +2227,15 @@ case_eq (eval t); intros.
 - unfold correctness. rewrite H0. rewrite <- beq_nat_refl. auto.
 Qed.
 
-
-
-Lemma stuff2 : forall (t : term),
+Lemma w_rule_exmp_aux2 : forall (t : term),
   eval t > 0 -> correct_a (equ t t) = true.
 Proof.
 intros.
-pose proof (stuff t H).
+pose proof (w_rule_exmp_aux1 t H).
 unfold correct_a. rewrite H0. auto.
 Qed.
 
-Lemma stuff3 : forall (n : nat),
+Lemma w_rule_exmp_aux3 : forall (n : nat),
   eval (represent n) > 0.
 Proof.
 intros.
@@ -2251,10 +2246,7 @@ induction n.
   + omega.
 Qed.
 
-
-
-
-Lemma stuff4 : forall (n : nat),
+Lemma w_rule_exmp : forall (n : nat),
   pa_omega_theorem (univ n (atom (equ (var n) (var n)))).
 Proof.
 intros.
@@ -2265,7 +2257,7 @@ apply (w_rule_1 (atom (equ (var n) (var n))) n g_exmp); intros.
   { symmetry. apply (eq_term_refl (represent m)). }
   rewrite H0. auto.
 - unfold g_exmp. apply axiom. simpl.
-  apply (stuff2 (represent m) (stuff3 m)).
+  apply (w_rule_exmp_aux2 (represent m) (w_rule_exmp_aux3 m)).
 Qed.
 
 
@@ -2274,19 +2266,203 @@ Qed.
 
 
 
-Lemma stuff : forall (A : nat -> Prop) (B : Prop),
-  (forall (m : nat) 
+
+
+(* Show that PA_omega proves the associativity laws *)
+(* *)
+Lemma associativity1 : forall (c a b : formula),
+  pa_omega_theorem (lor (lor c a) b) ->
+  pa_omega_theorem (lor c (lor a b)).
 Proof.
-
-forall (a : formula) (n : nat) (t : term),
-    pa_omega_theorem (substitution a n t) ->
-    pa_omega_theorem (neg (univ n a))
-
-
-
-
+intros.
+apply exchange3 in H.
+apply exchange2 in H.
+apply exchange1 in H.
+apply H.
+Qed.
 
 
+Lemma associativity2 : forall (c a b : formula),
+  pa_omega_theorem (lor c (lor a b)) ->
+  pa_omega_theorem (lor (lor c a) b).
+Proof.
+intros.
+apply exchange1 in H.
+apply exchange2 in H.
+apply exchange3 in H.
+apply H.
+Qed.
+
+
+(* Show that for any closed terms s and t where s=t is correct, and A(x) has at
+   most one free variable (x), then PA_omega proves (lor (neg A(s)) A(t)) *)
+(* *)
+
+
+Lemma x1 : forall (a : atomic_formula),
+  correct_a a = true -> correctness a = correct.
+Proof.
+intros.
+unfold correct_a in H.
+case_eq (correctness a); auto; intros; rewrite H0 in H; inversion H.
+Qed.
+
+Lemma x2 : forall (s t : term),
+  correct_a (equ s t) = true -> eval s > 0 /\ eval t > 0.
+Proof.
+intros.
+assert (correctness (equ s t) = correct). { apply x1. apply H. }
+unfold correct_a in H.
+rewrite H0 in H.
+unfold correctness in H0.
+case_eq (eval s); case_eq (eval t); intros;
+rewrite H1 in H0; rewrite H2 in H0; inversion H0;
+split; omega.
+Qed.
+
+Lemma eval_succ_lemma : forall (s : term), eval (succ s) > 0 -> eval s > 0.
+Proof.
+intros.
+simpl in H.
+case_eq (eval s); intros.
+- rewrite H0 in H. inversion H.
+- omega.
+Qed.
+
+Lemma x3 : forall (s t : term) (n : nat),
+  eval s > 0 ->
+  eq_term s (substitution_t s n t) = true.
+Proof.
+intros.
+induction s.
+- auto.
+- simpl. apply IHs. apply eval_succ_lemma. apply H.
+- admit. (* easy *)
+- admit. (* easy *)
+- inversion H.
+Admitted.
+
+
+
+
+
+Lemma x4 : forall (s : term) (a : atomic_formula) (n : nat),
+  correct_a a = true ->
+  eq_atom a (substitution_a a n s) = true.
+Proof.
+intros.
+unfold substitution_a.
+case_eq a. intros s1 s2 Ha.
+unfold eq_atom.
+rewrite Ha in H.
+apply x2 in H.
+destruct H.
+assert (eq_term s1 (substitution_t s1 n s) = true).
+{ apply x3. apply H. }
+assert (eq_term s2 (substitution_t s2 n s) = true).
+{ apply x3. apply H0. }
+rewrite H1, H2. auto.
+Qed.
+
+
+
+
+
+
+Lemma substitution_lemma : forall (s t : term) (A : formula) (n : nat),
+  correct_a (equ s t) = true ->
+  pa_omega_theorem (lor (neg (substitution A n s)) (substitution A n t)).
+Proof.
+intros.
+induction A.
+- case_eq (correct_a a); intros.
+  + assert (pa_omega_axiom (substitution (atom a) n s) = true).
+    { simpl.  unfold substitution_a.
+Admitted.
+
+
+
+
+
+(* Lemma 2 *)
+(* *)
+Lemma lemma_2_atomic_aux1 : forall (T s t : term) (n : nat),
+  eval s = eval t -> eval (substitution_t T n s) = eval (substitution_t T n t).
+Proof.
+intros.
+induction T.
+- auto.
+- assert (substitution_t (succ T) n s = succ (substitution_t T n s)). { auto. }
+  assert (substitution_t (succ T) n t = succ (substitution_t T n t)). { auto. }
+  rewrite H0. rewrite H1. case_eq (eval (substitution_t T n s));
+  intros; simpl; rewrite <- IHT; rewrite H2; auto.
+- assert (eval (substitution_t (plus T1 T2) n s) =
+          eval (plus (substitution_t T1 n s) (substitution_t T2 n s))). { auto. }
+  assert (eval (substitution_t (plus T1 T2) n t) =
+          eval (plus (substitution_t T1 n t) (substitution_t T2 n t))). { auto. }
+  rewrite H0. rewrite H1. case_eq (eval (substitution_t T1 n s));
+  intros; simpl; rewrite <- IHT1; rewrite <- IHT2; rewrite H2; auto.
+- assert (eval (substitution_t (times T1 T2) n s) =
+          eval (times (substitution_t T1 n s) (substitution_t T2 n s))). { auto. }
+  assert (eval (substitution_t (times T1 T2) n t) =
+          eval (times (substitution_t T1 n t) (substitution_t T2 n t))). { auto. }
+  rewrite H0. rewrite H1. case_eq (eval (substitution_t T1 n s));
+  intros; simpl; rewrite <- IHT1; rewrite <- IHT2; rewrite H2; auto.
+- simpl. case (beq_nat n0 n). apply H. auto.
+- simpl. case (beq_nat n0 n). apply H. auto.
+Qed.
+
+Lemma lemma_2_atomic_aux2 : forall (a : atomic_formula) (s t : term) (n : nat),
+  eval s = eval t ->
+  correctness (substitution_a a n s) = correct ->
+  correctness (substitution_a a n t) = correct.
+Proof.
+intros.
+case_eq a.
+intros t1 t2 H1.
+rewrite H1 in H0.
+unfold substitution_a in H0.
+unfold substitution_a.
+pose proof (lemma_2_atomic_aux1 t1 s t n H) as Ht1.
+pose proof (lemma_2_atomic_aux1 t2 s t n H) as Ht2.
+case_eq (eval (substitution_t t1 n t));
+case_eq (eval (substitution_t t2 n t)); intros;
+unfold correctness in H0;
+rewrite Ht1 in H0; rewrite Ht2 in H0;
+rewrite H2 in H0; rewrite H3 in H0; inversion H0.
+simpl. rewrite H2. rewrite H3. auto.
+Qed.
+
+Lemma lemma_2_atomic_aux3 : forall (s t : term),
+  correct_a (equ s t) = true -> eval s = eval t.
+Proof.
+intros s t.
+unfold correct_a.
+unfold correctness.
+case_eq (eval s); case_eq (eval t); intros.
+- auto.
+- inversion H1.
+- inversion H1.
+- case_eq (beq_nat (S n0) (S n)).
+  + apply nat_eq_beq.
+  + intros. rewrite H2 in H1. inversion H1.
+Qed.
+
+Theorem lemma_2_atomic : forall (s t : term) (a : atomic_formula) (n : nat),
+  correct_a (equ s t) = true ->
+  pa_omega_axiom (substitution (atom a) n s) = true ->
+  pa_omega_axiom (substitution (atom a) n t) = true.
+Proof.
+simpl. intros.
+assert (eval s = eval t). { apply lemma_2_atomic_aux3. apply H. }
+assert (correctness (substitution_a a n s) = correct).
+{ unfold correct_a in H0.
+  case_eq (correctness (substitution_a a n s)); intros;
+  rewrite H2 in H0; inversion H0; auto. }
+pose proof (lemma_2_atomic_aux2 a s t n H1 H2).
+unfold correct_a.
+rewrite H3. auto.
+Qed.
 
 
 
@@ -2297,6 +2473,41 @@ forall (a : formula) (n : nat) (t : term),
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(* Proofs in PA_omega, except restricted with some n denoting the highest
+    degree of any cut, and some ordinal assignment e0 *)
+(* *)
 Inductive pa_omega_proves : formula -> nat -> e0 -> Prop :=
 | greater_degree : forall (a : formula) (n m : nat) (alpha : e0),
     pa_omega_proves a n alpha ->
@@ -2325,95 +2536,6 @@ Inductive pa_omega_proves : formula -> nat -> e0 -> Prop :=
 
 
 
-Lemma associativity1 : forall (c a b : formula),
-  pa_omega_theorem (lor (lor c a) b) ->
-  pa_omega_theorem (lor c (lor a b)).
-Proof.
-intros.
-apply exchange3 in H.
-apply exchange2 in H.
-apply exchange1 in H.
-apply H.
-Qed.
-
-
-Lemma associativity2 : forall (c a b : formula),
-  pa_omega_theorem (lor c (lor a b)) ->
-  pa_omega_theorem (lor (lor c a) b).
-Proof.
-intros.
-apply exchange1 in H.
-apply exchange2 in H.
-apply exchange3 in H.
-apply H.
-Qed.
-
-Lemma x : forall (s t : term),
-  correct_a (equ s t) = true -> eval s > 0 /\ eval t > 0.
-Proof.
-intros s t.
-unfold correct_a.
-assert (correctness (equ s t) = correct). { admit. }
-rewrite H. intros. clear H0.
-unfold correctness in H.
-case_eq (eval s); case_eq (eval t); intros;
-rewrite H0 in H; rewrite H1 in H; inversion H.
-split; omega.
-Admitted.
-
-Lemma x2 : forall (s t : term) (a : atomic_formula) (n : nat),
-  eval s > 0 ->
-  eq_term s (substitution_t s n t) = true.
-Proof.
-intros.
-induction s.
-- auto.
-- simpl. apply IHs. case_eq (eval s).
-  + intros. inversion H. rewrite H0 in H2. lia. inversion H2. intros.
-
-inversion H. auto.
-- auto.
-- auto.
-
-
-unfold substitution_a. case_eq a. intros t1 t2 Ha.
-rewrite Ha in H. apply x in H. simpl.
-
-
-
-
-Lemma x2 : forall (s : term) (a : atomic_formula) (n : nat),
-  correct_a a = true ->
-  eq_atom a (substitution_a a n s) = true.
-Proof.
-intros.
-unfold substitution_a. case_eq a. intros t1 t2 Ha.
-rewrite Ha in H. apply x in H. simpl.
-
-
-Lemma stuff : forall (s : term) (a : atomic_formula) (n : nat),
-  correct_a a = true ->
-  correct_a (substitution_a a n s) = true.
-Proof.
-intros.
-unfold substitution_a. case_eq a. intros t1 t2 Ha.
-unfold correct_a in H. simpl in H.
-
-
-Lemma substitution_lemma : forall (s t : term) (A : formula) (n : nat),
-  correct_a (equ s t) = true ->
-  pa_omega_theorem (lor (neg (substitution A n s)) (substitution A n t)).
-Proof.
-intros.
-induction A.
-- case_eq (correct_a a); intros.
-  + assert (pa_omega_axiom (substitution (atom a) n s) = true).
-    { simpl.  unfold substitution_a.
-Admitted.
-
-
-
-(*
 
 
 
@@ -2424,58 +2546,6 @@ Admitted.
 
 
 
-
-
-
-
-
-
-Fixpoint exchange (c p : formula) : bool :=
-  match (c, p) with
-  | (lor (lor (lor c b) a) d, lor (lor (lor c' a') b') d') =>
-        (eq_f a a') && (eq_f b b') && (eq_f c c') && (eq_f d d')
-  | (_,_) => false
-end.
-
-Fixpoint contraction (c p : formula) : bool :=
-  match (c, p) with
-  | (lor a d, lor (lor a' a'') d') =>
-        (eq_f a a') && (eq_f a' a'') && (eq_f d d')
-  | (_,_) => false
-end.
-
-Fixpoint weakening (c p : formula) : bool :=
-  match (c, p) with
-  | (lor a d, d') => eq_f d d'
-  | (_,_) => false
-end.
-
-Fixpoint negation (c p : formula) : bool :=
-  match (c, p) with
-  | (lor (neg (neg a)) d, lor a' d') => (eq_f a a') && (eq_f d d')
-  | (_,_) => false
-end.
-
-Fixpoint quantification (c p : formula) : bool :=
-  match (c, p) with
-  | (lor (neg (univ n a)) d, lor (neg a') d') =>
-        (eq_f a a') && (eq_f d d') && (transformable a a' n)
-  | (_,_) => false
-end.
-
-Fixpoint demorgan (c p1 p2 : formula) : bool :=
-  match (c, p1, p2) with
-  | (lor (neg (lor a b)) d, lor (neg a') d', lor (neg b') d'') =>
-      (eq_f a a') && (eq_f b b') && (eq_f d d') && (eq_f d' d'')
-  | (_,_,_) => false
-end.
-
-
-
-
-
-
-*)
 
 
 
@@ -2654,85 +2724,7 @@ Section 4: Here we will prove that if PA proves some A, then so does PA_omega.
 
 
 
-(* Lemma 2 *)
-(* *)
-Lemma lemma_2_atomic_aux1 : forall (T s t : term) (n : nat),
-  eval s = eval t -> eval (substitution_t T n s) = eval (substitution_t T n t).
-Proof.
-intros.
-induction T.
-- auto.
-- assert (substitution_t (succ T) n s = succ (substitution_t T n s)). { auto. }
-  assert (substitution_t (succ T) n t = succ (substitution_t T n t)). { auto. }
-  rewrite H0. rewrite H1. case_eq (eval (substitution_t T n s));
-  intros; simpl; rewrite <- IHT; rewrite H2; auto.
-- assert (eval (substitution_t (plus T1 T2) n s) =
-          eval (plus (substitution_t T1 n s) (substitution_t T2 n s))). { auto. }
-  assert (eval (substitution_t (plus T1 T2) n t) =
-          eval (plus (substitution_t T1 n t) (substitution_t T2 n t))). { auto. }
-  rewrite H0. rewrite H1. case_eq (eval (substitution_t T1 n s));
-  intros; simpl; rewrite <- IHT1; rewrite <- IHT2; rewrite H2; auto.
-- assert (eval (substitution_t (times T1 T2) n s) =
-          eval (times (substitution_t T1 n s) (substitution_t T2 n s))). { auto. }
-  assert (eval (substitution_t (times T1 T2) n t) =
-          eval (times (substitution_t T1 n t) (substitution_t T2 n t))). { auto. }
-  rewrite H0. rewrite H1. case_eq (eval (substitution_t T1 n s));
-  intros; simpl; rewrite <- IHT1; rewrite <- IHT2; rewrite H2; auto.
-- simpl. case (beq_nat n0 n). apply H. auto.
-- simpl. case (beq_nat n0 n). apply H. auto.
-Qed.
 
-Lemma lemma_2_atomic_aux2 : forall (a : atomic_formula) (s t : term) (n : nat),
-  eval s = eval t ->
-  correctness (substitution_a a n s) = correct ->
-  correctness (substitution_a a n t) = correct.
-Proof.
-intros.
-case_eq a.
-intros t1 t2 H1.
-rewrite H1 in H0.
-unfold substitution_a in H0.
-unfold substitution_a.
-pose proof (lemma_2_atomic_aux1 t1 s t n H) as Ht1.
-pose proof (lemma_2_atomic_aux1 t2 s t n H) as Ht2.
-case_eq (eval (substitution_t t1 n t));
-case_eq (eval (substitution_t t2 n t)); intros;
-unfold correctness in H0;
-rewrite Ht1 in H0; rewrite Ht2 in H0;
-rewrite H2 in H0; rewrite H3 in H0; inversion H0.
-simpl. rewrite H2. rewrite H3. auto.
-Qed.
-
-Lemma lemma_2_atomic_aux3 : forall (s t : term),
-  correct_a (equ s t) = true -> eval s = eval t.
-Proof.
-intros s t.
-unfold correct_a.
-unfold correctness.
-case_eq (eval s); case_eq (eval t); intros.
-- auto.
-- inversion H1.
-- inversion H1.
-- case_eq (beq_nat (S n0) (S n)).
-  + apply nat_eq_beq.
-  + intros. rewrite H2 in H1. inversion H1.
-Qed.
-
-Theorem lemma_2_atomic : forall (s t : term) (a : atomic_formula) (n : nat),
-  correct_a (equ s t) = true ->
-  pa_omega_axiom (substitution (atom a) n s) = true ->
-  pa_omega_axiom (substitution (atom a) n t) = true.
-Proof.
-simpl. intros.
-assert (eval s = eval t). { apply lemma_2_atomic_aux3. apply H. }
-assert (correctness (substitution_a a n s) = correct).
-{ unfold correct_a in H0.
-  case_eq (correctness (substitution_a a n s)); intros;
-  rewrite H2 in H0; inversion H0; auto. }
-pose proof (lemma_2_atomic_aux2 a s t n H1 H2).
-unfold correct_a.
-rewrite H3. auto.
-Qed.
 
 
 
