@@ -1908,33 +1908,63 @@ Fixpoint free_list (f : formula) : list nat :=
   | univ n f_1 => remove n (free_list f_1)
   end.
 
-Compute remove 1 [1,2,3].
-Compute free_list_a (equ(var 1)(var 2)).
 
+(* Determine if a formula is closed *)
+(* *)
 Definition closed_t (t : term) : bool :=
-  match (free_list_t t) with
-  | nil => true
-  | n :: l => false
+  match t with
+  | var n => false
+  | _ => true
   end.
 
 Definition closed_a (a : atomic_formula) : bool :=
-  match (free_list_a a) with
-  | nil => true
-  | n :: l => false
+  match a with
+  | equ t_1 t_2 => closed_t t_1 && closed_t t_2
   end.
 
-Definition closed (f : formula) : bool :=
-  match (free_list f) with
-  | nil => true
-  | n :: l => false
-  end.
+Fixpoint closed (A : formula) : bool :=
+match A with
+| atom a => closed_a a
+| neg B => closed B
+| lor B C => closed B && closed C
+| univ n B =>
+  (match (closed B) with
+   | true => true
+   | false =>
+    (match free_list B with
+    | [n] => true
+    | _ => false
+    end)
+  end)
+end.
 
-Inductive sentence : Type :=
-  sent : forall (f : formula), formula -> (free_list f = []) -> sentence.
 
-Check sentence.
-Check sent.
+(* unsure if these lemmas will be necessary/useful *)
+Lemma closed_t_lemma : forall (t : term),
+  free_list_t t = [] <-> closed_t t = true.
+Proof.
+intros.
+split; intros.
+- induction t; auto. inversion H.
+- induction t.
+Admitted.
 
+Lemma closed_a_lemma : forall (a : atomic_formula),
+  free_list_a a = [] <-> closed_a a = true.
+Proof.
+intros.
+Admitted.
+
+Lemma closed_lemma : forall (A : formula),
+  free_list A = [] <-> closed A = true.
+Proof.
+intros.
+Admitted.
+
+
+
+(* Closed term lists *)
+(* *)
 Fixpoint closed_term_list_t (t : term) : list term :=
   match (t, closed_t t)  with
   | (zero, _) => [t]
@@ -1969,57 +1999,55 @@ Fixpoint closed_term_list (a : formula) : list term :=
   end.
 
 
-
-
 (* Defining substitution of a term t for all free occurrences of a
    variable x_n in a formula f *)
 (* *)
-Fixpoint substitution_t (f : term) (n : nat) (t : term) : term :=
-match f with
-| zero => f
-| succ f_1 => succ (substitution_t f_1 n t)
-| plus f_1 f_2 => plus (substitution_t f_1 n t) (substitution_t f_2 n t)
-| times f_1 f_2 => times (substitution_t f_1 n t) (substitution_t f_2 n t)
+Fixpoint substitution_t (T : term) (n : nat) (t : term) : term :=
+match T with
+| zero => T
+| succ T_1 => succ (substitution_t T_1 n t)
+| plus T_1 T_2 => plus (substitution_t T_1 n t) (substitution_t T_2 n t)
+| times T_1 T_2 => times (substitution_t T_1 n t) (substitution_t T_2 n t)
 | var m =>
     (match (beq_nat m n) with
     | true => t
-    | false => f
+    | false => T
     end)
 end.
 
-Definition substitution_a (f : atomic_formula) (n : nat) (t : term)
+Definition substitution_a (a : atomic_formula) (n : nat) (t : term)
   : atomic_formula :=
-match f with
+match a with
   equ t_1 t_2 => equ (substitution_t t_1 n t) (substitution_t t_2 n t)
 end.
 
-Fixpoint substitution (f : formula) (n : nat) (t : term) : formula :=
-match f with
+Fixpoint substitution (A : formula) (n : nat) (t : term) : formula :=
+match A with
 | atom a => atom (substitution_a a n t)
-| neg f_1 => neg (substitution f_1 n t)
-| lor f_1 f_2 => lor (substitution f_1 n t) (substitution f_2 n t)
-| univ m f_1 => 
+| neg B => neg (substitution B n t)
+| lor B C => lor (substitution B n t) (substitution C n t)
+| univ m B => 
     (match (beq_nat m n) with
-    | true => f
-    | false => univ m (substitution f_1 n t)
+    | true => A
+    | false => univ m (substitution B n t)
     end)
 end.
 
-(* Given a list of closed terms and a variable x_n in formula a, check if any
-of those terms can be substituted for x_n to obtain the formula b *)
-Fixpoint transformable_with_list (a b : formula) (n : nat) (l : list term)
-          : bool :=
-  match l with
-  | nil => false
-  | t :: l' => if (eq_f (substitution a n t) b)
-              then true
-              else transformable_with_list a b n l'
-  end.
+(* Given a list of closed terms and a variable x_n in formula A, check if any
+of those terms can be substituted for x_n to obtain the formula B *)
+Fixpoint transformable_with_list (A B : formula) (n : nat) (l : list term)
+  : bool :=
+match l with
+| nil => eq_f A B
+| t :: l' => if (eq_f (substitution A n t) B)
+            then true
+            else transformable_with_list A B n l'
+end.
 
 (* Determine if some formula a can be transformed into formula b by an
 appropriate substitution of some closed term for all instances of x_n in a *)
 Definition transformable (a b : formula) (n : nat) : bool :=
-  transformable_with_list a b n (closed_term_list b).
+transformable_with_list a b n (closed_term_list b).
 
 Compute transformable (atom (equ zero (var 9)))
                       (atom (equ zero (succ zero))) 9.
@@ -2108,6 +2136,7 @@ Section 4: Axioms and Rules of inference in PA and PA_omega
 Definition pa_omega_axiom (a : formula) : bool :=
 match a with
 | atom a' => correct_a a'
+| neg (atom a') => negb (correct_a a')
 | _ => false
 end.
 
@@ -2118,97 +2147,111 @@ end.
     of inference to another theorem *)
 (* *)
 Inductive pa_omega_theorem : formula -> Prop :=
-| axiom : forall (a : formula),
-    pa_omega_axiom a = true ->
-    pa_omega_theorem a
+| axiom : forall (A : formula),
+    pa_omega_axiom A = true ->
+    pa_omega_theorem A
 
 
 
-| exchange1 : forall (a b : formula),
-    pa_omega_theorem (lor a b) ->
-    pa_omega_theorem (lor b a)
+| exchange1 : forall (A B : formula),
+    pa_omega_theorem (lor A B) ->
+    pa_omega_theorem (lor B A)
 
-| exchange2 : forall (c a b : formula),
-    pa_omega_theorem (lor (lor c a) b) ->
-    pa_omega_theorem (lor (lor c b) a)
+| exchange2 : forall (C A B : formula),
+    pa_omega_theorem (lor (lor C A) B) ->
+    pa_omega_theorem (lor (lor C B) A)
 
-| exchange3 : forall (a b d : formula),
-    pa_omega_theorem (lor (lor a b) d) ->
-    pa_omega_theorem (lor (lor b a) d)
+| exchange3 : forall (A B D : formula),
+    pa_omega_theorem (lor (lor A B) D) ->
+    pa_omega_theorem (lor (lor B A) D)
 
-| exchange4 : forall (c a b d : formula),
-    pa_omega_theorem (lor (lor (lor c a) b) d) ->
-    pa_omega_theorem (lor (lor (lor c b) a) d)
+| exchange4 : forall (C A B D : formula),
+    pa_omega_theorem (lor (lor (lor C A) B) D) ->
+    pa_omega_theorem (lor (lor (lor C B) A) D)
 
-| contraction1 : forall (a : formula),
-    pa_omega_theorem (lor a a) ->
-    pa_omega_theorem a
+| contraction1 : forall (A : formula),
+    pa_omega_theorem (lor A A) ->
+    pa_omega_theorem A
 
-| contraction2 : forall (a d : formula),
-    pa_omega_theorem (lor a (lor a d)) ->
-    pa_omega_theorem (lor a d)
+| contraction2 : forall (A D : formula),
+    pa_omega_theorem (lor A (lor A D)) ->
+    pa_omega_theorem (lor A D)
 
 
 
-| weakening : forall (a d : formula),
-    closed a = true ->
-    pa_omega_theorem d ->
-    pa_omega_theorem (lor a d)
+| weakening : forall (A D : formula),
+    closed A = true ->
+    pa_omega_theorem D ->
+    pa_omega_theorem (lor A D)
 
-| demorgan1 : forall (a b : formula),
-    pa_omega_theorem (neg a) ->
-    pa_omega_theorem (neg a) ->
-    pa_omega_theorem (neg (lor a b))
+| demorgan1 : forall (A B : formula),
+    pa_omega_theorem (neg A) ->
+    pa_omega_theorem (neg A) ->
+    pa_omega_theorem (neg (lor A B))
 
-| demorgan2 : forall (a b d : formula),
-    pa_omega_theorem (lor (neg a) d) ->
-    pa_omega_theorem (lor (neg b) d) ->
-    pa_omega_theorem (lor (neg (lor a b)) d)
+| demorgan2 : forall (A B D : formula),
+    pa_omega_theorem (lor (neg A) D) ->
+    pa_omega_theorem (lor (neg B) D) ->
+    pa_omega_theorem (lor (neg (lor A B)) D)
 
-| negation1 : forall (a : formula),
-    pa_omega_theorem a ->
-    pa_omega_theorem (neg (neg a))
+| negation1 : forall (A : formula),
+    pa_omega_theorem A ->
+    pa_omega_theorem (neg (neg A))
 
-| negation2 : forall (a d : formula),
-    pa_omega_theorem (lor a d) ->
-    pa_omega_theorem (lor (neg (neg a)) d)
+| negation2 : forall (A D : formula),
+    pa_omega_theorem (lor A D) ->
+    pa_omega_theorem (lor (neg (neg A)) D)
 
-| quantification1 : forall (a : formula) (n : nat) (t : term),
-    pa_omega_theorem (substitution a n t) ->
-    pa_omega_theorem (neg (univ n a))
+| quantification1 : forall (A : formula) (n : nat) (t : term),
+    closed_t t = true ->
+    pa_omega_theorem (neg (substitution A n t)) ->
+    pa_omega_theorem (neg (univ n A))
 
-| quantification2 : forall (a d : formula) (n : nat) (t : term),
-    pa_omega_theorem (lor (substitution a n t) d) ->
-    pa_omega_theorem (lor (neg (univ n a)) d)
+| quantification2 : forall (A D : formula) (n : nat) (t : term),
+    closed_t t = true ->
+    pa_omega_theorem (lor (neg (substitution A n t)) D) ->
+    pa_omega_theorem (lor (neg (univ n A)) D)
 
-| w_rule_1 : forall (a : formula) (n : nat) (g : nat -> formula),
+
+| w_rule_1 : forall (A : formula) (n : nat) (g : nat -> formula),
     (forall (m : nat),
-      transformable_with_list a (g m) n [represent m] = true) ->
+      transformable_with_list A (g m) n [represent m] = true) ->
     (forall (m : nat), pa_omega_theorem (g m)) ->
-    pa_omega_theorem (univ n a)
+    pa_omega_theorem (univ n A)
 
-| w_rule_2 : forall (a d : formula) (n : nat) (g : nat -> formula),
+| w_rule_2 : forall (A D : formula) (n : nat) (g : nat -> formula),
     (forall (m : nat),
-      transformable_with_list (lor a d) (g m) n [represent m] = true) ->
+      transformable_with_list (lor A D) (g m) n [represent m] = true) ->
     (forall (m : nat), pa_omega_theorem (g m)) ->
-    pa_omega_theorem (lor (univ n a) d)
+    pa_omega_theorem (lor (univ n A) D)
+
+(* 
+currently agnostic on best implementation of omega_rule.
+some variation of the following might also work.
 
 
+| w_rule_1 : forall (A : formula) (n : nat) (g : nat -> formula),
+    (forall (m : nat),
+      pa_omega_theorem (substitution A n (represent m))) ->
+    pa_omega_theorem (univ n A)
 
-| cut1 : forall (c a : formula),
-    pa_omega_theorem (lor c a) ->
-    pa_omega_theorem (neg a) ->
-    pa_omega_theorem c
+*)
 
-| cut2 : forall (a d : formula),
-    pa_omega_theorem a ->
-    pa_omega_theorem (lor (neg a) d) ->
-    pa_omega_theorem d
 
-| cut3 : forall (c a d : formula),
-    pa_omega_theorem (lor c a) ->
-    pa_omega_theorem (lor (neg a) d) ->
-    pa_omega_theorem (lor c d).
+| cut1 : forall (C A : formula),
+    pa_omega_theorem (lor C A) ->
+    pa_omega_theorem (neg A) ->
+    pa_omega_theorem C
+
+| cut2 : forall (A D : formula),
+    pa_omega_theorem A ->
+    pa_omega_theorem (lor (neg A) D) ->
+    pa_omega_theorem D
+
+| cut3 : forall (C A D : formula),
+    pa_omega_theorem (lor C A) ->
+    pa_omega_theorem (lor (neg A) D) ->
+    pa_omega_theorem (lor C D).
 
 
 
@@ -2293,6 +2336,86 @@ apply exchange3 in H.
 apply H.
 Qed.
 
+(* Lemma 2 *)
+(* *)
+Lemma lemma_2_atomic_aux1 : forall (T s t : term) (n : nat),
+  eval s = eval t -> eval (substitution_t T n s) = eval (substitution_t T n t).
+Proof.
+intros.
+induction T.
+- auto.
+- assert (substitution_t (succ T) n s = succ (substitution_t T n s)). { auto. }
+  assert (substitution_t (succ T) n t = succ (substitution_t T n t)). { auto. }
+  rewrite H0. rewrite H1. case_eq (eval (substitution_t T n s));
+  intros; simpl; rewrite <- IHT; rewrite H2; auto.
+- assert (eval (substitution_t (plus T1 T2) n s) =
+          eval (plus (substitution_t T1 n s) (substitution_t T2 n s))). { auto. }
+  assert (eval (substitution_t (plus T1 T2) n t) =
+          eval (plus (substitution_t T1 n t) (substitution_t T2 n t))). { auto. }
+  rewrite H0. rewrite H1. case_eq (eval (substitution_t T1 n s));
+  intros; simpl; rewrite <- IHT1; rewrite <- IHT2; rewrite H2; auto.
+- assert (eval (substitution_t (times T1 T2) n s) =
+          eval (times (substitution_t T1 n s) (substitution_t T2 n s))). { auto. }
+  assert (eval (substitution_t (times T1 T2) n t) =
+          eval (times (substitution_t T1 n t) (substitution_t T2 n t))). { auto. }
+  rewrite H0. rewrite H1. case_eq (eval (substitution_t T1 n s));
+  intros; simpl; rewrite <- IHT1; rewrite <- IHT2; rewrite H2; auto.
+- simpl. case (beq_nat n0 n). apply H. auto.
+Qed.
+
+Lemma lemma_2_atomic_aux2 : forall (a : atomic_formula) (s t : term) (n : nat),
+  eval s = eval t ->
+  correctness (substitution_a a n s) = correct ->
+  correctness (substitution_a a n t) = correct.
+Proof.
+intros.
+case_eq a.
+intros t1 t2 H1.
+rewrite H1 in H0.
+unfold substitution_a in H0.
+unfold substitution_a.
+pose proof (lemma_2_atomic_aux1 t1 s t n H) as Ht1.
+pose proof (lemma_2_atomic_aux1 t2 s t n H) as Ht2.
+case_eq (eval (substitution_t t1 n t));
+case_eq (eval (substitution_t t2 n t)); intros;
+unfold correctness in H0;
+rewrite Ht1 in H0; rewrite Ht2 in H0;
+rewrite H2 in H0; rewrite H3 in H0; inversion H0.
+simpl. rewrite H2. rewrite H3. auto.
+Qed.
+
+Lemma lemma_2_atomic_aux3 : forall (s t : term),
+  correct_a (equ s t) = true -> eval s = eval t.
+Proof.
+intros s t.
+unfold correct_a.
+unfold correctness.
+case_eq (eval s); case_eq (eval t); intros.
+- auto.
+- inversion H1.
+- inversion H1.
+- case_eq (beq_nat (S n0) (S n)).
+  + apply nat_eq_beq.
+  + intros. rewrite H2 in H1. inversion H1.
+Qed.
+
+Theorem lemma_2_atomic : forall (s t : term) (a : atomic_formula) (n : nat),
+  correct_a (equ s t) = true ->
+  pa_omega_axiom (substitution (atom a) n s) = true ->
+  pa_omega_axiom (substitution (atom a) n t) = true.
+Proof.
+simpl. intros.
+assert (eval s = eval t). { apply lemma_2_atomic_aux3. apply H. }
+assert (correctness (substitution_a a n s) = correct).
+{ unfold correct_a in H0.
+  case_eq (correctness (substitution_a a n s)); intros;
+  rewrite H2 in H0; inversion H0; auto. }
+pose proof (lemma_2_atomic_aux2 a s t n H1 H2).
+unfold correct_a.
+rewrite H3. auto.
+Qed.
+
+
 
 (* Show that for any closed terms s and t where s=t is correct, and A(x) has at
    most one free variable (x), then PA_omega proves (lor (neg A(s)) A(t)) *)
@@ -2363,106 +2486,203 @@ assert (eq_term s2 (substitution_t s2 n s) = true).
 { apply x3. apply H0. }
 rewrite H1, H2. auto.
 Qed.
+(*
+Lemma x5 : forall (a b : atomic_formula),
+  eq_atom a b = true -> correct_a a = true -> correct_a b = true.
+Proof.
+intros a b H Ha.
+pose proof (x1 a Ha) as Ha'.
+
+unfold correctness in Ha'.
+case_eq a. intros s1 s2 Ha''.
+rewrite Ha'' in Ha'.
+rewrite Ha'' in Ha.
+apply x2 in Ha. destruct Ha as [Hs1 Hs2].
+case (eval s1) in Ha'.
+destruct Hs1.
+
+- admit.
+- 
+
+apply Hs1 in Ha'.
+
+case_eq b. intros t1 t2 Hb.
+
+
+intros a b H.
+case_eq a. intros s1 s2 Ha.
+case_eq b. intros t1 t2 Hb.
+pose proof (x2 s1 s2).
+
+
+
+pose proof (correctness a = correct).
+
+
+
+unfold correct_a.
+case
+
+Lemma x5 : forall (a b : atomic_formula),
+  eq_atom a b = true -> correctness a = correct -> correctness b = correct.
+Proof.
+unfold correctness.
+intros a b H.
+case_eq a. intros s1 s2 Ha.
+case_eq b. intros t1 t2 Hb.
+pose proof (x2 s1 s2).
+
+
+case_eq (eval s1); case_eq (eval s); case_eq (eval t1); case_eq (eval t2).
+
+
+*)
 
 
 
 
 
-
-Lemma substitution_lemma : forall (s t : term) (A : formula) (n : nat),
+Lemma substitution_lemma' : forall (A : formula) (n : nat) (s t : term),
   correct_a (equ s t) = true ->
   pa_omega_theorem (lor (neg (substitution A n s)) (substitution A n t)).
 Proof.
 intros.
-induction A.
-- case_eq (correct_a a); intros.
-  + assert (pa_omega_axiom (substitution (atom a) n s) = true).
-    { simpl.  unfold substitution_a.
+induction A as [| B IHB | B IHB C IHC | m B IHB].
+- unfold substitution. case_eq (correct_a (substitution_a a n s)); intros.
+  + pose proof (lemma_2_atomic s t a n H). apply H1 in H0.
+    apply axiom in H0. unfold substitution in H0. apply weakening.
+    * admit.
+    * apply H0.
+
+
+
+  + apply exchange1. apply weakening.
+    * admit.
+    * apply axiom. simpl. rewrite H0. auto.
+
+
+
+(* closed (neg (atom (substitution_a a n s))) = true *)
+(* closed (atom (substitution_a a n t)) = true *)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+case_eq (correct_a a); intros.
+  + pose proof (lemma_2_atomic s t a n H).
+
+
+apply axiom. pose proof (lemma_2_atomic s t a n H).
+    assert (pa_omega_axiom (substitution (atom a) n s) = true).
+    { pose proof (x4 s a n H0). simpl. unfold correct_a.
+
+
+    assert (correct_a (substitution (atom a) n s) = true).
+    {
+
+
+
+
+
+
+
+
+
+
+simpl.  unfold substitution_a. admit. } admit.
+  + assert (pa_omega_axiom (neg (atom a)) = true). { admit. }
+    apply exchange1, weakening.
+    * admit.
+    * 
+
+
+    pose (weakening (substitution (atom a) n t)).
+
+
+
+
+- admit.
+
+- admit.
+- 
+
 Admitted.
 
 
 
 
 
-(* Lemma 2 *)
-(* *)
-Lemma lemma_2_atomic_aux1 : forall (T s t : term) (n : nat),
-  eval s = eval t -> eval (substitution_t T n s) = eval (substitution_t T n t).
-Proof.
-intros.
-induction T.
-- auto.
-- assert (substitution_t (succ T) n s = succ (substitution_t T n s)). { auto. }
-  assert (substitution_t (succ T) n t = succ (substitution_t T n t)). { auto. }
-  rewrite H0. rewrite H1. case_eq (eval (substitution_t T n s));
-  intros; simpl; rewrite <- IHT; rewrite H2; auto.
-- assert (eval (substitution_t (plus T1 T2) n s) =
-          eval (plus (substitution_t T1 n s) (substitution_t T2 n s))). { auto. }
-  assert (eval (substitution_t (plus T1 T2) n t) =
-          eval (plus (substitution_t T1 n t) (substitution_t T2 n t))). { auto. }
-  rewrite H0. rewrite H1. case_eq (eval (substitution_t T1 n s));
-  intros; simpl; rewrite <- IHT1; rewrite <- IHT2; rewrite H2; auto.
-- assert (eval (substitution_t (times T1 T2) n s) =
-          eval (times (substitution_t T1 n s) (substitution_t T2 n s))). { auto. }
-  assert (eval (substitution_t (times T1 T2) n t) =
-          eval (times (substitution_t T1 n t) (substitution_t T2 n t))). { auto. }
-  rewrite H0. rewrite H1. case_eq (eval (substitution_t T1 n s));
-  intros; simpl; rewrite <- IHT1; rewrite <- IHT2; rewrite H2; auto.
-- simpl. case (beq_nat n0 n). apply H. auto.
-- simpl. case (beq_nat n0 n). apply H. auto.
-Qed.
-
-Lemma lemma_2_atomic_aux2 : forall (a : atomic_formula) (s t : term) (n : nat),
-  eval s = eval t ->
-  correctness (substitution_a a n s) = correct ->
-  correctness (substitution_a a n t) = correct.
-Proof.
-intros.
-case_eq a.
-intros t1 t2 H1.
-rewrite H1 in H0.
-unfold substitution_a in H0.
-unfold substitution_a.
-pose proof (lemma_2_atomic_aux1 t1 s t n H) as Ht1.
-pose proof (lemma_2_atomic_aux1 t2 s t n H) as Ht2.
-case_eq (eval (substitution_t t1 n t));
-case_eq (eval (substitution_t t2 n t)); intros;
-unfold correctness in H0;
-rewrite Ht1 in H0; rewrite Ht2 in H0;
-rewrite H2 in H0; rewrite H3 in H0; inversion H0.
-simpl. rewrite H2. rewrite H3. auto.
-Qed.
-
-Lemma lemma_2_atomic_aux3 : forall (s t : term),
-  correct_a (equ s t) = true -> eval s = eval t.
-Proof.
-intros s t.
-unfold correct_a.
-unfold correctness.
-case_eq (eval s); case_eq (eval t); intros.
-- auto.
-- inversion H1.
-- inversion H1.
-- case_eq (beq_nat (S n0) (S n)).
-  + apply nat_eq_beq.
-  + intros. rewrite H2 in H1. inversion H1.
-Qed.
-
-Theorem lemma_2_atomic : forall (s t : term) (a : atomic_formula) (n : nat),
+Lemma substitution_lemma : forall (A : formula) (n : nat) (s t : term),
   correct_a (equ s t) = true ->
-  pa_omega_axiom (substitution (atom a) n s) = true ->
-  pa_omega_axiom (substitution (atom a) n t) = true.
+  pa_omega_theorem (lor (neg (substitution A n s)) (substitution A n t)) /\
+  pa_omega_theorem (lor (neg (substitution A n t)) (substitution A n s)).
 Proof.
-simpl. intros.
-assert (eval s = eval t). { apply lemma_2_atomic_aux3. apply H. }
-assert (correctness (substitution_a a n s) = correct).
-{ unfold correct_a in H0.
-  case_eq (correctness (substitution_a a n s)); intros;
-  rewrite H2 in H0; inversion H0; auto. }
-pose proof (lemma_2_atomic_aux2 a s t n H1 H2).
-unfold correct_a.
-rewrite H3. auto.
-Qed.
+intros.
+induction A as [| B IHB | B IHB C IHC | m B IHB].
+- case_eq (correct_a a); intros.
+  + assert (pa_omega_axiom (substitution (atom a) n s) = true).
+    { simpl.  unfold substitution_a. admit. } admit.
+  + admit.
+- destruct IHB. split.
+  + apply exchange1 in H1. apply negation2 in H1. apply H1.
+  + apply exchange1 in H0. apply negation2 in H0. apply H0.
+
+
+
+specialize IHB with t. s.
+
+
+- admit.
+- 
+
+Admitted.
+
+
+
+
+
+
 
 
 
