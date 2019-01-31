@@ -282,7 +282,7 @@ Fixpoint beq_list {X : Type} (l1 l2 : list X) : bool :=
 Fixpoint remove (n : nat) (l : list nat) : list nat :=
   match l with
     nil => nil
-  | m :: l' => (match (beq_nat n m) with
+  | m :: l' => (match (beq_nat m n) with
                   true => remove n l'
                 | false => m :: (remove n l')
                 end)
@@ -291,7 +291,7 @@ Fixpoint remove (n : nat) (l : list nat) : list nat :=
 Fixpoint member (n : nat) (l : list nat) : bool :=
   match l with
     nil => false
-  | m :: l' => (match (beq_nat n m) with
+  | m :: l' => (match (beq_nat m n) with
                   true => true
                 | false => member n l'
                 end)
@@ -308,7 +308,7 @@ Lemma remove_concat : forall (n : nat) (l1 l2 : list nat),
 Proof.
 intros.
 induction l1; auto.
-simpl. case_eq (beq_nat n x); intros.
+simpl. case_eq (beq_nat x n); intros.
 - apply IHl1.
 - rewrite IHl1. auto.
 Qed.
@@ -320,24 +320,6 @@ intros. split.
 - destruct l1; auto. inversion H.
 - destruct l2; auto. destruct l1; inversion H.
 Qed.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -2098,18 +2080,20 @@ Lemma subst_remove_t : forall (T t : term) (n : nat),
   free_list_t (substitution_t T n t) = remove n (free_list_t T).
 Proof.
 intros. induction T; auto.
-- simpl. rewrite IHT1, IHT2.
+- simpl. rewrite IHT1, IHT2. rewrite remove_concat. auto.
+- simpl. rewrite IHT1, IHT2. rewrite remove_concat. auto.
+- simpl. case_eq (beq_nat n0 n); intros; auto.
+  apply closed_free_list_t, H.
+Qed.
 
-
-
-Lemma one_var_free_lemma : forall (a : atomic_formula) (n : nat) (t : term),
+Lemma subst_remove_a : forall (a : atomic_formula) (n : nat) (t : term),
   closed_t t = true ->
   free_list_a (substitution_a a n t) = remove n (free_list_a a).
 Proof.
-intros.
-destruct a as [t1 t2].
-simpl.
-
+intros. destruct a as [t1 t2]. simpl.
+rewrite (subst_remove_t t1 _ _ H). rewrite (subst_remove_t t2 _ _ H).
+rewrite remove_concat. auto.
+Qed.
 
 Lemma one_var_free_lemma : forall (a : atomic_formula) (n : nat) (t : term),
   closed_t t = true ->
@@ -2117,9 +2101,10 @@ Lemma one_var_free_lemma : forall (a : atomic_formula) (n : nat) (t : term),
   closed_a (substitution_a a n t) = true.
 Proof.
 intros.
-apply free_list_closed_a.
-
-Admitted.
+apply free_list_closed_a. 
+rewrite (subst_remove_a _ _ _ H).
+rewrite H0. simpl. rewrite beq_nat_refl. auto.
+Qed.
 
 
 
@@ -2169,10 +2154,55 @@ Compute free_for (var 1) 0 (univ 1 (atom (equ (var 0) (var 0)))).
 
 
 
+(* closed atomic formulas are either correct or incorrect. *)
+(* *)
+Lemma eval_closed : forall (t : term), eval t > 0 -> closed_t t = true.
+Proof.
+intros. induction t; auto.
+- simpl. apply IHt.
+Admitted.
 
+Lemma closed_eval : forall (t : term), closed_t t = true -> eval t > 0.
+Proof.
+intros. induction t; auto.
+- simpl in H. apply IHt in H. simpl. case_eq (eval t); intros.
+  + rewrite H0 in H. inversion H.
+  + omega.
+Admitted.
 
+Lemma correctness_decid_aux1 : forall (s t : term),
+  closed_t s = true ->
+  closed_t t = true ->
+  correctness (equ s t) = correct \/ correctness (equ s t) = incorrect.
+Proof.
+intros s t Hs Ht. apply closed_eval in Hs. apply closed_eval in Ht. simpl.
+destruct (eval s); destruct (eval t).
+- inversion Hs.
+- inversion Hs.
+- inversion Ht.
+- destruct (beq_nat (S n) (S n0)); auto.
+Qed.
 
+Lemma correctness_decid_aux2 : forall (s t : term),
+  closed_t s = true ->
+  closed_t t = true ->
+  correct_a (equ s t) = true \/ incorrect_a (equ s t) = true.
+Proof.
+intros s t Hs Ht.
+destruct (correctness_decid_aux1 _ _ Hs Ht).
+- left. unfold correct_a. rewrite H. auto.
+- right. unfold incorrect_a. rewrite H. auto.
+Qed.
 
+Lemma correctness_decid : forall (a : atomic_formula),
+  closed_a a = true ->
+  correct_a a = true \/ incorrect_a a = true.
+Proof.
+intros. destruct a as [t1 t2].
+apply correctness_decid_aux2; unfold closed_a in H.
+- destruct (closed_t t1); auto.
+- destruct (closed_t t2); auto. destruct (closed_t t1); auto.
+Qed.
 
 
 
@@ -2559,19 +2589,7 @@ rewrite H1 in H0; rewrite H2 in H0; inversion H0;
 split; omega.
 Qed.
 
-Lemma eval_closed : forall (t : term), eval t > 0 -> closed_t t = true.
-Proof.
-intros. induction t; auto.
-- simpl. apply IHt.
-Admitted.
 
-Lemma closed_eval : forall (t : term), closed_t t = true -> eval t > 0.
-Proof.
-intros. induction t; auto.
-- simpl in H. apply IHt in H. simpl. case_eq (eval t); intros.
-  + rewrite H0 in H. inversion H.
-  + omega.
-Admitted.
 
 
 
