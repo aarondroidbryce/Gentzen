@@ -321,6 +321,106 @@ intros. split.
 - destruct l2; auto. destruct l1; inversion H.
 Qed.
 
+Lemma remove_dups_empty : forall (l : list nat), remove_dups l = [] -> l = [].
+Proof. intros. destruct l. auto. inversion H. Qed.
+
+Lemma remove_order : forall (l : list nat) (n m : nat),
+  remove n (remove m l) = remove m (remove n l).
+Proof.
+intros. induction l; auto.
+destruct (beq_nat x n) eqn:Hn; destruct (beq_nat x m) eqn:Hm; simpl;
+rewrite Hn; rewrite Hm; auto; simpl.
+- rewrite Hn. apply IHl.
+- rewrite Hm. apply IHl.
+- rewrite Hn, Hm. rewrite IHl. auto.
+Qed.
+
+Lemma remove_twice : forall (l : list nat) (n : nat),
+  remove n (remove n l) = remove n l.
+Proof.
+intros. induction l; auto.
+destruct (beq_nat x n) eqn:Hn; simpl; rewrite Hn; auto.
+simpl. rewrite Hn. rewrite IHl. auto.
+Qed.
+
+Lemma remove_dups_order : forall (l : list nat) (n : nat),
+  remove n (remove_dups l) = remove_dups (remove n l).
+Proof.
+intros. induction l; auto.
+case_eq (beq_nat x n); intros.
+- assert (remove n (x :: l) = remove n l). { simpl. rewrite H. auto. }
+  rewrite H0. rewrite <- IHl. pose proof (nat_eq_beq x n H).
+  case (member x l); simpl; rewrite H; rewrite H1; rewrite remove_twice; auto.
+- assert (remove n (x :: l) = x :: remove n l). { simpl. rewrite H. auto. }
+  rewrite H0.
+  case (member x l); intros; simpl;
+  rewrite H; rewrite <- IHl; rewrite remove_order; auto.
+Qed.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1895,21 +1995,21 @@ Fixpoint free_list_t (t : term) : list nat :=
 match t with
 | zero => nil
 | succ t1 => free_list_t t1
-| plus t1 t2 => concat (free_list_t t1) (free_list_t t2)
-| times t1 t2 => concat (free_list_t t1) (free_list_t t2)
+| plus t1 t2 => remove_dups (concat (free_list_t t1) (free_list_t t2))
+| times t1 t2 => remove_dups (concat (free_list_t t1) (free_list_t t2))
 | var n => [n]
 end.
 
 Definition free_list_a (a : atomic_formula) : list nat :=
 match a with
-| equ t1 t2 => concat (free_list_t t1) (free_list_t t2)
+| equ t1 t2 => remove_dups (concat (free_list_t t1) (free_list_t t2))
 end.
 
 Fixpoint free_list (A : formula) : list nat :=
 match A with
 | atom a => free_list_a a
 | neg B => free_list B
-| lor B C => concat (free_list B) (free_list C)
+| lor B C => remove_dups (concat (free_list B) (free_list C))
 | univ n B => remove n (free_list B)
 end.
 
@@ -1950,16 +2050,17 @@ end.
 
 
 (* unsure if these lemmas will be necessary/useful *)
-
-
+(* *)
 Lemma free_list_closed_t : forall (t : term),
   free_list_t t = [] -> closed_t t = true.
 Proof.
 intros.
 induction t; auto.
-- simpl. simpl in H. destruct (concat_empty _ _ _ H).
+- simpl. simpl in H. apply remove_dups_empty in H.
+  destruct (concat_empty _ _ _ H).
   rewrite (IHt1 H0). rewrite (IHt2 H1). auto.
-- simpl. simpl in H. destruct (concat_empty _ _ _ H).
+- simpl. simpl in H. apply remove_dups_empty in H.
+  destruct (concat_empty _ _ _ H).
   rewrite (IHt1 H0). rewrite (IHt2 H1). auto.
 - inversion H.
 Qed.
@@ -2004,19 +2105,20 @@ Admitted.
 
 (* Closed term lists *)
 (* *)
+(*
 Fixpoint closed_term_list_t (t : term) : list term :=
   match (t, closed_t t)  with
   | (zero, _) => [t]
   | (succ t', true) => t :: closed_term_list_t t'
   | (succ t', false) => closed_term_list_t t'
-  | (plus t1 t2, true) => t :: (concat (closed_term_list_t t1)
-                                      (closed_term_list_t t2))
-  | (plus t1 t2, false) => (concat (closed_term_list_t t1)
-                                  (closed_term_list_t t2))
-  | (times t1 t2, true) => t :: (concat (closed_term_list_t t1)
-                                      (closed_term_list_t t2))
-  | (times t1 t2, false) => (concat (closed_term_list_t t1)
-                                  (closed_term_list_t t2))
+  | (plus t1 t2, true) => t :: remove_dups (concat (closed_term_list_t t1)
+                                                   (closed_term_list_t t2))
+  | (plus t1 t2, false) => remove_dups (concat (closed_term_list_t t1)
+                                               (closed_term_list_t t2))
+  | (times t1 t2, true) => t :: remove_dups (concat (closed_term_list_t t1)
+                                                    (closed_term_list_t t2))
+  | (times t1 t2, false) => remove_dups (concat (closed_term_list_t t1)
+                                                (closed_term_list_t t2))
   | (_, _) => nil
   end.
 
@@ -2026,16 +2128,19 @@ Compute closed_term_list_t (plus (times zero (succ (succ zero))) zero).
 
 Definition closed_term_list_a (a : atomic_formula) : list term :=
   match a with
-  | equ t1 t2 => concat (closed_term_list_t t1) (closed_term_list_t t2)
+  | equ t1 t2 => remove_dups (concat (closed_term_list_t t1)
+                                     (closed_term_list_t t2))
   end.
 
 Fixpoint closed_term_list (a : formula) : list term :=
   match a with
   | atom a' => closed_term_list_a a'
   | neg a' => closed_term_list a'
-  | lor a1 a2 => concat (closed_term_list a1) (closed_term_list a2)
+  | lor a1 a2 => remove_dups (concat (closed_term_list a1)
+                                     (closed_term_list a2))
   | univ n a' => closed_term_list a'
   end.
+*)
 
 
 (* Defining substitution of a term t for all free occurrences of a
@@ -2071,6 +2176,8 @@ match A with
     | false => univ m (substitution B n t)
     end)
 end.
+
+
 
 
 
@@ -2612,34 +2719,6 @@ apply eval_closed in H0. rewrite H0.
 apply eval_closed in H1. rewrite H1. auto.
 Qed.
 
-(*
-Lemma correctness_decid : forall (s t : term),
-  correct_a (equ s t) = true -> 
-Proof.
-intros. case_eq a. intros t1 t2 Ha.
-
-
-Lemma correctness_decid : forall (a : atomic_formula),
-  closed_a a = true ->
-  correct_a a = true \/ incorrect_a a = true.
-Proof.
-intros. case_eq a. intros t1 t2 Ha. rewrite Ha in H. simpl in H. clear Ha.
-case_eq (eval t1); case_eq (eval t2); intros.
-- unfold closed_t in H.
-
-
-
-unfold correct_a.
-
-
-
-assert (eval t1 > 0) as Ht1.
-
-
-*)
-
-
-
 Lemma eval_succ_lemma : forall (s : term), eval (succ s) > 0 -> eval s > 0.
 Proof.
 intros.
@@ -2802,14 +2881,26 @@ case_eq (closed_t (substitution_t t2 n s)); intros Ht2; auto.
 - rewrite Ht1 in H0. rewrite Ht2 in H0. inversion H0.
 Qed.
 
+Lemma incorrect_neg_axiom : forall (a : atomic_formula),
+  incorrect_a a = true -> pa_omega_axiom (neg (atom a)) = true.
+Proof.
+intros. destruct a as [s t].
+simpl. unfold correct_a. unfold incorrect_a in H.
+case_eq (correctness (equ s t)); intros; rewrite H0 in H; auto.
+Qed.
+
 Lemma substitution_lemma_atomic :
   forall (a : atomic_formula) (n : nat) (s t : term),
   correct_a (equ s t) = true ->
+  free_list_a a = [n] ->
   pa_omega_theorem (lor (neg (atom (substitution_a a n s)))
                         (atom (substitution_a a n t))).
 Proof.
-intros.
-unfold substitution. case_eq (correct_a (substitution_a a n s)); intros.
+intros a n s t H Ha.
+destruct (correctness_decid (substitution_a a n s)).
+- apply one_var_free_lemma.
+  + simpl in H. apply eval_closed. destruct (correct_eval s t H). apply H0.
+  + apply Ha.
 - pose proof (correct_closed _ H0) as HC.
   pose proof (lemma_2_atomic s t a n H). apply H1 in H0.
   apply axiom in H0. unfold substitution in H0. apply weakening.
@@ -2818,11 +2909,15 @@ unfold substitution. case_eq (correct_a (substitution_a a n s)); intros.
 - apply exchange1. apply weakening.
   + simpl. apply (incorrect_subst_closed a n s t).
     * apply eval_closed. destruct (correct_eval s t H). apply H2.
-    * admit. (* must deal with undefined case.
-    this will require the assumption that a[s/x_n] has only 1 free variable,
-    and proving that closed atomic formulas are either correct or incorrect. *)
-  + apply axiom. simpl. rewrite H0. auto.
-Admitted.
+    * apply H0.
+  + apply axiom. apply incorrect_neg_axiom, H0.
+Qed.
+
+
+
+
+
+
 
 
 
@@ -2854,6 +2949,42 @@ Lemma equ_refl : forall (s t : term),
   correct_a (equ s t) = true -> correct_a (equ t s) = true.
 Proof.
 Admitted.
+
+Compute concat [5] [5].
+
+Lemma substitution_lemma : forall (A : formula) (n : nat) (s t : term),
+  correct_a (equ s t) = true ->
+  free_list A = [n] ->
+  pa_omega_theorem (lor (neg (substitution A n s)) (substitution A n t)) /\
+  pa_omega_theorem (lor (neg (substitution A n t)) (substitution A n s)).
+Proof.
+intros A n s t H Ha.
+induction A as [| B IHB | B IHB C IHC | m B IHB].
+- split.
+  + apply substitution_lemma_atomic. apply H. apply Ha.
+  + apply substitution_lemma_atomic. apply equ_refl, H. apply Ha.
+- simpl in Ha. destruct (IHB Ha). clear IHB. split.
+  + apply exchange1 in H1. apply negation2 in H1. apply H1.
+  + apply exchange1 in H0. apply negation2 in H0. apply H0.
+- split.
+  + 
+
+
+ simpl in Ha. destruct IHB as [IHB1 IHB2]. destruct IHC as [IHC1 IHC2]. split.
+  + simpl. apply demorgan2.
+    * apply associativity1. apply exchange1. apply weakening.
+      { admit. } (* need to show that subformulas of theorems are closed *)
+      { apply IHB1. }
+    * apply associativity1. apply exchange2. apply exchange1. apply weakening.
+      { admit. } (* need to show that subformulas of theorems are closed *)
+      { apply IHC1. }
+  + admit. (* easy *)
+- destruct IHB as [IHB1 IHB2]. split.
+  + apply exchange1. simpl. case_eq (beq_nat m n); intros.
+    * admit.
+    * apply exchange1. admit.
+Admitted.
+
 
 
 Lemma substitution_lemma : forall (A : formula) (n : nat) (s t : term),
