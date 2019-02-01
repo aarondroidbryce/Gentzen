@@ -393,34 +393,34 @@ simpl. rewrite remove_dups_order. rewrite remove_twice.
 rewrite <- remove_dups_order. rewrite IHl. auto.
 Qed.
 
+Lemma member_remove_dups : forall (l : list nat) (n : nat),
+  member n (remove_dups l) = false -> member n l = false.
+Admitted.
 
+Lemma member_concat : forall (l1 l2 : list nat) (n : nat),
+  member n (concat l1 l2) = false ->
+  member n l1 = false /\ member n l2 = false.
+Admitted.
 
+Lemma member_remove_dups_concat : forall (l1 l2 : list nat) (n : nat),
+  member n (remove_dups (concat l1 l2)) = false ->
+  member n l1 = false /\ member n l2 = false.
+Proof.
+intros.
+apply member_concat.
+apply member_remove_dups.
+apply H.
+Qed.
 
+Lemma member_remove : forall (l : list nat) (m n : nat),
+  beq_nat m n = false ->
+  member n (remove m l) = false ->
+  member n l = false.
+Admitted.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Lemma and_bool_symm : forall (b1 b2 : bool),
+  b1 && b2 = true -> b2 && b1 = true.
+Proof. intros. case_eq b1; case_eq b2; intros; rewrite H0,H1 in H; auto. Qed.
 
 
 
@@ -2986,34 +2986,7 @@ destruct (free_list_univ_empty _ _ H).
 - left. apply free_list_closed. apply H0.
 Qed.
 
-Lemma and_bool_symm : forall (b1 b2 : bool),
-  b1 && b2 = true -> b2 && b1 = true.
-Proof. intros. case_eq b1; case_eq b2; intros; rewrite H0,H1 in H; auto. Qed.
 
-Lemma member_remove_dups : forall (l : list nat) (n : nat),
-  member n (remove_dups l) = false -> member n l = false.
-Admitted.
-
-Lemma member_concat : forall (l1 l2 : list nat) (n : nat),
-  member n (concat l1 l2) = false ->
-  member n l1 = false /\ member n l2 = false.
-Admitted.
-
-Lemma member_remove_dups_concat : forall (l1 l2 : list nat) (n : nat),
-  member n (remove_dups (concat l1 l2)) = false ->
-  member n l1 = false /\ member n l2 = false.
-Proof.
-intros.
-apply member_concat.
-apply member_remove_dups.
-apply H.
-Qed.
-
-Lemma stuff : forall (l : list nat) (m n : nat),
-  beq_nat m n = false ->
-  member n (remove m l) = false ->
-  member n l = false.
-Admitted.
 
 Lemma closed_subst_eq_aux_t : forall (T : term) (n : nat) (t : term),
   member n (free_list_t T) = false -> substitution_t T n t = T.
@@ -3047,9 +3020,6 @@ rewrite (closed_subst_eq_aux_t t1 n t), (closed_subst_eq_aux_t t2 n t).
 - apply H0.
 Qed.
 
-
-
-
 Lemma closed_subst_eq_aux : forall (A : formula) (n : nat) (t : term),
   member n (free_list A) = false -> substitution A n t = A.
 Proof.
@@ -3067,6 +3037,14 @@ induction A.
   + auto.
   + apply (stuff _ _ _ H0 H).
 Qed.
+
+Lemma closed_subst_eq_t : forall (T : term) (n : nat) (t : term),
+  closed_t T = true -> substitution_t T n t = T.
+Admitted.
+
+Lemma closed_subst_eq_a : forall (a : atomic_formula) (n : nat) (t : term),
+  closed_a a = true -> substitution_a a n t = a.
+Admitted.
 
 Lemma closed_subst_eq : forall (A : formula) (n : nat) (t : term),
   closed A = true -> substitution A n t = A.
