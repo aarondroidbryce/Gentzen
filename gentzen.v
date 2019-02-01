@@ -2448,6 +2448,55 @@ Qed.
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 (*
 ###############################################################################
 Section 4: Axioms and Rules of inference in PA and PA_omega
@@ -2823,109 +2872,6 @@ destruct (incorrect_eval _ _ H).
 apply eval_closed in H0. rewrite H0.
 apply eval_closed in H1. rewrite H1. auto.
 Qed.
-
-Lemma eval_succ_lemma : forall (s : term), eval (succ s) > 0 -> eval s > 0.
-Proof.
-intros.
-simpl in H.
-case_eq (eval s); intros.
-- rewrite H0 in H. inversion H.
-- omega.
-Qed.
-
-Lemma closed_term_subst : forall (s t : term) (n : nat),
-  eval s > 0 ->
-  eq_term s (substitution_t s n t) = true.
-Proof.
-intros.
-induction s.
-- auto.
-- simpl. apply IHs. apply eval_succ_lemma. apply H.
-- admit. (* easy *)
-- admit. (* easy *)
-- inversion H.
-Admitted.
-
-
-
-
-
-Lemma correct_eq_atom : forall (s : term) (a : atomic_formula) (n : nat),
-  correct_a a = true ->
-  eq_atom a (substitution_a a n s) = true.
-Proof.
-intros.
-unfold substitution_a.
-case_eq a. intros s1 s2 Ha.
-unfold eq_atom.
-rewrite Ha in H.
-apply correct_eval in H.
-destruct H.
-assert (eq_term s1 (substitution_t s1 n s) = true).
-{ apply closed_term_subst. apply H. }
-assert (eq_term s2 (substitution_t s2 n s) = true).
-{ apply closed_term_subst. apply H0. }
-rewrite H1, H2. auto.
-Qed.
-(*
-Lemma x5 : forall (a b : atomic_formula),
-  eq_atom a b = true -> correct_a a = true -> correct_a b = true.
-Proof.
-intros a b H Ha.
-pose proof (x1 a Ha) as Ha'.
-
-unfold correctness in Ha'.
-case_eq a. intros s1 s2 Ha''.
-rewrite Ha'' in Ha'.
-rewrite Ha'' in Ha.
-apply x2 in Ha. destruct Ha as [Hs1 Hs2].
-case (eval s1) in Ha'.
-destruct Hs1.
-
-- admit.
-- 
-
-apply Hs1 in Ha'.
-
-case_eq b. intros t1 t2 Hb.
-
-
-intros a b H.
-case_eq a. intros s1 s2 Ha.
-case_eq b. intros t1 t2 Hb.
-pose proof (x2 s1 s2).
-
-
-
-pose proof (correctness a = correct).
-
-
-
-unfold correct_a.
-case
-
-Lemma x5 : forall (a b : atomic_formula),
-  eq_atom a b = true -> correctness a = correct -> correctness b = correct.
-Proof.
-unfold correctness.
-intros a b H.
-case_eq a. intros s1 s2 Ha.
-case_eq b. intros t1 t2 Hb.
-pose proof (x2 s1 s2).
-
-
-case_eq (eval s1); case_eq (eval s); case_eq (eval t1); case_eq (eval t2).
-
-
-*)
-
-
-Lemma subst_closed_t' : forall (n : nat) (s t : term),
-  closed_t t = true ->
-  closed_t (substitution_t t n s) = true.
-Proof.
-intros. induction t; auto.
-Admitted.
 
 Lemma subst_closed_t : forall (n : nat) (T s t : term),
   closed_t t = true ->
@@ -3496,7 +3442,7 @@ Definition peano_axiom_9 (f : formula) (x : nat) : formula :=
 
 (*
 ###############################################################################
-Section 4: Here we will prove that if PA proves some A, then so does PA_omega.
+Section 5: Here we will prove that if PA proves some A, then so does PA_omega.
 ###############################################################################
 *)
 
@@ -3565,7 +3511,7 @@ Section 4: Here we will prove that if PA proves some A, then so does PA_omega.
 
 (*
 ###############################################################################
-Section 5: Proof trees and ordinal assignments for PA_omega proofs
+Section 6: Proof trees and ordinal assignments for PA_omega proofs
 ###############################################################################
 *)
 
@@ -3814,7 +3760,7 @@ Qed.
 
 (*
 ###############################################################################
-Section 6: Cut-elimination in PA_omega
+Section 7: Cut-elimination in PA_omega
 ###############################################################################
 *)
 
