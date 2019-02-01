@@ -2068,35 +2068,31 @@ Qed.
 Lemma free_list_closed_a : forall (a : atomic_formula),
   free_list_a a = [] -> closed_a a = true.
 Proof.
-intros.
-Admitted.
-
-Lemma free_list_closed : forall (A : formula),
-  free_list A = [] -> closed A = true.
-Proof.
-intros.
-Admitted.
-
+intros. destruct a as [t1 t2]. simpl. simpl in H.
+apply remove_dups_empty in H. destruct (concat_empty _ _ _ H).
+rewrite (free_list_closed_t _ H0). rewrite (free_list_closed_t _ H1). auto.
+Qed.
 
 Lemma closed_free_list_t : forall (t : term),
   closed_t t = true -> free_list_t t = [].
 Proof.
 intros.
 induction t; auto.
+- simpl in H. simpl.
+  case_eq (closed_t t1); case_eq (closed_t t2); intros Ht2 Ht1.
+  + rewrite (IHt1 Ht1). rewrite (IHt2 Ht2). auto.
+  + rewrite Ht1 in H. rewrite Ht2 in H. inversion H.
+  + rewrite Ht1 in H. rewrite Ht2 in H. inversion H.
+  + rewrite Ht1 in H. rewrite Ht2 in H. inversion H.
+- simpl in H. simpl.
+  case_eq (closed_t t1); case_eq (closed_t t2); intros Ht2 Ht1.
+  + rewrite (IHt1 Ht1). rewrite (IHt2 Ht2). auto.
+  + rewrite Ht1 in H. rewrite Ht2 in H. inversion H.
+  + rewrite Ht1 in H. rewrite Ht2 in H. inversion H.
+  + rewrite Ht1 in H. rewrite Ht2 in H. inversion H.
 - inversion H.
-Admitted.
+Qed.
 
-Lemma closed_free_list_a : forall (a : atomic_formula),
-  closed_a a = true -> free_list_a a = [].
-Proof.
-intros.
-Admitted.
-
-Lemma closed_free_list : forall (A : formula),
-  closed A = true -> free_list A = [].
-Proof.
-intros.
-Admitted.
 
 
 
@@ -2187,8 +2183,10 @@ Lemma subst_remove_t : forall (T t : term) (n : nat),
   free_list_t (substitution_t T n t) = remove n (free_list_t T).
 Proof.
 intros. induction T; auto.
-- simpl. rewrite IHT1, IHT2. rewrite remove_concat. auto.
-- simpl. rewrite IHT1, IHT2. rewrite remove_concat. auto.
+- simpl. rewrite IHT1, IHT2.
+  rewrite remove_dups_order. rewrite remove_concat. auto.
+- simpl. rewrite IHT1, IHT2.
+  rewrite remove_dups_order. rewrite remove_concat. auto.
 - simpl. case_eq (beq_nat n0 n); intros; auto.
   apply closed_free_list_t, H.
 Qed.
@@ -2199,7 +2197,7 @@ Lemma subst_remove_a : forall (a : atomic_formula) (n : nat) (t : term),
 Proof.
 intros. destruct a as [t1 t2]. simpl.
 rewrite (subst_remove_t t1 _ _ H). rewrite (subst_remove_t t2 _ _ H).
-rewrite remove_concat. auto.
+rewrite remove_dups_order. rewrite remove_concat. auto.
 Qed.
 
 Lemma one_var_free_lemma : forall (a : atomic_formula) (n : nat) (t : term),
@@ -2217,7 +2215,7 @@ Qed.
 
 
 
-
+(*
 (* Given a list of closed terms and a variable x_n in formula A, check if any
 of those terms can be substituted for x_n to obtain the formula B *)
 Fixpoint transformable_with_list (A B : formula) (n : nat) (l : list term)
@@ -2256,26 +2254,79 @@ end.
 
 Compute free_for zero 0 (univ 1 (atom (equ (var 0) (var 0)))).
 Compute free_for (var 1) 0 (univ 1 (atom (equ (var 0) (var 0)))).
-
+*)
 
 
 
 
 (* closed atomic formulas are either correct or incorrect. *)
 (* *)
+Lemma eval_succ_lemma : forall (s : term), eval (succ s) > 0 -> eval s > 0.
+Proof.
+intros.
+simpl in H.
+case_eq (eval s); intros.
+- rewrite H0 in H. inversion H.
+- omega.
+Qed.
+
+Lemma eval_plus_lemma : forall (t1 t2 : term),
+  eval (plus t1 t2) > 0 -> eval t1 > 0 /\ eval t2 > 0.
+Proof.
+intros.
+simpl in H.
+case_eq (eval t1); case_eq (eval t2); intros;
+rewrite H0 in H; rewrite H1 in H; inversion H; split; omega.
+Qed.
+
+Lemma eval_times_lemma : forall (t1 t2 : term),
+  eval (times t1 t2) > 0 -> eval t1 > 0 /\ eval t2 > 0.
+Proof.
+intros.
+simpl in H.
+case_eq (eval t1); case_eq (eval t2); intros;
+rewrite H0 in H; rewrite H1 in H; inversion H; split; omega.
+Qed.
+
 Lemma eval_closed : forall (t : term), eval t > 0 -> closed_t t = true.
 Proof.
 intros. induction t; auto.
-- simpl. apply IHt.
-Admitted.
+- simpl. apply IHt. apply eval_succ_lemma. apply H.
+- simpl. destruct (eval_plus_lemma _ _ H).
+  rewrite (IHt1 H0). rewrite (IHt2 H1). auto.
+- simpl. destruct (eval_times_lemma _ _ H).
+  rewrite (IHt1 H0). rewrite (IHt2 H1). auto.
+- inversion H.
+Qed.
 
 Lemma closed_eval : forall (t : term), closed_t t = true -> eval t > 0.
 Proof.
 intros. induction t; auto.
-- simpl in H. apply IHt in H. simpl. case_eq (eval t); intros.
-  + rewrite H0 in H. inversion H.
+- simpl in H. apply IHt in H. simpl. destruct (eval t).
+  + inversion H.
   + omega.
-Admitted.
+- simpl in H. case_eq (closed_t t1); case_eq (closed_t t2); intros Ht2 Ht1.
+  + simpl. apply IHt1 in Ht1. apply IHt2 in Ht2.
+    destruct (eval t1); destruct (eval t2).
+    * inversion Ht1.
+    * inversion Ht1.
+    * inversion Ht2.
+    * omega.
+  + rewrite Ht1 in H. rewrite Ht2 in H. inversion H.
+  + rewrite Ht1 in H. rewrite Ht2 in H. inversion H.
+  + rewrite Ht1 in H. rewrite Ht2 in H. inversion H.
+- simpl in H. case_eq (closed_t t1); case_eq (closed_t t2); intros Ht2 Ht1.
+  + simpl. apply IHt1 in Ht1. apply IHt2 in Ht2.
+    destruct (eval t1); destruct (eval t2).
+    * inversion Ht1.
+    * inversion Ht1.
+    * inversion Ht2.
+    * lia.
+  + rewrite Ht1 in H. rewrite Ht2 in H. inversion H.
+  + rewrite Ht1 in H. rewrite Ht2 in H. inversion H.
+  + rewrite Ht1 in H. rewrite Ht2 in H. inversion H.
+- inversion H.
+Qed.
 
 Lemma correctness_decid_aux1 : forall (s t : term),
   closed_t s = true ->
@@ -2310,6 +2361,48 @@ apply correctness_decid_aux2; unfold closed_a in H.
 - destruct (closed_t t1); auto.
 - destruct (closed_t t2); auto. destruct (closed_t t1); auto.
 Qed.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2443,6 +2536,19 @@ Inductive pa_omega_theorem : formula -> Prop :=
     pa_omega_theorem (lor (neg (univ n A)) D)
 
 
+| w_rule_1' : forall (A : formula) (n : nat)
+  (g : forall (m : nat), pa_omega_theorem (substitution A n (represent m))),
+    pa_omega_theorem (univ n A)
+
+
+
+
+
+
+(*
+currently agnostic on best implementation of omega_rule.
+some variation of the following might also work:
+
 | w_rule_1 : forall (A : formula) (n : nat) (g : nat -> formula),
     (forall (m : nat),
       transformable_with_list A (g m) n [represent m] = true) ->
@@ -2455,9 +2561,8 @@ Inductive pa_omega_theorem : formula -> Prop :=
     (forall (m : nat), pa_omega_theorem (g m)) ->
     pa_omega_theorem (lor (univ n A) D)
 
-(* 
-currently agnostic on best implementation of omega_rule.
-some variation of the following might also work:
+
+
 
 
 | w_rule_1 : forall (A : formula) (n : nat) (g : nat -> formula),
