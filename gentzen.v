@@ -2601,41 +2601,16 @@ Inductive pa_omega_theorem : formula -> Prop :=
     pa_omega_theorem (lor (neg (univ n A)) D)
 
 
-| w_rule_1' : forall (A : formula) (n : nat)
-  (g : forall (m : nat), pa_omega_theorem (substitution A n (represent m))),
-    pa_omega_theorem (univ n A)
+| w_rule1 : forall (A : formula) (n : nat)
+  (g : forall (m : nat),
+      pa_omega_theorem (substitution A n (represent m))),
+  pa_omega_theorem (univ n A)
 
+| w_rule2 : forall (A D : formula) (n : nat)
+  (g : forall (m : nat),
+    pa_omega_theorem (lor (substitution A n (represent m)) D)),
+  pa_omega_theorem (lor (univ n A) D)
 
-
-
-
-
-(*
-currently agnostic on best implementation of omega_rule.
-some variation of the following might also work:
-
-| w_rule_1 : forall (A : formula) (n : nat) (g : nat -> formula),
-    (forall (m : nat),
-      transformable_with_list A (g m) n [represent m] = true) ->
-    (forall (m : nat), pa_omega_theorem (g m)) ->
-    pa_omega_theorem (univ n A)
-
-| w_rule_2 : forall (A D : formula) (n : nat) (g : nat -> formula),
-    (forall (m : nat),
-      transformable_with_list (lor A D) (g m) n [represent m] = true) ->
-    (forall (m : nat), pa_omega_theorem (g m)) ->
-    pa_omega_theorem (lor (univ n A) D)
-
-
-
-
-
-| w_rule_1 : forall (A : formula) (n : nat) (g : nat -> formula),
-    (forall (m : nat),
-      pa_omega_theorem (substitution A n (represent m))) ->
-    pa_omega_theorem (univ n A)
-
-*)
 
 
 | cut1 : forall (C A : formula),
@@ -2655,13 +2630,12 @@ some variation of the following might also work:
 
 
 
+
+
 (* Extended example of using the w_rule to show "forall x (x = x)"
    is a theorem of PA_omega *)
 (* *)
-Definition g_exmp (n : nat) : formula :=
-  atom (equ (represent n) (represent n)).
-
-Lemma w_rule_exmp_aux1 : forall (t : term),
+Lemma equ_refl_aux1 : forall (t : term),
   eval t > 0 -> correctness (equ t t) = correct.
 Proof.
 intros.
@@ -2670,15 +2644,15 @@ case_eq (eval t); intros.
 - unfold correctness. rewrite H0. rewrite beq_nat_refl. auto.
 Qed.
 
-Lemma w_rule_exmp_aux2 : forall (t : term),
+Lemma equ_refl_aux2 : forall (t : term),
   eval t > 0 -> correct_a (equ t t) = true.
 Proof.
 intros.
-pose proof (w_rule_exmp_aux1 t H).
+pose proof (equ_refl_aux1 t H).
 unfold correct_a. rewrite H0. auto.
 Qed.
 
-Lemma w_rule_exmp_aux3 : forall (n : nat),
+Lemma eval_represent : forall (n : nat),
   eval (represent n) > 0.
 Proof.
 intros.
@@ -2689,25 +2663,23 @@ induction n.
   + omega.
 Qed.
 
-(*
+Lemma equ_refl : forall (m : nat),
+  pa_omega_theorem (atom (equ (represent m) (represent m))).
+Proof.
+intros.
+apply axiom.
+simpl.
+apply equ_refl_aux2.
+apply eval_represent.
+Qed.
+
 Lemma w_rule_exmp : forall (n : nat),
   pa_omega_theorem (univ n (atom (equ (var n) (var n)))).
 Proof.
 intros.
-apply (w_rule_1 (atom (equ (var n) (var n))) n g_exmp); intros.
-- simpl. auto. assert (beq_nat n n = true). { apply beq_nat_refl. }
-  rewrite H. 
-  assert (eq_term (represent m) (represent m) = true).
-  { apply (eq_term_refl (represent m)). }
-  rewrite H0. auto.
-- unfold g_exmp. apply axiom. simpl.
-  apply (w_rule_exmp_aux2 (represent m) (w_rule_exmp_aux3 m)).
+apply w_rule1. simpl. rewrite beq_nat_refl.
+apply equ_refl.
 Qed.
-*)
-
-
-
-
 
 
 
@@ -3035,7 +3007,7 @@ induction A.
 - simpl. case_eq (beq_nat n0 n); intros; auto.
   simpl in H. rewrite IHA. 
   + auto.
-  + apply (stuff _ _ _ H0 H).
+  + apply (member_remove _ _ _ H0 H).
 Qed.
 
 Lemma closed_subst_eq_t : forall (T : term) (n : nat) (t : term),
@@ -3055,13 +3027,26 @@ apply closed_free_list in H.
 rewrite H. auto.
 Qed.
 
-
 Lemma closed_sub_theorem : forall (A : formula) (n : nat) (t : term),
   closed A = true ->
   pa_omega_theorem A ->
   pa_omega_theorem (substitution A n t).
 Proof. intros. rewrite closed_subst_eq. apply H0. apply H. Qed.
 
+
+Lemma stuff : forall (B : formula) (n m : nat),
+  closed B = true ->
+  pa_omega_theorem (lor (neg B) B) ->
+  pa_omega_theorem (lor (substitution B n (represent m))
+                        (neg (univ n B))).
+Proof.
+intros.
+assert (lor (neg B) B = lor (neg (substitution B n (represent m))) B).
+{ rewrite closed_subst_eq. auto. apply H. }
+rewrite H1 in H0. clear H1.
+apply quantification2 in H0.
+- apply exchange1.
+Admitted.
 
 
 
@@ -3080,13 +3065,9 @@ induction A as [| B IHB | B IHB C IHC | m B IHB].
     * apply HB.
     * apply IHC. apply HC.
 - destruct (closed_univ _ _ H).
-  + apply IHB in H0.
-    
-
-assert (pa_omega_theorem (lor (neg B) B)).
-  { apply IHB. admit. }
+  + apply IHB in H0. apply exchange1.
+(* need to figure out implementation of w_rule *)
 Admitted.
-
 
 
 
@@ -3097,7 +3078,7 @@ Admitted.
 
 (* Inductive step *)
 (* *)
-Lemma equ_refl : forall (s t : term),
+Lemma equ_symm : forall (s t : term),
   correct_a (equ s t) = true -> correct_a (equ t s) = true.
 Proof.
 intros.
@@ -3122,7 +3103,7 @@ intros A n s t H Ha.
 induction A as [| B IHB | B IHB C IHC | m B IHB].
 - split.
   + apply substitution_lemma_atomic. apply H. apply Ha.
-  + apply substitution_lemma_atomic. apply equ_refl, H. apply Ha.
+  + apply substitution_lemma_atomic. apply equ_symm, H. apply Ha.
 - simpl in Ha. destruct (IHB Ha). clear IHB. split.
   + apply exchange1 in H1. apply negation2 in H1. apply H1.
   + apply exchange1 in H0. apply negation2 in H0. apply H0.
