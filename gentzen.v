@@ -2673,6 +2673,7 @@ induction n.
   + omega.
 Qed.
 
+(*
 Lemma w_rule_exmp : forall (n : nat),
   pa_omega_theorem (univ n (atom (equ (var n) (var n)))).
 Proof.
@@ -2686,7 +2687,7 @@ apply (w_rule_1 (atom (equ (var n) (var n))) n g_exmp); intros.
 - unfold g_exmp. apply axiom. simpl.
   apply (w_rule_exmp_aux2 (represent m) (w_rule_exmp_aux3 m)).
 Qed.
-
+*)
 
 
 
@@ -2708,7 +2709,6 @@ apply exchange1 in H.
 apply H.
 Qed.
 
-
 Lemma associativity2 : forall (c a b : formula),
   pa_omega_theorem (lor c (lor a b)) ->
   pa_omega_theorem (lor (lor c a) b).
@@ -2719,6 +2719,7 @@ apply exchange2 in H.
 apply exchange3 in H.
 apply H.
 Qed.
+
 
 (* Lemma 2 *)
 (* *)
@@ -2804,10 +2805,6 @@ Qed.
 (* Show that for any closed terms s and t where s=t is correct, and A(x) has at
    most one free variable (x), then PA_omega proves (lor (neg A(s)) A(t)) *)
 (* *)
-
-
-
-
 Lemma correct_correctness : forall (a : atomic_formula),
   correct_a a = true -> correctness a = correct.
 Proof.
@@ -2850,11 +2847,6 @@ rewrite H1 in H0; rewrite H2 in H0; inversion H0;
 split; omega.
 Qed.
 
-
-
-
-
-
 Lemma correct_closed : forall (a : atomic_formula),
   correct_a a = true -> closed_a a = true.
 Proof.
@@ -2896,23 +2888,6 @@ intros. induction T; auto.
 - case_eq (beq_nat n0 n); intros; simpl; rewrite H1.
   + apply H.
   + simpl in H0. rewrite H1 in H0. inversion H0.
-Qed.
-
-Lemma correct_subst_closed : forall (a : atomic_formula) (n : nat) (s t : term),
-  closed_t t = true ->
-  correct_a (substitution_a a n s) = true ->
-  closed_a (substitution_a a n t) = true.
-Proof.
-intros.
-case_eq a. intros t1 t2 Ha. rewrite Ha in H0. clear Ha. simpl.
-apply correct_closed in H0. simpl in H0.
-case_eq (closed_t (substitution_t t1 n s)); intros Ht1;
-case_eq (closed_t (substitution_t t2 n s)); intros Ht2; auto.
-- rewrite (subst_closed_t n t1 s t H Ht1).
-  rewrite (subst_closed_t n t2 s t H Ht2). auto.
-- rewrite Ht1 in H0. rewrite Ht2 in H0. inversion H0.
-- rewrite Ht1 in H0. rewrite Ht2 in H0. inversion H0.
-- rewrite Ht1 in H0. rewrite Ht2 in H0. inversion H0.
 Qed.
 
 Lemma incorrect_subst_closed : forall (a : atomic_formula) (n : nat) (s t : term),
@@ -2973,35 +2948,10 @@ Qed.
 
 
 
-Lemma substitution_lemma' : forall (A : formula) (n : nat) (s t : term),
-  correct_a (equ s t) = true ->
-  pa_omega_theorem (lor (neg (substitution A n s)) (substitution A n t)).
-Proof.
-intros.
-induction A as [| B IHB | B IHB C IHC | m B IHB].
-- unfold substitution. case_eq (correct_a (substitution_a a n s)); intros.
-  + pose proof (correct_closed _ H0) as HC.
-    pose proof (lemma_2_atomic s t a n H). apply H1 in H0.
-    apply axiom in H0. unfold substitution in H0. apply weakening.
-    * simpl. apply HC.
-    * apply H0.
-  + apply exchange1. apply weakening.
-    * admit.
-    * apply axiom. simpl. rewrite H0. auto.
 
 
 
-(* closed (neg (atom (substitution_a a n s))) = true *)
-(* closed (atom (substitution_a a n t)) = true *)
-Admitted.
 
-
-Lemma equ_refl : forall (s t : term),
-  correct_a (equ s t) = true -> correct_a (equ t s) = true.
-Proof.
-Admitted.
-
-Compute concat [5] [5].
 
 Lemma substitution_lemma : forall (A : formula) (n : nat) (s t : term),
   correct_a (equ s t) = true ->
