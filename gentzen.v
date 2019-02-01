@@ -2115,6 +2115,12 @@ apply remove_dups_empty in H. destruct (concat_empty _ _ _ H).
 rewrite (free_list_closed_t _ H0). rewrite (free_list_closed_t _ H1). auto.
 Qed.
 
+Lemma free_list_closed : forall (A : formula),
+  free_list A = [] -> closed A = true.
+Proof.
+intros.
+Admitted.
+
 Lemma closed_free_list_t : forall (t : term),
   closed_t t = true -> free_list_t t = [].
 Proof.
@@ -2135,7 +2141,17 @@ induction t; auto.
 - inversion H.
 Qed.
 
+Lemma closed_free_list_a : forall (a : atomic_formula),
+  closed_a a = true -> free_list_a a = [].
+Proof.
+intros.
+Admitted.
 
+Lemma closed_free_list : forall (A : formula),
+  closed A = true -> free_list A = [].
+Proof.
+intros.
+Admitted.
 
 
 
@@ -2963,7 +2979,113 @@ Qed.
 
 Lemma closed_univ : forall (B : formula) (m : nat),
   closed (univ m B) = true -> closed B = true \/ free_list B = [m].
+Proof.
+intros. apply closed_free_list in H.
+destruct (free_list_univ_empty _ _ H).
+- right. apply H0.
+- left. apply free_list_closed. apply H0.
+Qed.
+
+Lemma and_bool_symm : forall (b1 b2 : bool),
+  b1 && b2 = true -> b2 && b1 = true.
+Proof. intros. case_eq b1; case_eq b2; intros; rewrite H0,H1 in H; auto. Qed.
+
+Lemma member_remove_dups : forall (l : list nat) (n : nat),
+  member n (remove_dups l) = false -> member n l = false.
 Admitted.
+
+Lemma member_concat : forall (l1 l2 : list nat) (n : nat),
+  member n (concat l1 l2) = false ->
+  member n l1 = false /\ member n l2 = false.
+Admitted.
+
+Lemma member_remove_dups_concat : forall (l1 l2 : list nat) (n : nat),
+  member n (remove_dups (concat l1 l2)) = false ->
+  member n l1 = false /\ member n l2 = false.
+Proof.
+intros.
+apply member_concat.
+apply member_remove_dups.
+apply H.
+Qed.
+
+Lemma stuff : forall (l : list nat) (m n : nat),
+  beq_nat m n = false ->
+  member n (remove m l) = false ->
+  member n l = false.
+Admitted.
+
+Lemma closed_subst_eq_aux_t : forall (T : term) (n : nat) (t : term),
+  member n (free_list_t T) = false -> substitution_t T n t = T.
+Proof.
+intros.
+induction T; auto.
+- apply IHT in H. simpl. rewrite H. auto.
+- simpl. simpl in H. destruct (member_remove_dups_concat _ _ _ H).
+  rewrite IHT1, IHT2.
+  + auto.
+  + apply H1.
+  + apply H0.
+- simpl. simpl in H. destruct (member_remove_dups_concat _ _ _ H).
+  rewrite IHT1, IHT2.
+  + auto.
+  + apply H1.
+  + apply H0.
+- simpl in H. simpl. case_eq (beq_nat n0 n); intros.
+  + rewrite H0 in H. inversion H.
+  + auto.
+Qed.
+
+Lemma closed_subst_eq_aux_a : forall (a : atomic_formula) (n : nat) (t : term),
+  member n (free_list_a a) = false -> substitution_a a n t = a.
+Proof.
+intros. destruct a as [t1 t2]. simpl. simpl in H.
+destruct (member_remove_dups_concat _ _ _ H).
+rewrite (closed_subst_eq_aux_t t1 n t), (closed_subst_eq_aux_t t2 n t).
+- auto.
+- apply H1.
+- apply H0.
+Qed.
+
+
+
+
+Lemma closed_subst_eq_aux : forall (A : formula) (n : nat) (t : term),
+  member n (free_list A) = false -> substitution A n t = A.
+Proof.
+intros.
+induction A.
+- simpl. rewrite closed_subst_eq_aux_a; auto.
+- simpl in H. simpl. rewrite (IHA H). auto.
+- simpl. simpl in H. destruct (member_remove_dups_concat _ _ _ H).
+  rewrite IHA1, IHA2.
+  + auto.
+  + apply H1.
+  + apply H0.
+- simpl. case_eq (beq_nat n0 n); intros; auto.
+  simpl in H. rewrite IHA. 
+  + auto.
+  + apply (stuff _ _ _ H0 H).
+Qed.
+
+Lemma closed_subst_eq : forall (A : formula) (n : nat) (t : term),
+  closed A = true -> substitution A n t = A.
+Proof.
+intros.
+apply closed_subst_eq_aux.
+apply closed_free_list in H.
+rewrite H. auto.
+Qed.
+
+
+Lemma closed_sub_theorem : forall (A : formula) (n : nat) (t : term),
+  closed A = true ->
+  pa_omega_theorem A ->
+  pa_omega_theorem (substitution A n t).
+Proof. intros. rewrite closed_subst_eq. apply H0. apply H. Qed.
+
+
+
 
 Lemma LEM : forall (A : formula),
   closed A = true -> pa_omega_theorem (lor (neg A) A).
@@ -2979,10 +3101,13 @@ induction A as [| B IHB | B IHB C IHC | m B IHB].
   + apply associativity1. apply exchange2. apply exchange1. apply weakening.
     * apply HB.
     * apply IHC. apply HC.
-- assert (pa_omega_theorem (lor (neg B) B)).
+- destruct (closed_univ _ _ H).
+  + apply IHB in H0.
+    
+
+assert (pa_omega_theorem (lor (neg B) B)).
   { apply IHB. admit. }
 Admitted.
-
 
 
 
