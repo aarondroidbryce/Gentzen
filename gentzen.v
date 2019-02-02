@@ -393,14 +393,75 @@ simpl. rewrite remove_dups_order. rewrite remove_twice.
 rewrite <- remove_dups_order. rewrite IHl. auto.
 Qed.
 
+Theorem beq_nat_symm : forall (n m : nat),
+  beq_nat m n = true -> beq_nat n m = true.
+Proof. intros. apply nat_eq_beq in H. rewrite H. apply beq_nat_refl. Qed.
+
+Theorem beq_nat_symm' : forall (n m : nat),
+  beq_nat m n = false -> beq_nat n m = false.
+Proof.
+intros. case_eq (beq_nat n m); intros; auto.
+apply beq_nat_symm in H0. rewrite H0 in H. inversion H.
+Qed.
+
+Lemma member_remove' : forall (l : list nat) (m n : nat),
+  beq_nat m n = false ->
+  member n l = true ->
+  member n (remove m l) = true.
+Proof.
+intros.
+induction l; auto.
+inversion H0. case_eq (beq_nat x n); intros.
+- apply nat_eq_beq in H1. rewrite H1. simpl. apply beq_nat_symm' in H.
+  rewrite H. simpl. rewrite beq_nat_refl. auto.
+- rewrite H1 in H2. simpl. rewrite H2. apply IHl in H2.
+  case_eq (beq_nat x m); intros.
+  + apply H2.
+  + simpl. rewrite H1. apply H2.
+Qed.
+
+Lemma member_remove : forall (l : list nat) (m n : nat),
+  beq_nat m n = false ->
+  member n (remove m l) = false ->
+  member n l = false.
+Proof.
+intros.
+case_eq (member n l); intros.
+- rewrite (member_remove' _ _ _ H H1) in H0. inversion H0.
+- auto.
+Qed.
+
 Lemma member_remove_dups : forall (l : list nat) (n : nat),
   member n (remove_dups l) = false -> member n l = false.
-Admitted.
+Proof.
+intros. induction l; auto.
+simpl. simpl in H. destruct (beq_nat x n) eqn:Hn.
+- inversion H.
+- apply IHl. apply (member_remove _ x _ Hn), H.
+Qed.
+
+Lemma member_concat' : forall (l1 l2 : list nat) (n : nat),
+  member n (concat l1 l2) = true ->
+  member n l1 = true \/ member n l2 = true.
+Proof.
+intros. induction l1.
+- right. apply H.
+- simpl in H. simpl. destruct (beq_nat x n) eqn:Hx.
+  + left. auto.
+  + destruct (IHl1 H).
+    * left. apply H0.
+    * right. apply H0.
+Qed.
 
 Lemma member_concat : forall (l1 l2 : list nat) (n : nat),
   member n (concat l1 l2) = false ->
   member n l1 = false /\ member n l2 = false.
-Admitted.
+Proof.
+intros. induction l1; auto.
+simpl. case_eq (beq_nat x n); intros; simpl in H; rewrite H0 in H.
+- inversion H.
+- apply (IHl1 H).
+Qed.
 
 Lemma member_remove_dups_concat : forall (l1 l2 : list nat) (n : nat),
   member n (remove_dups (concat l1 l2)) = false ->
@@ -411,12 +472,6 @@ apply member_concat.
 apply member_remove_dups.
 apply H.
 Qed.
-
-Lemma member_remove : forall (l : list nat) (m n : nat),
-  beq_nat m n = false ->
-  member n (remove m l) = false ->
-  member n l = false.
-Admitted.
 
 Lemma and_bool_symm : forall (b1 b2 : bool),
   b1 && b2 = true -> b2 && b1 = true.
@@ -1829,9 +1884,9 @@ Inductive formula : Type :=
 Fixpoint num_conn (a : formula) : nat :=
 match a with
 | atom a' => 0
-| neg a' => 1 + (num_conn a')
-| lor a1 a2 => 1 + (num_conn a1) + (num_conn a2)
-| univ n a' => 1 + (num_conn a')
+| neg a' => S (num_conn a')
+| lor a1 a2 => S ((num_conn a1) + (num_conn a2))
+| univ n a' => S (num_conn a')
 end.
 
 
@@ -3033,20 +3088,114 @@ Lemma closed_sub_theorem : forall (A : formula) (n : nat) (t : term),
   pa_omega_theorem (substitution A n t).
 Proof. intros. rewrite closed_subst_eq. apply H0. apply H. Qed.
 
+Lemma double_sub : forall (A : formula) (n : nat) (t1 t2 : term),
+  substitution (substitution A n t1) n t2 = substitution A n t2.
+Admitted.
 
-Lemma stuff : forall (B : formula) (n m : nat),
+Lemma LEM_aux1 : forall (B : formula) (n : nat),
   closed B = true ->
   pa_omega_theorem (lor (neg B) B) ->
-  pa_omega_theorem (lor (substitution B n (represent m))
-                        (neg (univ n B))).
+  forall (m : nat),
+    pa_omega_theorem (lor (substitution B n (represent m)) (neg (univ n B))).
 Proof.
 intros.
-assert (lor (neg B) B = lor (neg (substitution B n (represent m))) B).
-{ rewrite closed_subst_eq. auto. apply H. }
-rewrite H1 in H0. clear H1.
-apply quantification2 in H0.
-- apply exchange1.
+apply exchange1.
+apply (quantification2 _ _ _ (represent n)).
+- apply eval_closed. apply eval_represent.
+- rewrite closed_subst_eq.
+  + rewrite closed_subst_eq.
+    * apply H0.
+    * apply H.
+  + apply H.
+Qed.
+
+
+Lemma LEM_aux2 : forall (B : formula) (n : nat),
+  free_list B = [n] ->
+  pa_omega_theorem (lor (neg B) B) ->
+  forall (m : nat),
+    pa_omega_theorem (lor (substitution B n (represent m))
+                          (neg (univ n (substitution B n (represent m))))).
+Proof.
+intros.
+apply exchange1.
+(*
+apply (quantification2 _ _ _ (represent n)).
+- apply eval_closed. apply eval_represent.
+- rewrite double_sub. simpl.
+ rewrite closed_subst_eq.
+  + rewrite closed_subst_eq.
+    * apply H0.
+    * apply H.
+  + apply H.
+Qed.
+*)
 Admitted.
+
+Lemma x : forall (P : nat -> Prop),
+  P 0 -> (forall (n : nat), (P n -> P (S n))) -> forall (m : nat), P m.
+Proof.
+intros.
+induction m.
+- apply H.
+- apply H0, IHm.
+Qed.
+
+Lemma a : forall (n : nat),
+  (forall (A : formula),
+    num_conn A = 0 -> pa_omega_theorem (lor (neg A) A)) ->
+  (forall (A : formula),
+    (num_conn A = n -> pa_omega_theorem (lor (neg A) A)) ->
+    (num_conn A = S n -> pa_omega_theorem (lor (neg A) A))) ->
+  forall (B : formula),
+    num_conn B = n -> pa_omega_theorem (lor (neg B) B).
+Proof.
+intros.
+induction n.
+- apply H, H1.
+- apply IHn.
+Admitted.
+
+Definition P (n : nat) : Prop :=
+  forall (A : formula),
+    num_conn A = n -> pa_omega_theorem (lor (neg A) A).
+
+
+Lemma LEM : forall (A : formula) (n : nat),
+  num_conn A = n ->
+  closed A = true -> pa_omega_theorem (lor (neg A) A).
+Proof.
+intros.
+induction n.
+- admit.
+Admitted.
+
+
+
+(*
+
+
+
+
+
+Lemma LEM : forall (A : formula),
+  closed A = true -> pa_omega_theorem (lor (neg A) A).
+Proof.
+intros.
+inversion num_conn.
+
+(num_conn A).
+- 
+
+pose (num_conn A) as c.
+induction c as [|c'].
+- 
+
+induction (num_conn A) as [c|c].
+- 
+
+
+
 
 
 
@@ -3065,13 +3214,16 @@ induction A as [| B IHB | B IHB C IHC | m B IHB].
     * apply HB.
     * apply IHC. apply HC.
 - destruct (closed_univ _ _ H).
-  + apply IHB in H0. apply exchange1.
-(* need to figure out implementation of w_rule *)
-Admitted.
+  + apply exchange1. apply w_rule2. apply LEM_aux1.
+    * apply H0.
+    * apply IHB, H0.
+  + apply exchange1. apply w_rule2. apply LEM_aux.
+    * apply H0.
+    * apply IHB, H0.
 
 
 
-
+*)
 
 
 
@@ -3092,7 +3244,7 @@ case_eq (eval t); case_eq (eval s); intros.
 - rewrite <- H2. rewrite <- H3. rewrite Hst. rewrite beq_nat_refl. auto.
 Qed.
 
-
+(*
 Lemma substitution_lemma : forall (A : formula) (n : nat) (s t : term),
   correct_a (equ s t) = true ->
   free_list A = [n] ->
@@ -3123,6 +3275,10 @@ induction A as [| B IHB | B IHB C IHC | m B IHB].
     * admit.
     * apply exchange1. admit.
 Admitted.
+*)
+
+
+
 
 
 
@@ -3167,16 +3323,93 @@ match A with
 end.
 
 
-
+(* ~(B \/ C) \/ D -> ~B \/ D *)
 Lemma exmp : forall (B C D : formula),
   formula_substitution (lor (neg (lor B C)) D) (neg (lor B C)) (neg B) =
   lor (neg B) (formula_substitution D (neg (lor B C)) (neg B)).
+Proof. intros. simpl. rewrite (eq_f_refl B), (eq_f_refl C). simpl. auto. Qed.
+
+
+
+(*
+Theorem demorgan_invertible : forall (B C D : formula),
+  pa_omega_theorem (lor (neg (lor B C)) D) ->
+  pa_omega_theorem (lor (neg B) D).
 Proof.
-intros. simpl. rewrite (eq_f_refl B).
+intros.
+inversion pa_omega_theorem.
+(* axiom *)
+- admit.
 
 
 
 
+
+(* exchange1 *)
+- admit.
+
+(* contraction1 *)
+- admit.
+
+(* contraction2 *)
+- admit.
+
+(* weakening *)
+- apply weakening.
+  + inversion H2. admit. (* easy *)
+  + apply H3.
+
+(* demorgan2 *)
+- apply H2.
+
+(* cut1 *)
+- admit.
+
+(* cut2 *)
+- admit.
+
+(* cut3 *)
+- admit.
+
+*)
+
+
+
+
+Theorem demorgan_invertible : forall (A B C : formula),
+  pa_omega_theorem A ->
+  pa_omega_theorem (formula_substitution A (neg (lor B C)) (neg B)).
+Proof.
+intros.
+inversion H.
+(* axiom *)
+- admit.
+
+(* exchange1 *)
+- simpl. apply exchange1. admit.
+
+(* contraction1 *)
+- admit.
+
+(* contraction2 *)
+- admit.
+
+(* weakening *)
+- apply weakening.
+  + inversion H2. admit. (* easy *)
+  + apply H3.
+
+(* demorgan2 *)
+- apply H2.
+
+(* cut1 *)
+- admit.
+
+(* cut2 *)
+- admit.
+
+(* cut3 *)
+- admit.
 
 
 Theorem demorgan_invertible : forall (B C D : formula),
