@@ -3068,6 +3068,17 @@ destruct (closed_univ B n H).
   rewrite H1. simpl. rewrite beq_nat_refl. auto.
 Qed.
 
+Lemma closed_univ_sub_repr : forall (B : formula) (n : nat),
+  closed (univ n B) = true ->
+  (forall (m : nat), closed (substitution B n (represent m)) = true).
+Proof.
+intros.
+apply closed_univ_sub.
+- apply H.
+- apply eval_closed, eval_represent.
+Qed.
+
+
 (*
 Warning: double_sub_t is actually incorrect as currently stated,
 since (x[x+x/x])[y/x] = y+y != y = x[y/x].
@@ -3155,6 +3166,7 @@ induction m.
 - apply H0, IHm.
 Qed.
 
+(*
 Lemma a : forall (n : nat),
   (forall (A : formula),
     num_conn A = 0 -> pa_omega_theorem (lor (neg A) A)) ->
@@ -3169,20 +3181,133 @@ induction n.
 - apply H, H1.
 - apply IHn.
 Admitted.
-
-Definition P (n : nat) : Prop :=
-  forall (A : formula),
-    num_conn A = n -> pa_omega_theorem (lor (neg A) A).
+*)
 
 
-Lemma LEM : forall (A : formula) (n : nat),
-  num_conn A = n ->
+
+
+
+
+
+Definition P1 (A : formula) : Prop :=
   closed A = true -> pa_omega_theorem (lor (neg A) A).
+
+Definition P2 (A : formula) (n : nat) : Prop :=
+  num_conn A = n -> P1 A.
+
+Definition P3 (n : nat) : Prop :=
+  (forall (A : formula), P2 A n) -> (forall (A : formula), P2 A (S n)).
+
+Lemma P3_lemma : forall n, P3 n.
+Admitted.
+
+Lemma P2_lemma : forall (n : nat) (A : formula), P2 A n.
+Proof.
+intros n. induction n.
+- admit.
+- apply P3_lemma, IHn.
+Admitted.
+
+Lemma P1_lemma : forall (A : formula), P1 A.
+Proof.
+intros.
+pose proof (P2_lemma).
+unfold P2 in H.
+apply (H (num_conn A) A). auto.
+Qed.
+
+Lemma LEM : forall (A : formula),
+  closed A = true -> pa_omega_theorem (lor (neg A) A).
+Proof. apply P1_lemma. Qed.
+
+
+
+
+
+
+
+
+
+Lemma y : forall (Q : formula -> Prop) (A : formula),
+  (num_conn A = 0 -> Q A) ->
+  (forall (n : nat) (B : formula),
+    (num_conn B = n -> Q B) -> num_conn A = S n -> Q A) ->
+  forall (n : nat), (num_conn A) = n -> Q A.
 Proof.
 intros.
 induction n.
+- apply H, H1.
+- apply (H0 n).
+  + apply IHn.
+  + apply H1.
+Qed.
+
+Lemma z : forall (Q : formula -> Prop) (A : formula),
+  (num_conn A = 0 -> Q A) ->
+  (forall (n : nat) (B : formula),
+    (num_conn B = n -> Q B) -> num_conn A = S n -> Q A) ->
+  Q A.
+Proof.
+intros.
+pose proof (y Q A H H0).
+apply (H1 (num_conn A)). auto.
+Qed.
+
+
+Lemma a : forall (Q : formula -> Prop),
+  (forall (A : formula), num_conn A = 0 -> Q A) ->
+  (forall (A : formula) (n : nat) (B : formula),
+      (num_conn B = n -> Q B) -> num_conn A = S n -> Q A) ->
+  forall (A : formula), Q A.
+Proof.
+intros.
+apply z.
+- apply (H A).
+- apply (H0 A).
+Qed.
+
+
+Definition P (A : formula) : Prop :=
+  closed A = true -> pa_omega_theorem (lor (neg A) A).
+
+
+Lemma LEM_0 : forall A : formula, num_conn A = 0 -> P A.
+Proof.
+intros.
+destruct A as [a | | | ].
+- unfold P. apply LEM_atomic.
+- inversion H.
+- inversion H.
+- inversion H.
+Qed.
+
+Lemma LEM_inductive : forall (A : formula) (n : nat),
+  (num_conn A = n -> P A) -> num_conn A = S n -> P A.
+Proof.
+intros.
+destruct A as [a | | | m].
+- inversion H0.
+- admit.
+- admit.
+- 
+Qed.
+
+
+
+Lemma LEM' : forall (A : formula), P A.
+Proof.
+apply a.
+- apply LEM_0.
 - admit.
 Admitted.
+
+
+
+
+  (num_conn A) = 0 -> 
+
+
+
 
 
 
@@ -3241,8 +3366,9 @@ apply exchange1. apply w_rule2. intros.
 pose proof (LEM_univ_aux B n).
 specialize H with m. specialize H1 with m.
 apply H1.
-
- apply LEM_univ_aux.
+- apply closed_univ_sub_repr, H0.
+- apply H. apply closed_univ_sub_repr, H0.
+Qed.
 
 
 
