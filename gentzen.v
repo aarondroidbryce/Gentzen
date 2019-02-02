@@ -2310,6 +2310,9 @@ end.
 
 
 
+
+
+
 (* this will probably be needed in s=t substitution lemma *)
 Lemma subst_remove_t : forall (T t : term) (n : nat),
   closed_t t = true ->
@@ -2332,6 +2335,18 @@ intros. destruct a as [t1 t2]. simpl.
 rewrite (subst_remove_t t1 _ _ H). rewrite (subst_remove_t t2 _ _ H).
 rewrite remove_dups_order. rewrite remove_concat. auto.
 Qed.
+
+Lemma subst_remove : forall (A : formula) (n : nat) (t : term),
+  closed_t t = true ->
+  free_list (substitution A n t) = remove n (free_list A).
+Proof.
+intros. induction A; auto.
+- admit.
+- admit.
+- simpl. destruct (beq_nat n0 n) eqn:Hn.
+  + rewrite (nat_beq_eq _ _ Hn). rewrite remove_twice. auto.
+  + simpl. rewrite IHA. apply remove_order.
+Admitted.
 
 Lemma one_var_free_lemma : forall (a : atomic_formula) (n : nat) (t : term),
   closed_t t = true ->
@@ -3027,14 +3042,6 @@ induction A.
   + apply (member_remove _ _ _ H0 H).
 Qed.
 
-Lemma closed_subst_eq_t : forall (T : term) (n : nat) (t : term),
-  closed_t T = true -> substitution_t T n t = T.
-Admitted.
-
-Lemma closed_subst_eq_a : forall (a : atomic_formula) (n : nat) (t : term),
-  closed_a a = true -> substitution_a a n t = a.
-Admitted.
-
 Lemma closed_subst_eq : forall (A : formula) (n : nat) (t : term),
   closed A = true -> substitution A n t = A.
 Proof.
@@ -3050,9 +3057,54 @@ Lemma closed_sub_theorem : forall (A : formula) (n : nat) (t : term),
   pa_omega_theorem (substitution A n t).
 Proof. intros. rewrite closed_subst_eq. apply H0. apply H. Qed.
 
+Lemma closed_univ_sub : forall (B : formula) (n : nat),
+  closed (univ n B) = true ->
+  (forall (t : term), closed_t t = true -> closed (substitution B n t) = true).
+Proof.
+intros.
+destruct (closed_univ B n H).
+- rewrite (closed_subst_eq _ _ _ H1). apply H1.
+- apply free_list_closed. rewrite (subst_remove B n t H0).
+  rewrite H1. simpl. rewrite beq_nat_refl. auto.
+Qed.
+
+(*
+Warning: double_sub_t is actually incorrect as currently stated,
+since (x[x+x/x])[y/x] = y+y != y = x[y/x].
+
+
+
+Lemma double_sub_t : forall (T : term) (n : nat) (t1 t2 : term),
+  substitution_t (substitution_t T n t1) n t2 = substitution_t T n t2.
+Proof.
+intros.
+induction T; auto.
+- admit.
+- admit.
+- admit.
+- unfold substitution_t.
+Admitted.
+
+Lemma double_sub_a : forall (a : atomic_formula) (n : nat) (t1 t2 : term),
+  substitution_a (substitution_a a n t1) n t2 = substitution_a a n t2.
+Proof.
+intros. destruct a as [s t]. simpl.
+rewrite double_sub_t, double_sub_t. auto.
+Qed.
+
 Lemma double_sub : forall (A : formula) (n : nat) (t1 t2 : term),
   substitution (substitution A n t1) n t2 = substitution A n t2.
-Admitted.
+Proof.
+intros. induction A; simpl.
+- rewrite double_sub_a. auto.
+- rewrite IHA. auto.
+- rewrite IHA1,IHA2. auto.
+- destruct (beq_nat n0 n) eqn:Hn; simpl; rewrite Hn; auto.
+  + rewrite IHA. auto.
+Qed.
+*)
+
+
 
 Lemma LEM_aux1 : forall (B : formula) (n : nat),
   closed B = true ->
@@ -3157,11 +3209,47 @@ induction (num_conn A) as [c|c].
 - 
 
 
+*)
+
+
+Lemma LEM_univ_aux : forall (B : formula) (n m : nat),
+  closed (substitution B n (represent m)) = true ->
+  pa_omega_theorem (lor (neg (substitution B n (represent m)))
+                             (substitution B n (represent m))) ->
+  pa_omega_theorem (lor (substitution B n (represent m)) (neg (univ n B))).
+Proof.
+intros.
+apply exchange1.
+apply (quantification2 _ _ _ (represent m)).
+- apply eval_closed. apply eval_represent.
+- apply H0.
+Qed.
 
 
 
 
-Lemma LEM : forall (A : formula),
+Lemma LEM_univ : forall (B : formula) (n : nat),
+  (forall (m : nat),
+    closed (substitution B n (represent m)) = true ->
+    pa_omega_theorem (lor (neg (substitution B n (represent m)))
+                               (substitution B n (represent m)))) ->
+  closed (univ n B) = true ->
+  pa_omega_theorem (lor (neg (univ n B)) (univ n B)).
+Proof.
+intros.
+apply exchange1. apply w_rule2. intros.
+pose proof (LEM_univ_aux B n).
+specialize H with m. specialize H1 with m.
+apply H1.
+
+ apply LEM_univ_aux.
+
+
+
+
+
+
+Lemma LEM' : forall (A : formula),
   closed A = true -> pa_omega_theorem (lor (neg A) A).
 Proof.
 intros.
@@ -3185,7 +3273,9 @@ induction A as [| B IHB | B IHB C IHC | m B IHB].
 
 
 
-*)
+
+
+
 
 
 
