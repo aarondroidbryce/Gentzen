@@ -2342,15 +2342,16 @@ Lemma subst_remove : forall (A : formula) (n : nat) (t : term),
   closed_t t = true ->
   free_list (substitution A n t) = remove n (free_list A).
 Proof.
-intros. induction A; auto.
-- admit.
-- admit.
-- simpl. destruct (beq_nat n0 n) eqn:Hn.
+intros. induction A; auto; simpl.
+- rewrite (subst_remove_a _ _ _ H). auto.
+- rewrite IHA1, IHA2.
+  rewrite remove_dups_order. rewrite remove_concat. auto.
+- destruct (beq_nat n0 n) eqn:Hn.
   + rewrite (nat_beq_eq _ _ Hn). rewrite remove_twice. auto.
   + simpl. rewrite IHA. apply remove_order.
-Admitted.
+Qed.
 
-Lemma one_var_free_lemma : forall (a : atomic_formula) (n : nat) (t : term),
+Lemma one_var_free_lemma_a : forall (a : atomic_formula) (n : nat) (t : term),
   closed_t t = true ->
   free_list_a a = [n] ->
   closed_a (substitution_a a n t) = true.
@@ -2360,6 +2361,18 @@ apply free_list_closed_a.
 rewrite (subst_remove_a _ _ _ H).
 rewrite H0. simpl. rewrite beq_nat_refl. auto.
 Qed.
+
+Lemma one_var_free_lemma : forall (A : formula) (n : nat) (t : term),
+  closed_t t = true ->
+  free_list A = [n] ->
+  closed (substitution A n t) = true.
+Proof.
+intros.
+apply free_list_closed.
+rewrite (subst_remove _ _ _ H).
+rewrite H0. simpl. rewrite beq_nat_refl. auto.
+Qed.
+
 
 
 (* closed atomic formulas are either correct or incorrect. *)
@@ -2949,7 +2962,7 @@ Lemma substitution_lemma_atomic :
 Proof.
 intros a n s t H Ha.
 destruct (correctness_decid (substitution_a a n s)).
-- apply one_var_free_lemma.
+- apply one_var_free_lemma_a.
   + simpl in H. apply eval_closed. destruct (correct_eval s t H). apply H0.
   + apply Ha.
 - pose proof (correct_closed _ H0) as HC.
@@ -3080,6 +3093,50 @@ apply closed_univ_sub.
 - apply eval_closed, eval_represent.
 Qed.
 
+Lemma equ_symm : forall (s t : term),
+  correct_a (equ s t) = true -> correct_a (equ t s) = true.
+Proof.
+intros.
+pose proof (lemma_2_atomic_aux3 _ _ H) as Hst.
+destruct (correct_eval s t H).
+unfold correct_a, correctness.
+case_eq (eval t); case_eq (eval s); intros.
+- rewrite H2 in H0. inversion H0.
+- rewrite H3 in H1. inversion H1.
+- rewrite H2 in H0. inversion H0.
+- rewrite <- H2. rewrite <- H3. rewrite Hst. rewrite beq_nat_refl. auto.
+Qed.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3090,20 +3147,20 @@ when fully formalized. P1,P2,P3 are meant to break this up, where we ultimately
 to prove (forall A, P1 A), our main task will be to show (forall n, P3 n)
 by strong induction on n, the number of connectives. *)
 (* *)
-Definition P1 (A : formula) : Prop :=
+Definition P_1 (A : formula) : Prop :=
   closed A = true -> pa_omega_theorem (lor (neg A) A).
 
-Definition P2 (A : formula) (n : nat) : Prop :=
-  num_conn A = n -> P1 A.
+Definition P_2 (A : formula) (n : nat) : Prop :=
+  num_conn A = n -> P_1 A.
 
-Definition P3 (m : nat) : Prop :=
-  forall (A : formula), P2 A m.
+Definition P_3 (m : nat) : Prop :=
+  forall (A : formula), P_2 A m.
 
-Theorem P3_strongind_aux :
-  P3 0 ->
+Theorem P_3_strongind_aux :
+  P_3 0 ->
   (forall n,
-    ((forall m, m <= n -> P3 m) -> P3 (S n))) ->
-  forall n, (forall m, ((m <= n) -> P3 m)).
+    ((forall m, m <= n -> P_3 m) -> P_3 (S n))) ->
+  forall n, (forall m, ((m <= n) -> P_3 m)).
 Proof.
 induction n as [| n' IHn' ].
 - intros. inversion H1. apply H.
@@ -3112,18 +3169,18 @@ induction n as [| n' IHn' ].
   + apply IHn'. apply H3.
 Qed.
 
-Theorem P3_strongind :
-  P3 0 ->
+Theorem P_3_strongind :
+  P_3 0 ->
   (forall n,
-    ((forall m, m <= n -> P3 m) -> P3 (S n))) ->
-  forall n, P3 n.
-Proof. intros. apply (P3_strongind_aux H H0 n n). auto. Qed.
+    ((forall m, m <= n -> P_3 m) -> P_3 (S n))) ->
+  forall n, P_3 n.
+Proof. intros. apply (P_3_strongind_aux H H0 n n). auto. Qed.
 
-Lemma P3_0 : P3 0.
+Lemma P_3_0 : P_3 0.
 Proof.
-unfold P3, P2. intros.
+unfold P_3, P_2. intros.
 destruct A as [a | | | ].
-- unfold P1. apply LEM_atomic.
+- unfold P_1. apply LEM_atomic.
 - inversion H.
 - inversion H.
 - inversion H.
@@ -3199,13 +3256,6 @@ Qed.
 
 
 
-
-
-
-
-
-
-
 Lemma num_conn_sub : forall (B : formula) (m : nat) (t : term),
   num_conn (substitution B m t) = num_conn B.
 Proof.
@@ -3219,9 +3269,9 @@ induction B; auto; simpl.
 Qed.
 
 
-Lemma P3_inductive : forall n, (forall m, m <= n -> P3 m) -> P3 (S n).
+Lemma P_3_inductive : forall n, (forall m, m <= n -> P_3 m) -> P_3 (S n).
 Proof.
-unfold P3,P2,P1. intros.
+unfold P_3,P_2,P_1. intros.
 destruct A as [a | B | B C | m B].
 - inversion H0.
 - inversion H0. pose proof (H n (le_refl n) B H3 H1).
@@ -3247,6 +3297,239 @@ destruct A as [a | B | B C | m B].
       { apply eval_closed, eval_represent. }
 Qed.
 
+Lemma P_3_lemma : forall n, P_3 n.
+Proof. apply P_3_strongind. apply P_3_0. apply P_3_inductive. Qed.
+
+Lemma P_2_lemma : forall (n : nat) (A : formula), P_2 A n.
+Proof. apply P_3_lemma. Qed.
+
+Lemma P_1_lemma : forall (A : formula), P_1 A.
+Proof.
+intros.
+pose proof (P_2_lemma).
+unfold P_2 in H.
+apply (H (num_conn A) A). auto.
+Qed.
+
+Lemma LEM : forall (A : formula),
+  closed A = true -> pa_omega_theorem (lor (neg A) A).
+Proof. apply P_1_lemma. Qed.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Definition P1 (A : formula) : Prop := forall (n : nat) (s t : term),
+  correct_a (equ s t) = true ->
+  free_list A = [n] ->
+  pa_omega_theorem (lor (neg (substitution A n s)) (substitution A n t)).
+
+Definition P2 (A : formula) (n : nat) : Prop := num_conn A = n -> P1 A.
+
+Definition P3 (m : nat) : Prop := forall (A : formula), P2 A m.
+
+Theorem P3_strongind_aux :
+  P3 0 ->
+  (forall n,
+    ((forall m, m <= n -> P3 m) -> P3 (S n))) ->
+  forall n, (forall m, ((m <= n) -> P3 m)).
+Proof.
+induction n as [| n' IHn' ].
+- intros. inversion H1. apply H.
+- intros. inversion H1.
+  + apply H0. apply IHn'.
+  + apply IHn'. apply H3.
+Qed.
+
+Theorem P3_strongind :
+  P3 0 ->
+  (forall n,
+    ((forall m, m <= n -> P3 m) -> P3 (S n))) ->
+  forall n, P3 n.
+Proof. intros. apply (P3_strongind_aux H H0 n n). auto. Qed.
+
+Lemma P3_0 : P3 0.
+Proof.
+unfold P3, P2. intros.
+destruct A as [a | | | ].
+- unfold P1. apply substitution_lemma_atomic.
+- inversion H.
+- inversion H.
+- inversion H.
+Qed.
+
+
+Lemma free_list_lor : forall (B C : formula) (n : nat),
+  free_list (lor B C) = [n] ->
+  (free_list B = [n] \/ closed B = true) /\
+  (free_list C = [n] \/ closed C = true).
+Admitted.
+
+Lemma substitution_order : forall (B : formula) (m n : nat) (s t : term),
+  beq_nat m n = false ->
+  substitution (substitution B n s) m t =
+  substitution (substitution B m t) n s.
+Proof.
+Admitted.
+
+(*
+Lemma closed_univ_sub : forall (B : formula) (n : nat),
+  closed (univ n B) = true ->
+  (forall (t : term), closed_t t = true -> closed (substitution B n t) = true).
+Proof.
+intros.
+destruct (closed_univ B n H).
+- rewrite (closed_subst_eq _ _ _ H1). apply H1.
+- apply free_list_closed. rewrite (subst_remove B n t H0).
+  rewrite H1. simpl. rewrite beq_nat_refl. auto.
+Qed.
+
+Lemma free_list_univ_sub :
+  forall (B : formula) (m : nat) (t : term) (l : list nat),
+  closed_t t = true ->
+  free_list (univ m B) = l ->
+  free_list (substitution B m t) = l.
+Admitted.
+*)
+
+Lemma free_list_univ_sub : forall (B : formula) (m n : nat) (t : term),
+  closed_t t = true ->
+  free_list (univ m B) = [n] ->
+  free_list (substitution B m t) = [n].
+Admitted.
+
+
+Lemma repr_closed : forall (m : nat), closed_t (represent m) = true.
+Proof. intros. apply eval_closed, eval_represent. Qed.
+
+Lemma univ_free_var : forall (B : formula) (m n : nat),
+  free_list (univ m B) = [n] -> beq_nat m n = false.
+Proof.
+intros. simpl in H.
+destruct (beq_nat m n) eqn:Hm; auto.
+apply nat_beq_eq in Hm. rewrite Hm in H.
+pose proof (remove_twice (free_list B) n).
+rewrite H in H0. simpl in H0. rewrite beq_nat_refl in H0. inversion H0.
+Qed.
+
+Lemma correct_closed_t : forall (s t : term),
+  correct_a (equ s t) = true -> closed_t s = true /\ closed_t t = true.
+Proof.
+intros.
+destruct (correct_eval _ _ H). split; apply eval_closed.
+apply H0. apply H1.
+Qed.
+
+
+
+
+Lemma P3_inductive : forall n, (forall m, m <= n -> P3 m) -> P3 (S n).
+Proof.
+unfold P3,P2, P1. intros.
+destruct A as [| B | B C | m B].
+- inversion H0.
+- inversion H0. simpl. apply negation2. apply exchange1.
+  apply (H n (le_refl n) B H4 n0 t s).
+  + apply equ_symm,H1.
+  + apply H2.
+- destruct (free_list_lor B C n0 H2) as [HB HC].
+  destruct (num_conn_lor _ _ _ H0) as [HB' HC'].
+  destruct (correct_closed_t _ _ H1) as [Hs Ht].
+  simpl. apply demorgan2.
+  + apply associativity1. apply exchange1. apply weakening.
+    * destruct HC as [HC | HC].
+      { apply (one_var_free_lemma _ _ _ Ht HC). }
+      { rewrite closed_subst_eq; apply HC. }
+    * destruct HB as [HB | HB].
+      { apply (H (num_conn B) HB' B (eq_refl (num_conn B)) n0 s t H1 HB). }
+      { rewrite closed_subst_eq, closed_subst_eq; auto. apply LEM, HB. }
+  + apply associativity1. apply exchange2. apply exchange1. apply weakening.
+    * destruct HB as [HB | HB].
+      { apply (one_var_free_lemma _ _ _ Ht HB). }
+      { rewrite closed_subst_eq; apply HB. }
+    * destruct HC as [HC | HC].
+      { apply (H (num_conn C) HC' C (eq_refl (num_conn C)) n0 s t H1 HC). }
+      { rewrite closed_subst_eq, closed_subst_eq; auto. apply LEM, HC. }
+- apply exchange1. inversion H0.
+  simpl. pose proof (univ_free_var _ _ _ H2) as Heq. rewrite Heq.
+  apply w_rule2. intros. apply exchange1.
+  apply (quantification2 _ _ _ (represent m0)).
+  + apply repr_closed.
+  + rewrite (substitution_order); try apply Heq.
+    rewrite (substitution_order _ m); try apply Heq.
+    apply (H n (le_refl n) (substitution B m (represent m0))).
+    * rewrite num_conn_sub. apply H4.
+    * apply H1.
+    * apply free_list_univ_sub. apply repr_closed. apply H2.
+Qed.
+
+
+
+
 Lemma P3_lemma : forall n, P3 n.
 Proof. apply P3_strongind. apply P3_0. apply P3_inductive. Qed.
 
@@ -3261,8 +3544,10 @@ unfold P2 in H.
 apply (H (num_conn A) A). auto.
 Qed.
 
-Lemma LEM : forall (A : formula),
-  closed A = true -> pa_omega_theorem (lor (neg A) A).
+Lemma substitution_lemma : forall (A : formula) (n : nat) (s t : term),
+  correct_a (equ s t) = true ->
+  free_list A = [n] ->
+  pa_omega_theorem (lor (neg (substitution A n s)) (substitution A n t)).
 Proof. apply P1_lemma. Qed.
 
 
@@ -3292,54 +3577,28 @@ Proof. apply P1_lemma. Qed.
 
 
 
-(* Inductive step *)
-(* *)
-Lemma equ_symm : forall (s t : term),
-  correct_a (equ s t) = true -> correct_a (equ t s) = true.
-Proof.
-intros.
-pose proof (lemma_2_atomic_aux3 _ _ H) as Hst.
-destruct (correct_eval s t H).
-unfold correct_a, correctness.
-case_eq (eval t); case_eq (eval s); intros.
-- rewrite H2 in H0. inversion H0.
-- rewrite H3 in H1. inversion H1.
-- rewrite H2 in H0. inversion H0.
-- rewrite <- H2. rewrite <- H3. rewrite Hst. rewrite beq_nat_refl. auto.
-Qed.
 
-(*
-Lemma substitution_lemma : forall (A : formula) (n : nat) (s t : term),
-  correct_a (equ s t) = true ->
-  free_list A = [n] ->
-  pa_omega_theorem (lor (neg (substitution A n s)) (substitution A n t)) /\
-  pa_omega_theorem (lor (neg (substitution A n t)) (substitution A n s)).
-Proof.
-intros A n s t H Ha.
-induction A as [| B IHB | B IHB C IHC | m B IHB].
-- split.
-  + apply substitution_lemma_atomic. apply H. apply Ha.
-  + apply substitution_lemma_atomic. apply equ_symm, H. apply Ha.
-- simpl in Ha. destruct (IHB Ha). clear IHB. split.
-  + apply exchange1 in H1. apply negation2 in H1. apply H1.
-  + apply exchange1 in H0. apply negation2 in H0. apply H0.
-- split.
-  + simpl. apply demorgan2.
-    * apply associativity1. apply exchange1. apply weakening.
-      { admit. } (* need to show that subformulas of theorems are closed *)
-      { destruct IHB as [IHB clutter].
-        { admit. } (* free_list (lor B C) = [n] -> free_list B = [n] *)
-        { clear clutter. apply IHB. } }
-    * apply associativity1. apply exchange2. apply exchange1. apply weakening.
-      { admit. } (* need to show that subformulas of theorems are closed *)
-      { apply IHC1. }
-  + admit. (* easy *)
-- destruct IHB as [IHB1 IHB2]. split.
-  + apply exchange1. simpl. case_eq (beq_nat m n); intros.
-    * admit.
-    * apply exchange1. admit.
-Admitted.
-*)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
