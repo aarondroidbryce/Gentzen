@@ -3057,6 +3057,25 @@ induction A.
   + apply (member_remove _ _ _ H0 H).
 Qed.
 
+
+Lemma closed_subst_eq_t : forall (n : nat) (T t : term),
+  closed_t T = true -> substitution_t T n t = T.
+Proof.
+intros.
+apply closed_subst_eq_aux_t.
+apply closed_free_list_t in H.
+rewrite H. auto.
+Qed.
+
+Lemma closed_subst_eq_a : forall (a : atomic_formula) (n : nat) (t : term),
+  closed_a a = true -> substitution_a a n t = a.
+Proof.
+intros.
+apply closed_subst_eq_aux_a.
+apply closed_free_list_a in H.
+rewrite H. auto.
+Qed.
+
 Lemma closed_subst_eq : forall (A : formula) (n : nat) (t : term),
   closed A = true -> substitution A n t = A.
 Proof.
@@ -3422,57 +3441,6 @@ destruct A as [a | | | ].
 - inversion H.
 Qed.
 
-
-(*
-Lemma concat_single : forall (l1 l2 : list nat) (n : nat),
-  remove_dups (concat l1 l2) = [n] ->
-  (l1 = [n] \/ l1 = []) /\ (l2 = [n] \/ l2 = []).
-Proof.
-Admitted.
-*)
-
-
-Lemma concat_single : forall (l1 l2 : list nat) (n : nat),
-  concat l1 l2 = [n] -> (l1 = [n] \/ l1 = []) /\ (l2 = [n] \/ l2 = []).
-Admitted.
-
-
-Lemma remove_dups_single' : forall (l1 l2 : list nat) (n : nat),
-  remove_dups (concat (remove_dups l1) (remove_dups l2)) = [n] ->
-  (l1 = [n] \/ l1 = []) /\ (l2 = [n] \/ l2 = []).
-Proof.
-intros. induction l1.
-- split.
-  + auto.
-  + destruct l2. 
-    * right. auto.
-    * simpl in H. inversion H.
-
- simpl in H.
-
-Admitted.
-
-
-Fixpoint length (l : list nat) : nat :=
-  match l with
-    nil => O
-  | n :: l' => S (length l')
-  end.
-
-Lemma length_zero : forall (l : list nat),
-  length l = 0 -> l = [].
-Proof. intros. destruct l; auto. inversion H. Qed.
-
-Lemma length_one : forall (l : list nat) (n : nat),
-  length l = 1 -> member n l = true -> l = [n].
-Proof. intros. destruct l.
-- inversion H0.
-- inversion H. apply length_zero in H2. rewrite H2.
-  destruct (beq_nat n0 n) eqn:Hn.
-  + rewrite (nat_beq_eq _ _ Hn). auto.
-  + simpl in H0. rewrite H2 in H0. rewrite Hn in H0. inversion H0.
-Qed.
-
 Lemma concat_member : forall (l l' : list nat) (n : nat),
   member n l = true -> member n (concat l l') = true.
 Proof.
@@ -3486,43 +3454,6 @@ Proof.
 intros. destruct (member n (remove_dups l)) eqn:Hn; auto.
 apply member_remove_dups in Hn. rewrite Hn in H. inversion H.
 Qed.
-
-(*
-Lemma free_list_lor' : forall (B C : formula) (n : nat),
-  member n (free_list B) = true -> member n (free_list (lor B C)) = true.
-Proof.
-intros. simpl. apply remove_dups_member. apply concat_member. apply H. Qed.
-
-Lemma member_remove_dups' : forall (l : list nat) (n : nat),
-  member n (remove_dups l) = true -> member n l = true.
-Admitted.
-
-Lemma stuff : forall (l : list nat) (n : nat),
-  member n (remove_dups l) = true ->
-  (forall (m : nat), member m (remove_dups l) = true -> m = n) ->
-  remove_dups l = [n].
-Proof.
-intros. induction l.
-- inversion H.
-- simpl. destruct (beq_nat x n) eqn:Hx.
-  + assert (remove_dups l = [n]).
-    { apply IHl.
-      { admit. }
-      { intros. apply (H0 m). simpl. admit. } }
-    rewrite H1. rewrite (nat_beq_eq _ _ Hx). simpl. rewrite beq_nat_refl. auto.
-Admitted.
-*)
-
-
-Fixpoint repeated_element (l : list nat) : bool :=
-match l with
-| [] => true
-| n :: l' =>
-  (match l' with
-  | [] => true
-  | m :: l'' => beq_nat m n && repeated_element l'
-  end)
-end.
 
 Fixpoint repeated_element_n (l : list nat) (n : nat) : bool :=
 match l with
@@ -3574,25 +3505,6 @@ intros. split.
   apply (repeated_element_n_concat_aux l1 l2 x n), H.
 Qed.
 
-Lemma free_list_lor' : forall (B C : formula) (n : nat),
-  free_list (lor B C) = [n] ->
-  free_list B = [n] \/ closed B = true.
-Proof.
-intros. simpl in H.
-apply remove_dups_repeated_element' in H.
-destruct (repeated_element_n_concat _ _ _ H).
-destruct (remove_dups_repeated_element _ _ H0).
-- left. rewrite free_list_remove_dups. apply H2.
-- right. apply free_list_closed, H2.
-Qed.
-
-
-
-
-
-
-
-
 Lemma free_list_lor : forall (B C : formula) (n : nat),
   free_list (lor B C) = [n] ->
   (free_list B = [n] \/ closed B = true) /\
@@ -3609,12 +3521,74 @@ destruct (repeated_element_n_concat _ _ _ H) as [HB HC]. split.
   + right. apply free_list_closed, HC'.
 Qed.
 
+(* false without closure *)
+Lemma substitution_order_t : forall (T : term) (m n : nat) (s t : term),
+  closed_t s = true ->
+  closed_t t = true ->
+  beq_nat m n = false ->
+  substitution_t (substitution_t T n s) m t =
+  substitution_t (substitution_t T m t) n s.
+Proof.
+intros T m n s t Hs Ht Hmn. induction T; auto; simpl.
+- rewrite IHT. auto.
+- rewrite IHT1, IHT2. auto.
+- rewrite IHT1, IHT2. auto.
+- destruct (beq_nat n0 n) eqn:Hn.
+  + rewrite <- (nat_beq_eq _ _ Hn) in Hmn. rewrite (beq_nat_symm' _ _ Hmn).
+    simpl. rewrite Hn. apply closed_subst_eq_t, Hs.
+  + destruct (beq_nat n0 m) eqn:Hm; simpl; rewrite Hm.
+    * symmetry. apply closed_subst_eq_t, Ht.
+    * rewrite Hn. auto.
+Qed.
+
+Lemma substitution_order_a :
+  forall (a : atomic_formula) (m n : nat) (s t : term),
+  closed_t s = true ->
+  closed_t t = true ->
+  beq_nat m n = false ->
+  substitution_a (substitution_a a n s) m t =
+  substitution_a (substitution_a a m t) n s.
+Proof.
+intros a m n s t Hs Ht Hmn. destruct a as [t1 t2]. simpl.
+rewrite (substitution_order_t _ _ _ _ _ Hs Ht Hmn).
+rewrite (substitution_order_t _ _ _ _ _ Hs Ht Hmn). auto.
+Qed.
+
 Lemma substitution_order : forall (B : formula) (m n : nat) (s t : term),
+  closed_t s = true ->
+  closed_t t = true ->
   beq_nat m n = false ->
   substitution (substitution B n s) m t =
   substitution (substitution B m t) n s.
 Proof.
-Admitted.
+intros B m n s t Hs Ht Hmn. induction B; simpl.
+- rewrite (substitution_order_a _ _ _ _ _ Hs Ht Hmn). auto.
+- rewrite IHB. auto.
+- rewrite IHB1, IHB2. auto.
+- destruct (beq_nat n0 n) eqn:Hn.
+  + apply nat_beq_eq in Hn. rewrite Hn.
+    rewrite (beq_nat_symm' _ _ Hmn). simpl.
+    rewrite (beq_nat_symm' _ _ Hmn). rewrite beq_nat_refl. auto.
+  + destruct (beq_nat n0 m) eqn:Hm; simpl; rewrite Hm, Hn; auto.
+    rewrite IHB. auto.
+Qed.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Lemma univ_free_var : forall (B : formula) (m n : nat),
   free_list (univ m B) = [n] -> beq_nat m n = false.
@@ -3636,8 +3610,6 @@ Proof. intros. rewrite (subst_remove _ _ _ H). apply H0. Qed.
 Lemma repr_closed : forall (m : nat), closed_t (represent m) = true.
 Proof. intros. apply eval_closed, eval_represent. Qed.
 
-
-
 Lemma correct_closed_t : forall (s t : term),
   correct_a (equ s t) = true -> closed_t s = true /\ closed_t t = true.
 Proof.
@@ -3645,9 +3617,6 @@ intros.
 destruct (correct_eval _ _ H). split; apply eval_closed.
 apply H0. apply H1.
 Qed.
-
-
-
 
 Lemma P3_inductive : forall n, (forall m, m <= n -> P3 m) -> P3 (S n).
 Proof.
@@ -3681,16 +3650,14 @@ destruct A as [| B | B C | m B].
   apply w_rule2. intros. apply exchange1.
   apply (quantification2 _ _ _ (represent m0)).
   + apply repr_closed.
-  + rewrite (substitution_order); try apply Heq.
-    rewrite (substitution_order _ m); try apply Heq.
+  + destruct (correct_closed_t _ _ H1) as [Hs Ht].
+    rewrite (substitution_order B m n0 s _ Hs (repr_closed m0) Heq).
+    rewrite (substitution_order B m n0 t _ Ht (repr_closed m0) Heq).
     apply (H n (le_refl n) (substitution B m (represent m0))).
     * rewrite num_conn_sub. apply H4.
     * apply H1.
     * apply free_list_univ_sub. apply repr_closed. apply H2.
 Qed.
-
-
-
 
 Lemma P3_lemma : forall n, P3 n.
 Proof. apply P3_strongind. apply P3_0. apply P3_inductive. Qed.
