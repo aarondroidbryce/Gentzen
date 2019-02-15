@@ -2579,7 +2579,7 @@ Section 4: Axioms and Rules of inference in PA and PA_omega
 
 (* Axioms of PA_omega *)
 (* *)
-Definition pa_omega_axiom (a : formula) : bool :=
+Definition PA_omega_axiom (a : formula) : bool :=
 match a with
 | atom a' => correct_a a'
 | neg (atom a') => incorrect_a a'
@@ -2592,99 +2592,99 @@ end.
 (* A theorem of PA_omega is either an axiom, or the result of applying a rule
     of inference to another theorem *)
 (* *)
-Inductive pa_omega_theorem : formula -> Prop :=
+Inductive PA_omega_theorem : formula -> Prop :=
 | axiom : forall (A : formula),
-    pa_omega_axiom A = true ->
-    pa_omega_theorem A
+    PA_omega_axiom A = true ->
+    PA_omega_theorem A
 
 
 
 | exchange1 : forall (A B : formula),
-    pa_omega_theorem (lor A B) ->
-    pa_omega_theorem (lor B A)
+    PA_omega_theorem (lor A B) ->
+    PA_omega_theorem (lor B A)
 
 | exchange2 : forall (C A B : formula),
-    pa_omega_theorem (lor (lor C A) B) ->
-    pa_omega_theorem (lor (lor C B) A)
+    PA_omega_theorem (lor (lor C A) B) ->
+    PA_omega_theorem (lor (lor C B) A)
 
 | exchange3 : forall (A B D : formula),
-    pa_omega_theorem (lor (lor A B) D) ->
-    pa_omega_theorem (lor (lor B A) D)
+    PA_omega_theorem (lor (lor A B) D) ->
+    PA_omega_theorem (lor (lor B A) D)
 
 | exchange4 : forall (C A B D : formula),
-    pa_omega_theorem (lor (lor (lor C A) B) D) ->
-    pa_omega_theorem (lor (lor (lor C B) A) D)
+    PA_omega_theorem (lor (lor (lor C A) B) D) ->
+    PA_omega_theorem (lor (lor (lor C B) A) D)
 
 | contraction1 : forall (A : formula),
-    pa_omega_theorem (lor A A) ->
-    pa_omega_theorem A
+    PA_omega_theorem (lor A A) ->
+    PA_omega_theorem A
 
 | contraction2 : forall (A D : formula),
-    pa_omega_theorem (lor A (lor A D)) ->
-    pa_omega_theorem (lor A D)
+    PA_omega_theorem (lor A (lor A D)) ->
+    PA_omega_theorem (lor A D)
 
 
 
 | weakening : forall (A D : formula),
     closed A = true ->
-    pa_omega_theorem D ->
-    pa_omega_theorem (lor A D)
+    PA_omega_theorem D ->
+    PA_omega_theorem (lor A D)
 
 | demorgan1 : forall (A B : formula),
-    pa_omega_theorem (neg A) ->
-    pa_omega_theorem (neg B) ->
-    pa_omega_theorem (neg (lor A B))
+    PA_omega_theorem (neg A) ->
+    PA_omega_theorem (neg B) ->
+    PA_omega_theorem (neg (lor A B))
 
 | demorgan2 : forall (A B D : formula),
-    pa_omega_theorem (lor (neg A) D) ->
-    pa_omega_theorem (lor (neg B) D) ->
-    pa_omega_theorem (lor (neg (lor A B)) D)
+    PA_omega_theorem (lor (neg A) D) ->
+    PA_omega_theorem (lor (neg B) D) ->
+    PA_omega_theorem (lor (neg (lor A B)) D)
 
 | negation1 : forall (A : formula),
-    pa_omega_theorem A ->
-    pa_omega_theorem (neg (neg A))
+    PA_omega_theorem A ->
+    PA_omega_theorem (neg (neg A))
 
 | negation2 : forall (A D : formula),
-    pa_omega_theorem (lor A D) ->
-    pa_omega_theorem (lor (neg (neg A)) D)
+    PA_omega_theorem (lor A D) ->
+    PA_omega_theorem (lor (neg (neg A)) D)
 
 | quantification1 : forall (A : formula) (n : nat) (t : term),
     closed_t t = true ->
-    pa_omega_theorem (neg (substitution A n t)) ->
-    pa_omega_theorem (neg (univ n A))
+    PA_omega_theorem (neg (substitution A n t)) ->
+    PA_omega_theorem (neg (univ n A))
 
 | quantification2 : forall (A D : formula) (n : nat) (t : term),
     closed_t t = true ->
-    pa_omega_theorem (lor (neg (substitution A n t)) D) ->
-    pa_omega_theorem (lor (neg (univ n A)) D)
+    PA_omega_theorem (lor (neg (substitution A n t)) D) ->
+    PA_omega_theorem (lor (neg (univ n A)) D)
 
 
 | w_rule1 : forall (A : formula) (n : nat)
   (g : forall (m : nat),
-      pa_omega_theorem (substitution A n (represent m))),
-  pa_omega_theorem (univ n A)
+      PA_omega_theorem (substitution A n (represent m))),
+  PA_omega_theorem (univ n A)
 
 | w_rule2 : forall (A D : formula) (n : nat)
   (g : forall (m : nat),
-    pa_omega_theorem (lor (substitution A n (represent m)) D)),
-  pa_omega_theorem (lor (univ n A) D)
+    PA_omega_theorem (lor (substitution A n (represent m)) D)),
+  PA_omega_theorem (lor (univ n A) D)
 
 
 
 | cut1 : forall (C A : formula),
-    pa_omega_theorem (lor C A) ->
-    pa_omega_theorem (neg A) ->
-    pa_omega_theorem C
+    PA_omega_theorem (lor C A) ->
+    PA_omega_theorem (neg A) ->
+    PA_omega_theorem C
 
 | cut2 : forall (A D : formula),
-    pa_omega_theorem A ->
-    pa_omega_theorem (lor (neg A) D) ->
-    pa_omega_theorem D
+    PA_omega_theorem A ->
+    PA_omega_theorem (lor (neg A) D) ->
+    PA_omega_theorem D
 
 | cut3 : forall (C A D : formula),
-    pa_omega_theorem (lor C A) ->
-    pa_omega_theorem (lor (neg A) D) ->
-    pa_omega_theorem (lor C D).
+    PA_omega_theorem (lor C A) ->
+    PA_omega_theorem (lor (neg A) D) ->
+    PA_omega_theorem (lor C D).
 
 
 
@@ -2722,7 +2722,7 @@ induction n.
 Qed.
 
 Lemma equ_refl : forall (m : nat),
-  pa_omega_theorem (atom (equ (represent m) (represent m))).
+  PA_omega_theorem (atom (equ (represent m) (represent m))).
 Proof.
 intros.
 apply axiom.
@@ -2732,7 +2732,7 @@ apply eval_represent.
 Qed.
 
 Lemma w_rule_exmp : forall (n : nat),
-  pa_omega_theorem (univ n (atom (equ (var n) (var n)))).
+  PA_omega_theorem (univ n (atom (equ (var n) (var n)))).
 Proof.
 intros.
 apply w_rule1. simpl. rewrite beq_nat_refl.
@@ -2745,8 +2745,8 @@ Qed.
 (* Show that PA_omega proves the associativity laws *)
 (* *)
 Lemma associativity1 : forall (c a b : formula),
-  pa_omega_theorem (lor (lor c a) b) ->
-  pa_omega_theorem (lor c (lor a b)).
+  PA_omega_theorem (lor (lor c a) b) ->
+  PA_omega_theorem (lor c (lor a b)).
 Proof.
 intros.
 apply exchange3 in H.
@@ -2756,8 +2756,8 @@ apply H.
 Qed.
 
 Lemma associativity2 : forall (c a b : formula),
-  pa_omega_theorem (lor c (lor a b)) ->
-  pa_omega_theorem (lor (lor c a) b).
+  PA_omega_theorem (lor c (lor a b)) ->
+  PA_omega_theorem (lor (lor c a) b).
 Proof.
 intros.
 apply exchange1 in H.
@@ -2832,8 +2832,8 @@ Qed.
 
 Theorem lemma_2_atomic : forall (s t : term) (a : atomic_formula) (n : nat),
   correct_a (equ s t) = true ->
-  pa_omega_axiom (substitution (atom a) n s) = true ->
-  pa_omega_axiom (substitution (atom a) n t) = true.
+  PA_omega_axiom (substitution (atom a) n s) = true ->
+  PA_omega_axiom (substitution (atom a) n t) = true.
 Proof.
 simpl. intros.
 assert (eval s = eval t). { apply lemma_2_atomic_aux3. apply H. }
@@ -2957,7 +2957,7 @@ Lemma substitution_lemma_atomic :
   forall (a : atomic_formula) (n : nat) (s t : term),
   correct_a (equ s t) = true ->
   free_list_a a = [n] ->
-  pa_omega_theorem (lor (neg (atom (substitution_a a n s)))
+  PA_omega_theorem (lor (neg (atom (substitution_a a n s)))
                         (atom (substitution_a a n t))).
 Proof.
 intros a n s t H Ha.
@@ -2985,7 +2985,7 @@ Qed.
 
 
 Lemma LEM_atomic : forall (a : atomic_formula),
-  closed_a a = true -> pa_omega_theorem (lor (neg (atom a)) (atom a)).
+  closed_a a = true -> PA_omega_theorem (lor (neg (atom a)) (atom a)).
 Proof.
 intros.
 destruct (correctness_decid a H).
@@ -3087,8 +3087,8 @@ Qed.
 
 Lemma closed_sub_theorem : forall (A : formula) (n : nat) (t : term),
   closed A = true ->
-  pa_omega_theorem A ->
-  pa_omega_theorem (substitution A n t).
+  PA_omega_theorem A ->
+  PA_omega_theorem (substitution A n t).
 Proof. intros. rewrite closed_subst_eq. apply H0. apply H. Qed.
 
 Lemma closed_univ_sub : forall (B : formula) (n : nat),
@@ -3157,7 +3157,14 @@ Qed.
 
 
 
-
+(*
+###############################################################################
+Section 5: Here we prove that if PA_omega proves the Law of Excluded Middle,
+and a certain generalization, that if s,t are closed terms that evaluate to the
+same value, and A is a formula with exactly one free variable, then PA_omega
+proves ~A(s) \/ A(t). We will need these results in the next section.
+###############################################################################
+*)
 
 
 
@@ -3167,7 +3174,7 @@ to prove (forall A, P1 A), our main task will be to show (forall n, P3 n)
 by strong induction on n, the number of connectives. *)
 (* *)
 Definition P_1 (A : formula) : Prop :=
-  closed A = true -> pa_omega_theorem (lor (neg A) A).
+  closed A = true -> PA_omega_theorem (lor (neg A) A).
 
 Definition P_2 (A : formula) (n : nat) : Prop :=
   num_conn A = n -> P_1 A.
@@ -3223,9 +3230,9 @@ Proof. intros. apply (H n n (leq_refl n)). Qed.
 
 Lemma LEM_univ : forall (B : formula) (n m : nat),
   closed (substitution B n (represent m)) = true ->
-  pa_omega_theorem (lor (neg (substitution B n (represent m)))
+  PA_omega_theorem (lor (neg (substitution B n (represent m)))
                              (substitution B n (represent m))) ->
-  pa_omega_theorem (lor (substitution B n (represent m)) (neg (univ n B))).
+  PA_omega_theorem (lor (substitution B n (represent m)) (neg (univ n B))).
 Proof.
 intros.
 apply exchange1.
@@ -3233,45 +3240,6 @@ apply (quantification2 _ _ _ (represent m)).
 - apply eval_closed. apply eval_represent.
 - apply H0.
 Qed.
-
-
-
-(* I forgot why I proved this *)
-(*
-Lemma LEM_univ' : forall (B : formula) (n : nat), 
-  (forall (m : nat),
-    closed (substitution B n (represent m)) = true ->
-    pa_omega_theorem (lor (neg (substitution B n (represent m)))
-                               (substitution B n (represent m)))) ->
-  closed (univ n B) = true ->
-  pa_omega_theorem (lor (neg (univ n B)) (univ n B)).
-Proof.
-intros.
-apply exchange1. apply w_rule2. intros.
-pose proof (LEM_univ B n).
-specialize H with m. specialize H1 with m.
-apply H1.
-- apply closed_univ_sub_repr, H0.
-- apply H. apply closed_univ_sub_repr, H0.
-Qed.
-
-Lemma LEM_aux : forall (B : formula) (n : nat),
-  closed B = true ->
-  pa_omega_theorem (lor (neg B) B) ->
-  forall (m : nat),
-    pa_omega_theorem (lor (substitution B n (represent m)) (neg (univ n B))).
-Proof.
-intros.
-apply exchange1.
-apply (quantification2 _ _ _ (represent n)).
-- apply eval_closed. apply eval_represent.
-- rewrite closed_subst_eq.
-  + rewrite closed_subst_eq.
-    * apply H0.
-    * apply H.
-  + apply H.
-Qed.
-*)
 
 
 
@@ -3331,7 +3299,7 @@ apply (H (num_conn A) A). auto.
 Qed.
 
 Lemma LEM : forall (A : formula),
-  closed A = true -> pa_omega_theorem (lor (neg A) A).
+  closed A = true -> PA_omega_theorem (lor (neg A) A).
 Proof. apply P_1_lemma. Qed.
 
 
@@ -3405,7 +3373,7 @@ Proof. apply P_1_lemma. Qed.
 Definition P1 (A : formula) : Prop := forall (n : nat) (s t : term),
   correct_a (equ s t) = true ->
   free_list A = [n] ->
-  pa_omega_theorem (lor (neg (substitution A n s)) (substitution A n t)).
+  PA_omega_theorem (lor (neg (substitution A n s)) (substitution A n t)).
 
 Definition P2 (A : formula) (n : nat) : Prop := num_conn A = n -> P1 A.
 
@@ -3521,7 +3489,6 @@ destruct (repeated_element_n_concat _ _ _ H) as [HB HC]. split.
   + right. apply free_list_closed, HC'.
 Qed.
 
-(* false without closure *)
 Lemma substitution_order_t : forall (T : term) (m n : nat) (s t : term),
   closed_t s = true ->
   closed_t t = true ->
@@ -3572,23 +3539,6 @@ intros B m n s t Hs Ht Hmn. induction B; simpl.
   + destruct (beq_nat n0 m) eqn:Hm; simpl; rewrite Hm, Hn; auto.
     rewrite IHB. auto.
 Qed.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 Lemma univ_free_var : forall (B : formula) (m n : nat),
   free_list (univ m B) = [n] -> beq_nat m n = false.
@@ -3676,7 +3626,7 @@ Qed.
 Lemma substitution_lemma : forall (A : formula) (n : nat) (s t : term),
   correct_a (equ s t) = true ->
   free_list A = [n] ->
-  pa_omega_theorem (lor (neg (substitution A n s)) (substitution A n t)).
+  PA_omega_theorem (lor (neg (substitution A n s)) (substitution A n t)).
 Proof. apply P1_lemma. Qed.
 
 
@@ -3748,272 +3698,97 @@ Proof. apply P1_lemma. Qed.
 
 
 
-
-
-
-
-
-
-
-
-
-(* DeMorgan invertible *)
-(* *)
-
-
-(* Given a formula A, replace any subformula T with formula U.
-T will be assumed to NOT be a disjunction. *)
-
-Fixpoint formula_substitution (A T U : formula) : formula :=
-match A with
-| lor B C => lor (formula_substitution B T U) (formula_substitution C T U)
-| _ =>
-  (match (eq_f A T) with
-  | true => U
-  | false => A
-  end)
-end.
-
-
-(* ~(B \/ C) \/ D -> ~B \/ D *)
-Lemma exmp : forall (B C D : formula),
-  formula_substitution (lor (neg (lor B C)) D) (neg (lor B C)) (neg B) =
-  lor (neg B) (formula_substitution D (neg (lor B C)) (neg B)).
-Proof. intros. simpl. rewrite (eq_f_refl B), (eq_f_refl C). simpl. auto. Qed.
-
-
-
 (*
-Theorem demorgan_invertible : forall (B C D : formula),
-  pa_omega_theorem (lor (neg (lor B C)) D) ->
-  pa_omega_theorem (lor (neg B) D).
-Proof.
-intros.
-inversion pa_omega_theorem.
-(* axiom *)
-- admit.
-
-
-
-
-
-(* exchange1 *)
-- admit.
-
-(* contraction1 *)
-- admit.
-
-(* contraction2 *)
-- admit.
-
-(* weakening *)
-- apply weakening.
-  + inversion H2. admit. (* easy *)
-  + apply H3.
-
-(* demorgan2 *)
-- apply H2.
-
-(* cut1 *)
-- admit.
-
-(* cut2 *)
-- admit.
-
-(* cut3 *)
-- admit.
-
+###############################################################################
+Section 6: Here we will set up the axioms and rules of inference of PA.
+###############################################################################
 *)
 
 
 
+(*
+Inductive PA_prop_axiom : formula -> Prop :=
+| axiom_1 : forall (B C : formula),
+    PA_prop_axiom (lor (neg B) (lor (neg C) B)).
 
-Theorem demorgan_invertible : forall (A B C : formula),
-  pa_omega_theorem A ->
-  pa_omega_theorem (formula_substitution A (neg (lor B C)) (neg B)).
+Lemma PA_omega_prop_axiom : forall (A : formula),
+  PA_prop_axiom A -> PA_omega_theorem A.
+Proof.
+intros. inversion H.
+apply exchange1.
+apply exchange2.
+apply associativity2.
+apply weakening.
+- admit.
+- apply LEM. admit.
+Admitted.
+
+
+Inductive PA_prop_axiom_1 : formula -> Prop := 
+| A1 : forall (B C : formula),
+    PA_prop_axiom_1 (lor (neg B) (lor (neg C) B)).
+
+Lemma PA_omega_prop_axiom_1 : forall (A : formula),
+  PA_prop_axiom_1 A -> PA_omega_theorem A.
+Proof.
+intros. inversion H.
+apply exchange1.
+apply exchange2.
+apply associativity2.
+apply weakening.
+- admit.
+- apply LEM. admit.
+Admitted.
+
+
+
+
+Inductive PA_prop_axiom_2 : formula -> Prop :=
+| A2 : forall (B C D : formula),
+    PA_prop_axiom_2 (lor (neg (lor (neg B) (lor (neg C) D)))
+                         (lor (neg (lor (neg B) C)) (lor (neg B) D))).
+
+Lemma PA_omega_prop_axiom_2 : forall (A : formula),
+  PA_prop_axiom_2 A -> PA_omega_theorem A.
+Proof.
+intros. inversion H.
+apply exchange1.
+apply exchange3.
+apply exchange4.
+apply associativity2.
+apply associativity2.
+apply contraction2.
+
+
+apply exchange4.
+
+
+
+
+Definition PA_prop_axiom (A : formula) : bool :=
+match A with
+| lor (neg B) (lor (neg C) B) => true
+| lor (neg (lor (neg B) (lor (neg C) D)))
+      (lor (neg (lor (neg B) C)) (lor (neg B) D)) => true
+| lor (neg (lor (neg (neg B)) (neg C)))
+      (lor (neg (lor (neg (neg B)) C)) B) => true
+| _ => false
+end.
+
+Lemma PA_omega_prop_axiom : forall (A : formula),
+  PA_prop_axiom A = true -> PA_omega_theorem A.
 Proof.
 intros.
-inversion H.
-(* axiom *)
-- admit.
 
-(* exchange1 *)
-- simpl. apply exchange1. admit.
 
-(* contraction1 *)
-- admit.
 
-(* contraction2 *)
-- admit.
 
-(* weakening *)
-- apply weakening.
-  + inversion H2. admit. (* easy *)
-  + apply H3.
 
-(* demorgan2 *)
-- apply H2.
 
-(* cut1 *)
-- admit.
 
-(* cut2 *)
-- admit.
 
-(* cut3 *)
-- admit.
 
-
-Theorem demorgan_invertible : forall (B C D : formula),
-  pa_omega_theorem (lor (neg (lor B C)) D) ->
-  pa_omega_theorem (lor (neg B) D).
-Proof.
-intros.
-inversion H.
-(* axiom *)
-- inversion H0.
-
-(* exchange1 *)
-- admit.
-
-(* contraction1 *)
-- admit.
-
-(* contraction2 *)
-- admit.
-
-(* weakening *)
-- apply weakening.
-  + inversion H2. admit. (* easy *)
-  + apply H3.
-
-(* demorgan2 *)
-- apply H2.
-
-(* cut1 *)
-- admit.
-
-(* cut2 *)
-- admit.
-
-(* cut3 *)
-- admit.
-
-
-
-
-
-
-
-
-Theorem demorgan_invertible : forall (B C : formula),
-  pa_omega_theorem (neg (lor B C)) ->
-  pa_omega_theorem (neg B).
-Proof.
-intros.
-inversion H.
-(* axiom *)
-- inversion H0.
-
-(* contraction1 *)
-- admit.
-
-(* demorgan1 *)
-- apply H2.
-
-(* cut1 *)
-- 
-
-(* cut2 *)
-- admit.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-(* Proofs in PA_omega, except restricted with some n denoting the highest
-    degree of any cut, and some ordinal assignment e0 *)
-(* *)
-Inductive pa_omega_proves : formula -> nat -> e0 -> Prop :=
-| greater_degree : forall (a : formula) (n m : nat) (alpha : e0),
-    pa_omega_proves a n alpha ->
-    m > n ->
-    pa_omega_proves a m alpha
-
-| greater_ordinal : forall (a : formula) (n : nat) (alpha beta : e0),
-    pa_omega_proves a n alpha ->
-    gt_e0 beta alpha ->
-    pa_omega_proves a n beta
-
-
-
-| axiom' : forall (a : formula),
-    pa_omega_axiom a = true ->
-    pa_omega_proves a 0 (exist nf Zero Zero_nf)
-
-
-
-| exchange1' : forall (a b : formula) (n : nat) (alpha : e0),
-    pa_omega_proves (lor a b) n alpha ->
-    pa_omega_proves (lor b a) n alpha.
-
-
-
-
-
-
-
-
-
-
-
-
-
+| lor (neg (univ n B)) (substitution B n t)
 
 
 
@@ -4142,6 +3917,48 @@ Definition peano_axiom_9 (f : formula) (x : nat) : formula :=
 
 
 
+*)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(*
+###############################################################################
+Section 7: Here we will prove that if PA proves some A, then so does PA_omega.
+###############################################################################
+*)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4188,9 +4005,845 @@ Definition peano_axiom_9 (f : formula) (x : nat) : formula :=
 
 
 (*
+(*
 ###############################################################################
-Section 5: Here we will prove that if PA proves some A, then so does PA_omega.
+Section 8: DeMorgan invertibility
 ###############################################################################
+*)
+
+
+(* Given a formula A, replace any subformula T with formula U.
+T will be assumed to NOT be a disjunction. *)
+
+Fixpoint formula_substitution (A T U : formula) : formula :=
+match A with
+| lor B C => lor (formula_substitution B T U) (formula_substitution C T U)
+| _ =>
+  (match (eq_f A T) with
+  | true => U
+  | false => A
+  end)
+end.
+
+Fixpoint formula_substitution_b_c (A B C : formula) : formula :=
+match A with
+| neg (lor P Q) =>
+    (match (eq_f P B && eq_f Q C) with
+    | true => neg B
+    | false => neg (lor (formula_substitution_b_c P B C)
+                        (formula_substitution_b_c Q B C))
+    end)
+| lor P Q => lor (formula_substitution_b_c P B C)
+                 (formula_substitution_b_c Q B C)
+| atom a => A
+| neg P => neg (formula_substitution_b_c P B C)
+| univ n P => univ n (formula_substitution_b_c P B C)
+end.
+
+
+
+
+Fixpoint b_c_sub_right (A : formula) : formula :=
+match A with
+| neg (lor B C) => neg B
+| lor (neg (lor B C)) D => lor (neg B) D
+| _ => A
+end.
+
+Lemma f_eq_beq : forall (A B : formula), eq_f A B = true -> A = B.
+Admitted.
+
+
+Theorem b_c_sub_right_invert : forall (A B C : formula),
+  PA_omega_theorem A ->
+  PA_omega_theorem (formula_substitution_b_c A B C).
+Proof.
+intros.
+induction H.
+
+(* axiom *)
+- destruct A.
+  + simpl. apply axiom, H.
+  + simpl. destruct A eqn:HA.
+    * apply axiom, H.
+    * inversion H.
+    * inversion H.
+    * inversion H.
+  + inversion H.
+  + inversion H.
+
+(* exchange1 *)
+- simpl. apply exchange1. apply IHPA_omega_theorem.
+
+(* exchange2 *)
+- simpl. apply exchange2. apply IHPA_omega_theorem.
+
+(* exchange3 *)
+- simpl. apply exchange3. apply IHPA_omega_theorem.
+
+(* exchange4 *)
+- simpl. apply exchange4. apply IHPA_omega_theorem.
+
+(* contraction1 *)
+- simpl. apply contraction1. apply IHPA_omega_theorem.
+
+(* contraction2 *)
+- simpl. apply contraction2. apply IHPA_omega_theorem.
+
+(* weakening *)
+- simpl. apply weakening.
+  + admit.                        (* doable *)
+  + apply IHPA_omega_theorem.
+
+(* demorgan1 *)
+- simpl. destruct (eq_f A B && eq_f B0 C) eqn:Heq.
+  + destruct (and_bool_prop _ _ Heq). rewrite <- (f_eq_beq _ _ H1). apply H.
+  + apply demorgan1.
+    * simpl in IHPA_omega_theorem1.
+    * apply H0.
+
+(* demorgan2 *)
+- simpl. destruct (eq_f A B && eq_f B0 C) eqn:Heq.
+  + destruct (and_bool_prop _ _ Heq). apply f_eq_beq in H1.
+    simpl in IHPA_omega_theorem1.
+    rewrite H1 in IHPA_omega_theorem1.
+    assert (eq_f B (lor B C) = false). { admit. } (* easy *)
+    rewrite H3 in IHPA_omega_theorem1.
+    apply IHPA_omega_theorem1.
+  + apply demorgan2.
+    * simpl in IHPA_omega_theorem1.
+      admit.
+    * admit.
+
+(* negation1 *)
+- simpl. apply negation1. apply H.
+
+(* negation2 *)
+- simpl. simpl in IHPA_omega_theorem. apply negation2. admit.
+
+(* quantification1 *)
+- simpl. apply quantification1 in H0.
+  + apply H0.
+  + apply H.
+
+(* quantification2 *)
+- simpl. apply quantification2 in H0.
+  + simpl in IHPA_omega_theorem.
+    destruct (eq_f (substitution A n t) (lor B C)) eqn:Heq.
+    * admit.
+    * apply (quantification2 _ _ _ _ H IHPA_omega_theorem).
+  + apply H.
+
+(* w_rule1 *)
+- simpl. apply w_rule1. apply g.
+
+(* w_rule2 *)
+- simpl. apply w_rule2. admit.
+
+(* cut1 *)
+- simpl. simpl in IHPA_omega_theorem1. simpl in IHPA_omega_theorem2. admit.
+
+(* cut2 *)
+- simpl. simpl in IHPA_omega_theorem1. simpl in IHPA_omega_theorem2. admit.
+
+(* cut3 *)
+- simpl. simpl in IHPA_omega_theorem1. simpl in IHPA_omega_theorem2. admit.
+Admitted.
+
+
+
+
+(* ~(B \/ C) \/ D -> ~B \/ D *)
+Lemma exmp : forall (B C D : formula),
+  formula_substitution (lor (neg (lor B C)) D) (neg (lor B C)) (neg B) =
+  lor (neg B) (formula_substitution D (neg (lor B C)) (neg B)).
+Proof. intros. simpl. rewrite (eq_f_refl B), (eq_f_refl C). simpl. auto. Qed.
+
+Lemma formula_substitution_closed : forall (A T U : formula),
+  closed A = true ->
+  closed U = true ->
+  closed (formula_substitution A T U) = true.
+Admitted.
+
+
+
+
+(*
+Theorem demorgan_invertible : forall (B C D : formula),
+  PA_omega_theorem (lor (neg (lor B C)) D) ->
+  PA_omega_theorem (lor (neg B) D).
+Proof.
+intros.
+inversion H.
+(* axiom *)
+- admit.
+
+
+
+
+
+
+
+(* exchange1 *)
+- admit.
+
+(* contraction1 *)
+- admit.
+
+(* contraction2 *)
+- admit.
+
+(* weakening *)
+- apply weakening.
+  + inversion H2. admit. (* easy *)
+  + apply H3.
+
+(* demorgan2 *)
+- apply H2.
+
+(* cut1 *)
+- admit.
+
+(* cut2 *)
+- admit.
+
+(* cut3 *)
+- admit.
+
+
+Theorem stuff : 
+  (forall (C D : formula),
+    PA_omega_theorem (lor C D) -> PA_omega_theorem (lor D C)) ->
+*)
+
+
+
+
+
+Theorem exchange1_lemma : forall (A B C D : formula),
+    PA_omega_theorem (formula_substitution (lor A D) (neg (lor B C)) (neg B)) ->
+    PA_omega_theorem (formula_substitution (lor D A) (neg (lor B C)) (neg B)).
+Proof. intros. simpl. simpl in H. apply exchange1. apply H. Qed.
+
+
+Theorem f_beq_eq : forall (A B : formula), eq_f A B = true -> A = B.
+Admitted.
+
+
+
+
+Theorem demorgan_sub : forall (A B C : formula),
+  PA_omega_theorem A ->
+  PA_omega_theorem (formula_substitution A (neg (lor B C)) (neg B)).
+Proof.
+intros.
+induction H.
+
+(* axiom *)
+- destruct A.
+  + simpl. apply axiom, H.
+  + simpl. destruct (eq_f A (lor B C)) eqn:HA.
+    * apply f_beq_eq in HA. rewrite HA in H. inversion H.
+    * apply axiom, H.
+  + inversion H.
+  + inversion H.
+
+(* exchange1 *)
+- simpl. apply exchange1. apply IHPA_omega_theorem.
+
+(* exchange2 *)
+- simpl. apply exchange2. apply IHPA_omega_theorem.
+
+(* exchange3 *)
+- simpl. apply exchange3. apply IHPA_omega_theorem.
+
+(* exchange4 *)
+- simpl. apply exchange4. apply IHPA_omega_theorem.
+
+(* contraction1 *)
+- simpl. apply contraction1. apply IHPA_omega_theorem.
+
+(* contraction2 *)
+- simpl. apply contraction2. apply IHPA_omega_theorem.
+
+(* weakening *)
+- simpl. apply weakening.
+  + admit.                        (* doable *)
+  + apply IHPA_omega_theorem.
+
+(* demorgan1 *)
+- simpl. destruct (eq_f A B && eq_f B0 C) eqn:Heq.
+  + destruct (and_bool_prop _ _ Heq). rewrite <- (f_eq_beq _ _ H1). apply H.
+  + apply demorgan1.
+    * apply H.
+    * apply H0.
+
+(* demorgan2 *)
+- simpl. destruct (eq_f A B && eq_f B0 C) eqn:Heq.
+  + destruct (and_bool_prop _ _ Heq). apply f_eq_beq in H1.
+    simpl in IHPA_omega_theorem1.
+    rewrite H1 in IHPA_omega_theorem1.
+    assert (eq_f B (lor B C) = false). { admit. } (* easy *)
+    rewrite H3 in IHPA_omega_theorem1.
+    apply IHPA_omega_theorem1.
+  + apply demorgan2.
+    * simpl in IHPA_omega_theorem1.
+      admit.
+    * admit.
+
+(* negation1 *)
+- simpl. apply negation1. apply H.
+
+(* negation2 *)
+- simpl. simpl in IHPA_omega_theorem. apply negation2. admit.
+
+(* quantification1 *)
+- simpl. apply quantification1 in H0.
+  + apply H0.
+  + apply H.
+
+(* quantification2 *)
+- simpl. apply quantification2 in H0.
+  + simpl in IHPA_omega_theorem.
+    destruct (eq_f (substitution A n t) (lor B C)) eqn:Heq.
+    * admit.
+    * apply (quantification2 _ _ _ _ H IHPA_omega_theorem).
+  + apply H.
+
+(* w_rule1 *)
+- simpl. apply w_rule1. apply g.
+
+(* w_rule2 *)
+- simpl. apply w_rule2. admit.
+
+(* cut1 *)
+- simpl. simpl in IHPA_omega_theorem1. simpl in IHPA_omega_theorem2.
+  destruct (eq_f A (lor B C)) eqn:HA.
+  + apply f_beq_eq in HA. rewrite HA in IHPA_omega_theorem1.
+    simpl in IHPA_omega_theorem1. admit.
+  + admit.
+
+(* cut2 *)
+- simpl. simpl in IHPA_omega_theorem1. simpl in IHPA_omega_theorem2. admit.
+
+(* cut3 *)
+- simpl. simpl in IHPA_omega_theorem1. simpl in IHPA_omega_theorem2. admit.
+Admitted.
+
+
+
+Theorem demorgan_sub' : forall (A B C : formula),
+  PA_omega_theorem A ->
+  PA_omega_theorem (formula_substitution' A (neg (lor B C)) (neg B)).
+Proof.
+intros.
+induction H.
+
+(* axiom *)
+- destruct A.
+  + simpl. apply axiom, H.
+  + simpl. destruct (eq_f A (lor B C)) eqn:HA.
+    * apply f_beq_eq in HA. rewrite HA in H. inversion H.
+    * apply axiom, H.
+  + inversion H.
+  + inversion H.
+
+(* exchange1 *)
+- simpl. apply exchange1. apply IHPA_omega_theorem.
+
+(* exchange2 *)
+- simpl. apply exchange2. apply IHPA_omega_theorem.
+
+(* exchange3 *)
+- simpl. apply exchange3. apply IHPA_omega_theorem.
+
+(* exchange4 *)
+- simpl. apply exchange4. apply IHPA_omega_theorem.
+
+(* contraction1 *)
+- simpl. apply contraction1. apply IHPA_omega_theorem.
+
+(* contraction2 *)
+- simpl. apply contraction2. apply IHPA_omega_theorem.
+
+(* weakening *)
+- simpl. apply weakening.
+  + admit.                        (* doable *)
+  + apply IHPA_omega_theorem.
+
+(* demorgan1 *)
+- simpl. destruct (eq_f A B && eq_f B0 C) eqn:Heq.
+  + destruct (and_bool_prop _ _ Heq). rewrite <- (f_eq_beq _ _ H1). apply H.
+  + apply demorgan1.
+    * apply H.
+    * apply H0.
+
+(* demorgan2 *)
+- simpl. destruct (eq_f A B && eq_f B0 C) eqn:Heq.
+  + destruct (and_bool_prop _ _ Heq). apply f_eq_beq in H1.
+    simpl in IHPA_omega_theorem1.
+    rewrite H1 in IHPA_omega_theorem1.
+    assert (eq_f B (lor B C) = false). { admit. } (* easy *)
+    rewrite H3 in IHPA_omega_theorem1.
+    apply IHPA_omega_theorem1.
+  + apply demorgan2.
+    * simpl in IHPA_omega_theorem1.
+      admit.
+    * admit.
+
+(* negation1 *)
+- simpl. apply negation1. apply H.
+
+(* negation2 *)
+- simpl. simpl in IHPA_omega_theorem. apply negation2. admit.
+
+(* quantification1 *)
+- simpl. apply quantification1 in H0.
+  + apply H0.
+  + apply H.
+
+(* quantification2 *)
+- simpl. apply quantification2 in H0.
+  + simpl in IHPA_omega_theorem.
+    destruct (eq_f (substitution A n t) (lor B C)) eqn:Heq.
+    * admit.
+    * apply (quantification2 _ _ _ _ H IHPA_omega_theorem).
+  + apply H.
+
+(* w_rule1 *)
+- simpl. apply w_rule1. apply g.
+
+(* w_rule2 *)
+- simpl. apply w_rule2. admit.
+
+(* cut1 *)
+- simpl. simpl in IHPA_omega_theorem1. simpl in IHPA_omega_theorem2. admit.
+
+(* cut2 *)
+- simpl. simpl in IHPA_omega_theorem1. simpl in IHPA_omega_theorem2. admit.
+
+(* cut3 *)
+- simpl. simpl in IHPA_omega_theorem1. simpl in IHPA_omega_theorem2. admit.
+Admitted.
+
+
+(*
+Theorem demorgan_invertible' : forall (B C D : formula),
+  PA_omega_theorem (lor (neg (lor B C)) D) ->
+  PA_omega_theorem (lor (neg B) D).
+Proof.
+intros.
+induction H; try (apply IHPA_omega_theorem); try (apply IHPA_omega_theorem1).
+- admit.
+- apply H. apply n.
+- apply H. apply n.
+Admitted.
+
+
+
+
+
+
+
+
+Theorem demorgan_invertible'' : forall (A B C D : formula),
+  A = lor (neg (lor B C)) D ->
+  PA_omega_theorem A ->
+  PA_omega_theorem (lor (neg B) D).
+Proof.
+intros A B C D HA H.
+induction H.
+- rewrite HA in H. inversion H.
+
+- inversion HA. rewrite H2,H1 in H.
+*)
+
+
+Theorem demorgan_invertible : forall (A B C : formula),
+  PA_omega_theorem (neg (lor B C)) ->
+  PA_omega_theorem (formula_substitution (neg (lor B C))
+                                         (neg (lor B C))
+                                         (neg B)).
+Proof.
+intros A B C H.
+induction H.
+
+(* axiom *)
+- destruct A0; simpl.
+  + 
+
+ admit. (* doable *)
+
+(* exchange1 *)
+- simpl. apply exchange1. unfold formula_substitution. apply IHPA_omega_theorem.
+
+(* exchange2 *)
+- simpl. apply exchange2. apply IHPA_omega_theorem.
+
+(* exchange3 *)
+- simpl. apply exchange3. apply IHPA_omega_theorem.
+
+(* exchange4 *)
+- simpl. apply exchange4. apply IHPA_omega_theorem.
+
+
+(* contraction1 *)
+- simpl. apply contraction1. apply IHPA_omega_theorem.
+
+(* contraction2 *)
+- simpl. apply contraction2. apply IHPA_omega_theorem.
+
+(* weakening *)
+- simpl. apply weakening.
+  + admit. (* doable *)
+  + apply IHPA_omega_theorem.
+
+(* demorgan1 *)
+- simpl. destruct (eq_f A0 B && eq_f B0 C) eqn:Heq.
+  + admit. (* doable *)
+  + apply demorgan1.
+    * apply H.
+    * apply H0.
+
+(* demorgan2 *)
+- simpl. destruct (eq_f A0 B && eq_f B0 C) eqn:Heq.
+  + admit.
+  + admit.
+
+(* negation1 *)
+- admit.
+
+(* negation2 *)
+- admit.
+
+(* quantification1 *)
+- admit.
+
+(* quantification2 *)
+- admit.
+
+(* w_rule1 *)
+- admit.
+
+(* w_rule2 *)
+- admit.
+
+(* cut1 *)
+- admit.
+
+(* cut2 *)
+- admit.
+
+(* cut3 *)
+- admit.
+Admitted.
+
+
+
+
+
+
+Theorem demorgan_invertible : forall (A B C D : formula),
+  PA_omega_theorem (lor (neg (lor B C)) D) ->
+  PA_omega_theorem (formula_substitution (lor (neg (lor B C)) D)
+                                         (neg (lor B C))
+                                         (neg B)).
+Proof.
+intros A B C D H.
+induction H.
+
+(* axiom *)
+- admit. (* doable *)
+
+(* exchange1 *)
+- simpl. apply exchange1. apply IHPA_omega_theorem.
+
+(* exchange2 *)
+- simpl. apply exchange2. apply IHPA_omega_theorem.
+
+(* exchange3 *)
+- simpl. apply exchange3. apply IHPA_omega_theorem.
+
+(* exchange4 *)
+- simpl. apply exchange4. apply IHPA_omega_theorem.
+
+
+(* contraction1 *)
+- simpl. apply contraction1. apply IHPA_omega_theorem.
+
+(* contraction2 *)
+- simpl. apply contraction2. apply IHPA_omega_theorem.
+
+(* weakening *)
+- simpl. apply weakening.
+  + admit. (* doable *)
+  + apply IHPA_omega_theorem.
+
+(* demorgan1 *)
+- simpl. destruct (eq_f A0 B && eq_f B0 C) eqn:Heq.
+  + admit. (* doable *)
+  + apply demorgan1.
+    * apply H.
+    * apply H0.
+
+(* demorgan2 *)
+- simpl. destruct (eq_f A0 B && eq_f B0 C) eqn:Heq.
+  + admit.
+  + admit.
+
+(* negation1 *)
+- admit.
+
+(* negation2 *)
+- admit.
+
+(* quantification1 *)
+- admit.
+
+(* quantification2 *)
+- admit.
+
+(* w_rule1 *)
+- admit.
+
+(* w_rule2 *)
+- admit.
+
+(* cut1 *)
+- admit.
+
+(* cut2 *)
+- admit.
+
+(* cut3 *)
+- admit.
+Admitted.
+
+
+
+
+
+Theorem demorgan_invertible : forall (A B C D : formula),
+  A = lor (neg (lor B C)) D ->
+  PA_omega_theorem (lor (neg (lor B C)) D) ->
+  PA_omega_theorem (formula_substitution (lor (neg (lor B C)) D)
+                                         (neg (lor B C))
+                                         (neg B)).
+Proof.
+intros A B C D HA H.
+induction H.
+
+- admit. (* doable *)
+
+- simpl. apply exchange1. apply IHPA_omega_theorem.
+
+
+
+
+
+
+
+
+
+
+Theorem demorgan_invertible : forall (B C D : formula),
+  PA_omega_theorem (lor (neg (lor B C)) D) ->
+  PA_omega_theorem (lor (neg B) D).
+Proof.
+intros.
+induction H.
+
+- 
+
+induction (lor (neg (lor B C)) D).
+- 
+
+
+
+induction H.
+- admit.
+- admit.
+- admit.
+- admit.
+- admit.
+- admit.
+- admit.
+- admit.
+- admit.
+- admit.
+- admit.
+- admit.
+- admit.
+- admit.
+- admit.
+- admit.
+- admit.
+- admit.
+- admit.
+Admitted.
+
+
+
+Theorem demorgan_invertible' : forall (B C D : formula),
+  PA_omega_theorem (lor (neg (lor B C)) D) ->
+  PA_omega_theorem (lor (neg B) D).
+Proof.
+intros.
+inversion H.
+- inversion H0.
+- 
+
+
+induction H as [ x1 x2 x3 x4 |
+  E F H IH | | IH | IH | IH | IH |                 (* weak rules *)
+  IH | IH1 IH2 | IH1 IH2 | IH | IH | IH | IH |  (* strong rules *)
+   | |                                          (* w_rule*)
+  IH1 IH2 | IH1 IH2 | IH1 IH2].                 (* cut_rule *)
+
+
+
+
+(* axiom *)
+- inversion x2.
+
+(* axiom *)
+- admit.
+
+- 
+
+- apply H. apply n.
+
+(* axiom *)
+- admit.
+
+(* axiom *)
+- admit.
+
+(* axiom *)
+- admit.
+
+(* axiom *)
+- admit.
+
+(* axiom *)
+- admit.
+
+(* axiom *)
+- admit.
+
+
+
+
+
+
+- admit.
+
+
+
+
+
+
+
+
+
+
+
+
+
+Theorem demorgan_invertible' : forall (B C D : formula),
+  PA_omega_theorem (lor (neg (lor B C)) D) ->
+  PA_omega_theorem (lor (neg B) D).
+Proof.
+intros.
+
+
+(* axiom *)
+- admit.
+
+(* exchange1 *)
+- apply IHPA_omega_theorem.
+
+(* exchange2 *)
+- admit.
+
+(* exchange3 *)
+- admit.
+
+(* exchange4 *)
+- admit.
+
+
+(* contraction1 *)
+- admit.
+
+(* contraction2 *)
+- admit.
+
+(* weakening *)
+- admit.
+
+(* demorgan1 *)
+- admit.
+
+(* demorgan2 *)
+- admit.
+
+(* negation1 *)
+- admit.
+
+(* negation2 *)
+- admit.
+
+(* quantification1 *)
+- admit.
+
+(* quantification2 *)
+- admit.
+
+(* w_rule1 *)
+- admit.
+
+(* w_rule2 *)
+- admit.
+
+(* cut1 *)
+- admit.
+
+(* cut2 *)
+- admit.
+
+(* cut3 *)
+- admit.
+Admitted.
+
+
+
+
+
+
+
+
+
+Theorem demorgan_invertible : forall (B C : formula),
+  PA_omega_theorem (neg (lor B C)) ->
+  PA_omega_theorem (neg B).
+Proof.
+intros.
+inversion H.
+(* axiom *)
+- inversion H0.
+
+(* contraction1 *)
+- admit.
+
+(* demorgan1 *)
+- apply H2.
+
+(* cut1 *)
+- 
+
+(* cut2 *)
+- admit.
 *)
 
 
@@ -4255,12 +4908,421 @@ Section 5: Here we will prove that if PA proves some A, then so does PA_omega.
 
 
 
-
 (*
 ###############################################################################
-Section 6: Proof trees and ordinal assignments for PA_omega proofs
+Section 9: Proof trees and ordinal assignments for PA_omega proofs
 ###############################################################################
 *)
+
+
+(*
+
+(* Proofs in PA_omega, except restricted with some n denoting the highest
+    degree of any cut, and some ordinal assignment e0 *)
+(* *)
+Inductive PA_omega_proves : formula -> nat -> e0 -> Prop :=
+| greater_degree : forall (a : formula) (n m : nat) (alpha : e0),
+    PA_omega_proves a n alpha ->
+    m > n ->
+    PA_omega_proves a m alpha
+
+| greater_ordinal : forall (a : formula) (n : nat) (alpha beta : e0),
+    PA_omega_proves a n alpha ->
+    gt_e0 beta alpha ->
+    PA_omega_proves a n beta
+
+
+
+| axiom' : forall (a : formula),
+    PA_omega_axiom a = true ->
+    PA_omega_proves a 0 (exist nf Zero Zero_nf)
+
+
+
+| exchange1' : forall (a b : formula) (n : nat) (alpha : e0),
+    PA_omega_proves (lor a b) n alpha ->
+    PA_omega_proves (lor b a) n alpha.
+
+*)
+
+
+
+(*
+Defining formula trees, which are proof trees without the ordinals/degrees.
+*)
+(* *)
+
+Check 0.
+
+Inductive ftree : Type :=
+| node : formula -> ftree
+
+
+| exchange_ab : formula -> formula -> ftree -> ftree
+
+| exchange_cab : formula -> formula -> formula -> ftree -> ftree
+
+| exchange_abd : formula -> formula -> formula -> ftree -> ftree
+
+| exchange_cabd : formula -> formula -> formula -> formula -> ftree -> ftree
+
+| contraction_a : formula -> ftree -> ftree
+
+| contraction_ad : formula -> formula -> ftree -> ftree
+
+
+| weakening_ad : formula -> formula -> ftree -> ftree
+
+| demorgan_ab : formula -> formula -> ftree -> ftree -> ftree
+
+| demorgan_abd : formula -> formula -> formula -> ftree -> ftree -> ftree
+
+| negation_a : formula -> ftree -> ftree
+
+| negation_ad : formula -> formula -> ftree -> ftree
+
+
+
+| quantification_a : formula -> nat -> term -> ftree -> ftree
+
+| quantification_ad : formula -> formula -> nat -> term -> ftree -> ftree
+
+| w_rule_a : formula -> nat -> (nat -> ftree) -> ftree
+
+| w_rule_ad : formula -> formula -> nat -> (nat -> ftree) -> ftree
+
+| cut_ca : formula -> formula -> ftree -> ftree -> ftree
+
+| cut_ad : formula -> formula -> ftree -> ftree -> ftree
+
+| cut_cad : formula -> formula -> formula -> ftree -> ftree -> ftree.
+
+
+
+Fixpoint ftree_formula (P : ftree) : formula :=
+match P with
+| node A => A
+
+
+| exchange_ab A B P' => lor B A
+
+| exchange_cab C A B P' => lor (lor C B) A
+
+| exchange_abd A B D P' => lor (lor B A) D
+
+| exchange_cabd C A B D P' => lor (lor (lor C B) A) D
+
+| contraction_a A P' => A
+
+| contraction_ad A D P' => lor A D
+
+
+| weakening_ad A D P' => lor A D
+
+| demorgan_ab A B P1 P2 => neg (lor A B)
+
+| demorgan_abd A B D P1 P2 => lor (neg (lor A B)) D
+
+| negation_a A P' => neg (neg A)
+
+| negation_ad A D P' => lor (neg (neg A)) D
+
+| quantification_a A n t P' => neg (univ n A)
+
+| quantification_ad A D n t P' => lor (neg (univ n A)) D
+
+| w_rule_a A n g => univ n A
+
+| w_rule_ad A D n g => lor (univ n A) D
+
+
+| cut_ca C A P1 P2 => C
+
+| cut_ad A D P1 P2 => D
+
+| cut_cad C A D P1 P2 => lor C D
+
+end.
+
+
+
+Fixpoint valid (P : ftree) : Prop :=
+match P with
+| node A => PA_omega_axiom A = true
+
+| exchange_ab A B P' => ftree_formula P' = lor A B /\ valid P'
+
+| exchange_cab C A B P' => ftree_formula P' = lor (lor C A) B /\ valid P'
+
+| exchange_abd A B D P' => ftree_formula P' = lor (lor A B) D /\ valid P'
+
+| exchange_cabd C A B D P' =>
+    ftree_formula P' = lor (lor (lor C A) B) D /\ valid P'
+
+| contraction_a A P' => ftree_formula P' = lor A A /\ valid P'
+
+| contraction_ad A D P' => ftree_formula P' = lor (lor A A) D /\ valid P'
+
+
+| weakening_ad A D P' => ftree_formula P' = A /\ closed A = true /\ valid P'
+
+| demorgan_ab A B P1 P2 =>
+    ftree_formula P1 = neg A /\ valid P1 /\
+    ftree_formula P2 = neg B /\ valid P2
+
+| demorgan_abd A B D P1 P2 =>
+    ftree_formula P1 = lor (neg A) D /\ valid P1 /\
+    ftree_formula P2 = lor (neg B) D /\ valid P2
+
+| negation_a A P' => ftree_formula P' = A /\ valid P'
+
+| negation_ad A D P' => ftree_formula P' = lor A D /\ valid P'
+
+
+| quantification_a A n t P' =>
+    ftree_formula P' = neg (substitution A n t) /\
+    closed_t t = true /\ valid P'
+
+| quantification_ad A D n t P' =>
+    ftree_formula P' = lor (neg (substitution A n t)) D /\
+    closed_t t = true /\ valid P'
+
+(* w_rule will also need condition on max degree of the (g m)'s *)
+| w_rule_a A n g => forall (m : nat),
+    ftree_formula (g m) = substitution A n (represent m) /\ valid (g m)
+
+| w_rule_ad A D n g => forall (m : nat),
+    ftree_formula (g m) = lor (substitution A n (represent m)) D /\ valid (g m)
+
+
+| cut_ca C A P1 P2 =>
+    ftree_formula P1 = lor C A /\ valid P1 /\
+    ftree_formula P2 = neg A /\ valid P2
+
+| cut_ad A D P1 P2 =>
+    ftree_formula P1 = A /\ valid P1 /\
+    ftree_formula P2 = lor (neg A) D /\ valid P2
+
+| cut_cad C A D P1 P2 =>
+    ftree_formula P1 = lor C A /\ valid P1 /\
+    ftree_formula P2 = lor (neg A) D /\ valid P2
+
+
+end.
+
+
+(* some basic examples *)
+Definition f_exmp : formula := (atom (equ zero zero)).
+Definition ftree_exmp : ftree := node f_exmp.
+Lemma ftree_exmp_valid : valid ftree_exmp. Proof. simpl. auto. Qed.
+
+Definition provable (A : formula) : Prop :=
+  exists (t : ftree), ftree_formula t = A /\ valid t.
+
+Lemma provable_exmp : provable (atom (equ zero zero)).
+Proof.
+unfold provable. eapply ex_intro. instantiate (1:=ftree_exmp). split.
+- auto.
+- apply ftree_exmp_valid.
+Qed.
+
+Lemma exchange_provable : forall (A B : formula),
+  provable (lor A B) -> provable (lor B A).
+Proof.
+unfold provable. intros. destruct H as [t H].
+eapply ex_intro. instantiate (1:= exchange_ab A B t). split.
+- auto.
+- simpl. apply H.
+Qed.
+
+
+(* Show that PA_omega proves the associativity laws *)
+(* *)
+
+
+
+Lemma associativity_1 : forall (C A B : formula),
+  provable (lor (lor C A) B) -> provable (lor C (lor A B)).
+Proof.
+unfold provable. intros. destruct H as [t H].
+eapply ex_intro.
+instantiate (1:= exchange_ab (lor A B) C
+                  (exchange_cab A C B
+                    (exchange_abd C A B t))).
+simpl. auto.
+Qed.
+
+
+Lemma associativity_2 : forall (c a b : formula),
+  provable (lor c (lor a b)) ->
+  provable (lor (lor c a) b).
+Proof.
+Admitted.
+
+
+(* Proof trees equivalent to theorems *)
+(* *)
+Lemma provable_theorem : forall (A : formula),
+  PA_omega_theorem A -> provable A.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(* DeMorgan invertibility take 2 *)
+(* *)
+
+
+
+
+
+Theorem demorgan_invertible : forall (B C D : formula),
+  provable (lor (neg (lor B C)) D) ->
+  provable (lor (neg B) D).
+Proof.
+unfold provable. intros. destruct H as [t H].
+induction t as [ E | E F | | | | | | | | | | | | | | | | | ].
+
+(* axiom *)
+- inversion H. simpl in H0. rewrite H0 in H1. inversion H1.
+
+- apply IHt.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Inductive ftree : Type :=
+| node : formula -> ftree
+| one_prem : formula -> ftree -> ftree
+| two_prem : formula -> ftree -> ftree -> ftree
+| inf_prem : formula -> (nat -> ftree) -> ftree.
+
+Fixpoint ftree_formula (t : ftree) : formula :=
+match t with
+| node f => f
+| one_prem f t' => f
+| two_prem f t1 t2 => f
+| inf_prem f g => f
+end.
+
+Fixpoint exchange1' (c p : formula) : bool :=
+match p with
+| lor A B => eq_f c (lor B A)
+| _ => false
+end.
+
+Fixpoint exchange1'' (c p : formula) : Prop :=
+match p with
+| lor A B => c = lor B A
+| _ => False
+end.
+
+
+
+Fixpoint valid (t : ftree) : Prop :=
+match t with
+| node A => pa_omega_axiom A
+
+| one_prem A t' => one_prem_valid f deg alpha t' /\ valid t'
+
+| _ => False
+end.
+
+
+Definition node_valid (A : formula) : Prop :=
+  match A with
+  | atom a => true = correct_a a
+  | neg a => (match a with
+             | atom a' => true = incorrect_a a'
+             | _ => False
+              end)
+  | _ => False
+    end.
+
+Definition one_prem_valid (f : formula) (deg : nat) (alpha : e0)
+                          (t' : ptree) : Prop :=
+
+  ((true = (exchange f (tree_form t') || contraction f (tree_form t'))
+          /\ alpha = tree_ord t')
+  \/
+  (true = (weakening f (tree_form t') || negation f (tree_form t')
+              || quantification f (tree_form t'))
+          /\ gt_e0 alpha (tree_ord t')))
+
+/\ deg >= tree_degree t'.
+
+
+Definition two_prem_valid (f : formula) (deg : nat) (alpha : e0)
+                          (t1 t2 : ptree) : Prop :=
+
+  (true = demorgan f (tree_form t1) (tree_form t2)
+  \/ 0 < cut_degree f (tree_form t1) (tree_form t2) < deg)
+
+/\ deg >= tree_degree t1
+/\ deg >= tree_degree t2
+/\ gt_e0 alpha (tree_ord t1)
+/\ gt_e0 alpha (tree_ord t2).
+
+
+Definition inf_prem_valid (f : formula) (deg : nat) (alpha : e0)
+                          (g : nat -> ptree) : Prop :=
+
+infinite_induction f g
+/\ forall (n : nat), deg >= tree_degree (g n)
+/\ forall (n : nat), gt_e0 alpha (tree_ord (g n)).
+
+
+Fixpoint valid (t : ptree) : Prop :=
+  match t with
+  | node f deg alpha => node_valid f
+
+  | one_prem f deg alpha t' => one_prem_valid f deg alpha t' /\ valid t'
+
+  | two_prem f deg alpha t1 t2 =>
+      two_prem_valid f deg alpha t1 t2 /\ valid t1 /\ valid t2
+
+  | inf_prem f deg alpha g =>
+      inf_prem_valid f deg alpha g /\ forall (n : nat), valid (g n)
+  end.
 
 
 
@@ -4326,8 +5388,12 @@ end.
 
 
 
+
+
+
+
 (*
-Defining proof-trees, which are decorated with ordinals as well as formulas.
+Defining proof trees, which are decorated with ordinals as well as formulas.
 This allows us to define the infinite-induction rule.
 *)
 (* *)
@@ -4337,7 +5403,7 @@ Inductive ptree : Type :=
 | two_prem : formula -> nat -> e0 -> ptree -> ptree -> ptree
 | inf_prem : formula -> nat -> e0 -> (nat -> ptree) -> ptree.
 
-Fixpoint tree_form (t : ptree) : formula :=
+Fixpoint tree_formula (t : ptree) : formula :=
 match t with
 | node f deg alpha => f
 | one_prem f deg alpha t' => f
@@ -4366,14 +5432,14 @@ Fixpoint infinite_induction (f : formula) (g : nat -> ptree) : Prop :=
   match f with
   | lor (univ n a) d => forall (m : nat),
           true = transformable_with_list
-                  (lor a d) (tree_form (g m)) n [represent m]
+                  (lor a d) (tree_formula (g m)) n [represent m]
   | _ => False
 end.
 
 
 (* Determine if a given ptree is a valid proof tree, with or without
 the cut and infinite induction rules. This involves verifying that:
-1) Any parent-child pair matches an inference rule
+1) Any PArent-child PAir matches an inference rule
 2) The number of connectives in a cut formula is no bigger than the bound b
 3) The bound of the subtree(s) are no larger than the bound b
 4) The subtree(s) are valid *)
@@ -4391,11 +5457,11 @@ Definition node_valid (f : formula) : Prop :=
 Definition one_prem_valid (f : formula) (deg : nat) (alpha : e0)
                           (t' : ptree) : Prop :=
 
-  ((true = (exchange f (tree_form t') || contraction f (tree_form t'))
+  ((true = (exchange f (tree_formula t') || contraction f (tree_formula t'))
           /\ alpha = tree_ord t')
   \/
-  (true = (weakening f (tree_form t') || negation f (tree_form t')
-              || quantification f (tree_form t'))
+  (true = (weakening f (tree_formula t') || negation f (tree_formula t')
+              || quantification f (tree_formula t'))
           /\ gt_e0 alpha (tree_ord t')))
 
 /\ deg >= tree_degree t'.
@@ -4404,8 +5470,8 @@ Definition one_prem_valid (f : formula) (deg : nat) (alpha : e0)
 Definition two_prem_valid (f : formula) (deg : nat) (alpha : e0)
                           (t1 t2 : ptree) : Prop :=
 
-  (true = demorgan f (tree_form t1) (tree_form t2)
-  \/ 0 < cut_degree f (tree_form t1) (tree_form t2) < deg)
+  (true = demorgan f (tree_formula t1) (tree_formula t2)
+  \/ 0 < cut_degree f (tree_formula t1) (tree_formula t2) < deg)
 
 /\ deg >= tree_degree t1
 /\ deg >= tree_degree t2
@@ -4507,7 +5573,7 @@ Qed.
 
 (*
 ###############################################################################
-Section 7: Cut-elimination in PA_omega
+Section 9: Cut-elimination in PA_omega
 ###############################################################################
 *)
 
