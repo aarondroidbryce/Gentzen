@@ -4127,7 +4127,7 @@ match P with
 | contraction_ad A D P' => ftree_formula P' = lor (lor A A) D /\ valid P'
 
 
-| weakening_ad A D P' => ftree_formula P' = A /\ closed A = true /\ valid P'
+| weakening_ad A D P' => ftree_formula P' = D /\ closed A = true /\ valid P'
 
 | demorgan_ab A B P1 P2 =>
     ftree_formula P1 = neg A /\ valid P1 /\
@@ -4222,13 +4222,170 @@ Lemma associativity_2 : forall (c a b : formula),
 Proof.
 Admitted.
 
-
 (* Proof trees equivalent to theorems *)
 (* *)
 Lemma provable_theorem : forall (A : formula),
   PA_omega_theorem A -> provable A.
 Proof.
 Admitted.
+
+Lemma theorem_provable : forall (A : formula),
+  provable A -> PA_omega_theorem A.
+Proof.
+Admitted.
+
+
+(* We will need these properties in the next section *)
+(* *)
+Lemma axiom_atomic : forall (A : formula),
+  PA_omega_axiom A = true ->
+    (exists (a : atomic_formula), A = atom a) \/
+    (exists (a : atomic_formula), A = neg (atom a)).
+Proof.
+intros.
+destruct A; try inversion H.
+- left. exists a. auto.
+- right. destruct A; try inversion H.
+  + exists a. auto.
+Qed.
+
+Lemma axiom_correct : forall (A : formula),
+  PA_omega_axiom A = true ->
+    (exists (a : atomic_formula), A = atom a /\ correct_a a = true) \/
+    (exists (a : atomic_formula), A = neg (atom a) /\ incorrect_a a = true).
+Proof.
+intros.
+destruct A; try inversion H.
+- left. exists a. auto.
+- right. destruct A; try inversion H.
+  + exists a. auto.
+Qed.
+
+Lemma axiom_closed : forall (A : formula),
+  PA_omega_axiom A = true -> closed A = true.
+Proof.
+intros.
+apply axiom_correct in H. destruct H.
+- destruct H as [ a [ HA Ha] ]. rewrite HA. unfold closed.
+  apply correct_closed. apply Ha.
+- destruct H as [ a [ HA Ha] ]. rewrite HA. unfold closed.
+  apply incorrect_closed. apply Ha.
+Qed.
+
+Lemma theorem_closed : forall (A : formula),
+  PA_omega_theorem A -> closed A = true.
+Proof.
+intros. induction H.
+- apply axiom_closed. apply H.
+- inversion IHPA_omega_theorem. simpl.
+  rewrite H1. apply and_bool_symm. apply H1.
+Admitted.
+
+Lemma provable_closed : forall (A : formula),
+  provable A -> closed A = true.
+Proof. intros. apply theorem_closed. apply theorem_provable. apply H. Qed.
+
+Lemma provable_closed' : forall (P : ftree) (A : formula),
+  valid P -> ftree_formula P = A -> closed A = true.
+Proof.
+intros. apply provable_closed. unfold provable. exists P.
+split. apply H0. apply H.
+Qed.
+
+
+(* Boolean equality on formulas implies actual equality *)
+(* *)
+Definition term_beq_eq_nice (t : term) : Prop := forall (s : term),
+  eq_term s t = true -> s = t.
+
+Theorem term_beq_eq' : forall (t : term), term_beq_eq_nice t.
+Proof.
+intros. induction t; unfold term_beq_eq_nice; intros; destruct s; inversion H.
+- auto.
+- unfold term_beq_eq_nice in IHt. rewrite (IHt s H1). auto.
+- destruct (and_bool_prop _ _ H1).
+  unfold term_beq_eq_nice in IHt1. rewrite (IHt1 s1 H0).
+  unfold term_beq_eq_nice in IHt2. rewrite (IHt2 s2 H2). auto.
+- destruct (and_bool_prop _ _ H1).
+  unfold term_beq_eq_nice in IHt1. rewrite (IHt1 s1 H0).
+  unfold term_beq_eq_nice in IHt2. rewrite (IHt2 s2 H2). auto.
+- rewrite (nat_beq_eq _ _ H1). auto.
+Qed.
+
+Theorem term_beq_eq : forall (s t : term),
+  eq_term s t = true -> s = t.
+Proof. intros. apply term_beq_eq'. apply H. Qed.
+
+Theorem atom_beq_eq : forall (a b : atomic_formula),
+  eq_atom a b = true -> a = b.
+Proof.
+intros. destruct a,b. inversion H. destruct (and_bool_prop _ _ H1).
+apply term_beq_eq in H0. apply term_beq_eq in H2. rewrite H0, H2. auto.
+Qed.
+
+Definition f_beq_eq_nice (A : formula) : Prop := forall (B : formula),
+  eq_f A B = true -> A = B.
+
+Theorem f_beq_eq' : forall (A : formula), f_beq_eq_nice A.
+Proof.
+intros. induction A; unfold f_beq_eq_nice; intros; destruct B; inversion H.
+- apply atom_beq_eq in H1. rewrite H1. auto.
+- unfold f_beq_eq_nice in IHA. rewrite (IHA B H1). auto.
+- destruct (and_bool_prop _ _ H1).
+  unfold term_beq_eq_nice in IHA1. rewrite (IHA1 B1 H0).
+  unfold term_beq_eq_nice in IHA2. rewrite (IHA2 B2 H2). auto.
+- destruct (and_bool_prop _ _ H1).
+  unfold f_beq_eq_nice in IHA. rewrite (IHA B H2), (nat_beq_eq _ _ H0). auto.
+Qed.
+
+Theorem f_beq_eq : forall (A B : formula), eq_f A B = true -> A = B.
+Proof. intros. apply f_beq_eq'. apply H. Qed.
+
+
+
+(* Some lemmas about the w_rule we will use later *)
+(* *)
+Lemma valid_w_rule_a' :
+  forall (P : ftree) (A : formula) (n : nat) (g : nat -> ftree),
+  P = (w_rule_a A n g) ->
+  valid P ->
+  forall (m : nat),
+    ftree_formula (g m) = substitution A n (represent m) /\ valid (g m).
+Proof.
+intros.
+unfold valid in H0. rewrite H in H0.
+fold valid in H0. apply H0.
+Qed.
+
+Lemma valid_w_rule_a : forall (A : formula) (n : nat) (g : nat -> ftree),
+  valid (w_rule_a A n g) ->
+  forall (m : nat),
+    ftree_formula (g m) = substitution A n (represent m) /\ valid (g m).
+Proof. intros. apply (valid_w_rule_a' (w_rule_a A n g)). auto. apply H. Qed.
+
+Lemma valid_w_rule_ad' :
+  forall (P : ftree) (A D : formula) (n : nat) (g : nat -> ftree),
+  P = (w_rule_ad A D n g) ->
+  valid P ->
+  forall (m : nat),
+    ftree_formula (g m) =
+    lor (substitution A n (represent m)) D /\ valid (g m).
+Proof.
+intros.
+unfold valid in H0. rewrite H in H0.
+fold valid in H0. apply H0.
+Qed.
+
+Lemma valid_w_rule_ad : forall (A D : formula) (n : nat) (g : nat -> ftree),
+  valid (w_rule_ad A D n g) ->
+  forall (m : nat),
+    ftree_formula (g m) =
+    lor (substitution A n (represent m)) D /\ valid (g m).
+Proof.
+intros.
+apply (valid_w_rule_ad' (w_rule_ad A D n g)).
+auto. apply H.
+Qed.
 
 
 
@@ -4377,25 +4534,124 @@ intros. case (subst_ind_fit A (0)) eqn:HA.
 - apply sub_fit_false. apply HA.
 Qed.
 
-
-Lemma formula_sub_ind_closed : forall (A T U : formula) (S : subst_ind),
-  closed A = true -> closed U = true ->
-  closed (formula_sub_ind A T U S) = true.
-Admitted.
-
-Lemma provable_closed : forall (P : ftree) (A : formula),
-  valid P -> ftree_formula P = A -> closed A = true.
+Lemma formula_sub_ind_lor : forall (A B C D : formula) (S_A S_B : subst_ind),
+  subst_ind_fit A S_A && subst_ind_fit B S_B = true ->
+  formula_sub_ind (lor A B) C D (lor_ind S_A S_B) = 
+  lor (formula_sub_ind A C D S_A) (formula_sub_ind B C D S_B).
 Proof.
-intros.
+intros. simpl. rewrite H. unfold formula_sub_ind.
+destruct (and_bool_prop _ _ H) as [HA HB].
+destruct A; destruct B; rewrite HA, HB; auto.
+Qed.
+
+Lemma subst_ind_fit_lor : forall (B C : formula) (S_B S_C : subst_ind),
+  subst_ind_fit (lor B C) (lor_ind S_B S_C) = true ->
+  subst_ind_fit B S_B && subst_ind_fit C S_C = true.
+Proof. intros. apply H. Qed.
+
+Lemma non_target_fit : forall (A : formula),
+  subst_ind_fit A (non_target A) = true.
+Proof. intros. induction A; auto. simpl. rewrite IHA1, IHA2. auto. Qed.
+
+Lemma non_target_sub' : forall (A C D : formula),
+  formula_sub_ind_fit A C D (non_target A) = A.
+Proof.
+intros. induction A.
+- unfold non_target. unfold formula_sub_ind_fit.
+  destruct (eq_f (atom a) C); auto.
+- unfold non_target. unfold formula_sub_ind_fit.
+  destruct (eq_f (neg A) C); auto.
+- simpl. rewrite IHA1, IHA2. auto.
+- simpl. destruct C; auto. destruct (beq_nat n n0 && eq_f A C); auto.
+Qed.
+
+Lemma non_target_sub : forall (A C D : formula),
+  formula_sub_ind A C D (non_target A) = A.
+Proof.
+intros. induction A.
+- unfold non_target. apply formula_sub_ind_0.
+- unfold non_target. apply formula_sub_ind_0.
+- simpl. rewrite non_target_fit, non_target_fit. simpl.
+  repeat rewrite non_target_sub'. auto.
+- unfold non_target. apply formula_sub_ind_0.
+Qed.
+
+Lemma non_target_sub_lor : forall (A B C D : formula) (S : subst_ind),
+  formula_sub_ind (lor A B) C D (lor_ind (non_target A) S) =
+  lor A (formula_sub_ind B C D S).
+Proof.
+intros. simpl.
+destruct (subst_ind_fit B S) eqn:HB; rewrite non_target_fit; simpl.
+- rewrite non_target_sub', sub_fit_true. auto. apply HB.
+- rewrite sub_fit_false. auto. apply HB.
+Qed.
+
+
+
+
+
+
+
+(* some miscellaneous lemmas about formulas we will need *)
+(* *)
+
+(*
+Lemma sub_ind_term_sub : forall (A : formula) (n : nat) (t : term),
+  non_target A = non_target (substitution A n t).
 Admitted.
+*)
+
+Lemma non_target_term_sub : forall (A : formula) (n : nat) (t : term),
+  non_target A = non_target (substitution A n t).
+Proof.
+intros. induction A; auto; simpl.
+- rewrite IHA1, IHA2. auto.
+- destruct (beq_nat n0 n); auto.
+Qed.
+
+Lemma formula_sub_ind_closed : forall (A T U : formula),
+  closed A = true -> closed U = true ->
+  forall (S : subst_ind), closed (formula_sub_ind A T U S) = true.
+Proof.
+intros A T U. induction A; intros; unfold formula_sub_ind.
+- destruct (subst_ind_fit (atom a) S); try apply H.
+  simpl. destruct T; try apply H.
+  destruct (eq_atom a a0); try apply H.
+  destruct S; try apply H. apply H0.
+- destruct (subst_ind_fit (neg A) S); try apply H.
+  simpl. destruct T; try apply H.
+  destruct (eq_f A T); try apply H.
+  destruct S; try apply H. apply H0.
+- destruct (subst_ind_fit (lor A1 A2) S) eqn:Hs; try apply H. simpl.
+  destruct S; try apply H. simpl.
+  inversion H. destruct (and_bool_prop _ _ H2).
+  inversion Hs. destruct (and_bool_prop _ _ H5).
+  clear H. clear Hs. clear H2. clear H5.
+  rewrite <- (sub_fit_true _ _ _ _ H4).
+  rewrite <- (sub_fit_true _ _ _ _ H6).
+  rewrite (IHA1 H1 H0 S1). rewrite (IHA2 H3 H0 S2).
+  rewrite H1, H3. auto.
+- destruct (subst_ind_fit (univ n A) S); try apply H.
+  simpl. destruct T; try apply H.
+  destruct (beq_nat n n0 && eq_f A T); try apply H.
+  destruct S; try apply H. apply H0.
+Qed.
 
 
-(* replace ~~E with E at certain places in an formula *)
+
+
+
+
+
+
+(* Defining double negation substitution in an ftree. First, we define replace
+~~E with E at certain places in a formula (given a substitution indicator).
+Applyying this operation to an entire ftree, we change the substitution
+indicator as the structure of the formula(s) change as we move up the ftree. *)
+(*  *)
 Definition dub_neg_sub_formula (A E : formula) (S : subst_ind) : formula :=
   formula_sub_ind A (neg (neg E)) E S.
 
-
-(* replace ~~E with E at certain places in an ftree *)
 Fixpoint dub_neg_sub_ftree
   (P : ftree) (E : formula) (S : subst_ind) : ftree :=
 match (P, S) with
@@ -4522,23 +4778,12 @@ match (subst_ind_fit (ftree_formula P) S) with
 end.
 
 
-Theorem f_beq_eq : forall (A B : formula), eq_f A B = true -> A = B.
-Admitted.
-
-Lemma axiom_atomic : forall (A : formula),
-  PA_omega_axiom A = true ->
-    (exists (a : atomic_formula), A = atom a) \/
-    (exists (a : atomic_formula), A = neg (atom a)).
-Proof.
-intros.
-destruct A; try inversion H.
-- left. exists a. auto.
-- right. destruct A; try inversion H.
-  + exists a. auto.
-Qed.
 
 
 
+(* First, we must prove that dub_neg_sub_ftree' simply changes the base formula
+of an ftree the way we expect with dub_neg_sub_formula *)
+(* *)
 Theorem dub_neg_ftree_formula_aux' :
   forall (P : ftree) (E : formula) (S : subst_ind),
     subst_ind_fit (ftree_formula P) S = false ->
@@ -4561,58 +4806,6 @@ Theorem dub_neg_ftree_formula_true :
     subst_ind_fit (ftree_formula P) S = true ->
     dub_neg_sub_ftree P E S = dub_neg_sub_ftree' P E S.
 Proof. intros. unfold dub_neg_sub_ftree'. destruct P; rewrite H; auto. Qed.
-
-Lemma formula_sub_ind_lor : forall (A B C D : formula) (S_A S_B : subst_ind),
-  subst_ind_fit A S_A && subst_ind_fit B S_B = true ->
-  formula_sub_ind (lor A B) C D (lor_ind S_A S_B) = 
-  lor (formula_sub_ind A C D S_A) (formula_sub_ind B C D S_B).
-Proof.
-intros. simpl. rewrite H. unfold formula_sub_ind.
-destruct (and_bool_prop _ _ H) as [HA HB].
-destruct A; destruct B; rewrite HA, HB; auto.
-Qed.
-
-Lemma subst_ind_fit_lor : forall (B C : formula) (S_B S_C : subst_ind),
-  subst_ind_fit (lor B C) (lor_ind S_B S_C) = true ->
-  subst_ind_fit B S_B && subst_ind_fit C S_C = true.
-Proof. intros. apply H. Qed.
-
-Lemma non_target_fit : forall (A : formula),
-  subst_ind_fit A (non_target A) = true.
-Proof. intros. induction A; auto. simpl. rewrite IHA1, IHA2. auto. Qed.
-
-Lemma non_target_sub' : forall (A C D : formula),
-  formula_sub_ind_fit A C D (non_target A) = A.
-Proof.
-intros. induction A.
-- unfold non_target. unfold formula_sub_ind_fit.
-  destruct (eq_f (atom a) C); auto.
-- unfold non_target. unfold formula_sub_ind_fit.
-  destruct (eq_f (neg A) C); auto.
-- simpl. rewrite IHA1, IHA2. auto.
-- simpl. destruct C; auto. destruct (beq_nat n n0 && eq_f A C); auto.
-Qed.
-
-Lemma non_target_sub : forall (A C D : formula),
-  formula_sub_ind A C D (non_target A) = A.
-Proof.
-intros. induction A.
-- unfold non_target. apply formula_sub_ind_0.
-- unfold non_target. apply formula_sub_ind_0.
-- simpl. rewrite non_target_fit, non_target_fit. simpl.
-  repeat rewrite non_target_sub'. auto.
-- unfold non_target. apply formula_sub_ind_0.
-Qed.
-
-Lemma non_target_sub_lor : forall (A B C D : formula) (S : subst_ind),
-  formula_sub_ind (lor A B) C D (lor_ind (non_target A) S) =
-  lor A (formula_sub_ind B C D S).
-Proof.
-intros. simpl.
-destruct (subst_ind_fit B S) eqn:HB; rewrite non_target_fit; simpl.
-- rewrite non_target_sub', sub_fit_true. auto. apply HB.
-- rewrite sub_fit_false. auto. apply HB.
-Qed.
 
 
 Theorem dub_neg_ftree_formula' : forall (P : ftree) (E : formula),
@@ -4758,9 +4951,6 @@ induction P; try intros H S Hs.
   rewrite formula_sub_ind_lor. auto. apply H1.
 Qed.
 
-
-
-
 Theorem dub_neg_ftree_formula : forall (P : ftree) (E : formula),
   valid P ->
   forall (S : subst_ind),
@@ -4774,53 +4964,15 @@ Qed.
 
 
 
-Lemma valid_w_rule_a' :
-  forall (P : ftree) (A : formula) (n : nat) (g : nat -> ftree),
-  P = (w_rule_a A n g) ->
-  valid P ->
-  forall (m : nat),
-    ftree_formula (g m) = substitution A n (represent m) /\ valid (g m).
-Proof.
-intros.
-unfold valid in H0. rewrite H in H0.
-fold valid in H0. apply H0.
-Qed.
-
-Lemma valid_w_rule_a : forall (A : formula) (n : nat) (g : nat -> ftree),
-  valid (w_rule_a A n g) ->
-  forall (m : nat),
-    ftree_formula (g m) = substitution A n (represent m) /\ valid (g m).
-Proof. intros. apply (valid_w_rule_a' (w_rule_a A n g)). auto. apply H. Qed.
-
-Lemma valid_w_rule_ad' :
-  forall (P : ftree) (A D : formula) (n : nat) (g : nat -> ftree),
-  P = (w_rule_ad A D n g) ->
-  valid P ->
-  forall (m : nat),
-    ftree_formula (g m) =
-    lor (substitution A n (represent m)) D /\ valid (g m).
-Proof.
-intros.
-unfold valid in H0. rewrite H in H0.
-fold valid in H0. apply H0.
-Qed.
-
-Lemma valid_w_rule_ad : forall (A D : formula) (n : nat) (g : nat -> ftree),
-  valid (w_rule_ad A D n g) ->
-  forall (m : nat),
-    ftree_formula (g m) =
-    lor (substitution A n (represent m)) D /\ valid (g m).
-Proof.
-intros.
-apply (valid_w_rule_ad' (w_rule_ad A D n g)).
-auto. apply H.
-Qed.
-
-Lemma non_target_term_sub : forall (A : formula) (n : nat) (t : term),
-  non_target A = non_target (substitution A n t).
-Admitted.
 
 
+
+
+
+
+(* Now we prove that if we have a valid ftree, replacing performing our
+double negation substitution to it results in a valid ftree *)
+(* *)
 Theorem dub_neg_valid : forall (P : ftree) (E : formula),
   closed E = true -> valid P ->
   forall (S : subst_ind),
@@ -5201,7 +5353,9 @@ Qed.
 
 
 
-
+(* We finally show that if the formulas ~~A and/or ~~A \/ D are provable,
+so are the formulas A and/or A \/ D *)
+(* *)
 Theorem double_negation_invertible_a : forall (A : formula),
   provable (neg (neg A)) -> provable A.
 Proof.
@@ -5217,8 +5371,6 @@ instantiate (1:= dub_neg_sub_ftree' t A (1)). split.
   + apply Ht.
   + rewrite H. auto.
 Qed.
-
-
 
 Theorem double_negation_invertible_ad : forall (A D : formula),
   provable (lor (neg (neg A)) D) -> provable (lor A D).
