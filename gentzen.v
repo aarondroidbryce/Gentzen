@@ -1,4 +1,3 @@
-Require Import Bool.
 Require Import Omega.
 Require Import Lia.
 Notation "b1 && b2" := (andb b1 b2).
