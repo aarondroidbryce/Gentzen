@@ -1,5 +1,4 @@
 Require Import Bool.
-Require Import Arith.
 Require Import Omega.
 Require Import Lia.
 Notation "b1 && b2" := (andb b1 b2).
@@ -4919,7 +4918,7 @@ induction P; try intros H S Hs.
       { apply H. }
       { destruct H as [ H2 [ H3 [ H4 H5 ] ] ]. rewrite H2. simpl. apply H1. }
     * rewrite dub_neg_ftree_formula_true.
-      { apply IHQ1. apply H.
+      { apply IHP1. apply H.
         destruct H as [ H2 [ H3 [ H4 H5 ] ] ]. rewrite H2. simpl. apply H1. }
       { destruct H as [ H2 [ H3 [ H4 H5 ] ] ]. rewrite H2. simpl. apply H1. }
     * rewrite dub_neg_ftree_formula_true, dub_neg_ftree_formula.
@@ -4930,7 +4929,7 @@ induction P; try intros H S Hs.
       { apply H. }
       { destruct H as [ H2 [ H3 [ H4 H5 ] ] ]. rewrite H4. simpl. apply H1. }
     * rewrite dub_neg_ftree_formula_true.
-      { apply IHQ2. apply H.
+      { apply IHP2. apply H.
         destruct H as [ H2 [ H3 [ H4 H5 ] ] ]. rewrite H4. simpl. apply H1. }
       { destruct H as [ H2 [ H3 [ H4 H5 ] ] ]. rewrite H4. simpl. apply H1. }
   + repeat split.
@@ -4942,7 +4941,7 @@ induction P; try intros H S Hs.
       { apply H. }
       { destruct H as [ H2 [ H3 [ H4 H5 ] ] ]. rewrite H2. simpl. apply H1. }
     * rewrite dub_neg_ftree_formula_true.
-      { apply IHQ1. apply H.
+      { apply IHP1. apply H.
         destruct H as [ H2 [ H3 [ H4 H5 ] ] ]. rewrite H2. simpl. apply H1. }
       { destruct H as [ H2 [ H3 [ H4 H5 ] ] ]. rewrite H2. simpl. apply H1. }
     * rewrite dub_neg_ftree_formula_true, dub_neg_ftree_formula.
@@ -4953,7 +4952,7 @@ induction P; try intros H S Hs.
       { apply H. }
       { destruct H as [ H2 [ H3 [ H4 H5 ] ] ]. rewrite H4. simpl. apply H1. }
     * rewrite dub_neg_ftree_formula_true.
-      { apply IHQ2. apply H.
+      { apply IHP2. apply H.
         destruct H as [ H2 [ H3 [ H4 H5 ] ] ]. rewrite H4. simpl. apply H1. }
       { destruct H as [ H2 [ H3 [ H4 H5 ] ] ]. rewrite H4. simpl. apply H1. }
 
@@ -5081,7 +5080,7 @@ induction P; try intros H S Hs.
     * apply H2.
     * rewrite H1. simpl. rewrite Heq, non_target_fit. auto.
   + rewrite dub_neg_ftree_formula_true.
-    * apply IHQ1. apply H2.
+    * apply IHP1. apply H2.
       rewrite H1. simpl. rewrite Heq, non_target_fit. auto.
     * rewrite H1. simpl. rewrite Heq, non_target_fit. auto.
   + apply H3.
@@ -5098,7 +5097,7 @@ induction P; try intros H S Hs.
     * apply H4.
     * rewrite H3. simpl. apply Heq.
   + rewrite dub_neg_ftree_formula_true.
-    * apply IHQ2. apply H4.
+    * apply IHP2. apply H4.
       rewrite H3. simpl. apply Heq.
     * rewrite H3. simpl. apply Heq.
 
@@ -5112,7 +5111,7 @@ induction P; try intros H S Hs.
     * rewrite H1. simpl.
       destruct (and_bool_prop _ _ H5). rewrite H0, non_target_fit. auto.
   + rewrite dub_neg_ftree_formula_true.
-    * apply IHQ1. apply H2.
+    * apply IHP1. apply H2.
       rewrite H1. simpl.
       destruct (and_bool_prop _ _ H5). rewrite H0, non_target_fit. auto.
     * rewrite H1. simpl.
@@ -5124,7 +5123,7 @@ induction P; try intros H S Hs.
     * apply H4.
     * rewrite H3. simpl. destruct (and_bool_prop _ _ H5). apply H6.
   + rewrite dub_neg_ftree_formula_true.
-    * apply IHQ2. apply H4.
+    * apply IHP2. apply H4.
       rewrite H3. simpl. destruct (and_bool_prop _ _ H5). apply H6.
     * rewrite H3. simpl. destruct (and_bool_prop _ _ H5). apply H6.
 Qed.
@@ -5145,7 +5144,7 @@ instantiate (1:= dub_neg_sub_ftree' t A (1)). split.
   + rewrite H. unfold dub_neg_sub_formula. simpl. rewrite eq_f_refl. auto.
   + apply Ht.
 - apply dub_neg_valid.
-  + pose proof (provable_closed t (neg (neg A)) Ht H). inversion H0. auto.
+  + pose proof (provable_closed' t (neg (neg A)) Ht H). inversion H0. auto.
   + apply Ht.
   + rewrite H. auto.
 Qed.
@@ -5162,7 +5161,7 @@ instantiate (1:= dub_neg_sub_ftree' t A (lor_ind (1) (non_target D))). split.
     rewrite non_target_fit. rewrite non_target_sub'. auto.
   + apply Ht.
 - apply dub_neg_valid.
-  + pose proof (provable_closed t (lor (neg (neg A)) D) Ht H).
+  + pose proof (provable_closed' t (lor (neg (neg A)) D) Ht H).
     simpl in H0. apply (and_bool_prop _ _ H0).
   + apply Ht.
   + rewrite H. simpl. apply non_target_fit.
