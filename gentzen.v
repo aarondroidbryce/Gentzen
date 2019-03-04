@@ -2,6 +2,7 @@ Require Import Omega.
 Require Import Lia.
 Notation "b1 && b2" := (andb b1 b2).
 Notation "b1 || b2" := (orb b1 b2).
+Notation eq_nat := Nat.eqb.
 
 (*
 ###############################################################################
@@ -31,29 +32,29 @@ Lemma leq_refl : forall (n : nat), n <= n. Proof. auto. Qed.
 Lemma addends_leq : forall (m n p : nat), n + m = p -> n <= p /\ m <= p.
 Proof. intros. omega. Qed.
 
-Lemma beq_nat_refl : forall (n : nat), beq_nat n n = true.
+Lemma eq_nat_refl : forall (n : nat), eq_nat n n = true.
 Proof.
 intros. induction n as [| n IH].
 - auto.
 - simpl. apply IH.
 Qed.
 
-Fixpoint bgeq_nat (n m : nat) : bool :=
+Fixpoint geq_nat (n m : nat) : bool :=
 match (n, m) with
 | (0, 0) => true
 | (S n', 0) => true
 | (0, S m') => false
-| (S n', S m') => bgeq_nat n' m'
+| (S n', S m') => geq_nat n' m'
 end.
 
-Lemma succ_geq : forall (n : nat), bgeq_nat (S n) n = true.
+Lemma succ_geq : forall (n : nat), geq_nat (S n) n = true.
 Proof.
 intros. induction n.
 - auto.
 - rewrite <- IHn. auto.
 Qed.
 
-Definition lt_nat (n m : nat) : bool := (bgeq_nat m n) && negb (beq_nat n m).
+Definition lt_nat (n m : nat) : bool := geq_nat m n && negb (eq_nat n m).
 
 Lemma lt_nat_irrefl : forall (n : nat), lt_nat n n = false.
 Proof.
@@ -63,37 +64,41 @@ induction n.
 - rewrite <- IHn. auto.
 Qed.
 
-Lemma succ_beq : forall (n : nat), beq_nat n (S n) = false.
+Lemma succ_not_eq : forall (n : nat), eq_nat n (S n) = false.
 Proof.
 intros. induction n.
 - auto.
 - rewrite <- IHn. auto.
 Qed.
 
-Definition nat_lt_aux' (n : nat) :=
+Definition lt_nat_decid_nice (n : nat) :=
   forall (m : nat), n < m -> lt_nat n m = true.
 
-Lemma nat_lt_aux : forall (n : nat), nat_lt_aux' n.
+Lemma lt_nat_decid' : forall (n : nat), lt_nat_decid_nice n.
 Proof.
 intros.
 induction n.
-- unfold nat_lt_aux'. intros. destruct m.
+- unfold lt_nat_decid_nice. intros. destruct m.
   + inversion H.
   + auto.
-- unfold nat_lt_aux'. intros. destruct m.
+- unfold lt_nat_decid_nice. intros. destruct m.
   + inversion H.
-  + unfold nat_lt_aux' in IHn.
+  + unfold lt_nat_decid_nice in IHn.
     assert (n < m). { omega. }
     specialize IHn with m. apply IHn in H0.
     simpl. 
     inversion H. unfold lt_nat. rewrite (succ_geq (S n)). simpl.
-    rewrite (succ_beq n). auto.
+    rewrite (succ_not_eq n). auto.
     unfold lt_nat. simpl.
     unfold lt_nat in H0. apply H0.
 Qed.
 
+Lemma lt_nat_decid : forall (n m : nat), n < m -> lt_nat n m = true.
+Proof. intros. apply lt_nat_decid'. apply H. Qed.
+
+
 Definition nat_beq_eq_nice (n : nat) :=
-  forall (m : nat), beq_nat n m = true -> n = m.
+  forall (m : nat), eq_nat n m = true -> n = m.
 
 Lemma nat_beq_eq' : forall (n : nat), nat_beq_eq_nice n.
 Proof.
@@ -108,7 +113,7 @@ induction n.
     apply IHn in H. rewrite H. auto.
 Qed.
 
-Lemma nat_beq_eq : forall (n m : nat), beq_nat n m = true -> n = m.
+Lemma nat_beq_eq : forall (n m : nat), eq_nat n m = true -> n = m.
 Proof. intros. apply (nat_beq_eq' n). auto. Qed.
 
 Definition nat_trans (n : nat) := forall (m p : nat),
@@ -284,7 +289,7 @@ match l1,l2 with
 | [],[] => true
 | m :: l1',[] => false
 | [], n :: l2' => false
-| m :: l1', n :: l2' => beq_nat m n && beq_list l1' l2'
+| m :: l1', n :: l2' => eq_nat m n && beq_list l1' l2'
 end.
 
 Definition beq_list_eq_nice (l1 : list nat) :=
@@ -308,7 +313,7 @@ Proof. intros. apply (beq_list_eq' l1). auto. Qed.
 Fixpoint remove (n : nat) (l : list nat) : list nat :=
 match l with
 | nil => nil
-| m :: l' => (match (beq_nat m n) with
+| m :: l' => (match (eq_nat m n) with
                 true => remove n l'
               | false => m :: (remove n l')
               end)
@@ -317,7 +322,7 @@ end.
 Fixpoint member (n : nat) (l : list nat) : bool :=
 match l with
 | nil => false
-| m :: l' => (match (beq_nat m n) with
+| m :: l' => (match (eq_nat m n) with
                 true => true
               | false => member n l'
               end)
@@ -334,7 +339,7 @@ Lemma remove_concat : forall (n : nat) (l1 l2 : list nat),
 Proof.
 intros.
 induction l1; auto.
-simpl. case_eq (beq_nat x n); intros.
+simpl. case_eq (eq_nat x n); intros.
 - apply IHl1.
 - rewrite IHl1. auto.
 Qed.
@@ -354,7 +359,7 @@ Lemma remove_order : forall (l : list nat) (n m : nat),
   remove n (remove m l) = remove m (remove n l).
 Proof.
 intros. induction l; auto.
-destruct (beq_nat x n) eqn:Hn; destruct (beq_nat x m) eqn:Hm; simpl;
+destruct (eq_nat x n) eqn:Hn; destruct (eq_nat x m) eqn:Hm; simpl;
 rewrite Hn; rewrite Hm; auto; simpl.
 - rewrite Hn. apply IHl.
 - rewrite Hm. apply IHl.
@@ -365,7 +370,7 @@ Lemma remove_twice : forall (l : list nat) (n : nat),
   remove n (remove n l) = remove n l.
 Proof.
 intros. induction l; auto.
-destruct (beq_nat x n) eqn:Hn; simpl; rewrite Hn; auto.
+destruct (eq_nat x n) eqn:Hn; simpl; rewrite Hn; auto.
 simpl. rewrite Hn. rewrite IHl. auto.
 Qed.
 
@@ -373,7 +378,7 @@ Lemma remove_dups_order : forall (l : list nat) (n : nat),
   remove n (remove_dups l) = remove_dups (remove n l).
 Proof.
 intros. induction l; auto.
-case_eq (beq_nat x n); intros.
+case_eq (eq_nat x n); intros.
 - assert (remove n (x :: l) = remove n l). { simpl. rewrite H. auto. }
   rewrite H0. rewrite <- IHl. pose proof (nat_beq_eq x n H).
   case (member x l); simpl; rewrite H; rewrite H1; rewrite remove_twice; auto.
@@ -388,7 +393,7 @@ Lemma remove_n_n : forall (l : list nat) (n : nat),
 Proof.
 intros.
 rewrite remove_dups_order.
-simpl. rewrite beq_nat_refl.
+simpl. rewrite eq_nat_refl.
 rewrite <- remove_dups_order. auto.
 Qed.
 
@@ -396,11 +401,11 @@ Lemma remove_n_dups_empty : forall (l : list nat) (n : nat),
   remove n (remove_dups l) = [] -> remove_dups l = [n] \/ remove_dups l = [].
 Proof.
 intros. induction l; auto.
-destruct (beq_nat x n) eqn:Hn.
+destruct (eq_nat x n) eqn:Hn.
 - simpl in H. rewrite Hn in H.
   pose proof (nat_beq_eq x n Hn) as Hx. rewrite Hx in H.
   rewrite remove_twice in H. apply IHl in H. destruct H.
-  + simpl. left. rewrite H. rewrite Hx. simpl. rewrite beq_nat_refl. auto.
+  + simpl. left. rewrite H. rewrite Hx. simpl. rewrite eq_nat_refl. auto.
   + destruct IHl. 
     * rewrite H. auto.
     * rewrite H in H0. inversion H0.
@@ -416,35 +421,35 @@ simpl. rewrite remove_dups_order. rewrite remove_twice.
 rewrite <- remove_dups_order. rewrite IHl. auto.
 Qed.
 
-Lemma beq_nat_symm : forall (n m : nat),
-  beq_nat m n = true -> beq_nat n m = true.
-Proof. intros. apply nat_beq_eq in H. rewrite H. apply beq_nat_refl. Qed.
+Lemma eq_nat_symm : forall (n m : nat),
+  eq_nat m n = true -> eq_nat n m = true.
+Proof. intros. apply nat_beq_eq in H. rewrite H. apply eq_nat_refl. Qed.
 
-Lemma beq_nat_symm' : forall (n m : nat),
-  beq_nat m n = false -> beq_nat n m = false.
+Lemma eq_nat_symm' : forall (n m : nat),
+  eq_nat m n = false -> eq_nat n m = false.
 Proof.
-intros. case_eq (beq_nat n m); intros; auto.
-apply beq_nat_symm in H0. rewrite H0 in H. inversion H.
+intros. case_eq (eq_nat n m); intros; auto.
+apply eq_nat_symm in H0. rewrite H0 in H. inversion H.
 Qed.
 
 Lemma member_remove' : forall (l : list nat) (m n : nat),
-  beq_nat m n = false ->
+  eq_nat m n = false ->
   member n l = true ->
   member n (remove m l) = true.
 Proof.
 intros.
 induction l; auto.
-inversion H0. case_eq (beq_nat x n); intros.
-- apply nat_beq_eq in H1. rewrite H1. simpl. apply beq_nat_symm' in H.
-  rewrite H. simpl. rewrite beq_nat_refl. auto.
+inversion H0. case_eq (eq_nat x n); intros.
+- apply nat_beq_eq in H1. rewrite H1. simpl. apply eq_nat_symm' in H.
+  rewrite H. simpl. rewrite eq_nat_refl. auto.
 - rewrite H1 in H2. simpl. rewrite H2. apply IHl in H2.
-  case_eq (beq_nat x m); intros.
+  case_eq (eq_nat x m); intros.
   + apply H2.
   + simpl. rewrite H1. apply H2.
 Qed.
 
 Lemma member_remove : forall (l : list nat) (m n : nat),
-  beq_nat m n = false ->
+  eq_nat m n = false ->
   member n (remove m l) = false ->
   member n l = false.
 Proof.
@@ -458,7 +463,7 @@ Lemma member_remove_dups : forall (l : list nat) (n : nat),
   member n (remove_dups l) = false -> member n l = false.
 Proof.
 intros. induction l; auto.
-simpl. simpl in H. destruct (beq_nat x n) eqn:Hn.
+simpl. simpl in H. destruct (eq_nat x n) eqn:Hn.
 - inversion H.
 - apply IHl. apply (member_remove _ x _ Hn), H.
 Qed.
@@ -469,7 +474,7 @@ Lemma member_concat' : forall (l1 l2 : list nat) (n : nat),
 Proof.
 intros. induction l1.
 - right. apply H.
-- simpl in H. simpl. destruct (beq_nat x n) eqn:Hx.
+- simpl in H. simpl. destruct (eq_nat x n) eqn:Hx.
   + left. auto.
   + destruct (IHl1 H).
     * left. apply H0.
@@ -481,7 +486,7 @@ Lemma member_concat : forall (l1 l2 : list nat) (n : nat),
   member n l1 = false /\ member n l2 = false.
 Proof.
 intros. induction l1; auto.
-simpl. case_eq (beq_nat x n); intros; simpl in H; rewrite H0 in H.
+simpl. case_eq (eq_nat x n); intros; simpl in H; rewrite H0 in H.
 - inversion H.
 - apply (IHl1 H).
 Qed.
@@ -513,7 +518,7 @@ Qed.
 Fixpoint repeated_element_n (l : list nat) (n : nat) : bool :=
 match l with
 | [] => true
-| m :: l' => beq_nat m n && repeated_element_n l' n
+| m :: l' => eq_nat m n && repeated_element_n l' n
 end.
 
 Lemma remove_dups_repeated_element : forall (l : list nat) (n : nat),
@@ -525,7 +530,7 @@ left. inversion H.
 destruct (and_bool_prop _ _ H1).
 destruct (IHl H2).
 - simpl. rewrite H3. rewrite (nat_beq_eq _ _ H0).
-  simpl. rewrite beq_nat_refl. auto.
+  simpl. rewrite eq_nat_refl. auto.
 - rewrite H3. rewrite (nat_beq_eq _ _ H0). auto.
 Qed.
 
@@ -535,13 +540,13 @@ Lemma remove_dups_repeated_element' : forall (l : list nat) (n : nat),
 Proof.
 intros. induction l; auto.
 simpl. inversion H. destruct (remove_n_dups_empty _ _ H2).
-- rewrite beq_nat_refl, IHl; auto.
-- rewrite beq_nat_refl. apply remove_dups_empty in H0. rewrite H0. auto.
+- rewrite eq_nat_refl, IHl; auto.
+- rewrite eq_nat_refl. apply remove_dups_empty in H0. rewrite H0. auto.
 Qed.
 
 Lemma repeated_element_n_concat_aux : forall (l1 l2 : list nat) (m n : nat),
   repeated_element_n (concat l1 (m :: l2)) n = true ->
-  beq_nat m n && repeated_element_n l2 n = true.
+  eq_nat m n && repeated_element_n l2 n = true.
 Proof.
 intros. induction l1; simpl in H.
 - apply H.
@@ -856,7 +861,7 @@ match (alpha, beta) with
     (match (ord_eqb a a') with
     | false => false
     | true =>
-        (match (beq_nat n n') with
+        (match (eq_nat n n') with
         | false => false
         | true => ord_eqb b b'
         end)
@@ -887,7 +892,7 @@ Proof.
 intros.
 induction alpha.
 - auto.
-- simpl. rewrite IHalpha1. rewrite beq_nat_refl. rewrite IHalpha2. auto.
+- simpl. rewrite IHalpha1. rewrite eq_nat_refl. rewrite IHalpha2. auto.
 Qed.
 
 Definition ord_lt_ltb_aux' (alpha : ord) :=
@@ -915,7 +920,7 @@ induction alpha.
     * simpl. case (ord_ltb beta1 beta1). auto. simpl.
       assert (ord_eqb beta1 beta1 = true). { apply (ord_eqb_refl beta1). }
       rewrite H7.
-      assert (lt_nat n n0 = true). { apply (nat_lt_aux n). apply H1. }
+      assert (lt_nat n n0 = true). { apply (lt_nat_decid n). apply H1. }
       rewrite H8. auto.
     * unfold ord_lt_ltb_aux' in IHalpha2. simpl.
       specialize IHalpha2 with beta2.
@@ -950,13 +955,9 @@ case_eq (ord_ltb a a').
       { intros. rewrite H4 in H1. inversion H1. }
       { intros. rewrite H4 in H1. right. split. rewrite H1. auto. split.
         { pose proof (nat_semiconnex n n'). destruct H5.
-          { pose proof (nat_lt_aux n). unfold nat_lt_aux' in H6.
-            specialize H6 with n'. apply H6 in H5. rewrite H5 in H3.
-            inversion H3. }
+          { apply lt_nat_decid in H5. rewrite H5 in H3. inversion H3. }
           { destruct H5.
-            { pose proof (nat_lt_aux n'). unfold nat_lt_aux' in H6.
-              specialize H6 with n. apply H6 in H5. rewrite H5 in H4.
-              inversion H4. }
+            { apply lt_nat_decid in H5. rewrite H5 in H4. inversion H4. }
             { apply H5. } } }
         { auto. } }
   + intros. left. auto.
@@ -978,7 +979,7 @@ induction alpha.
     * case_eq (ord_eqb alpha1 beta1).
       { intros. unfold ord_eqb_eq_aux' in IHalpha1. specialize IHalpha1 with beta1.
         assert (alpha1 = beta1). { apply IHalpha1. apply H0. } rewrite H2.
-        case_eq (beq_nat n n0).
+        case_eq (eq_nat n n0).
         { intros. assert (n = n0). { apply (nat_beq_eq n n0 H3). } rewrite H4.
           case_eq (ord_eqb alpha2 beta2).
           { intros. assert (alpha2 = beta2). { apply IHalpha2. apply H5. }
@@ -1977,7 +1978,7 @@ match (s, t) with
 | (succ s', succ t') => eq_term s' t'
 | (plus s1 s2, plus t1 t2) => (eq_term s1 t1) && (eq_term s2 t2)
 | (times s1 s2, times t1 t2) => (eq_term s1 t1) && (eq_term s2 t2)
-| (var m, var n) => beq_nat m n
+| (var m, var n) => eq_nat m n
 | (_,_) => false
 end.
 
@@ -1996,7 +1997,7 @@ match (a, b) with
 | (atom a', atom b') => eq_atom a' b'
 | (neg a', neg b') => eq_f a' b'
 | (lor a1 a2, lor b1 b2) => (eq_f a1 b1) && (eq_f a2 b2)
-| (univ m a', univ n b') => (beq_nat m n) && (eq_f a' b')
+| (univ m a', univ n b') => (eq_nat m n) && (eq_f a' b')
 | (_, _) => false
 end.
 
@@ -2010,7 +2011,7 @@ induction t.
 - simpl. apply IHt.
 - simpl. rewrite IHt1. apply IHt2.
 - simpl. rewrite IHt1. apply IHt2.
-- simpl. apply beq_nat_refl.
+- simpl. apply eq_nat_refl.
 Qed.
 
 Lemma eq_atom_refl : forall (a : atomic_formula), eq_atom a a = true.
@@ -2029,7 +2030,7 @@ induction a as [a | a IH | a1 IH1 a2 IH2 | n a IH].
 - unfold eq_f. apply eq_atom_refl.
 - simpl. apply IH.
 - simpl. rewrite IH1. apply IH2.
-- simpl. rewrite beq_nat_refl. apply IH.
+- simpl. rewrite eq_nat_refl. apply IH.
 Qed.
 
 
@@ -2095,7 +2096,7 @@ match a with
     | (S n, O) => undefined
     | (O, S m) => undefined
     | (S n, S m) =>
-        (match (beq_nat (eval t_1) (eval t_2)) with
+        (match (eq_nat (eval t_1) (eval t_2)) with
         | true => correct
         | false => incorrect
         end)
@@ -2213,7 +2214,7 @@ match A with
    | false =>
     (match free_list B with
     | [] => false
-    | m :: l => beq_nat m n && beq_list l []
+    | m :: l => eq_nat m n && beq_list l []
     end)
   end)
 end.
@@ -2281,7 +2282,7 @@ intros. induction A; auto; simpl in H.
   destruct (remove_n_dups_empty _ _ H).
   + rewrite <- free_list_remove_dups in H0. simpl. destruct (closed A) eqn:HA.
     * auto.
-    * rewrite H0. rewrite beq_nat_refl. auto.
+    * rewrite H0. rewrite eq_nat_refl. auto.
   + simpl. rewrite IHA.
     * auto.
     * rewrite <- free_list_remove_dups in H0. auto.
@@ -2325,7 +2326,7 @@ intros. induction A; auto; simpl.
   rewrite (IHA1 H0). rewrite (IHA2 H1). auto.
 - destruct (closed_univ _ _ H).
   + rewrite (IHA H0). auto.
-  + rewrite H0. simpl. rewrite beq_nat_refl. auto.
+  + rewrite H0. simpl. rewrite eq_nat_refl. auto.
 Qed.
 
 
@@ -2342,7 +2343,7 @@ match T with
 | plus T_1 T_2 => plus (substitution_t T_1 n t) (substitution_t T_2 n t)
 | times T_1 T_2 => times (substitution_t T_1 n t) (substitution_t T_2 n t)
 | var m =>
-    (match (beq_nat m n) with
+    (match (eq_nat m n) with
     | true => t
     | false => T
     end)
@@ -2360,7 +2361,7 @@ match A with
 | neg B => neg (substitution B n t)
 | lor B C => lor (substitution B n t) (substitution C n t)
 | univ m B => 
-    (match (beq_nat m n) with
+    (match (eq_nat m n) with
     | true => A
     | false => univ m (substitution B n t)
     end)
@@ -2383,7 +2384,7 @@ intros. induction T; auto.
   rewrite remove_dups_order. rewrite remove_concat. auto.
 - simpl. rewrite IHT1, IHT2.
   rewrite remove_dups_order. rewrite remove_concat. auto.
-- simpl. case_eq (beq_nat n0 n); intros; auto.
+- simpl. case_eq (eq_nat n0 n); intros; auto.
   apply closed_free_list_t, H.
 Qed.
 
@@ -2404,7 +2405,7 @@ intros. induction A; auto; simpl.
 - rewrite (subst_remove_a _ _ _ H). auto.
 - rewrite IHA1, IHA2.
   rewrite remove_dups_order. rewrite remove_concat. auto.
-- destruct (beq_nat n0 n) eqn:Hn.
+- destruct (eq_nat n0 n) eqn:Hn.
   + rewrite (nat_beq_eq _ _ Hn). rewrite remove_twice. auto.
   + simpl. rewrite IHA. apply remove_order.
 Qed.
@@ -2417,7 +2418,7 @@ Proof.
 intros.
 apply free_list_closed_a. 
 rewrite (subst_remove_a _ _ _ H).
-rewrite H0. simpl. rewrite beq_nat_refl. auto.
+rewrite H0. simpl. rewrite eq_nat_refl. auto.
 Qed.
 
 Lemma one_var_free_lemma : forall (A : formula) (n : nat) (t : term),
@@ -2428,7 +2429,7 @@ Proof.
 intros.
 apply free_list_closed.
 rewrite (subst_remove _ _ _ H).
-rewrite H0. simpl. rewrite beq_nat_refl. auto.
+rewrite H0. simpl. rewrite eq_nat_refl. auto.
 Qed.
 
 
@@ -2512,7 +2513,7 @@ destruct (eval s); destruct (eval t).
 - inversion Hs.
 - inversion Hs.
 - inversion Ht.
-- destruct (beq_nat (S n) (S n0)); auto.
+- destruct (eq_nat (S n) (S n0)); auto.
 Qed.
 
 Lemma correctness_decid_aux2 : forall (s t : term),
@@ -2757,7 +2758,7 @@ Proof.
 intros.
 case_eq (eval t); intros.
 - rewrite H0 in H. inversion H.
-- unfold correctness. rewrite H0. rewrite beq_nat_refl. auto.
+- unfold correctness. rewrite H0. rewrite eq_nat_refl. auto.
 Qed.
 
 Lemma equ_refl_aux2 : forall (t : term),
@@ -2793,7 +2794,7 @@ Lemma w_rule_exmp : forall (n : nat),
   PA_omega_theorem (univ n (atom (equ (var n) (var n)))).
 Proof.
 intros.
-apply w_rule1. simpl. rewrite beq_nat_refl.
+apply w_rule1. simpl. rewrite eq_nat_refl.
 apply equ_refl.
 Qed.
 
@@ -2907,7 +2908,7 @@ intros. induction T; auto.
   + rewrite HT1 in H0. rewrite HT2 in H0. inversion H0.
   + rewrite HT1 in H0. rewrite HT2 in H0. inversion H0.
   + rewrite HT1 in H0. rewrite HT2 in H0. inversion H0.
-- case_eq (beq_nat n0 n); intros; simpl; rewrite H1.
+- case_eq (eq_nat n0 n); intros; simpl; rewrite H1.
   + apply H.
   + simpl in H0. rewrite H1 in H0. inversion H0.
 Qed.
@@ -2955,7 +2956,7 @@ induction T; auto.
   + auto.
   + apply H1.
   + apply H0.
-- simpl in H. simpl. case_eq (beq_nat n0 n); intros.
+- simpl in H. simpl. case_eq (eq_nat n0 n); intros.
   + rewrite H0 in H. inversion H.
   + auto.
 Qed.
@@ -2983,7 +2984,7 @@ induction A.
   + auto.
   + apply H1.
   + apply H0.
-- simpl. case_eq (beq_nat n0 n); intros; auto.
+- simpl. case_eq (eq_nat n0 n); intros; auto.
   simpl in H. rewrite IHA. 
   + auto.
   + apply (member_remove _ _ _ H0 H).
@@ -3031,7 +3032,7 @@ intros.
 destruct (closed_univ B n H).
 - rewrite (closed_subst_eq _ _ _ H1). apply H1.
 - apply free_list_closed. rewrite (subst_remove B n t H0).
-  rewrite H1. simpl. rewrite beq_nat_refl. auto.
+  rewrite H1. simpl. rewrite eq_nat_refl. auto.
 Qed.
 
 Lemma closed_univ_sub_repr : forall (B : formula) (n : nat),
@@ -3063,7 +3064,7 @@ Qed.
 Lemma substitution_order_t : forall (T : term) (m n : nat) (s t : term),
   closed_t s = true ->
   closed_t t = true ->
-  beq_nat m n = false ->
+  eq_nat m n = false ->
   substitution_t (substitution_t T n s) m t =
   substitution_t (substitution_t T m t) n s.
 Proof.
@@ -3071,10 +3072,10 @@ intros T m n s t Hs Ht Hmn. induction T; auto; simpl.
 - rewrite IHT. auto.
 - rewrite IHT1, IHT2. auto.
 - rewrite IHT1, IHT2. auto.
-- destruct (beq_nat n0 n) eqn:Hn.
-  + rewrite <- (nat_beq_eq _ _ Hn) in Hmn. rewrite (beq_nat_symm' _ _ Hmn).
+- destruct (eq_nat n0 n) eqn:Hn.
+  + rewrite <- (nat_beq_eq _ _ Hn) in Hmn. rewrite (eq_nat_symm' _ _ Hmn).
     simpl. rewrite Hn. apply closed_subst_eq_t, Hs.
-  + destruct (beq_nat n0 m) eqn:Hm; simpl; rewrite Hm.
+  + destruct (eq_nat n0 m) eqn:Hm; simpl; rewrite Hm.
     * symmetry. apply closed_subst_eq_t, Ht.
     * rewrite Hn. auto.
 Qed.
@@ -3083,7 +3084,7 @@ Lemma substitution_order_a :
   forall (a : atomic_formula) (m n : nat) (s t : term),
   closed_t s = true ->
   closed_t t = true ->
-  beq_nat m n = false ->
+  eq_nat m n = false ->
   substitution_a (substitution_a a n s) m t =
   substitution_a (substitution_a a m t) n s.
 Proof.
@@ -3095,7 +3096,7 @@ Qed.
 Lemma substitution_order : forall (B : formula) (m n : nat) (s t : term),
   closed_t s = true ->
   closed_t t = true ->
-  beq_nat m n = false ->
+  eq_nat m n = false ->
   substitution (substitution B n s) m t =
   substitution (substitution B m t) n s.
 Proof.
@@ -3103,22 +3104,22 @@ intros B m n s t Hs Ht Hmn. induction B; simpl.
 - rewrite (substitution_order_a _ _ _ _ _ Hs Ht Hmn). auto.
 - rewrite IHB. auto.
 - rewrite IHB1, IHB2. auto.
-- destruct (beq_nat n0 n) eqn:Hn.
+- destruct (eq_nat n0 n) eqn:Hn.
   + apply nat_beq_eq in Hn. rewrite Hn.
-    rewrite (beq_nat_symm' _ _ Hmn). simpl.
-    rewrite (beq_nat_symm' _ _ Hmn). rewrite beq_nat_refl. auto.
-  + destruct (beq_nat n0 m) eqn:Hm; simpl; rewrite Hm, Hn; auto.
+    rewrite (eq_nat_symm' _ _ Hmn). simpl.
+    rewrite (eq_nat_symm' _ _ Hmn). rewrite eq_nat_refl. auto.
+  + destruct (eq_nat n0 m) eqn:Hm; simpl; rewrite Hm, Hn; auto.
     rewrite IHB. auto.
 Qed.
 
 Lemma univ_free_var : forall (B : formula) (m n : nat),
-  free_list (univ m B) = [n] -> beq_nat m n = false.
+  free_list (univ m B) = [n] -> eq_nat m n = false.
 Proof.
 intros. simpl in H.
-destruct (beq_nat m n) eqn:Hm; auto.
+destruct (eq_nat m n) eqn:Hm; auto.
 apply nat_beq_eq in Hm. rewrite Hm in H.
 pose proof (remove_twice (free_list B) n).
-rewrite H in H0. simpl in H0. rewrite beq_nat_refl in H0. inversion H0.
+rewrite H in H0. simpl in H0. rewrite eq_nat_refl in H0. inversion H0.
 Qed.
 
 Lemma free_list_univ_sub :
@@ -3270,7 +3271,7 @@ intros.
 induction B; auto; simpl.
 - rewrite IHB. auto.
 - rewrite IHB1, IHB2. auto.
-- destruct (beq_nat n m).
+- destruct (eq_nat n m).
   + auto.
   + simpl. rewrite IHB. auto.
 Qed.
@@ -3356,7 +3357,7 @@ induction T.
           eval (times (substitution_t T1 n t) (substitution_t T2 n t))). { auto. }
   rewrite H0. rewrite H1. case_eq (eval (substitution_t T1 n s));
   intros; simpl; rewrite <- IHT1; rewrite <- IHT2; rewrite H2; auto.
-- simpl. case (beq_nat n0 n). apply H. auto.
+- simpl. case (eq_nat n0 n). apply H. auto.
 Qed.
 
 Lemma LEM_term_atomic_aux2 : forall (a : atomic_formula) (s t : term) (n : nat),
@@ -3390,7 +3391,7 @@ case_eq (eval s); case_eq (eval t); intros.
 - auto.
 - inversion H1.
 - inversion H1.
-- case_eq (beq_nat (S n0) (S n)).
+- case_eq (eq_nat (S n0) (S n)).
   + apply nat_beq_eq.
   + intros. rewrite H2 in H1. inversion H1.
 Qed.
@@ -3406,7 +3407,7 @@ case_eq (eval t); case_eq (eval s); intros.
 - rewrite H2 in H0. inversion H0.
 - rewrite H3 in H1. inversion H1.
 - rewrite H2 in H0. inversion H0.
-- rewrite <- H2. rewrite <- H3. rewrite Hst. rewrite beq_nat_refl. auto.
+- rewrite <- H2. rewrite <- H3. rewrite Hst. rewrite eq_nat_refl. auto.
 Qed.
 
 Lemma LEM_term_atomic' : forall (s t : term) (a : atomic_formula) (n : nat),
@@ -4297,7 +4298,7 @@ destruct A.
 - simpl. destruct B; auto. destruct (eq_atom a a0); auto.
 - simpl. destruct B; auto. destruct (eq_f A B); auto.
 - auto.
-- simpl. destruct B; auto. destruct (beq_nat n n0 && eq_f A B); auto.
+- simpl. destruct B; auto. destruct (eq_nat n n0 && eq_f A B); auto.
 Qed.
 
 Lemma formula_sub_ind_0 : forall (A B C : formula),
@@ -4337,7 +4338,7 @@ intros. induction A.
 - unfold non_target. unfold formula_sub_ind_fit.
   destruct (eq_f (neg A) C); auto.
 - simpl. rewrite IHA1, IHA2. auto.
-- simpl. destruct C; auto. destruct (beq_nat n n0 && eq_f A C); auto.
+- simpl. destruct C; auto. destruct (eq_nat n n0 && eq_f A C); auto.
 Qed.
 
 Lemma non_target_sub : forall (A C D : formula),
@@ -4381,7 +4382,7 @@ Lemma non_target_term_sub : forall (A : formula) (n : nat) (t : term),
 Proof.
 intros. induction A; auto; simpl.
 - rewrite IHA1, IHA2. auto.
-- destruct (beq_nat n0 n); auto.
+- destruct (eq_nat n0 n); auto.
 Qed.
 
 Lemma formula_sub_ind_closed : forall (A T U : formula),
@@ -4408,7 +4409,7 @@ intros A T U. induction A; intros; unfold formula_sub_ind.
   rewrite H1, H3. auto.
 - destruct (subst_ind_fit (univ n A) S); try apply H.
   simpl. destruct T; try apply H.
-  destruct (beq_nat n n0 && eq_f A T); try apply H.
+  destruct (eq_nat n n0 && eq_f A T); try apply H.
   destruct S; try apply H. apply H0.
 Qed.
 
