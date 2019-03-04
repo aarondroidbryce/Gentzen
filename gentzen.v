@@ -2,7 +2,6 @@ Require Import Omega.
 Require Import Lia.
 Notation "b1 && b2" := (andb b1 b2).
 Notation "b1 || b2" := (orb b1 b2).
-Notation beq_nat := Nat.eqb.
 
 (*
 ###############################################################################
@@ -32,7 +31,7 @@ Lemma leq_refl : forall (n : nat), n <= n. Proof. auto. Qed.
 Lemma addends_leq : forall (m n p : nat), n + m = p -> n <= p /\ m <= p.
 Proof. intros. omega. Qed.
 
-Theorem beq_nat_refl : forall (n : nat), beq_nat n n = true.
+Lemma beq_nat_refl : forall (n : nat), beq_nat n n = true.
 Proof.
 intros. induction n as [| n IH].
 - auto.
@@ -47,7 +46,7 @@ match (n, m) with
 | (S n', S m') => bgeq_nat n' m'
 end.
 
-Theorem succ_geq : forall (n : nat), bgeq_nat (S n) n = true.
+Lemma succ_geq : forall (n : nat), bgeq_nat (S n) n = true.
 Proof.
 intros. induction n.
 - auto.
@@ -64,7 +63,7 @@ induction n.
 - rewrite <- IHn. auto.
 Qed.
 
-Theorem succ_beq : forall (n : nat), beq_nat n (S n) = false.
+Lemma succ_beq : forall (n : nat), beq_nat n (S n) = false.
 Proof.
 intros. induction n.
 - auto.
@@ -158,10 +157,10 @@ Lemma mult_left_incr_aux_aux : forall (n m p : nat),
   n < m -> p + n * (S p) < p + m * (S p).
 Proof. intros. induction p; lia. Qed.
 
-Theorem minus_n_0 : forall (n : nat), n - 0 = n.
+Lemma minus_n_0 : forall (n : nat), n - 0 = n.
 Proof. intros. omega. Qed.
 
-Theorem plus_n_0 : forall n:nat,
+Lemma plus_n_0 : forall n:nat,
   n + 0 = n.
 Proof.
 intros n.
@@ -172,7 +171,7 @@ induction n as [| n' IH].
   auto.
 Qed.
 
-Theorem plus_n_1 : forall n:nat,
+Lemma plus_n_1 : forall n:nat,
   n + 1 = S n.
 Proof.
 intros n.
@@ -183,7 +182,7 @@ induction n as [| n' IH].
   auto.
 Qed.
 
-Theorem plus_n_Sm : forall n m : nat,
+Lemma plus_n_Sm : forall n m : nat,
   S (n + m) = n + (S m).
 Proof.
 intros m n.
@@ -202,7 +201,7 @@ induction n.
 - simpl. rewrite plus_n_0. lia.
 Qed.
 
-Theorem plus_comm : forall n m : nat,
+Lemma plus_comm : forall n m : nat,
   n + m = m + n.
 Proof.
 intros m n.
@@ -221,7 +220,7 @@ induction m as [| m' IH].
     auto.
 Qed.
 
-Theorem plus_assoc : forall n m p : nat,
+Lemma plus_assoc : forall n m p : nat,
   n + (m + p) = (n + m) + p.
 Proof.
 intros n m p.
@@ -233,7 +232,7 @@ induction n as [| n IHn].
   auto.
 Qed.
 
-Theorem mult_0_r : forall n:nat,
+Lemma mult_0_r : forall n:nat,
   n * 0 = 0.
 Proof.
 intros n.
@@ -252,7 +251,7 @@ induction n as [| n' IH].
 - simpl. rewrite IH. auto.
 Qed.
 
-Theorem nat_semiconnex : forall (m n : nat), m < n \/ n < m \/ m = n.
+Lemma nat_semiconnex : forall (m n : nat), m < n \/ n < m \/ m = n.
 Proof. intros. omega. Qed.
 
 Lemma nat_transitive : forall (n n' n'' : nat), n < n' -> n' < n'' -> n < n''.
@@ -417,11 +416,11 @@ simpl. rewrite remove_dups_order. rewrite remove_twice.
 rewrite <- remove_dups_order. rewrite IHl. auto.
 Qed.
 
-Theorem beq_nat_symm : forall (n m : nat),
+Lemma beq_nat_symm : forall (n m : nat),
   beq_nat m n = true -> beq_nat n m = true.
 Proof. intros. apply nat_beq_eq in H. rewrite H. apply beq_nat_refl. Qed.
 
-Theorem beq_nat_symm' : forall (n m : nat),
+Lemma beq_nat_symm' : forall (n m : nat),
   beq_nat m n = false -> beq_nat n m = false.
 Proof.
 intros. case_eq (beq_nat n m); intros; auto.
@@ -674,7 +673,7 @@ Definition semiconnex (alpha : ord) :=
   forall (beta : ord), alpha < beta \/ beta < alpha \/ alpha = beta.
 
 
-Theorem ordinal_semiconnex : forall (alpha : ord), semiconnex alpha.
+Lemma ordinal_semiconnex : forall (alpha : ord), semiconnex alpha.
 Proof.
 intros alpha.
 induction alpha.
@@ -728,7 +727,7 @@ inversion H.
 Qed.
 
 
-Theorem lt_trans' : forall (alpha : ord), transitive alpha.
+Lemma lt_trans' : forall (alpha : ord), transitive alpha.
 Proof.
 intros.
 induction alpha as [| a IHa n b IHb].
@@ -772,7 +771,7 @@ induction alpha as [| a IHa n b IHb].
 Qed.
 
 
-Theorem lt_trans : forall (alpha beta gamma : ord),
+Lemma lt_trans : forall (alpha beta gamma : ord),
   alpha < beta -> beta < gamma -> alpha < gamma.
 Proof.
 intros.
@@ -823,7 +822,7 @@ Definition e0 : Type := {a : ord | nf a}.
 
 Check cons Zero O (cons Zero O Zero).
 
-Theorem Zero_nf : nf Zero.
+Lemma Zero_nf : nf Zero.
 Proof. apply zero_nf. Qed.
 
 Check exist nf Zero Zero_nf.
@@ -1808,7 +1807,7 @@ destruct H1.
 Qed.
 
 
-Theorem ord_2_exp_fp : forall (alpha : ord), nf alpha ->
+Lemma ord_2_exp_fp : forall (alpha : ord), nf alpha ->
   alpha < ord_2_exp alpha \/ alpha = cons (nat_ord 1) 0 Zero.
 Proof.
 intros alpha nf_alpha.
@@ -2003,7 +2002,7 @@ end.
 
 Compute eq_f (atom (equ zero (succ zero))) (atom (equ zero (succ zero))).
 
-Theorem eq_term_refl : forall (t : term), eq_term t t = true.
+Lemma eq_term_refl : forall (t : term), eq_term t t = true.
 Proof.
 intros t.
 induction t.
@@ -2014,7 +2013,7 @@ induction t.
 - simpl. apply beq_nat_refl.
 Qed.
 
-Theorem eq_atom_refl : forall (a : atomic_formula), eq_atom a a = true.
+Lemma eq_atom_refl : forall (a : atomic_formula), eq_atom a a = true.
 Proof.
 intros a.
 destruct a as [t1 t2].
@@ -2023,7 +2022,7 @@ rewrite eq_term_refl.
 apply eq_term_refl.
 Qed.
 
-Theorem eq_f_refl : forall (a : formula), eq_f a a = true.
+Lemma eq_f_refl : forall (a : formula), eq_f a a = true.
 Proof.
 intros a.
 induction a as [a | a IH | a1 IH1 a2 IH2 | n a IH].
@@ -3210,7 +3209,7 @@ Definition P2 (A : formula) (n : nat) : Prop :=
 Definition P3 (m : nat) : Prop :=
   forall (A : formula), P2 A m.
 
-Theorem P3_strongind_aux :
+Lemma P3_strongind_aux :
   P3 0 ->
   (forall n,
     ((forall m, m <= n -> P3 m) -> P3 (S n))) ->
@@ -3223,7 +3222,7 @@ induction n as [| n' IHn' ].
   + apply IHn'. apply H3.
 Qed.
 
-Theorem P3_strongind :
+Lemma P3_strongind :
   P3 0 ->
   (forall n,
     ((forall m, m <= n -> P3 m) -> P3 (S n))) ->
@@ -3410,7 +3409,7 @@ case_eq (eval t); case_eq (eval s); intros.
 - rewrite <- H2. rewrite <- H3. rewrite Hst. rewrite beq_nat_refl. auto.
 Qed.
 
-Theorem LEM_term_atomic' : forall (s t : term) (a : atomic_formula) (n : nat),
+Lemma LEM_term_atomic' : forall (s t : term) (a : atomic_formula) (n : nat),
   correct_a (equ s t) = true ->
   PA_omega_axiom (substitution (atom a) n s) = true ->
   PA_omega_axiom (substitution (atom a) n t) = true.
@@ -3464,7 +3463,7 @@ Definition Q2 (A : formula) (n : nat) : Prop := num_conn A = n -> Q1 A.
 
 Definition Q3 (m : nat) : Prop := forall (A : formula), Q2 A m.
 
-Theorem Q3_strongind_aux :
+Lemma Q3_strongind_aux :
   Q3 0 ->
   (forall n,
     ((forall m, m <= n -> Q3 m) -> Q3 (S n))) ->
@@ -3477,7 +3476,7 @@ induction n as [| n' IHn' ].
   + apply IHn'. apply H3.
 Qed.
 
-Theorem Q3_strongind :
+Lemma Q3_strongind :
   Q3 0 ->
   (forall n,
     ((forall m, m <= n -> Q3 m) -> Q3 (S n))) ->
@@ -4040,7 +4039,7 @@ Qed.
 Definition term_beq_eq_nice (t : term) : Prop := forall (s : term),
   eq_term s t = true -> s = t.
 
-Theorem term_beq_eq' : forall (t : term), term_beq_eq_nice t.
+Lemma term_beq_eq' : forall (t : term), term_beq_eq_nice t.
 Proof.
 intros. induction t; unfold term_beq_eq_nice; intros; destruct s; inversion H.
 - auto.
@@ -4054,11 +4053,11 @@ intros. induction t; unfold term_beq_eq_nice; intros; destruct s; inversion H.
 - rewrite (nat_beq_eq _ _ H1). auto.
 Qed.
 
-Theorem term_beq_eq : forall (s t : term),
+Lemma term_beq_eq : forall (s t : term),
   eq_term s t = true -> s = t.
 Proof. intros. apply term_beq_eq'. apply H. Qed.
 
-Theorem atom_beq_eq : forall (a b : atomic_formula),
+Lemma atom_beq_eq : forall (a b : atomic_formula),
   eq_atom a b = true -> a = b.
 Proof.
 intros. destruct a,b. inversion H. destruct (and_bool_prop _ _ H1).
@@ -4068,7 +4067,7 @@ Qed.
 Definition f_beq_eq_nice (A : formula) : Prop := forall (B : formula),
   eq_f A B = true -> A = B.
 
-Theorem f_beq_eq' : forall (A : formula), f_beq_eq_nice A.
+Lemma f_beq_eq' : forall (A : formula), f_beq_eq_nice A.
 Proof.
 intros. induction A; unfold f_beq_eq_nice; intros; destruct B; inversion H.
 - apply atom_beq_eq in H1. rewrite H1. auto.
@@ -4080,7 +4079,7 @@ intros. induction A; unfold f_beq_eq_nice; intros; destruct B; inversion H.
   unfold f_beq_eq_nice in IHA. rewrite (IHA B H2), (nat_beq_eq _ _ H0). auto.
 Qed.
 
-Theorem f_beq_eq : forall (A B : formula), eq_f A B = true -> A = B.
+Lemma f_beq_eq : forall (A B : formula), eq_f A B = true -> A = B.
 Proof. intros. apply f_beq_eq'. apply H. Qed.
 
 
@@ -4560,13 +4559,13 @@ end.
 (* First, we must prove that dub_neg_sub_ftree' simply changes the base formula
 of an ftree the way we expect with dub_neg_sub_formula *)
 (* *)
-Theorem dub_neg_ftree_formula_aux' :
+Lemma dub_neg_ftree_formula_aux' :
   forall (P : ftree) (E : formula) (S : subst_ind),
     subst_ind_fit (ftree_formula P) S = false ->
     dub_neg_sub_ftree' P E S = P.
 Proof. intros. unfold dub_neg_sub_ftree'. destruct P; rewrite H; auto. Qed.
 
-Theorem dub_neg_ftree_formula_aux :
+Lemma dub_neg_ftree_formula_aux :
   forall (P : ftree) (E : formula) (S : subst_ind),
     subst_ind_fit (ftree_formula P) S = false ->
       ftree_formula (dub_neg_sub_ftree' P E S) =
@@ -4577,14 +4576,14 @@ intros. rewrite dub_neg_ftree_formula_aux'.
 - apply H.
 Qed.
 
-Theorem dub_neg_ftree_formula_true :
+Lemma dub_neg_ftree_formula_true :
   forall (P : ftree) (E : formula) (S : subst_ind),
     subst_ind_fit (ftree_formula P) S = true ->
     dub_neg_sub_ftree P E S = dub_neg_sub_ftree' P E S.
 Proof. intros. unfold dub_neg_sub_ftree'. destruct P; rewrite H; auto. Qed.
 
 
-Theorem dub_neg_ftree_formula' : forall (P : ftree) (E : formula),
+Lemma dub_neg_ftree_formula' : forall (P : ftree) (E : formula),
   valid P ->
   forall (S : subst_ind),
     subst_ind_fit (ftree_formula P) S = true ->
@@ -4727,7 +4726,7 @@ induction P; try intros H S Hs.
   rewrite formula_sub_ind_lor. auto. apply H1.
 Qed.
 
-Theorem dub_neg_ftree_formula : forall (P : ftree) (E : formula),
+Lemma dub_neg_ftree_formula : forall (P : ftree) (E : formula),
   valid P ->
   forall (S : subst_ind),
     ftree_formula (dub_neg_sub_ftree' P E S) =
@@ -4749,7 +4748,7 @@ Qed.
 (* Now we prove that if we have a valid ftree, replacing performing our
 double negation substitution to it results in a valid ftree *)
 (* *)
-Theorem dub_neg_valid : forall (P : ftree) (E : formula),
+Lemma dub_neg_valid : forall (P : ftree) (E : formula),
   closed E = true -> valid P ->
   forall (S : subst_ind),
     subst_ind_fit (ftree_formula P) S = true ->
@@ -5132,7 +5131,7 @@ Qed.
 (* We finally show that if the formulas ~~A and/or ~~A \/ D are provable,
 so are the formulas A and/or A \/ D *)
 (* *)
-Theorem double_negation_invertible_a : forall (A : formula),
+Lemma double_negation_invertible_a : forall (A : formula),
   provable (neg (neg A)) -> provable A.
 Proof.
 unfold provable.
@@ -5148,7 +5147,7 @@ instantiate (1:= dub_neg_sub_ftree' t A (1)). split.
   + rewrite H. auto.
 Qed.
 
-Theorem double_negation_invertible_ad : forall (A D : formula),
+Lemma double_negation_invertible_ad : forall (A D : formula),
   provable (lor (neg (neg A)) D) -> provable (lor A D).
 Proof.
 unfold provable.
