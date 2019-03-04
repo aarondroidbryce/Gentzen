@@ -85,8 +85,7 @@ induction n.
   + inversion H.
   + unfold lt_nat_decid_nice in IHn.
     assert (n < m). { omega. }
-    specialize IHn with m. apply IHn in H0.
-    simpl. 
+    apply IHn in H0. simpl.
     inversion H. unfold lt_nat. rewrite (succ_geq (S n)). simpl.
     rewrite (succ_not_eq n). auto.
     unfold lt_nat. simpl.
