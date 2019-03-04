@@ -265,7 +265,6 @@ Proof. intros. omega. Qed.
 
 (* Basic properties of lists and lists of nats *)
 (* *)
-
 Inductive list (X : Type) : Type :=
 | nil : list X
 | constr : X -> list X -> list X.
@@ -283,31 +282,31 @@ match l_1 with
 | n :: l_1' => n :: (concat l_1' l_2)
 end.
 
-Fixpoint beq_list (l1 l2 : list nat) : bool :=
+Fixpoint eq_list (l1 l2 : list nat) : bool :=
 match l1,l2 with
 | [],[] => true
 | m :: l1',[] => false
 | [], n :: l2' => false
-| m :: l1', n :: l2' => eq_nat m n && beq_list l1' l2'
+| m :: l1', n :: l2' => eq_nat m n && eq_list l1' l2'
 end.
 
-Definition beq_list_eq_nice (l1 : list nat) :=
-  forall (l2 : list nat), beq_list l1 l2 = true -> l1 = l2.
+Definition eq_list_decid_nice (l1 : list nat) :=
+  forall (l2 : list nat), eq_list l1 l2 = true -> l1 = l2.
 
-Lemma beq_list_eq' : forall (l1 : list nat), beq_list_eq_nice l1.
+Lemma eq_list_decid' : forall (l1 : list nat), eq_list_decid_nice l1.
 Proof.
 intros. induction l1.
-- unfold beq_list_eq_nice. intros. destruct l2; auto. inversion H.
-- unfold beq_list_eq_nice. intros. destruct l2.
+- unfold eq_list_decid_nice. intros. destruct l2; auto. inversion H.
+- unfold eq_list_decid_nice. intros. destruct l2.
   + inversion H.
   + simpl in H. destruct (and_bool_prop _ _ H).
-    unfold beq_list_eq_nice in IHl1. rewrite (IHl1 l2 H1).
+    unfold eq_list_decid_nice in IHl1. rewrite (IHl1 l2 H1).
     rewrite (nat_beq_eq _ _ H0). auto.
 Qed.
 
-Lemma beq_list_eq : forall (l1 l2 : list nat),
-  beq_list l1 l2 = true -> l1 = l2.
-Proof. intros. apply (beq_list_eq' l1). auto. Qed.
+Lemma eq_list_decid : forall (l1 l2 : list nat),
+  eq_list l1 l2 = true -> l1 = l2.
+Proof. intros. apply (eq_list_decid' l1). auto. Qed.
 
 Fixpoint remove (n : nat) (l : list nat) : list nat :=
 match l with
@@ -2213,7 +2212,7 @@ match A with
    | false =>
     (match free_list B with
     | [] => false
-    | m :: l => eq_nat m n && beq_list l []
+    | m :: l => eq_nat m n && eq_list l []
     end)
   end)
 end.
@@ -2227,7 +2226,7 @@ rewrite H0 in H2.
 destruct (free_list B) eqn:HB.
 - inversion H2.
 - destruct (and_bool_prop _ _ H2).
-  apply nat_beq_eq in H1. apply beq_list_eq in H3. rewrite H1, H3. auto.
+  apply nat_beq_eq in H1. apply eq_list_eq in H3. rewrite H1, H3. auto.
 Qed.
 
 Lemma closed_univ : forall (B : formula) (m : nat),
