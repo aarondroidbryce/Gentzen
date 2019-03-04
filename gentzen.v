@@ -648,7 +648,7 @@ Section 2: Basic Facts about ordinals under epsilon_0.
 
 
 (* We borrows Pierre Casteran's definition of ordinals, which can be found at
-http://www.labri.fr/perso/casteran/, under "Ordinal notations and rpo".
+www.labri.fr/perso/casteran, under "Ordinal notations and rpo".
 The file that we borrow from is EPSILON0.v, in the epsilon0 folder.
 In this framework, cons a n b represents  omega^a *(S n)  + b *)
 (* *)
@@ -819,7 +819,6 @@ Inductive nf : ord -> Prop :=
                              nf a ->
                              nf (cons a' n' b)->
                              nf (cons a n (cons a' n' b)).
-Hint Resolve zero_nf single_nf cons_nf : ord.
 
 Definition e0 : Type := {a : ord | nf a}.
 
@@ -2226,7 +2225,7 @@ rewrite H0 in H2.
 destruct (free_list B) eqn:HB.
 - inversion H2.
 - destruct (and_bool_prop _ _ H2).
-  apply nat_beq_eq in H1. apply eq_list_eq in H3. rewrite H1, H3. auto.
+  apply nat_beq_eq in H1. apply eq_list_decid in H3. rewrite H1, H3. auto.
 Qed.
 
 Lemma closed_univ : forall (B : formula) (m : nat),
