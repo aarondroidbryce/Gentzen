@@ -1185,16 +1185,11 @@ end.
 Fixpoint ord_2_exp (alpha : ord) : ord :=
 match alpha with
 | Zero => cons Zero 0 Zero
-
 | cons Zero n' _ => nat_ord (2 ^ (S n'))
-
 | cons (cons Zero n Zero) 0 Zero =>
-      cons (cons (cons Zero n Zero) 0 Zero) 0 Zero
-
+    cons (cons (cons Zero n Zero) 0 Zero) 0 Zero
 | cons (cons a n b) n' b' =>
-    ord_mult
-      (cons (cons (cons a n b) n' Zero) 0 Zero)
-      (ord_2_exp b')
+    ord_mult (cons (cons (cons a n b) n' Zero) 0 Zero) (ord_2_exp b')
 end.
 
 
@@ -1802,10 +1797,6 @@ induction alpha as [| a IHa n b IHb].
       { apply (nf_hered_third _ _ _ nf_alpha). }
       { repeat apply head_lt. apply omega_exp_incr'. }
 Qed.
-
-
-
-
 Close Scope cantor_scope.
 
 
