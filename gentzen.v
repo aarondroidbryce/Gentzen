@@ -820,25 +820,9 @@ Inductive nf : ord -> Prop :=
                              nf (cons a' n' b)->
                              nf (cons a n (cons a' n' b)).
 
-Definition e0 : Type := {a : ord | nf a}.
-
-Check cons Zero O (cons Zero O Zero).
 
 Lemma Zero_nf : nf Zero.
 Proof. apply zero_nf. Qed.
-
-Check exist nf Zero Zero_nf.
-Check exist.
-Check exist nf.
-
-Definition lt_e0 (alpha beta : e0) : Prop :=
-  match (alpha, beta) with
-  | (exist _ alpha' _, exist _ beta' _) => alpha' < beta'
-  end.
-
-Definition leq_e0 (alpha beta : e0) : Prop := lt_e0 alpha beta \/ alpha = beta.
-Definition gt_e0 (alpha beta : e0) : Prop := lt_e0 beta alpha.
-Definition geq_e0 (alpha beta : e0) : Prop := leq_e0 beta alpha.
 
 Definition nat_ord (n : nat) : ord :=
   match n with
@@ -1334,15 +1318,6 @@ destruct H0.
 - apply (lt_trans a (cons a 0 Zero) (cons a n b) H H0).
 Qed.
 
-
-
-(* Carry over the ordinal arithmetic results to the e0 type *)
-(* *)
-Definition e0_ord (alpha : e0) : ord :=
-match alpha with
-| exist _ alpha' pf => alpha'
-end.
-
 Lemma nf_nat : forall (n : nat), nf (nat_ord n).
 Proof.
 induction n.
@@ -1352,14 +1327,6 @@ induction n.
   apply single_nf.
   apply Zero_nf.
 Qed.
-
-Definition nat_e0 (n : nat) : e0 := exist nf (nat_ord n) (nf_nat n).
-
-Definition e0_eq (alpha : e0) (beta : e0) : bool :=
-  ord_eqb (e0_ord alpha) (e0_ord beta).
-
-Definition e0_lt (alpha : e0) (beta : e0) : bool :=
-  ord_ltb (e0_ord alpha) (e0_ord beta).
 
 Lemma nf_add_aux2 : forall (a a' a'' b b' b'' : ord) (n n' n'' : nat),
   cons a n b = ord_add (cons a' n' b') (cons a'' n'' b'') -> (a = a' \/ a = a'').
@@ -1836,18 +1803,7 @@ induction alpha as [| a IHa n b IHb].
       { repeat apply head_lt. apply omega_exp_incr'. }
 Qed.
 
-Definition e0_pf (alpha : e0) : (nf (e0_ord alpha)) :=
-match alpha with
-| exist _ alpha' pf => pf
-end.
 
-Definition e0_add (alpha beta : e0) : e0 :=
-  exist nf (ord_add (e0_ord alpha) (e0_ord beta))
-    (nf_add (e0_ord alpha) (e0_ord beta) (e0_pf alpha) (e0_pf beta)).
-
-Definition e0_mult (alpha beta : e0) : e0 :=
-  exist nf (ord_mult (e0_ord alpha) (e0_ord beta))
-    (nf_mult (e0_ord alpha) (e0_ord beta) (e0_pf alpha) (e0_pf beta)).
 
 Close Scope cantor_scope.
 
@@ -4130,34 +4086,7 @@ Qed.
 
 
 
-(*
-(* Proofs in PA_omega, except restricted with some n denoting the highest
-    degree of any cut, and some ordinal assignment e0 *)
-(* *)
-Inductive PA_omega_proves : formula -> nat -> e0 -> Prop :=
-| greater_degree : forall (a : formula) (n m : nat) (alpha : e0),
-    PA_omega_proves a n alpha ->
-    m > n ->
-    PA_omega_proves a m alpha
 
-| greater_ordinal : forall (a : formula) (n : nat) (alpha beta : e0),
-    PA_omega_proves a n alpha ->
-    gt_e0 beta alpha ->
-    PA_omega_proves a n beta
-
-
-
-| axiom' : forall (a : formula),
-    PA_omega_axiom a = true ->
-    PA_omega_proves a 0 (exist nf Zero Zero_nf)
-
-
-
-| exchange1' : forall (a b : formula) (n : nat) (alpha : e0),
-    PA_omega_proves (lor a b) n alpha ->
-    PA_omega_proves (lor b a) n alpha.
-
-*)
 
 
 
