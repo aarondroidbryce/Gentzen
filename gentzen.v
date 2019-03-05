@@ -815,14 +815,11 @@ Pierre Casteran's definition *)
 Inductive nf : ord -> Prop :=
 | zero_nf : nf Zero
 | single_nf : forall a n, nf a ->  nf (cons a n Zero)
-| cons_nf : forall a n a' n' b, a' < a ->
-                             nf a ->
-                             nf (cons a' n' b)->
-                             nf (cons a n (cons a' n' b)).
+| cons_nf : forall a n a' n' b,
+    a' < a -> nf a -> nf (cons a' n' b) -> nf (cons a n (cons a' n' b)).
 
 
-Lemma Zero_nf : nf Zero.
-Proof. apply zero_nf. Qed.
+Lemma Zero_nf : nf Zero. Proof. apply zero_nf. Qed.
 
 Definition nat_ord (n : nat) : ord :=
   match n with
@@ -830,8 +827,18 @@ Definition nat_ord (n : nat) : ord :=
   | S n' => cons Zero n' Zero
   end.
 
+Lemma nf_nat : forall (n : nat), nf (nat_ord n).
+Proof.
+induction n.
+- unfold nat_ord.
+  apply Zero_nf.
+- unfold nat_ord.
+  apply single_nf.
+  apply Zero_nf.
+Qed.
 
-(* defining boolean equality and less than, assuming normal form. *)
+
+(* Defining boolean equality and less than, assuming normal form. *)
 (* *)
 Fixpoint ord_eqb (alpha beta : ord) : bool :=
 match (alpha, beta) with
@@ -1316,16 +1323,6 @@ pose proof (cons_monot a b n).
 destruct H0.
 - rewrite H0 in H. apply H.
 - apply (lt_trans a (cons a 0 Zero) (cons a n b) H H0).
-Qed.
-
-Lemma nf_nat : forall (n : nat), nf (nat_ord n).
-Proof.
-induction n.
-- unfold nat_ord.
-  apply Zero_nf.
-- unfold nat_ord.
-  apply single_nf.
-  apply Zero_nf.
 Qed.
 
 Lemma nf_add_aux2 : forall (a a' a'' b b' b'' : ord) (n n' n'' : nat),
