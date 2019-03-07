@@ -4101,12 +4101,12 @@ end.
 (* Replace formula E with formula F at certain places in a formula A *)
 (* *)
 Fixpoint subst_ind_fit (A : formula) (S : subst_ind) : bool :=
-match (A, S) with
-| (lor B C, lor_ind S_B S_C) =>
+match A, S with
+| lor B C, lor_ind S_B S_C =>
     subst_ind_fit B S_B && subst_ind_fit C S_C
-| (_, lor_ind _ _) => false
-| (lor _ _, _) => false
-| (_, _) => true
+| _, lor_ind _ _ => false
+| lor _ _, _ => false
+| _, _ => true
 end.
 
 Fixpoint formula_sub_ind_fit (A E F : formula) (S : subst_ind) : formula :=
@@ -4118,14 +4118,14 @@ match A with
   | _ => A
   end)
 | _ =>
-  (match (eq_f A E, S) with
-  | (true, (1)) => F
-  | _ => A
+  (match eq_f A E, S with
+  | true, (1) => F
+  | _, _ => A
   end)
 end.
 
 Fixpoint formula_sub_ind (A E F : formula) (S : subst_ind) : formula :=
-match (subst_ind_fit A S) with
+match subst_ind_fit A S with
 | false => A
 | true => formula_sub_ind_fit A E F S
 end.
@@ -4262,30 +4262,30 @@ Definition dub_neg_sub_formula (A E : formula) (S : subst_ind) : formula :=
 
 Fixpoint dub_neg_sub_ftree
   (P : ftree) (E : formula) (S : subst_ind) : ftree :=
-match (P, S) with
-| (node A, _) => P
+match P, S with
+| node A, _ => P
 
-| (exchange_ab A B P', lor_ind S_B S_A) =>
+| exchange_ab A B P', lor_ind S_B S_A =>
     exchange_ab
       (dub_neg_sub_formula A E S_A)
       (dub_neg_sub_formula B E S_B)
       (dub_neg_sub_ftree P' E (lor_ind S_A S_B))
 
-| (exchange_cab C A B P', lor_ind (lor_ind S_C S_B) S_A) =>
+| exchange_cab C A B P', lor_ind (lor_ind S_C S_B) S_A =>
     exchange_cab
       (dub_neg_sub_formula C E S_C)
       (dub_neg_sub_formula A E S_A)
       (dub_neg_sub_formula B E S_B)
       (dub_neg_sub_ftree P' E (lor_ind (lor_ind S_C S_A) S_B))
 
-| (exchange_abd A B D P', lor_ind (lor_ind S_B S_A) S_D) =>
+| exchange_abd A B D P', lor_ind (lor_ind S_B S_A) S_D =>
     exchange_abd
       (dub_neg_sub_formula A E S_A)
       (dub_neg_sub_formula B E S_B)
       (dub_neg_sub_formula D E S_D)
       (dub_neg_sub_ftree P' E (lor_ind (lor_ind S_A S_B) S_D))
 
-| (exchange_cabd C A B D P', lor_ind (lor_ind (lor_ind S_C S_B) S_A) S_D) =>
+| exchange_cabd C A B D P', lor_ind (lor_ind (lor_ind S_C S_B) S_A) S_D =>
     exchange_cabd
       (dub_neg_sub_formula C E S_C)
       (dub_neg_sub_formula A E S_A)
@@ -4293,82 +4293,82 @@ match (P, S) with
       (dub_neg_sub_formula D E S_D)
       (dub_neg_sub_ftree P' E (lor_ind (lor_ind (lor_ind S_C S_A) S_B) S_D))
 
-| (contraction_a A P', _) =>
+| contraction_a A P', _ =>
     contraction_a
       (dub_neg_sub_formula A E S)
       (dub_neg_sub_ftree P' E (lor_ind S S))
 
-| (contraction_ad A D P', lor_ind S_A S_D) =>
+| contraction_ad A D P', lor_ind S_A S_D =>
     contraction_ad
       (dub_neg_sub_formula A E S_A)
       (dub_neg_sub_formula D E S_D)
       (dub_neg_sub_ftree P' E (lor_ind (lor_ind S_A S_A) S_D))
 
-| (weakening_ad A D P', lor_ind S_A S_D) =>
+| weakening_ad A D P', lor_ind S_A S_D =>
     weakening_ad
       (dub_neg_sub_formula A E S_A)
       (dub_neg_sub_formula D E S_D)
       (dub_neg_sub_ftree P' E S_D)
 
-| (demorgan_ab A B Q1 Q2, _) =>
+| demorgan_ab A B Q1 Q2, _ =>
     demorgan_ab A B Q1 Q2
 
-| (demorgan_abd A B D Q1 Q2, lor_ind S_AB S_D) =>
+| demorgan_abd A B D Q1 Q2, lor_ind S_AB S_D =>
     demorgan_abd
       A B
       (dub_neg_sub_formula D E S_D)
       (dub_neg_sub_ftree Q1 E (lor_ind (0) S_D))
       (dub_neg_sub_ftree Q2 E (lor_ind (0) S_D))
 
-| (negation_a A P', _) =>
-    (match (eq_f A E, S) with
-    | (true, (1)) => P'
-    | _ => P
+| negation_a A P', _ =>
+    (match eq_f A E, S with
+    | true, (1) => P'
+    | _, _ => P
     end)
 
-| (negation_ad A D P', lor_ind S_A S_D) =>
-    (match (eq_f A E, S_A) with
-    | (true, (1)) => dub_neg_sub_ftree P' E (lor_ind (non_target A) S_D)
-    | _ => 
+| negation_ad A D P', lor_ind S_A S_D =>
+    (match eq_f A E, S_A with
+    | true, (1) => dub_neg_sub_ftree P' E (lor_ind (non_target A) S_D)
+    | _, _ => 
         negation_ad
           A
           (dub_neg_sub_formula D E S_D)
           (dub_neg_sub_ftree P' E (lor_ind (non_target A) S_D))
     end)
 
-| (quantification_a A n t P', _) => P
+| quantification_a A n t P', _ => P
 
-| (quantification_ad A D n t P', lor_ind S_A S_D) =>
+| quantification_ad A D n t P', lor_ind S_A S_D =>
     quantification_ad
       A
       (dub_neg_sub_formula D E S_D)
       n t
       (dub_neg_sub_ftree P' E (lor_ind (0) S_D))
 
-| (w_rule_a A n g, _) => P
+| w_rule_a A n g, _ => P
 
-| (w_rule_ad A D n g, lor_ind S_A S_D) =>
+| w_rule_ad A D n g, lor_ind S_A S_D =>
     w_rule_ad
       A
       (dub_neg_sub_formula D E S_D)
       n
       (fun (n : nat) => dub_neg_sub_ftree (g n) E (lor_ind (non_target A) S_D))
 
-| (cut_ca C A Q1 Q2, _) =>
+| cut_ca C A Q1 Q2, _ =>
     cut_ca
       (dub_neg_sub_formula C E S)
       A
       (dub_neg_sub_ftree Q1 E (lor_ind S (non_target A)))
       Q2
 
-| (cut_ad A D Q1 Q2, _) =>
+| cut_ad A D Q1 Q2, _ =>
     cut_ad
       A
       (dub_neg_sub_formula D E S)
       Q1
       (dub_neg_sub_ftree Q2 E (lor_ind (0) S))
 
-| (cut_cad C A D Q1 Q2, lor_ind S_C S_D) =>
+| cut_cad C A D Q1 Q2, lor_ind S_C S_D =>
     cut_cad
       (dub_neg_sub_formula C E S_C)
       A
@@ -4376,11 +4376,11 @@ match (P, S) with
       (dub_neg_sub_ftree Q1 E (lor_ind S_C (non_target A)))
       (dub_neg_sub_ftree Q2 E (lor_ind (0) S_D))
 
-| _ => P
+| _, _ => P
 end.
 
 Fixpoint dub_neg_sub_ftree' (P : ftree) (E : formula) (S : subst_ind) : ftree :=
-match (subst_ind_fit (ftree_formula P) S) with
+match subst_ind_fit (ftree_formula P) S with
 | false => P
 | true => dub_neg_sub_ftree P E S
 end.
