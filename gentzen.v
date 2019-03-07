@@ -95,25 +95,24 @@ Qed.
 Lemma lt_nat_decid : forall (n m : nat), n < m -> lt_nat n m = true.
 Proof. intros. apply lt_nat_decid'. apply H. Qed.
 
-
-Definition nat_beq_eq_nice (n : nat) :=
+Definition nat_eq_decid_nice (n : nat) :=
   forall (m : nat), eq_nat n m = true -> n = m.
 
-Lemma nat_beq_eq' : forall (n : nat), nat_beq_eq_nice n.
+Lemma nat_eq_decid' : forall (n : nat), nat_eq_decid_nice n.
 Proof.
 intros.
 induction n.
-- unfold nat_beq_eq_nice. intros. destruct m.
+- unfold nat_eq_decid_nice. intros. destruct m.
   + auto.
   + inversion H.
-- unfold nat_beq_eq_nice. intros. destruct m.
+- unfold nat_eq_decid_nice. intros. destruct m.
   + inversion H.
-  + simpl in H. unfold nat_beq_eq_nice in IHn. specialize IHn with m.
+  + simpl in H. unfold nat_eq_decid_nice in IHn. specialize IHn with m.
     apply IHn in H. rewrite H. auto.
 Qed.
 
-Lemma nat_beq_eq : forall (n m : nat), eq_nat n m = true -> n = m.
-Proof. intros. apply (nat_beq_eq' n). auto. Qed.
+Lemma nat_eq_decid : forall (n m : nat), eq_nat n m = true -> n = m.
+Proof. intros. apply (nat_eq_decid' n). auto. Qed.
 
 Definition nat_trans (n : nat) := forall (m p : nat),
   lt_nat n m = true -> lt_nat m p = true -> lt_nat n p = true.
@@ -247,7 +246,7 @@ induction n as [| n' IH].
   auto.
 Qed.
 
-Lemma mult_1_r : forall (n : nat), n * 1 = n.
+Lemma mult1_r : forall (n : nat), n * 1 = n.
 Proof.
 intros n.
 induction n as [| n' IH].
@@ -260,7 +259,6 @@ Proof. intros. omega. Qed.
 
 Lemma nat_transitive : forall (n n' n'' : nat), n < n' -> n' < n'' -> n < n''.
 Proof. intros. omega. Qed.
-
 
 
 (* Basic properties of lists and lists of nats *)
@@ -301,7 +299,7 @@ intros. induction l1.
   + inversion H.
   + simpl in H. destruct (and_bool_prop _ _ H).
     unfold eq_list_decid_nice in IHl1. rewrite (IHl1 l2 H1).
-    rewrite (nat_beq_eq _ _ H0). auto.
+    rewrite (nat_eq_decid _ _ H0). auto.
 Qed.
 
 Lemma eq_list_decid : forall (l1 l2 : list nat),
@@ -378,7 +376,7 @@ Proof.
 intros. induction l; auto.
 case_eq (eq_nat x n); intros.
 - assert (remove n (x :: l) = remove n l). { simpl. rewrite H. auto. }
-  rewrite H0. rewrite <- IHl. pose proof (nat_beq_eq x n H).
+  rewrite H0. rewrite <- IHl. pose proof (nat_eq_decid x n H).
   case (member x l); simpl; rewrite H; rewrite H1; rewrite remove_twice; auto.
 - assert (remove n (x :: l) = x :: remove n l). { simpl. rewrite H. auto. }
   rewrite H0.
@@ -401,7 +399,7 @@ Proof.
 intros. induction l; auto.
 destruct (eq_nat x n) eqn:Hn.
 - simpl in H. rewrite Hn in H.
-  pose proof (nat_beq_eq x n Hn) as Hx. rewrite Hx in H.
+  pose proof (nat_eq_decid x n Hn) as Hx. rewrite Hx in H.
   rewrite remove_twice in H. apply IHl in H. destruct H.
   + simpl. left. rewrite H. rewrite Hx. simpl. rewrite eq_nat_refl. auto.
   + destruct IHl. 
@@ -421,7 +419,7 @@ Qed.
 
 Lemma eq_nat_symm : forall (n m : nat),
   eq_nat m n = true -> eq_nat n m = true.
-Proof. intros. apply nat_beq_eq in H. rewrite H. apply eq_nat_refl. Qed.
+Proof. intros. apply nat_eq_decid in H. rewrite H. apply eq_nat_refl. Qed.
 
 Lemma eq_nat_symm' : forall (n m : nat),
   eq_nat m n = false -> eq_nat n m = false.
@@ -438,7 +436,7 @@ Proof.
 intros.
 induction l; auto.
 inversion H0. case_eq (eq_nat x n); intros.
-- apply nat_beq_eq in H1. rewrite H1. simpl. apply eq_nat_symm' in H.
+- apply nat_eq_decid in H1. rewrite H1. simpl. apply eq_nat_symm' in H.
   rewrite H. simpl. rewrite eq_nat_refl. auto.
 - rewrite H1 in H2. simpl. rewrite H2. apply IHl in H2.
   case_eq (eq_nat x m); intros.
@@ -527,9 +525,9 @@ intros. induction l; auto.
 left. inversion H.
 destruct (and_bool_prop _ _ H1).
 destruct (IHl H2).
-- simpl. rewrite H3. rewrite (nat_beq_eq _ _ H0).
+- simpl. rewrite H3. rewrite (nat_eq_decid _ _ H0).
   simpl. rewrite eq_nat_refl. auto.
-- rewrite H3. rewrite (nat_beq_eq _ _ H0). auto.
+- rewrite H3. rewrite (nat_eq_decid _ _ H0). auto.
 Qed.
 
 Lemma remove_dups_repeated_element' : forall (l : list nat) (n : nat),
@@ -672,9 +670,15 @@ Open Scope cantor_scope.
 Definition leq (alpha beta : ord) := alpha = beta \/ alpha < beta.
 Notation "alpha <= beta" := (leq alpha beta) : cantor_scope.
 
+
+(* The ord_lt relation does not fully correspond to the usual < relation on
+ordinals. In particular, coeff_lt allows us to show (e.g.) 3 + 4 < 5. However,
+its other 3 constructors are accurate, and this will allow us to define a fully
+accurate Cantor normal form further down. In the meantime, we prove some basic
+order-theoretic properties about ord_lt. *)
+(* *)
 Definition semiconnex (alpha : ord) :=
   forall (beta : ord), alpha < beta \/ beta < alpha \/ alpha = beta.
-
 
 Lemma ordinal_semiconnex : forall (alpha : ord), semiconnex alpha.
 Proof.
@@ -708,7 +712,6 @@ Lemma ord_semiconnex : forall (alpha beta : ord),
   alpha < beta \/ beta < alpha \/ alpha = beta.
 Proof. intros. apply (ordinal_semiconnex alpha). Qed.
 
-
 Definition transitive (alpha : ord) := forall (beta gamma : ord),
   (beta < gamma -> alpha < beta -> alpha < gamma).
 
@@ -728,7 +731,6 @@ inversion H.
     * auto.
     * apply H1.
 Qed.
-
 
 Lemma lt_trans' : forall (alpha : ord), transitive alpha.
 Proof.
@@ -773,7 +775,6 @@ induction alpha as [| a IHa n b IHb].
             apply IHb. apply H3. apply H2. }
 Qed.
 
-
 Lemma lt_trans : forall (alpha beta gamma : ord),
   alpha < beta -> beta < gamma -> alpha < gamma.
 Proof.
@@ -806,9 +807,6 @@ apply (lt_irrefl alpha H1).
 Qed.
 
 
-
-
-
 (* Here we define Cantor Normal Form, or more accurately, we copy
 Pierre Casteran's definition *)
 (* *)
@@ -817,7 +815,6 @@ Inductive nf : ord -> Prop :=
 | single_nf : forall a n, nf a ->  nf (cons a n Zero)
 | cons_nf : forall a n a' n' b,
     a' < a -> nf a -> nf (cons a' n' b) -> nf (cons a n (cons a' n' b)).
-
 
 Lemma Zero_nf : nf Zero. Proof. apply zero_nf. Qed.
 
@@ -838,7 +835,7 @@ induction n.
 Qed.
 
 
-(* Defining boolean equality and less than, assuming normal form. *)
+(* Defining boolean equality and less than, assuming normal form *)
 (* *)
 Fixpoint ord_eqb (alpha beta : ord) : bool :=
 match (alpha, beta) with
@@ -855,7 +852,6 @@ match (alpha, beta) with
         end)
     end)
 end.
-
 
 Fixpoint ord_ltb (alpha beta : ord) : bool :=
 match alpha, beta with
@@ -875,6 +871,9 @@ match alpha, beta with
     end)
 end.
 
+
+(* Order-theoretic properties of these boolean relations *)
+(* *)
 Lemma ord_eqb_refl : forall (alpha : ord), ord_eqb alpha alpha = true.
 Proof.
 intros.
@@ -968,7 +967,7 @@ induction alpha.
       { intros. unfold ord_eqb_eq_aux' in IHalpha1. specialize IHalpha1 with beta1.
         assert (alpha1 = beta1). { apply IHalpha1. apply H0. } rewrite H2.
         case_eq (eq_nat n n0).
-        { intros. assert (n = n0). { apply (nat_beq_eq n n0 H3). } rewrite H4.
+        { intros. assert (n = n0). { apply (nat_eq_decid n n0 H3). } rewrite H4.
           case_eq (ord_eqb alpha2 beta2).
           { intros. assert (alpha2 = beta2). { apply IHalpha2. apply H5. }
             rewrite H6. auto. }
@@ -994,13 +993,9 @@ case_eq (ord_eqb alpha beta).
   + auto.
 Qed.
 
-
-
 Definition ord_ltb_trans_aux' (alpha : ord) := forall (beta gamma : ord),
   ord_ltb beta gamma = true -> ord_ltb alpha beta = true ->
   ord_ltb alpha gamma = true.
-
-
 
 Lemma ord_ltb_trans_aux : forall (alpha : ord), ord_ltb_trans_aux' alpha.
 Proof.
@@ -1068,7 +1063,6 @@ Lemma ord_ltb_trans : forall (alpha beta gamma : ord),
   ord_ltb alpha gamma = true.
 Proof. intros. apply (ord_ltb_trans_aux alpha beta gamma H0 H). Qed.
 
-
 Lemma ord_ltb_irrefl : forall (alpha : ord), ord_ltb alpha alpha = false.
 Proof.
 intros.
@@ -1082,7 +1076,6 @@ induction alpha.
   auto.
 Qed.
 
-
 Lemma ltb_asymm' : forall (alpha beta : ord),
   ord_ltb alpha beta = true -> ~(ord_ltb beta alpha = true).
 Proof.
@@ -1091,7 +1084,6 @@ pose proof (ord_ltb_trans alpha beta alpha H H0).
 rewrite (ord_ltb_irrefl alpha) in H1.
 inversion H1.
 Qed.
-
 
 Lemma ord_ltb_lt : forall (alpha beta : ord),
   ord_ltb alpha beta = true -> alpha < beta.
@@ -1136,7 +1128,6 @@ case_eq (ord_eqb alpha beta).
 - auto.
 Qed.
 
-
 Lemma ord_semiconnex_bool : forall (alpha beta : ord),
   ord_ltb alpha beta = true \/ ord_ltb beta alpha = true \/
   ord_eqb alpha beta = true.
@@ -1153,9 +1144,7 @@ inversion H.
 Qed.
 
 
-
-
-(* ord_add, ord_mult, and ord_exp will all assume normal form.
+(* Define ord_add, ord_mult, and ord_exp, which will all assume normal form.
 ord_2_exp is based on Pierre Casteran's more general definition of ordinal
 exponentiation, restricted to when the base is 2. *)
 (* *)
@@ -1191,8 +1180,6 @@ match alpha with
 | cons (cons a n b) n' b' =>
     ord_mult (cons (cons (cons a n b) n' Zero) 0 Zero) (ord_2_exp b')
 end.
-
-
 
 
 (* Here we show that addition and multiplication for ordinal numbers
@@ -1295,7 +1282,6 @@ destruct n.
   + unfold leq. right. apply tail_lt. apply zero_lt.
 - unfold leq. right. apply coeff_lt. omega.
 Qed.
-
 
 Lemma omega_exp_incr : forall (a : ord), a < cons a 0 Zero.
 Proof.
@@ -1564,7 +1550,6 @@ destruct H2.
 Qed.
 
 
-
 (* Prove that nf ordinals are closed under multiplication *)
 (* *)
 Definition nf_mult_nice (alpha : ord) := forall (beta : ord),
@@ -1615,7 +1600,6 @@ Lemma nf_mult : forall (alpha beta : ord),
 Proof. intros. apply (nf_mult' alpha). apply H. apply H0. Qed.
 
 
-
 (* Prove that nf ordinals are closed under 2_exp *)
 (* *)
 Lemma nf_2_exp : forall (alpha : ord), nf alpha -> nf (ord_2_exp alpha).
@@ -1642,7 +1626,6 @@ induction alpha as [| alpha1 IHalpha1 n_alpha alpha2 IHalpha2].
       { apply single_nf, single_nf. apply (nf_hered_first _ _ _ nf_alpha). }
       { apply IHalpha2. apply (nf_hered_third _ _ _ nf_alpha). }
 Qed.
-
 
 
 (* Prove that no nf ordinal besides w is a fixed point of the map a |-> 2^a *)
@@ -1765,7 +1748,6 @@ destruct H1.
 - rewrite <- H1. apply H0.
 - apply (lt_trans _ _ _ H0 H1).
 Qed.
-
 
 Lemma ord_2_exp_fp : forall (alpha : ord), nf alpha ->
   alpha < ord_2_exp alpha \/ alpha = cons (nat_ord 1) 0 Zero.
@@ -1902,7 +1884,6 @@ Inductive formula : Type :=
 | univ : nat -> formula -> formula.
 
 
-
 (* Count number of connectives and quantifiers appearing in a formula *)
 (* *)
 Fixpoint num_conn (a : formula) : nat :=
@@ -1914,46 +1895,35 @@ match a with
 end.
 
 
-
 (* Check syntactic equality of formulas *)
 (* *)
 Fixpoint eq_term (s t : term) : bool :=
-match (s, t) with
-| (zero, zero) => true
-| (succ s', succ t') => eq_term s' t'
-| (plus s1 s2, plus t1 t2) => (eq_term s1 t1) && (eq_term s2 t2)
-| (times s1 s2, times t1 t2) => (eq_term s1 t1) && (eq_term s2 t2)
-| (var m, var n) => eq_nat m n
-| (_,_) => false
+match s, t with
+| zero, zero => true
+| succ s', succ t' => eq_term s' t'
+| plus s1 s2, plus t1 t2 => eq_term s1 t1 && eq_term s2 t2
+| times s1 s2, times t1 t2 => eq_term s1 t1 && eq_term s2 t2
+| var m, var n => eq_nat m n
+| _, _ => false
 end.
-
-Compute eq_term zero zero.
-Compute eq_term (succ zero) (succ zero).
 
 Fixpoint eq_atom (a b : atomic_formula) : bool :=
-match (a, b) with
-| (equ s1 s2, equ t1 t2) => (eq_term s1 t1) && (eq_term s2 t2)
+match a, b with
+| equ s1 s2, equ t1 t2 => eq_term s1 t1 && eq_term s2 t2
 end.
-
-Compute eq_atom (equ zero (succ zero)) (equ zero (succ zero)).
 
 Fixpoint eq_f (a b : formula) : bool :=
-match (a, b) with
-| (atom a', atom b') => eq_atom a' b'
-| (neg a', neg b') => eq_f a' b'
-| (lor a1 a2, lor b1 b2) => (eq_f a1 b1) && (eq_f a2 b2)
-| (univ m a', univ n b') => (eq_nat m n) && (eq_f a' b')
-| (_, _) => false
+match a, b with
+| atom a', atom b' => eq_atom a' b'
+| neg a', neg b' => eq_f a' b'
+| lor a1 a2, lor b1 b2 => eq_f a1 b1 && eq_f a2 b2
+| univ m a', univ n b' => eq_nat m n && eq_f a' b'
+| _, _ => false
 end.
-
-Compute eq_f (atom (equ zero (succ zero))) (atom (equ zero (succ zero))).
 
 Lemma eq_term_refl : forall (t : term), eq_term t t = true.
 Proof.
-intros t.
-induction t.
-- auto.
-- simpl. apply IHt.
+intros t. induction t; auto.
 - simpl. rewrite IHt1. apply IHt2.
 - simpl. rewrite IHt1. apply IHt2.
 - simpl. apply eq_nat_refl.
@@ -1961,8 +1931,7 @@ Qed.
 
 Lemma eq_atom_refl : forall (a : atomic_formula), eq_atom a a = true.
 Proof.
-intros a.
-destruct a as [t1 t2].
+intros a. destruct a as [t1 t2].
 unfold eq_atom.
 rewrite eq_term_refl.
 apply eq_term_refl.
@@ -1970,8 +1939,7 @@ Qed.
 
 Lemma eq_f_refl : forall (a : formula), eq_f a a = true.
 Proof.
-intros a.
-induction a as [a | a IH | a1 IH1 a2 IH2 | n a IH].
+intros a. induction a as [a | a IH | a1 IH1 a2 IH2 | n a IH].
 - unfold eq_f. apply eq_atom_refl.
 - simpl. apply IH.
 - simpl. rewrite IH1. apply IH2.
@@ -1979,80 +1947,55 @@ induction a as [a | a IH | a1 IH1 a2 IH2 | n a IH].
 Qed.
 
 
-
 (* Given some term t, returns t+1 if the formula is closed, 0 otherwise *)
 (* *)
 Fixpoint eval (t : term) : nat :=
 match t with
-| zero => S O
-| succ t_1 =>
-    (match (eval t_1) with
-    | O => O
+| zero => 1
+| succ t1 =>
+    (match eval t1 with
+    | 0 => 0
     | S n => S (S n)
     end)
-| plus t_1 t_2 =>
-    (match (eval t_1, eval t_2) with
-    | (O, O) => O
-    | (S n, O) => O
-    | (O, S m) => O
-    | (S n, S m) => S (n + m)
+| plus t1 t2 =>
+    (match eval t1, eval t2 with
+    | S n, S m => S (n + m)
+    | _, _ => 0
     end)
-| times t_1 t_2 =>
-    (match (eval t_1, eval t_2) with
-    | (O, O) => O
-    | (S n, O) => O
-    | (O, S m) => O
-    | (S n, S m) => S (n * m)
+| times t1 t2 =>
+    (match eval t1, eval t2 with
+    | S n, S m => S (n * m)
+    | _, _ => 0
     end)
-| var n => O
+| var n => 0
 end.
 
-Compute eval zero.
-Compute eval (var O).
-Compute eval (succ zero).
-Compute eval (succ (var O)).
-Compute eval (plus (succ zero) (var O)).
-
-Inductive ternary : Type :=
-  | correct : ternary
-  | incorrect : ternary
-  | undefined : ternary.
-
 Fixpoint represent (n : nat) : term :=
-  match n with
-  | O => zero
-  | S n' => succ (represent n')
-  end.
-
-Compute represent 0.
-Compute represent 1.
-Compute represent 2.
-Compute represent 5.
-
+match n with
+| O => zero
+| S n' => succ (represent n')
+end.
 
 
 (* Given some atomic formula a, returns whether the statement is correct,
 incorrect, or undefined (i.e. not closed) *)
+Inductive ternary : Type :=
+| correct : ternary
+| incorrect : ternary
+| undefined : ternary.
+
 Definition correctness (a : atomic_formula) : ternary :=
 match a with
-| equ t_1 t_2 =>
-    (match (eval t_1, eval t_2) with
-    | (O, O) => undefined
-    | (S n, O) => undefined
-    | (O, S m) => undefined
-    | (S n, S m) =>
-        (match (eq_nat (eval t_1) (eval t_2)) with
+| equ t1 t2 =>
+    (match eval t1, eval t2 with
+    | S n, S m =>
+        (match eq_nat (eval t1) (eval t2) with
         | true => correct
         | false => incorrect
         end)
+    | _, _ => undefined
     end)
 end.
-
-Compute correctness (equ zero zero).
-Compute correctness (equ zero (succ zero)).
-Compute correctness (equ (plus (succ zero) (succ zero)) (succ (succ zero))).
-Compute correctness (equ zero (var O)).
-
 
 Definition correct_a (a : atomic_formula) : bool :=
 match (correctness a) with
@@ -2065,8 +2008,6 @@ match (correctness a) with
 | incorrect => true
 | _ => false
 end.
-
-
 
 (* Free variable lists *)
 (* *)
@@ -2091,9 +2032,6 @@ match A with
 | lor B C => remove_dups (concat (free_list B) (free_list C))
 | univ n B => remove n (free_list B)
 end.
-
-
-
 
 
 (* Some lemmas about free variable lists we will later use *)
@@ -2173,7 +2111,7 @@ rewrite H0 in H2.
 destruct (free_list B) eqn:HB.
 - inversion H2.
 - destruct (and_bool_prop _ _ H2).
-  apply nat_beq_eq in H1. apply eq_list_decid in H3. rewrite H1, H3. auto.
+  apply nat_eq_decid in H1. apply eq_list_decid in H3. rewrite H1, H3. auto.
 Qed.
 
 Lemma closed_univ : forall (B : formula) (m : nat),
@@ -2185,11 +2123,7 @@ intros. destruct (closed B) eqn:HB.
 Qed.
 
 
-
-
-
-
-(* unsure if these lemmas will be necessary/useful *)
+(* A formula is closed iff its free_list is empty *)
 (* *)
 Lemma free_list_closed_t : forall (t : term),
   free_list_t t = [] -> closed_t t = true.
@@ -2275,111 +2209,7 @@ intros. induction A; auto; simpl.
 Qed.
 
 
-
-
-
-(* Defining substitution of a term t for all free occurrences of a
-   variable x_n in a formula f *)
-(* *)
-Fixpoint substitution_t (T : term) (n : nat) (t : term) : term :=
-match T with
-| zero => T
-| succ T_1 => succ (substitution_t T_1 n t)
-| plus T_1 T_2 => plus (substitution_t T_1 n t) (substitution_t T_2 n t)
-| times T_1 T_2 => times (substitution_t T_1 n t) (substitution_t T_2 n t)
-| var m =>
-    (match (eq_nat m n) with
-    | true => t
-    | false => T
-    end)
-end.
-
-Definition substitution_a (a : atomic_formula) (n : nat) (t : term)
-  : atomic_formula :=
-match a with
-  equ t_1 t_2 => equ (substitution_t t_1 n t) (substitution_t t_2 n t)
-end.
-
-Fixpoint substitution (A : formula) (n : nat) (t : term) : formula :=
-match A with
-| atom a => atom (substitution_a a n t)
-| neg B => neg (substitution B n t)
-| lor B C => lor (substitution B n t) (substitution C n t)
-| univ m B => 
-    (match (eq_nat m n) with
-    | true => A
-    | false => univ m (substitution B n t)
-    end)
-end.
-
-
-
-
-
-
-
-
-(* this will probably be needed in s=t substitution lemma *)
-Lemma subst_remove_t : forall (T t : term) (n : nat),
-  closed_t t = true ->
-  free_list_t (substitution_t T n t) = remove n (free_list_t T).
-Proof.
-intros. induction T; auto.
-- simpl. rewrite IHT1, IHT2.
-  rewrite remove_dups_order. rewrite remove_concat. auto.
-- simpl. rewrite IHT1, IHT2.
-  rewrite remove_dups_order. rewrite remove_concat. auto.
-- simpl. case_eq (eq_nat n0 n); intros; auto.
-  apply closed_free_list_t, H.
-Qed.
-
-Lemma subst_remove_a : forall (a : atomic_formula) (n : nat) (t : term),
-  closed_t t = true ->
-  free_list_a (substitution_a a n t) = remove n (free_list_a a).
-Proof.
-intros. destruct a as [t1 t2]. simpl.
-rewrite (subst_remove_t t1 _ _ H). rewrite (subst_remove_t t2 _ _ H).
-rewrite remove_dups_order. rewrite remove_concat. auto.
-Qed.
-
-Lemma subst_remove : forall (A : formula) (n : nat) (t : term),
-  closed_t t = true ->
-  free_list (substitution A n t) = remove n (free_list A).
-Proof.
-intros. induction A; auto; simpl.
-- rewrite (subst_remove_a _ _ _ H). auto.
-- rewrite IHA1, IHA2.
-  rewrite remove_dups_order. rewrite remove_concat. auto.
-- destruct (eq_nat n0 n) eqn:Hn.
-  + rewrite (nat_beq_eq _ _ Hn). rewrite remove_twice. auto.
-  + simpl. rewrite IHA. apply remove_order.
-Qed.
-
-Lemma one_var_free_lemma_a : forall (a : atomic_formula) (n : nat) (t : term),
-  closed_t t = true ->
-  free_list_a a = [n] ->
-  closed_a (substitution_a a n t) = true.
-Proof.
-intros.
-apply free_list_closed_a. 
-rewrite (subst_remove_a _ _ _ H).
-rewrite H0. simpl. rewrite eq_nat_refl. auto.
-Qed.
-
-Lemma one_var_free_lemma : forall (A : formula) (n : nat) (t : term),
-  closed_t t = true ->
-  free_list A = [n] ->
-  closed (substitution A n t) = true.
-Proof.
-intros.
-apply free_list_closed.
-rewrite (subst_remove _ _ _ H).
-rewrite H0. simpl. rewrite eq_nat_refl. auto.
-Qed.
-
-
-
-(* closed atomic formulas are either correct or incorrect. *)
+(* Closed atomic formulas are either correct or incorrect *)
 (* *)
 Lemma eval_succ_lemma : forall (s : term), eval (succ s) > 0 -> eval s > 0.
 Proof.
@@ -2483,6 +2313,105 @@ apply correctness_decid_aux2; unfold closed_a in H.
 Qed.
 
 
+(* Defining substitution of a term t for all free occurrences of a
+   variable x_n in a formula f *)
+(* *)
+Fixpoint substitution_t (T : term) (n : nat) (t : term) : term :=
+match T with
+| zero => T
+| succ T1 => succ (substitution_t T1 n t)
+| plus T1 T2 => plus (substitution_t T1 n t) (substitution_t T2 n t)
+| times T1 T2 => times (substitution_t T1 n t) (substitution_t T2 n t)
+| var m =>
+    (match (eq_nat m n) with
+    | true => t
+    | false => T
+    end)
+end.
+
+Definition substitution_a (a : atomic_formula) (n : nat) (t : term)
+  : atomic_formula :=
+match a with
+  equ t1 t2 => equ (substitution_t t1 n t) (substitution_t t2 n t)
+end.
+
+Fixpoint substitution (A : formula) (n : nat) (t : term) : formula :=
+match A with
+| atom a => atom (substitution_a a n t)
+| neg B => neg (substitution B n t)
+| lor B C => lor (substitution B n t) (substitution C n t)
+| univ m B => 
+    (match (eq_nat m n) with
+    | true => A
+    | false => univ m (substitution B n t)
+    end)
+end.
+
+
+(* If a formula has exactly one free variable x_n, and a closed term t is
+substituted in place of that variable, the resulting formula is closed *)
+(* *)
+Lemma subst_remove_t : forall (T t : term) (n : nat),
+  closed_t t = true ->
+  free_list_t (substitution_t T n t) = remove n (free_list_t T).
+Proof.
+intros. induction T; auto.
+- simpl. rewrite IHT1, IHT2.
+  rewrite remove_dups_order. rewrite remove_concat. auto.
+- simpl. rewrite IHT1, IHT2.
+  rewrite remove_dups_order. rewrite remove_concat. auto.
+- simpl. case_eq (eq_nat n0 n); intros; auto.
+  apply closed_free_list_t, H.
+Qed.
+
+Lemma subst_remove_a : forall (a : atomic_formula) (n : nat) (t : term),
+  closed_t t = true ->
+  free_list_a (substitution_a a n t) = remove n (free_list_a a).
+Proof.
+intros. destruct a as [t1 t2]. simpl.
+rewrite (subst_remove_t t1 _ _ H). rewrite (subst_remove_t t2 _ _ H).
+rewrite remove_dups_order. rewrite remove_concat. auto.
+Qed.
+
+Lemma subst_remove : forall (A : formula) (n : nat) (t : term),
+  closed_t t = true ->
+  free_list (substitution A n t) = remove n (free_list A).
+Proof.
+intros. induction A; auto; simpl.
+- rewrite (subst_remove_a _ _ _ H). auto.
+- rewrite IHA1, IHA2.
+  rewrite remove_dups_order. rewrite remove_concat. auto.
+- destruct (eq_nat n0 n) eqn:Hn.
+  + rewrite (nat_eq_decid _ _ Hn). rewrite remove_twice. auto.
+  + simpl. rewrite IHA. apply remove_order.
+Qed.
+
+Lemma one_var_free_lemma_a : forall (a : atomic_formula) (n : nat) (t : term),
+  closed_t t = true ->
+  free_list_a a = [n] ->
+  closed_a (substitution_a a n t) = true.
+Proof.
+intros.
+apply free_list_closed_a. 
+rewrite (subst_remove_a _ _ _ H).
+rewrite H0. simpl. rewrite eq_nat_refl. auto.
+Qed.
+
+Lemma one_var_free_lemma : forall (A : formula) (n : nat) (t : term),
+  closed_t t = true ->
+  free_list A = [n] ->
+  closed (substitution A n t) = true.
+Proof.
+intros.
+apply free_list_closed.
+rewrite (subst_remove _ _ _ H).
+rewrite H0. simpl. rewrite eq_nat_refl. auto.
+Qed.
+
+
+
+
+
 
 
 
@@ -2583,14 +2512,12 @@ Section 4: Axioms and Rules of inference of PA_omega
 
 (* Axioms of PA_omega *)
 (* *)
-Definition PA_omega_axiom (a : formula) : bool :=
-match a with
-| atom a' => correct_a a'
-| neg (atom a') => incorrect_a a'
+Definition PA_omega_axiom (A : formula) : bool :=
+match A with
+| atom a => correct_a a
+| neg (atom a) => incorrect_a a
 | _ => false
 end.
-
-
 
 
 (* A theorem of PA_omega is either an axiom, or the result of applying a rule
@@ -2742,8 +2669,6 @@ intros.
 apply w_rule1. simpl. rewrite eq_nat_refl.
 apply equ_refl.
 Qed.
-
-
 
 
 (* Show that PA_omega proves the associativity laws *)
@@ -2935,7 +2860,6 @@ induction A.
   + apply (member_remove _ _ _ H0 H).
 Qed.
 
-
 Lemma closed_subst_eq_t : forall (n : nat) (T t : term),
   closed_t T = true -> substitution_t T n t = T.
 Proof.
@@ -3018,7 +2942,7 @@ intros T m n s t Hs Ht Hmn. induction T; auto; simpl.
 - rewrite IHT1, IHT2. auto.
 - rewrite IHT1, IHT2. auto.
 - destruct (eq_nat n0 n) eqn:Hn.
-  + rewrite <- (nat_beq_eq _ _ Hn) in Hmn. rewrite (eq_nat_symm' _ _ Hmn).
+  + rewrite <- (nat_eq_decid _ _ Hn) in Hmn. rewrite (eq_nat_symm' _ _ Hmn).
     simpl. rewrite Hn. apply closed_subst_eq_t, Hs.
   + destruct (eq_nat n0 m) eqn:Hm; simpl; rewrite Hm.
     * symmetry. apply closed_subst_eq_t, Ht.
@@ -3050,7 +2974,7 @@ intros B m n s t Hs Ht Hmn. induction B; simpl.
 - rewrite IHB. auto.
 - rewrite IHB1, IHB2. auto.
 - destruct (eq_nat n0 n) eqn:Hn.
-  + apply nat_beq_eq in Hn. rewrite Hn.
+  + apply nat_eq_decid in Hn. rewrite Hn.
     rewrite (eq_nat_symm' _ _ Hmn). simpl.
     rewrite (eq_nat_symm' _ _ Hmn). rewrite eq_nat_refl. auto.
   + destruct (eq_nat n0 m) eqn:Hm; simpl; rewrite Hm, Hn; auto.
@@ -3062,7 +2986,7 @@ Lemma univ_free_var : forall (B : formula) (m n : nat),
 Proof.
 intros. simpl in H.
 destruct (eq_nat m n) eqn:Hm; auto.
-apply nat_beq_eq in Hm. rewrite Hm in H.
+apply nat_eq_decid in Hm. rewrite Hm in H.
 pose proof (remove_twice (free_list B) n).
 rewrite H in H0. simpl in H0. rewrite eq_nat_refl in H0. inversion H0.
 Qed.
@@ -3084,6 +3008,55 @@ intros.
 destruct (correct_eval _ _ H). split; apply eval_closed.
 apply H0. apply H1.
 Qed.
+
+Lemma num_conn_lor : forall (B C : formula) (n : nat),
+  num_conn (lor B C) = S n -> num_conn B <= n /\ num_conn C <= n.
+Proof. intros. apply addends_leq. inversion H. auto. Qed.
+
+Lemma LEM_univ : forall (B : formula) (n m : nat),
+  closed (substitution B n (represent m)) = true ->
+  PA_omega_theorem (lor (neg (substitution B n (represent m)))
+                             (substitution B n (represent m))) ->
+  PA_omega_theorem (lor (substitution B n (represent m)) (neg (univ n B))).
+Proof.
+intros.
+apply exchange1.
+apply (quantification2 _ _ _ (represent m)).
+- apply eval_closed. apply eval_represent.
+- apply H0.
+Qed.
+
+Lemma num_conn_sub : forall (B : formula) (m : nat) (t : term),
+  num_conn (substitution B m t) = num_conn B.
+Proof.
+intros.
+induction B; auto; simpl.
+- rewrite IHB. auto.
+- rewrite IHB1, IHB2. auto.
+- destruct (eq_nat n m).
+  + auto.
+  + simpl. rewrite IHB. auto.
+Qed.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3152,14 +3125,27 @@ Definition P1 (A : formula) : Prop :=
 Definition P2 (A : formula) (n : nat) : Prop :=
   num_conn A = n -> P1 A.
 
-Definition P3 (m : nat) : Prop :=
-  forall (A : formula), P2 A m.
+Definition P3 (n : nat) : Prop :=
+  forall (A : formula), P2 A n.
 
+Lemma P3_0 : P3 0.
+Proof.
+unfold P3, P2. intros.
+destruct A as [a | | | ].
+- unfold P1. apply LEM_atomic.
+- inversion H.
+- inversion H.
+- inversion H.
+Qed.
+
+
+(* Prove strong induction holds for P3, adapted from
+pldev.blogspot.com/2012/02/proving-strong-induction-principle-for.html *)
 Lemma P3_strongind_aux :
   P3 0 ->
   (forall n,
     ((forall m, m <= n -> P3 m) -> P3 (S n))) ->
-  forall n, (forall m, ((m <= n) -> P3 m)).
+  (forall n m, m <= n -> P3 m).
 Proof.
 induction n as [| n' IHn' ].
 - intros. inversion H1. apply H.
@@ -3172,56 +3158,12 @@ Lemma P3_strongind :
   P3 0 ->
   (forall n,
     ((forall m, m <= n -> P3 m) -> P3 (S n))) ->
-  forall n, P3 n.
+  (forall n, P3 n).
 Proof. intros. apply (P3_strongind_aux H H0 n n). auto. Qed.
 
-Lemma P3_0 : P3 0.
-Proof.
-unfold P3, P2. intros.
-destruct A as [a | | | ].
-- unfold P1. apply LEM_atomic.
-- inversion H.
-- inversion H.
-- inversion H.
-Qed.
 
-Lemma num_conn_lor : forall (B C : formula) (n : nat),
-  num_conn (lor B C) = S n -> num_conn B <= n /\ num_conn C <= n.
-Proof. intros. apply addends_leq. inversion H. auto. Qed.
-
-Lemma strong_weak_ind : forall (P : nat -> Prop),
-  (forall n, (forall m, m <= n -> P(m))) ->
-  (forall n, P n).
-Proof. intros. apply (H n n (leq_refl n)). Qed.
-
-Lemma LEM_univ : forall (B : formula) (n m : nat),
-  closed (substitution B n (represent m)) = true ->
-  PA_omega_theorem (lor (neg (substitution B n (represent m)))
-                             (substitution B n (represent m))) ->
-  PA_omega_theorem (lor (substitution B n (represent m)) (neg (univ n B))).
-Proof.
-intros.
-apply exchange1.
-apply (quantification2 _ _ _ (represent m)).
-- apply eval_closed. apply eval_represent.
-- apply H0.
-Qed.
-
-
-
-Lemma num_conn_sub : forall (B : formula) (m : nat) (t : term),
-  num_conn (substitution B m t) = num_conn B.
-Proof.
-intros.
-induction B; auto; simpl.
-- rewrite IHB. auto.
-- rewrite IHB1, IHB2. auto.
-- destruct (eq_nat n m).
-  + auto.
-  + simpl. rewrite IHB. auto.
-Qed.
-
-
+(* The (strong) inductive step for LEM *)
+(* *)
 Lemma P3_inductive : forall n, (forall m, m <= n -> P3 m) -> P3 (S n).
 Proof.
 unfold P3,P2,P1. intros.
@@ -3259,7 +3201,7 @@ Proof. apply P3_lemma. Qed.
 Lemma P1_lemma : forall (A : formula), P1 A.
 Proof.
 intros.
-pose proof (P2_lemma).
+pose proof P2_lemma.
 unfold P2 in H.
 apply (H (num_conn A) A). auto.
 Qed.
@@ -3267,11 +3209,6 @@ Qed.
 Lemma LEM : forall (A : formula),
   closed A = true -> PA_omega_theorem (lor (neg A) A).
 Proof. apply P1_lemma. Qed.
-
-
-
-
-
 
 
 (*
@@ -3337,7 +3274,7 @@ case_eq (eval s); case_eq (eval t); intros.
 - inversion H1.
 - inversion H1.
 - case_eq (eq_nat (S n0) (S n)).
-  + apply nat_beq_eq.
+  + apply nat_eq_decid.
   + intros. rewrite H2 in H1. inversion H1.
 Qed.
 
@@ -3413,7 +3350,7 @@ Lemma Q3_strongind_aux :
   Q3 0 ->
   (forall n,
     ((forall m, m <= n -> Q3 m) -> Q3 (S n))) ->
-  forall n, (forall m, ((m <= n) -> Q3 m)).
+  (forall n m, m <= n -> Q3 m).
 Proof.
 induction n as [| n' IHn' ].
 - intros. inversion H1. apply H.
@@ -3426,7 +3363,7 @@ Lemma Q3_strongind :
   Q3 0 ->
   (forall n,
     ((forall m, m <= n -> Q3 m) -> Q3 (S n))) ->
-  forall n, Q3 n.
+  (forall n, Q3 n).
 Proof. intros. apply (Q3_strongind_aux H H0 n n). auto. Qed.
 
 Lemma Q3_0 : Q3 0.
@@ -3699,11 +3636,8 @@ Section 8: Proof trees (currently w/o ordinal assignments) for PA_omega proofs.
 ###############################################################################
 *)
 
-(*
-Defining formula trees, which are proof trees without the ordinals/degrees.
-*)
+(* Defining formula trees, which are proof trees without ordinals/degrees. *)
 (* *)
-
 Inductive ftree : Type :=
 | node : formula -> ftree
 
@@ -3746,7 +3680,6 @@ Inductive ftree : Type :=
 | cut_ad : formula -> formula -> ftree -> ftree -> ftree
 
 | cut_cad : formula -> formula -> formula -> ftree -> ftree -> ftree.
-
 
 
 Fixpoint ftree_formula (P : ftree) : formula :=
@@ -3793,7 +3726,6 @@ match P with
 | cut_cad C A D Q1 Q2 => lor C D
 
 end.
-
 
 
 Fixpoint valid (P : ftree) : Prop :=
@@ -3861,13 +3793,24 @@ match P with
 end.
 
 
-(* some basic examples *)
+(* Proof trees are equivalent to theorems *)
+(* *)
+Definition provable (A : formula) : Prop :=
+  exists (t : ftree), ftree_formula t = A /\ valid t.
+
+Lemma provable_theorem : forall (A : formula),
+  PA_omega_theorem A -> provable A.
+Proof. Admitted.
+
+Lemma theorem_provable : forall (A : formula),
+  provable A -> PA_omega_theorem A.
+Proof. Admitted.
+
+
+(* Some basic examples *)
 Definition f_exmp : formula := (atom (equ zero zero)).
 Definition ftree_exmp : ftree := node f_exmp.
 Lemma ftree_exmp_valid : valid ftree_exmp. Proof. simpl. auto. Qed.
-
-Definition provable (A : formula) : Prop :=
-  exists (t : ftree), ftree_formula t = A /\ valid t.
 
 Lemma provable_exmp : provable (atom (equ zero zero)).
 Proof.
@@ -3885,12 +3828,8 @@ eapply ex_intro. instantiate (1:= exchange_ab A B t). split.
 - simpl. apply H.
 Qed.
 
-
 (* Show that PA_omega proves the associativity laws *)
 (* *)
-
-
-
 Lemma associativity_1 : forall (C A B : formula),
   provable (lor (lor C A) B) -> provable (lor C (lor A B)).
 Proof.
@@ -3902,22 +3841,9 @@ instantiate (1:= exchange_ab (lor A B) C
 simpl. auto.
 Qed.
 
-
 Lemma associativity_2 : forall (c a b : formula),
   provable (lor c (lor a b)) ->
   provable (lor (lor c a) b).
-Proof.
-Admitted.
-
-(* Proof trees equivalent to theorems *)
-(* *)
-Lemma provable_theorem : forall (A : formula),
-  PA_omega_theorem A -> provable A.
-Proof.
-Admitted.
-
-Lemma theorem_provable : forall (A : formula),
-  provable A -> PA_omega_theorem A.
 Proof.
 Admitted.
 
@@ -3996,7 +3922,7 @@ intros. induction t; unfold term_beq_eq_nice; intros; destruct s; inversion H.
 - destruct (and_bool_prop _ _ H1).
   unfold term_beq_eq_nice in IHt1. rewrite (IHt1 s1 H0).
   unfold term_beq_eq_nice in IHt2. rewrite (IHt2 s2 H2). auto.
-- rewrite (nat_beq_eq _ _ H1). auto.
+- rewrite (nat_eq_decid _ _ H1). auto.
 Qed.
 
 Lemma term_beq_eq : forall (s t : term),
@@ -4022,12 +3948,11 @@ intros. induction A; unfold f_beq_eq_nice; intros; destruct B; inversion H.
   unfold term_beq_eq_nice in IHA1. rewrite (IHA1 B1 H0).
   unfold term_beq_eq_nice in IHA2. rewrite (IHA2 B2 H2). auto.
 - destruct (and_bool_prop _ _ H1).
-  unfold f_beq_eq_nice in IHA. rewrite (IHA B H2), (nat_beq_eq _ _ H0). auto.
+  unfold f_beq_eq_nice in IHA. rewrite (IHA B H2), (nat_eq_decid _ _ H0). auto.
 Qed.
 
 Lemma f_beq_eq : forall (A B : formula), eq_f A B = true -> A = B.
 Proof. intros. apply f_beq_eq'. apply H. Qed.
-
 
 
 (* Some lemmas about the w_rule we will use later *)
@@ -4288,13 +4213,6 @@ Qed.
 
 (* some miscellaneous lemmas about formulas we will need *)
 (* *)
-
-(*
-Lemma sub_ind_term_sub : forall (A : formula) (n : nat) (t : term),
-  non_target A = non_target (substitution A n t).
-Admitted.
-*)
-
 Lemma non_target_term_sub : forall (A : formula) (n : nat) (t : term),
   non_target A = non_target (substitution A n t).
 Proof.
