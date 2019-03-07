@@ -3936,23 +3936,23 @@ intros. destruct a,b. inversion H. destruct (and_bool_prop _ _ H1).
 apply term_beq_eq in H0. apply term_beq_eq in H2. rewrite H0, H2. auto.
 Qed.
 
-Definition f_beq_eq_nice (A : formula) : Prop := forall (B : formula),
+Definition f_eq_decid_nice (A : formula) : Prop := forall (B : formula),
   eq_f A B = true -> A = B.
 
-Lemma f_beq_eq' : forall (A : formula), f_beq_eq_nice A.
+Lemma f_eq_decid' : forall (A : formula), f_eq_decid_nice A.
 Proof.
-intros. induction A; unfold f_beq_eq_nice; intros; destruct B; inversion H.
+intros. induction A; unfold f_eq_decid_nice; intros; destruct B; inversion H.
 - apply atom_beq_eq in H1. rewrite H1. auto.
-- unfold f_beq_eq_nice in IHA. rewrite (IHA B H1). auto.
+- unfold f_eq_decid_nice in IHA. rewrite (IHA B H1). auto.
 - destruct (and_bool_prop _ _ H1).
   unfold term_beq_eq_nice in IHA1. rewrite (IHA1 B1 H0).
   unfold term_beq_eq_nice in IHA2. rewrite (IHA2 B2 H2). auto.
 - destruct (and_bool_prop _ _ H1).
-  unfold f_beq_eq_nice in IHA. rewrite (IHA B H2), (nat_eq_decid _ _ H0). auto.
+  unfold f_eq_decid_nice in IHA. rewrite (IHA B H2), (nat_eq_decid _ _ H0). auto.
 Qed.
 
-Lemma f_beq_eq : forall (A B : formula), eq_f A B = true -> A = B.
-Proof. intros. apply f_beq_eq'. apply H. Qed.
+Lemma f_eq_decid : forall (A B : formula), eq_f A B = true -> A = B.
+Proof. intros. apply f_eq_decid'. apply H. Qed.
 
 
 (* Some lemmas about the w_rule we will use later *)
@@ -4493,7 +4493,7 @@ induction P; try intros H S Hs.
 - simpl. destruct (eq_f f E) eqn:Heq; destruct S.
   + simpl. unfold dub_neg_sub_formula. rewrite formula_sub_ind_0. auto.
   + unfold dub_neg_sub_formula. simpl. inversion H. rewrite H0.
-    rewrite (f_beq_eq _ _ Heq). rewrite eq_f_refl. auto.
+    rewrite (f_eq_decid _ _ Heq). rewrite eq_f_refl. auto.
   + inversion Hs.
   + simpl. unfold dub_neg_sub_formula. rewrite formula_sub_ind_0. auto.
   + unfold dub_neg_sub_formula. simpl. rewrite Heq. auto.
@@ -4511,7 +4511,7 @@ induction P; try intros H S Hs.
       { rewrite IHP.
         { inversion H. rewrite H0. unfold dub_neg_sub_formula.
           rewrite non_target_sub_lor. simpl. rewrite H1. rewrite Heq.
-          rewrite sub_fit_true. rewrite (f_beq_eq _ _ Heq). auto. apply H1. }
+          rewrite sub_fit_true. rewrite (f_eq_decid _ _ Heq). auto. apply H1. }
         { apply H. }
         { inversion H. rewrite H0. simpl. rewrite non_target_fit, H1. auto. } }
       { inversion H. rewrite H0. simpl. rewrite non_target_fit, H1. auto. }
