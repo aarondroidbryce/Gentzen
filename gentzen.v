@@ -4068,8 +4068,13 @@ substitutions properly.
 *)
 
 
-(* Defining substitution indicators, which will control exactly where in a
-formula substitutions will be made *)
+(* Defining substitution indicators. When we later define formula substitution,
+we will want to take some formula A, and replace any instances of the
+subformula E with the formula F. However, we will only want to do this at
+certain places in A. Substitution indicators will control this.
+For instance, if A is "B \/ (C \/ D)" we might be given a substitution
+indicator S that looks like "0 (1 0)" which indicates that we want to
+substitute C (if C is E) but leave B,D alone even if they are E. *)
 (* *)
 Inductive subst_ind : Type :=
 | ind_0 : subst_ind
@@ -4092,7 +4097,9 @@ match A with
 | _ => (1)
 end.
 
-(* replace E with F at certain places in a formula A *)
+
+(* Replace formula E with formula F at certain places in a formula A *)
+(* *)
 Fixpoint subst_ind_fit (A : formula) (S : subst_ind) : bool :=
 match (A, S) with
 | (lor B C, lor_ind S_B S_C) =>
@@ -4206,12 +4213,7 @@ destruct (subst_ind_fit B S) eqn:HB; rewrite non_target_fit; simpl.
 Qed.
 
 
-
-
-
-
-
-(* some miscellaneous lemmas about formulas we will need *)
+(* Some miscellaneous lemmas about formulas we will need *)
 (* *)
 Lemma non_target_term_sub : forall (A : formula) (n : nat) (t : term),
   non_target A = non_target (substitution A n t).
@@ -4250,15 +4252,9 @@ intros A T U. induction A; intros; unfold formula_sub_ind.
 Qed.
 
 
-
-
-
-
-
-
-(* Defining double negation substitution in an ftree. First, we define replace
+(* Defining double negation substitution in an ftree. First, we replace
 ~~E with E at certain places in a formula (given a substitution indicator).
-Applyying this operation to an entire ftree, we change the substitution
+Applying this operation to an entire ftree, we change the substitution
 indicator as the structure of the formula(s) change as we move up the ftree. *)
 (*  *)
 Definition dub_neg_sub_formula (A E : formula) (S : subst_ind) : formula :=
@@ -4390,9 +4386,6 @@ match (subst_ind_fit (ftree_formula P) S) with
 end.
 
 
-
-
-
 (* First, we must prove that dub_neg_sub_ftree' simply changes the base formula
 of an ftree the way we expect with dub_neg_sub_formula *)
 (* *)
@@ -4418,7 +4411,6 @@ Lemma dub_neg_ftree_formula_true :
     subst_ind_fit (ftree_formula P) S = true ->
     dub_neg_sub_ftree P E S = dub_neg_sub_ftree' P E S.
 Proof. intros. unfold dub_neg_sub_ftree'. destruct P; rewrite H; auto. Qed.
-
 
 Lemma dub_neg_ftree_formula' : forall (P : ftree) (E : formula),
   valid P ->
@@ -4573,13 +4565,6 @@ intros. destruct (subst_ind_fit (ftree_formula P) S) eqn:Hs.
 - apply dub_neg_ftree_formula'. apply H. apply Hs.
 - apply dub_neg_ftree_formula_aux. apply Hs.
 Qed.
-
-
-
-
-
-
-
 
 
 (* Now we prove that if we have a valid ftree, replacing performing our
@@ -4962,7 +4947,6 @@ induction P; try intros H S Hs.
       rewrite H3. simpl. destruct (and_bool_prop _ _ H5). apply H6.
     * rewrite H3. simpl. destruct (and_bool_prop _ _ H5). apply H6.
 Qed.
-
 
 
 (* We finally show that if the formulas ~~A and/or ~~A \/ D are provable,
