@@ -4130,6 +4130,8 @@ match subst_ind_fit A S with
 | true => formula_sub_ind_fit A E F S
 end.
 
+(* Some miscellaneous lemmas about formula substitution we will need *)
+(* *)
 Lemma sub_fit_true : forall (A E F : formula) (S : subst_ind),
   subst_ind_fit A S = true ->
   formula_sub_ind A E F S = formula_sub_ind_fit A E F S.
@@ -4212,9 +4214,6 @@ destruct (subst_ind_fit B S) eqn:HB; rewrite non_target_fit; simpl.
 - rewrite sub_fit_false. auto. apply HB.
 Qed.
 
-
-(* Some miscellaneous lemmas about formulas we will need *)
-(* *)
 Lemma non_target_term_sub : forall (A : formula) (n : nat) (t : term),
   non_target A = non_target (substitution A n t).
 Proof.
@@ -4260,7 +4259,7 @@ indicator as the structure of the formula(s) change as we move up the ftree. *)
 Definition dub_neg_sub_formula (A E : formula) (S : subst_ind) : formula :=
   formula_sub_ind A (neg (neg E)) E S.
 
-Fixpoint dub_neg_sub_ftree
+Fixpoint dub_neg_sub_ftree_fit
   (P : ftree) (E : formula) (S : subst_ind) : ftree :=
 match P, S with
 | node A, _ => P
@@ -4269,21 +4268,21 @@ match P, S with
     exchange_ab
       (dub_neg_sub_formula A E S_A)
       (dub_neg_sub_formula B E S_B)
-      (dub_neg_sub_ftree P' E (lor_ind S_A S_B))
+      (dub_neg_sub_ftree_fit P' E (lor_ind S_A S_B))
 
 | exchange_cab C A B P', lor_ind (lor_ind S_C S_B) S_A =>
     exchange_cab
       (dub_neg_sub_formula C E S_C)
       (dub_neg_sub_formula A E S_A)
       (dub_neg_sub_formula B E S_B)
-      (dub_neg_sub_ftree P' E (lor_ind (lor_ind S_C S_A) S_B))
+      (dub_neg_sub_ftree_fit P' E (lor_ind (lor_ind S_C S_A) S_B))
 
 | exchange_abd A B D P', lor_ind (lor_ind S_B S_A) S_D =>
     exchange_abd
       (dub_neg_sub_formula A E S_A)
       (dub_neg_sub_formula B E S_B)
       (dub_neg_sub_formula D E S_D)
-      (dub_neg_sub_ftree P' E (lor_ind (lor_ind S_A S_B) S_D))
+      (dub_neg_sub_ftree_fit P' E (lor_ind (lor_ind S_A S_B) S_D))
 
 | exchange_cabd C A B D P', lor_ind (lor_ind (lor_ind S_C S_B) S_A) S_D =>
     exchange_cabd
@@ -4291,34 +4290,33 @@ match P, S with
       (dub_neg_sub_formula A E S_A)
       (dub_neg_sub_formula B E S_B)
       (dub_neg_sub_formula D E S_D)
-      (dub_neg_sub_ftree P' E (lor_ind (lor_ind (lor_ind S_C S_A) S_B) S_D))
+      (dub_neg_sub_ftree_fit P' E (lor_ind (lor_ind (lor_ind S_C S_A) S_B) S_D))
 
 | contraction_a A P', _ =>
     contraction_a
       (dub_neg_sub_formula A E S)
-      (dub_neg_sub_ftree P' E (lor_ind S S))
+      (dub_neg_sub_ftree_fit P' E (lor_ind S S))
 
 | contraction_ad A D P', lor_ind S_A S_D =>
     contraction_ad
       (dub_neg_sub_formula A E S_A)
       (dub_neg_sub_formula D E S_D)
-      (dub_neg_sub_ftree P' E (lor_ind (lor_ind S_A S_A) S_D))
+      (dub_neg_sub_ftree_fit P' E (lor_ind (lor_ind S_A S_A) S_D))
 
 | weakening_ad A D P', lor_ind S_A S_D =>
     weakening_ad
       (dub_neg_sub_formula A E S_A)
       (dub_neg_sub_formula D E S_D)
-      (dub_neg_sub_ftree P' E S_D)
+      (dub_neg_sub_ftree_fit P' E S_D)
 
-| demorgan_ab A B Q1 Q2, _ =>
-    demorgan_ab A B Q1 Q2
+| demorgan_ab A B Q1 Q2, _ => P
 
 | demorgan_abd A B D Q1 Q2, lor_ind S_AB S_D =>
     demorgan_abd
       A B
       (dub_neg_sub_formula D E S_D)
-      (dub_neg_sub_ftree Q1 E (lor_ind (0) S_D))
-      (dub_neg_sub_ftree Q2 E (lor_ind (0) S_D))
+      (dub_neg_sub_ftree_fit Q1 E (lor_ind (0) S_D))
+      (dub_neg_sub_ftree_fit Q2 E (lor_ind (0) S_D))
 
 | negation_a A P', _ =>
     (match eq_f A E, S with
@@ -4328,12 +4326,12 @@ match P, S with
 
 | negation_ad A D P', lor_ind S_A S_D =>
     (match eq_f A E, S_A with
-    | true, (1) => dub_neg_sub_ftree P' E (lor_ind (non_target A) S_D)
+    | true, (1) => dub_neg_sub_ftree_fit P' E (lor_ind (non_target A) S_D)
     | _, _ => 
         negation_ad
           A
           (dub_neg_sub_formula D E S_D)
-          (dub_neg_sub_ftree P' E (lor_ind (non_target A) S_D))
+          (dub_neg_sub_ftree_fit P' E (lor_ind (non_target A) S_D))
     end)
 
 | quantification_a A n t P', _ => P
@@ -4343,7 +4341,7 @@ match P, S with
       A
       (dub_neg_sub_formula D E S_D)
       n t
-      (dub_neg_sub_ftree P' E (lor_ind (0) S_D))
+      (dub_neg_sub_ftree_fit P' E (lor_ind (0) S_D))
 
 | w_rule_a A n g, _ => P
 
@@ -4352,13 +4350,14 @@ match P, S with
       A
       (dub_neg_sub_formula D E S_D)
       n
-      (fun (n : nat) => dub_neg_sub_ftree (g n) E (lor_ind (non_target A) S_D))
+      (fun (n : nat) =>
+          dub_neg_sub_ftree_fit (g n) E (lor_ind (non_target A) S_D))
 
 | cut_ca C A Q1 Q2, _ =>
     cut_ca
       (dub_neg_sub_formula C E S)
       A
-      (dub_neg_sub_ftree Q1 E (lor_ind S (non_target A)))
+      (dub_neg_sub_ftree_fit Q1 E (lor_ind S (non_target A)))
       Q2
 
 | cut_ad A D Q1 Q2, _ =>
@@ -4366,39 +4365,39 @@ match P, S with
       A
       (dub_neg_sub_formula D E S)
       Q1
-      (dub_neg_sub_ftree Q2 E (lor_ind (0) S))
+      (dub_neg_sub_ftree_fit Q2 E (lor_ind (0) S))
 
 | cut_cad C A D Q1 Q2, lor_ind S_C S_D =>
     cut_cad
       (dub_neg_sub_formula C E S_C)
       A
       (dub_neg_sub_formula D E S_D)
-      (dub_neg_sub_ftree Q1 E (lor_ind S_C (non_target A)))
-      (dub_neg_sub_ftree Q2 E (lor_ind (0) S_D))
+      (dub_neg_sub_ftree_fit Q1 E (lor_ind S_C (non_target A)))
+      (dub_neg_sub_ftree_fit Q2 E (lor_ind (0) S_D))
 
 | _, _ => P
 end.
 
-Fixpoint dub_neg_sub_ftree' (P : ftree) (E : formula) (S : subst_ind) : ftree :=
+Fixpoint dub_neg_sub_ftree (P : ftree) (E : formula) (S : subst_ind) : ftree :=
 match subst_ind_fit (ftree_formula P) S with
 | false => P
-| true => dub_neg_sub_ftree P E S
+| true => dub_neg_sub_ftree_fit P E S
 end.
 
 
-(* First, we must prove that dub_neg_sub_ftree' simply changes the base formula
+(* First, we must prove that dub_neg_sub_ftree simply changes the base formula
 of an ftree the way we expect with dub_neg_sub_formula *)
 (* *)
 Lemma dub_neg_ftree_formula_aux' :
   forall (P : ftree) (E : formula) (S : subst_ind),
     subst_ind_fit (ftree_formula P) S = false ->
-    dub_neg_sub_ftree' P E S = P.
-Proof. intros. unfold dub_neg_sub_ftree'. destruct P; rewrite H; auto. Qed.
+    dub_neg_sub_ftree P E S = P.
+Proof. intros. unfold dub_neg_sub_ftree. destruct P; rewrite H; auto. Qed.
 
 Lemma dub_neg_ftree_formula_aux :
   forall (P : ftree) (E : formula) (S : subst_ind),
     subst_ind_fit (ftree_formula P) S = false ->
-      ftree_formula (dub_neg_sub_ftree' P E S) =
+      ftree_formula (dub_neg_sub_ftree P E S) =
       dub_neg_sub_formula (ftree_formula P) E S.
 Proof.
 intros. rewrite dub_neg_ftree_formula_aux'.
@@ -4409,14 +4408,14 @@ Qed.
 Lemma dub_neg_ftree_formula_true :
   forall (P : ftree) (E : formula) (S : subst_ind),
     subst_ind_fit (ftree_formula P) S = true ->
-    dub_neg_sub_ftree P E S = dub_neg_sub_ftree' P E S.
-Proof. intros. unfold dub_neg_sub_ftree'. destruct P; rewrite H; auto. Qed.
+    dub_neg_sub_ftree_fit P E S = dub_neg_sub_ftree P E S.
+Proof. intros. unfold dub_neg_sub_ftree. destruct P; rewrite H; auto. Qed.
 
 Lemma dub_neg_ftree_formula' : forall (P : ftree) (E : formula),
   valid P ->
   forall (S : subst_ind),
     subst_ind_fit (ftree_formula P) S = true ->
-    ftree_formula (dub_neg_sub_ftree' P E S) =
+    ftree_formula (dub_neg_sub_ftree P E S) =
     dub_neg_sub_formula (ftree_formula P) E S.
 Proof.
 intros P E.
@@ -4558,7 +4557,7 @@ Qed.
 Lemma dub_neg_ftree_formula : forall (P : ftree) (E : formula),
   valid P ->
   forall (S : subst_ind),
-    ftree_formula (dub_neg_sub_ftree' P E S) =
+    ftree_formula (dub_neg_sub_ftree P E S) =
     dub_neg_sub_formula (ftree_formula P) E S.
 Proof.
 intros. destruct (subst_ind_fit (ftree_formula P) S) eqn:Hs.
@@ -4574,7 +4573,7 @@ Lemma dub_neg_valid : forall (P : ftree) (E : formula),
   closed E = true -> valid P ->
   forall (S : subst_ind),
     subst_ind_fit (ftree_formula P) S = true ->
-    valid (dub_neg_sub_ftree' P E S).
+    valid (dub_neg_sub_ftree P E S).
 Proof.
 intros P E HE.
 induction P; try intros H S Hs.
@@ -4958,7 +4957,7 @@ Proof.
 unfold provable.
 intros. destruct H as [t [H Ht]].
 eapply ex_intro.
-instantiate (1:= dub_neg_sub_ftree' t A (1)). split.
+instantiate (1:= dub_neg_sub_ftree t A (1)). split.
 - simpl. rewrite dub_neg_ftree_formula.
   + rewrite H. unfold dub_neg_sub_formula. simpl. rewrite eq_f_refl. auto.
   + apply Ht.
@@ -4974,7 +4973,7 @@ Proof.
 unfold provable.
 intros. destruct H as [t [H Ht]].
 eapply ex_intro.
-instantiate (1:= dub_neg_sub_ftree' t A (lor_ind (1) (non_target D))). split.
+instantiate (1:= dub_neg_sub_ftree t A (lor_ind (1) (non_target D))). split.
 - simpl. rewrite dub_neg_ftree_formula.
   + rewrite H. unfold dub_neg_sub_formula. simpl. rewrite eq_f_refl.
     rewrite non_target_fit. rewrite non_target_sub'. auto.
