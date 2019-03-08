@@ -40,11 +40,11 @@ intros. induction n as [| n IH].
 Qed.
 
 Fixpoint geq_nat (n m : nat) : bool :=
-match (n, m) with
-| (0, 0) => true
-| (S n', 0) => true
-| (0, S m') => false
-| (S n', S m') => geq_nat n' m'
+match n, m with
+| 0, 0 => true
+| S n', 0 => true
+| 0, S m' => false
+| S n', S m' => geq_nat n' m'
 end.
 
 Lemma succ_geq : forall (n : nat), geq_nat (S n) n = true.
@@ -309,19 +309,21 @@ Proof. intros. apply (eq_list_decid' l1). auto. Qed.
 Fixpoint remove (n : nat) (l : list nat) : list nat :=
 match l with
 | nil => nil
-| m :: l' => (match (eq_nat m n) with
-                true => remove n l'
-              | false => m :: (remove n l')
-              end)
+| m :: l' =>
+  (match eq_nat m n with
+  | true => remove n l'
+  | false => m :: (remove n l')
+  end)
 end.
 
 Fixpoint member (n : nat) (l : list nat) : bool :=
 match l with
 | nil => false
-| m :: l' => (match (eq_nat m n) with
-                true => true
-              | false => member n l'
-              end)
+| m :: l' => 
+  (match eq_nat m n with
+  | true => true
+  | false => member n l'
+  end)
 end.
 
 Fixpoint remove_dups (l : list nat) : list nat :=
@@ -651,7 +653,7 @@ The file that we borrow from is EPSILON0.v, in the epsilon0 folder.
 In this framework, cons a n b represents  omega^a *(S n)  + b *)
 (* *)
 Inductive ord : Set :=
-  Zero : ord
+| Zero : ord
 | cons : ord -> nat -> ord -> ord.
 
 Inductive ord_lt : ord -> ord -> Prop :=
@@ -838,15 +840,15 @@ Qed.
 (* Defining boolean equality and less than, assuming normal form *)
 (* *)
 Fixpoint ord_eqb (alpha beta : ord) : bool :=
-match (alpha, beta) with
-| (Zero, Zero) => true
-| (_, Zero) => false
-| (Zero, _) => false
-| (cons a n b, cons a' n' b') =>
-    (match (ord_eqb a a') with
+match alpha, beta with
+| Zero, Zero => true
+| _, Zero => false
+| Zero, _ => false
+| cons a n b, cons a' n' b' =>
+    (match ord_eqb a a' with
     | false => false
     | true =>
-        (match (eq_nat n n') with
+        (match eq_nat n n' with
         | false => false
         | true => ord_eqb b b'
         end)
@@ -859,14 +861,14 @@ match alpha, beta with
 | _, Zero => false
 | Zero, _ => true
 | cons a n b, cons a' n' b' =>
-    (match (ord_ltb a a', ord_eqb a a') with
-    | (true, _) => true
-    | (_, false) => false
-    | (_, true) =>
-        (match (lt_nat n n', lt_nat n' n) with
-        | (true, _) => true
-        | (_, true) => false
-        | (_, _) => ord_ltb b b'
+    (match ord_ltb a a', ord_eqb a a' with
+    | true, _ => true
+    | _, false => false
+    | _, true =>
+        (match lt_nat n n', lt_nat n' n with
+        | true, _ => true
+        | _, true => false
+        | _, _ => ord_ltb b b'
         end)
     end)
 end.
@@ -1153,10 +1155,10 @@ match alpha, beta with
 | _, Zero => alpha
 | Zero, _ => beta
 | cons a n b, cons a' n' b' =>
-    (match (ord_ltb a a') with
+    (match ord_ltb a a' with
     | true => beta
     | false =>
-      (match (ord_eqb a a') with
+      (match ord_eqb a a' with
       | true => cons a' (n + n' + 1) b'
       | false => cons a n (ord_add b beta)
       end)
@@ -1998,13 +2000,13 @@ match a with
 end.
 
 Definition correct_a (a : atomic_formula) : bool :=
-match (correctness a) with
+match correctness a with
 | correct => true
 | _ => false
 end.
 
 Definition incorrect_a (a : atomic_formula) : bool :=
-match (correctness a) with
+match correctness a with
 | incorrect => true
 | _ => false
 end.
@@ -2092,7 +2094,7 @@ match A with
 | neg B => closed B
 | lor B C => closed B && closed C
 | univ n B =>
-  (match (closed B) with
+  (match closed B with
    | true => true
    | false =>
     (match free_list B with
@@ -2323,7 +2325,7 @@ match T with
 | plus T1 T2 => plus (substitution_t T1 n t) (substitution_t T2 n t)
 | times T1 T2 => times (substitution_t T1 n t) (substitution_t T2 n t)
 | var m =>
-    (match (eq_nat m n) with
+    (match eq_nat m n with
     | true => t
     | false => T
     end)
@@ -2341,7 +2343,7 @@ match A with
 | neg B => neg (substitution B n t)
 | lor B C => lor (substitution B n t) (substitution C n t)
 | univ m B => 
-    (match (eq_nat m n) with
+    (match eq_nat m n with
     | true => A
     | false => univ m (substitution B n t)
     end)
