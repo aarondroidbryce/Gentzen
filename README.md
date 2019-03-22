@@ -1,2 +1,2 @@
 # Gentzen
-Coq implementation of Gentzen's consistency proof of Peano Arithmetic (PA), using Primitive Recursive Arithmetic and the well-foundedness of all ordinals below Epsilon_0. The version of the proof we are implementing is exposited in Mendelson's textbook. As of early March 2019, this is still a few thousand lines short of completion, but we believe the hardest problems have been solved, and the completed code with a detailed write-up should be up in about 2 months.
+This work-in-progress is a Coq implementation of Gentzen's consistency proof of Peano Arithmetic (PA). The file gentzen.v contains the code, while Thesis.pdf fully describes this project as of mid-March 2019.
