@@ -1712,7 +1712,7 @@ rewrite H3.
 apply H2.
 Qed.
 
-Lemma nat_ord_eq : forall (n m : nat), (n < m)%nat -> nat_ord n < nat_ord m.
+Lemma nat_ord_lt : forall (n m : nat), (n < m)%nat -> nat_ord n < nat_ord m.
 Proof.
 intros.
 induction n; destruct m.
@@ -1722,6 +1722,9 @@ induction n; destruct m.
 - simpl. apply coeff_lt. omega.
 Qed.
 
+Lemma nat_ord_eq : forall (n m : nat), n = m -> nat_ord n = nat_ord m.
+Proof. auto. Qed.
+
 Lemma exp_geq_1 : forall (b : ord), nf b -> Zero < ord_2_exp b.
 Proof.
 intros b nf_b.
@@ -1729,7 +1732,7 @@ induction b as [| a' IHa' n' b' IHb'].
 - simpl. apply zero_lt.
 - destruct a' as [| a'' n'' b''].
   + simpl. assert (Zero = nat_ord 0). { auto. } rewrite H.
-    apply nat_ord_eq. rewrite plus_n_0.
+    apply nat_ord_lt. rewrite plus_n_0.
     pose proof (nat_exp_monot_lem n'). omega.
   + destruct a'' as [| a''' n''' b'''].
     * simpl. assert (b'' = Zero).
@@ -1811,7 +1814,7 @@ induction alpha as [| a IHa n b IHb].
   + left. assert (b = Zero). { inversion nf_alpha. auto. inversion H2. }
     rewrite H. simpl.
     simpl. assert (cons Zero n Zero = nat_ord (S n)). { auto. }
-    rewrite H0. apply nat_ord_eq. rewrite plus_n_0.
+    rewrite H0. apply nat_ord_lt. rewrite plus_n_0.
     apply nat_exp_monot_lem.
   + simpl. destruct a' as [| a'' n'' b''].
     * destruct b' as [| a''' n''' b'''].
@@ -2516,6 +2519,159 @@ Qed.
 
 
 
+Fixpoint ord_succ (alpha : ord) : ord :=
+match alpha with
+| Zero => nat_ord 1
+| cons Zero n b => cons Zero (S n) b
+| cons a n b => cons a n (ord_succ b)
+end.
+
+Lemma ord_succ_monot : forall (alpha : ord), ord_lt alpha (ord_succ alpha).
+Proof.
+intros.
+induction alpha.
+- apply zero_lt.
+- simpl. destruct alpha1.
+  + apply coeff_lt. auto.
+  + apply tail_lt. auto.
+Qed.
+
+Lemma nf_add_one : forall (alpha : ord),
+  nf alpha -> ord_succ alpha = ord_add alpha (cons Zero 0 Zero).
+Proof.
+intros alpha nf_alpha.
+induction alpha as [Zero | a IHa n b IHb].
+- simpl. reflexivity.
+- destruct a as [Zero | a' n' b'].
+  + simpl. assert (S n = n + 0 + 1). { omega. } rewrite H.
+    assert (b = Zero).
+    { inversion nf_alpha. reflexivity. inversion H3. }
+    rewrite H0. reflexivity.
+  + simpl. rewrite IHb. reflexivity. inversion nf_alpha.
+    * apply Zero_nf.
+    * apply H4.
+Qed.
+
+Fixpoint ord_max (alpha beta : ord) : ord :=
+match ord_ltb alpha beta with
+| true => beta
+| false => alpha
+end.
+
+Lemma nat_semiconnex_bool : forall (m n : nat), 
+  lt_nat m n = true \/ lt_nat n m = true \/ eq_nat m n = true.
+Proof.
+intros.
+destruct (nat_semiconnex m n) as [H | [H | H]].
+- left. apply lt_nat_decid_conv. auto.
+- right. left. apply lt_nat_decid_conv. auto.
+- right. right. rewrite H. apply eq_nat_refl.
+Qed.
+
+Lemma ord_max_lem : forall (alpha beta : ord),
+  ord_ltb alpha beta = true -> ord_max alpha beta = beta.
+Proof.
+intros. destruct alpha; destruct beta; auto; inversion H.
+simpl. destruct (ord_ltb alpha1 beta1); auto.
+destruct (ord_eqb alpha1 beta1) eqn:Ha; inversion H1.
+destruct (lt_nat n n0) eqn:Hn; auto.
+destruct (lt_nat n0 n) eqn:Hn0; inversion H1.
+destruct (ord_ltb alpha2 beta2); auto. inversion H1.
+Qed.
+
+Lemma ord_max_lem2 : forall (alpha beta : ord),
+  ord_ltb alpha beta = false -> ord_max alpha beta = alpha.
+Proof.
+intros. destruct alpha; destruct beta; auto; inversion H.
+simpl. destruct (ord_ltb alpha1 beta1); inversion H1.
+destruct (ord_eqb alpha1 beta1) eqn:Ha; auto.
+destruct (lt_nat n n0) eqn:Hn; inversion H1.
+destruct (lt_nat n0 n) eqn:Hn0; auto.
+destruct (ord_ltb alpha2 beta2); auto. inversion H1.
+Qed.
+
+Lemma ord_max_symm : forall (alpha beta : ord),
+  ord_max alpha beta = ord_max beta alpha.
+Proof.
+intros.
+destruct (ord_ltb alpha beta) eqn:H.
+- rewrite (ord_max_lem _ _ H). symmetry.
+  apply ord_max_lem2. apply ltb_asymm. auto.
+- destruct (ord_ltb beta alpha) eqn:H0.
+  + rewrite (ord_max_lem _ _ H0). apply ord_max_lem2. auto.
+  + destruct (ord_semiconnex_bool alpha beta) as [H1 | [H1 | H1]].
+    { rewrite H1 in H. inversion H. }
+    { rewrite H1 in H0. inversion H0. }
+    { rewrite (ord_eqb_eq _ _ H1). auto. }
+Qed.
+
+Lemma ord_max_succ_l' : forall (alpha beta : ord),
+  leq alpha (ord_max alpha beta).
+Proof.
+intros. destruct alpha.
+- destruct beta.
+  + simpl. unfold leq. auto.
+  + simpl. unfold leq. right. apply zero_lt.
+- destruct beta.
+  + simpl. unfold leq. auto.
+  + simpl. destruct (ord_ltb alpha1 beta1) eqn:H1.
+    * unfold leq. right. apply head_lt. apply ord_ltb_lt. auto.
+    * destruct (ord_eqb alpha1 beta1) eqn:H2.
+      { destruct (lt_nat n n0) eqn:H3.
+        { unfold leq. right. rewrite (ord_eqb_eq _ _ H2). apply coeff_lt.
+          apply lt_nat_decid. auto. }
+        { destruct (lt_nat n0 n) eqn:H4.
+          { unfold leq. auto. }
+          { rewrite <- (ord_eqb_eq _ _ H2). assert (n = n0) as Hn.
+            { destruct (nat_semiconnex_bool n n0) as [H | [H | H]].
+              { rewrite H3 in H. inversion H. }
+              { rewrite H4 in H. inversion H. }
+              { apply nat_eq_decid. auto. } }
+            rewrite <- Hn. clear H3. clear H4.
+            destruct (ord_ltb alpha2 beta2) eqn:H5.
+            { right. apply tail_lt. apply ord_ltb_lt. auto. }
+            { left. auto. } } } }
+      { unfold leq. auto. }
+Qed.
+
+Lemma ord_max_succ_l : forall (alpha beta : ord),
+  ord_lt alpha (ord_succ (ord_max alpha beta)).
+Proof.
+intros. destruct (ord_max_succ_l' alpha beta).
+- rewrite <- H. apply ord_succ_monot.
+- apply (lt_trans _ (ord_max alpha beta)); auto. apply ord_succ_monot.
+Qed.
+
+Lemma ord_max_succ_r' : forall (alpha beta : ord),
+  leq beta (ord_max alpha beta).
+Proof.
+intros. rewrite ord_max_symm. apply ord_max_succ_l'. Qed.
+
+Lemma ord_max_succ_r : forall (alpha beta : ord),
+  ord_lt beta (ord_succ (ord_max alpha beta)).
+Proof.
+intros. destruct (ord_max_succ_r' alpha beta).
+- rewrite <- H. apply ord_succ_monot.
+- apply (lt_trans _ (ord_max alpha beta)); auto. apply ord_succ_monot.
+Qed.
+
+
+
+Lemma nat_semiconnex_type : forall (m n : nat), (m > n) + (m = n) + (n > m).
+Proof. intros. Admitted.
+
+Lemma leq_type : forall (m n : nat), m >= n -> (m > n) + (m = n).
+Proof.
+intros. destruct (nat_semiconnex_type m n) as [[Hm | Hm] | Hm]; auto. omega.
+Qed.
+
+
+
+
+
+
+
+
 
 
 
@@ -2575,104 +2731,135 @@ end.
 (* A theorem of PA_omega is either an axiom, or the result of applying a rule
     of inference to another theorem *)
 (* *)
-Inductive PA_omega_theorem : formula -> nat -> Type :=
-| deg_incr : forall (A : formula) (d d' : nat),
-    PA_omega_theorem A d ->
+Inductive PA_omega_theorem : formula -> nat -> ord -> Type :=
+| deg_incr : forall (A : formula) (d d' : nat) (alpha : ord),
+    PA_omega_theorem A d alpha ->
     d' > d ->
-    PA_omega_theorem A d'
+    PA_omega_theorem A d' alpha
+
+| ord_incr : forall (A : formula) (d : nat) (alpha beta : ord),
+    PA_omega_theorem A d alpha ->
+    ord_lt alpha beta ->
+    PA_omega_theorem A d beta
 
 
 | axiom : forall (A : formula),
     PA_omega_axiom A = true ->
-    PA_omega_theorem A 0
+    PA_omega_theorem A 0 Zero
 
 
-| exchange1 : forall (A B : formula) (d : nat),
-    PA_omega_theorem (lor A B) d ->
-    PA_omega_theorem (lor B A) d
+| exchange1 : forall (A B : formula) (d : nat) (alpha : ord),
+    PA_omega_theorem (lor A B) d alpha ->
+    PA_omega_theorem (lor B A) d alpha
 
-| exchange2 : forall (C A B : formula) (d : nat),
-    PA_omega_theorem (lor (lor C A) B) d ->
-    PA_omega_theorem (lor (lor C B) A) d
+| exchange2 : forall (C A B : formula) (d : nat) (alpha : ord),
+    PA_omega_theorem (lor (lor C A) B) d alpha ->
+    PA_omega_theorem (lor (lor C B) A) d alpha
 
-| exchange3 : forall (A B D : formula) (d : nat),
-    PA_omega_theorem (lor (lor A B) D) d ->
-    PA_omega_theorem (lor (lor B A) D) d
+| exchange3 : forall (A B D : formula) (d : nat) (alpha : ord),
+    PA_omega_theorem (lor (lor A B) D) d alpha ->
+    PA_omega_theorem (lor (lor B A) D) d alpha
 
-| exchange4 : forall (C A B D : formula) (d : nat),
-    PA_omega_theorem (lor (lor (lor C A) B) D) d ->
-    PA_omega_theorem (lor (lor (lor C B) A) D) d
+| exchange4 : forall (C A B D : formula) (d : nat) (alpha : ord),
+    PA_omega_theorem (lor (lor (lor C A) B) D) d alpha ->
+    PA_omega_theorem (lor (lor (lor C B) A) D) d alpha
 
-| contraction1 : forall (A : formula) (d : nat),
-    PA_omega_theorem (lor A A) d ->
-    PA_omega_theorem A d
+| contraction1 : forall (A : formula) (d : nat) (alpha : ord),
+    PA_omega_theorem (lor A A) d alpha ->
+    PA_omega_theorem A d alpha
 
-| contraction2 : forall (A D : formula) (d : nat),
-    PA_omega_theorem (lor (lor A A) D) d ->
-    PA_omega_theorem (lor A D) d
+| contraction2 : forall (A D : formula) (d : nat) (alpha : ord),
+    PA_omega_theorem (lor (lor A A) D) d alpha ->
+    PA_omega_theorem (lor A D) d alpha
 
 
 
-| weakening : forall (A D : formula) (d : nat),
+| weakening : forall (A D : formula) (d : nat) (alpha beta : ord),
+    ord_lt alpha beta ->
     closed A = true ->
-    PA_omega_theorem D d ->
-    PA_omega_theorem (lor A D) d
+    PA_omega_theorem D d alpha ->
+    PA_omega_theorem (lor A D) d beta
 
-| demorgan1 : forall (A B : formula) (d1 d2 : nat),
-    PA_omega_theorem (neg A) d1 ->
-    PA_omega_theorem (neg B) d2 ->
-    PA_omega_theorem (neg (lor A B)) (max d1 d2)
+| demorgan1 : forall (A B : formula) (d1 d2 : nat)
+                     (alpha1 alpha2 beta : ord),
+    ord_lt alpha1 beta ->
+    ord_lt alpha2 beta ->
+    PA_omega_theorem (neg A) d1 alpha1 ->
+    PA_omega_theorem (neg B) d2 alpha2 ->
+    PA_omega_theorem (neg (lor A B)) (max d1 d2) beta
 
-| demorgan2 : forall (A B D : formula) (d1 d2 : nat),
-    PA_omega_theorem (lor (neg A) D) d1 ->
-    PA_omega_theorem (lor (neg B) D) d2 ->
-    PA_omega_theorem (lor (neg (lor A B)) D) (max d1 d2)
+| demorgan2 : forall (A B D : formula) (d1 d2 : nat)
+                     (alpha1 alpha2 beta : ord),
+    ord_lt alpha1 beta ->
+    ord_lt alpha2 beta ->
+    PA_omega_theorem (lor (neg A) D) d1 alpha1 ->
+    PA_omega_theorem (lor (neg B) D) d2 alpha2 ->
+    PA_omega_theorem (lor (neg (lor A B)) D) (max d1 d2) beta
 
-| negation1 : forall (A : formula) (d : nat),
-    PA_omega_theorem A d ->
-    PA_omega_theorem (neg (neg A)) d
+| negation1 : forall (A : formula) (d : nat) (alpha beta : ord),
+    ord_lt alpha beta ->
+    PA_omega_theorem A d alpha ->
+    PA_omega_theorem (neg (neg A)) d beta
 
-| negation2 : forall (A D : formula) (d : nat),
-    PA_omega_theorem (lor A D) d ->
-    PA_omega_theorem (lor (neg (neg A)) D) d
+| negation2 : forall (A D : formula) (d : nat) (alpha beta : ord),
+    ord_lt alpha beta ->
+    PA_omega_theorem (lor A D) d alpha ->
+    PA_omega_theorem (lor (neg (neg A)) D) d beta
 
-| quantification1 : forall (A : formula) (n : nat) (t : term) (d : nat),
+| quantification1 : forall (A : formula) (n : nat) (t : term)
+                           (d : nat) (alpha beta : ord),
+    ord_lt alpha beta ->
     closed_t t = true ->
-    PA_omega_theorem (neg (substitution A n t)) d ->
-    PA_omega_theorem (neg (univ n A)) d
+    PA_omega_theorem (neg (substitution A n t)) d alpha ->
+    PA_omega_theorem (neg (univ n A)) d beta
 
-| quantification2 : forall (A D : formula) (n : nat) (t : term) (d : nat),
+| quantification2 : forall (A D : formula) (n : nat) (t : term)
+                           (d : nat) (alpha beta : ord),
+    ord_lt alpha beta ->
     closed_t t = true ->
-    PA_omega_theorem (lor (neg (substitution A n t)) D) d ->
-    PA_omega_theorem (lor (neg (univ n A)) D) d
+    PA_omega_theorem (lor (neg (substitution A n t)) D) d alpha ->
+    PA_omega_theorem (lor (neg (univ n A)) D) d beta
 
 
-| w_rule1 : forall (A : formula) (n : nat) (d : nat)
+| w_rule1 : forall (A : formula) (n : nat) (d : nat) (alpha : ord)
+  (f : nat -> ord)
   (g : forall (m : nat),
-      PA_omega_theorem (substitution A n (represent m)) d),
-  PA_omega_theorem (univ n A) d
+      PA_omega_theorem (substitution A n (represent m)) d (f m)),
+  (forall (m : nat), ord_lt (f m) alpha) ->
+  PA_omega_theorem (univ n A) d alpha
 
-| w_rule2 : forall (A D : formula) (n : nat) (d : nat)
+| w_rule2 : forall (A D : formula) (n : nat) (d : nat) (alpha : ord)
+  (f : nat -> ord)
   (g : forall (m : nat),
-    PA_omega_theorem (lor (substitution A n (represent m)) D) d),
-  PA_omega_theorem (lor (univ n A) D) d
+    PA_omega_theorem (lor (substitution A n (represent m)) D) d (f m)),
+  (forall (m : nat), ord_lt (f m) alpha) ->
+  PA_omega_theorem (lor (univ n A) D) d alpha
 
 
 
-| cut1 : forall (C A : formula) (d1 d2 : nat),
-    PA_omega_theorem (lor C A) d1 ->
-    PA_omega_theorem (neg A) d2 ->
-    PA_omega_theorem C (max (max d1 d2) (num_conn (neg A)))
+| cut1 : forall (C A : formula) (d1 d2 : nat) (alpha1 alpha2 beta : ord),
+    ord_lt alpha1 beta ->
+    ord_lt alpha2 beta ->
+    PA_omega_theorem (lor C A) d1 alpha1 ->
+    PA_omega_theorem (neg A) d2 alpha2 ->
+    PA_omega_theorem C (max (max d1 d2) (num_conn (neg A))) beta
 
-| cut2 : forall (A D : formula) (d1 d2 : nat),
-    PA_omega_theorem A d1 ->
-    PA_omega_theorem (lor (neg A) D) d2 ->
-    PA_omega_theorem D (max (max d1 d2) (num_conn (neg A)))
+| cut2 : forall (A D : formula) (d1 d2 : nat) (alpha1 alpha2 beta : ord),
+    ord_lt alpha1 beta ->
+    ord_lt alpha2 beta ->
+    PA_omega_theorem A d1 alpha1 ->
+    PA_omega_theorem (lor (neg A) D) d2 alpha2 ->
+    PA_omega_theorem D (max (max d1 d2) (num_conn (neg A))) beta
 
-| cut3 : forall (C A D : formula) (d1 d2 : nat),
-    PA_omega_theorem (lor C A) d1 ->
-    PA_omega_theorem (lor (neg A) D) d2 ->
-    PA_omega_theorem (lor C D) (max (max d1 d2) (num_conn (neg A))).
+| cut3 : forall (C A D : formula) (d1 d2 : nat) (alpha1 alpha2 beta : ord),
+    ord_lt alpha1 beta ->
+    ord_lt alpha2 beta ->
+    PA_omega_theorem (lor C A) d1 alpha1 ->
+    PA_omega_theorem (lor (neg A) D) d2 alpha2 ->
+    PA_omega_theorem (lor C D) (max (max d1 d2) (num_conn (neg A))) beta.
+
+
+
 
 
 
@@ -2710,7 +2897,7 @@ induction n.
 Qed.
 
 Lemma equ_refl : forall (m : nat),
-  PA_omega_theorem (atom (equ (represent m) (represent m))) 0.
+  PA_omega_theorem (atom (equ (represent m) (represent m))) 0 Zero.
 Proof.
 intros.
 apply axiom.
@@ -2720,19 +2907,20 @@ apply eval_represent.
 Qed.
 
 Lemma w_rule_exmp : forall (n : nat),
-  PA_omega_theorem (univ n (atom (equ (var n) (var n)))) 0.
+  PA_omega_theorem (univ n (atom (equ (var n) (var n)))) 0 (nat_ord 1).
 Proof.
 intros.
-apply w_rule1. simpl. rewrite eq_nat_refl.
-apply equ_refl.
+apply (w_rule1 _ _ _ _ (fun (m : nat) => Zero)).
+- simpl. rewrite eq_nat_refl. apply equ_refl.
+- intros. apply zero_lt.
 Qed.
 
 
 (* Show that PA_omega proves the associativity laws *)
 (* *)
-Lemma associativity1 : forall (C A B : formula) (d : nat),
-  PA_omega_theorem (lor (lor C A) B) d ->
-  PA_omega_theorem (lor C (lor A B)) d.
+Lemma associativity1 : forall (C A B : formula) (d : nat) (alpha : ord),
+  PA_omega_theorem (lor (lor C A) B) d alpha ->
+  PA_omega_theorem (lor C (lor A B)) d alpha.
 Proof.
 intros.
 apply exchange3 in H.
@@ -2741,9 +2929,9 @@ apply exchange1 in H.
 apply H.
 Qed.
 
-Lemma associativity2 : forall (C A B : formula) (d : nat),
-  PA_omega_theorem (lor C (lor A B)) d ->
-  PA_omega_theorem (lor (lor C A) B) d.
+Lemma associativity2 : forall (C A B : formula) (d : nat) (alpha : ord),
+  PA_omega_theorem (lor C (lor A B)) d alpha ->
+  PA_omega_theorem (lor (lor C A) B) d alpha.
 Proof.
 intros.
 apply exchange1 in H.
@@ -2840,7 +3028,8 @@ intros. induction T; auto.
   + simpl in H0. rewrite H1 in H0. inversion H0.
 Qed.
 
-Lemma incorrect_subst_closed : forall (a : atomic_formula) (n : nat) (s t : term),
+Lemma incorrect_subst_closed :
+  forall (a : atomic_formula) (n : nat) (s t : term),
   closed_t t = true ->
   incorrect_a (substitution_a a n s) = true ->
   closed_a (substitution_a a n t) = true.
@@ -2944,10 +3133,11 @@ apply closed_free_list in H.
 rewrite H. auto.
 Qed.
 
-Lemma closed_sub_theorem : forall (A : formula) (n : nat) (t : term) (d : nat),
+Lemma closed_sub_theorem :
+  forall (A : formula) (n d : nat) (t : term) (alpha : ord),
   closed A = true ->
-  PA_omega_theorem A d->
-  PA_omega_theorem (substitution A n t) d.
+  PA_omega_theorem A d alpha ->
+  PA_omega_theorem (substitution A n t) d alpha.
 Proof. intros. rewrite closed_subst_eq. apply H0. apply H. Qed.
 
 Lemma closed_univ_sub : forall (B : formula) (n : nat),
@@ -3070,19 +3260,20 @@ Lemma num_conn_lor : forall (B C : formula) (n : nat),
   num_conn (lor B C) = S n -> num_conn B <= n /\ num_conn C <= n.
 Proof. intros. apply addends_leq. inversion H. auto. Qed.
 
-Lemma LEM_univ : forall (B : formula) (n m d : nat),
+Lemma LEM_univ : forall (B : formula) (n m d : nat) (alpha : ord),
   closed (substitution B n (represent m)) = true ->
   PA_omega_theorem
     (lor (neg (substitution B n (represent m)))
          (substitution B n (represent m)))
-    d ->
+    d alpha ->
   PA_omega_theorem
     (lor (substitution B n (represent m)) (neg (univ n B)))
-    d.
+    d (ord_succ alpha).
 Proof.
 intros.
 apply exchange1.
-apply (quantification2 _ _ _ (represent m)).
+apply (quantification2 _ _ n (represent m) d alpha).
+- apply ord_succ_monot.
 - apply eval_closed. apply eval_represent.
 - apply H0.
 Qed.
@@ -3099,6 +3290,37 @@ induction B; auto; simpl.
   + simpl. rewrite IHB. auto.
 Qed.
 
+
+
+
+
+
+Lemma deg_monot : forall (A : formula) (d d' : nat) (alpha : ord),
+  d' >= d -> PA_omega_theorem A d alpha -> PA_omega_theorem A d' alpha.
+Proof.
+intros. apply leq_type in H. destruct H.
+- apply (deg_incr A d d'); auto.
+- rewrite e. auto.
+Qed.
+
+Lemma ord_monot : forall (A : formula) (d : nat) (alpha beta : ord),
+  ((ord_lt alpha beta) + (alpha = beta)) ->
+  PA_omega_theorem A d alpha ->
+  PA_omega_theorem A d beta.
+Proof.
+intros. destruct H.
+- apply (ord_incr A d alpha); auto.
+- rewrite <- e. auto.
+Qed.
+
+Lemma ord_succ_nat : forall (n : nat), ord_succ (nat_ord n) = nat_ord (S n).
+Proof.
+intros. rewrite nf_add_one.
+- assert (cons Zero 0 Zero = nat_ord 1). { auto. } rewrite H.
+  rewrite <- ord_add_nat. auto.
+  assert (n + 1 = S n). { omega. } rewrite H0. auto.
+- apply nf_nat.
+Qed.
 
 
 
@@ -3161,15 +3383,16 @@ proves ~A(s) \/ A(t). We will need these results in the next section.
 
 
 Lemma LEM_atomic : forall (a : atomic_formula),
-  closed_a a = true -> PA_omega_theorem (lor (neg (atom a)) (atom a)) 0.
+  closed_a a = true ->
+  PA_omega_theorem (lor (neg (atom a)) (atom a)) 0 (nat_ord 1).
 Proof.
 intros.
 destruct (correctness_decid a H) as [H0 | H0].
-- apply weakening.
-  + apply H.
+- apply (weakening _ _ _ Zero); auto.
+  + apply zero_lt.
   + apply axiom. apply H0.
-- apply exchange1. apply weakening.
-  + apply H.
+- apply exchange1. apply (weakening _ _ _ Zero); auto.
+  + apply zero_lt.
   + apply axiom. apply H0.
 Qed.
 
@@ -3182,7 +3405,8 @@ by strong induction on n, the number of connectives.
 *)
 (* *)
 Definition P1 (A : formula) : Type :=
-  closed A = true -> PA_omega_theorem (lor (neg A) A) 0.
+  closed A = true ->
+  PA_omega_theorem (lor (neg A) A) 0 (nat_ord (S (2 * (num_conn A)))).
 
 Definition P2 (A : formula) (n : nat) : Type :=
   num_conn A = n -> P1 A.
@@ -3221,14 +3445,12 @@ induction n as [| n' IHn' ].
   + apply IHn'. apply H1.
 Qed.
 
-
 Lemma P3_strongind :
   P3 0 ->
   (forall n,
     ((forall m, m <= n -> P3 m) -> P3 (S n))) ->
   (forall n, P3 n).
 Proof. intros. apply (P3_strongind_aux X X0 n n). auto. Qed.
-
 
 
 (* The (strong) inductive step for LEM *)
@@ -3239,26 +3461,43 @@ unfold P3,P2,P1. intros.
 destruct A as [a | B | B C | m B].
 - inversion H0.
 - inversion H0. pose proof (H n (le_refl n) B H3 H1).
-  apply negation2. apply exchange1. apply H2.
+  rewrite H0. rewrite H3 in H2.
+  apply (negation2 _ _ _ (nat_ord (S (2 * n)))).
+  + apply nat_ord_lt. omega.
+  + apply exchange1. apply H2.
 - destruct (closed_lor _ _ H1) as [HB HC].
-  destruct (num_conn_lor _ _ _ H0) as [HB' HC'].
-  apply (demorgan2 _ _ _ 0 0).
-  + apply associativity1. apply exchange1. apply weakening.
-    * apply HC.
-    * apply (H (num_conn B) HB' B (eq_refl (num_conn B)) HB).
-  + apply associativity1. apply exchange2. apply exchange1. apply weakening.
-    * apply HB.
-    * apply (H (num_conn C) HC' C (eq_refl (num_conn C)) HC).
-- apply exchange1. inversion H0. pose proof (H n (le_refl n)).
-  apply w_rule2. intros k. apply (LEM_univ B m k).
-  + apply closed_univ_sub.
-    * apply H1.
-    * apply eval_closed, eval_represent.
-  + apply H2.
-    * rewrite num_conn_sub. apply H3.
-    * apply closed_univ_sub.
-      { apply H1. }
-      { apply eval_closed, eval_represent. }
+  destruct (num_conn_lor _ _ _ H0) as [HB' HC']. rewrite H0.
+  apply (demorgan2 _ _ _ 0 0 (nat_ord (2*n + 2)) (nat_ord (2*n + 2))).
+  + apply nat_ord_lt. omega.
+  + apply nat_ord_lt. omega.
+  + apply associativity1. apply exchange1.
+    apply (weakening _ _ _ (nat_ord (2*n + 1))); auto.
+    * apply nat_ord_lt. omega.
+    * pose proof (H (num_conn B) HB' B (eq_refl (num_conn B)) HB).
+      destruct (leq_type _ _ HB').
+      { apply (ord_incr _ _ (nat_ord (S (2 * num_conn B)))); auto.
+      apply nat_ord_lt. omega. }
+      { rewrite <- e in H2. assert (2 * n + 1 = S (2 * n)). { omega. }
+        rewrite H3. auto. }
+  + apply associativity1. apply exchange2. apply exchange1.
+    apply (weakening _ _ _ (nat_ord (2*n + 1))); auto.
+    * apply nat_ord_lt. omega.
+    * pose proof (H (num_conn C) HC' C (eq_refl (num_conn C)) HC).
+      destruct (leq_type _ _ HC').
+      { apply (ord_incr _ _ (nat_ord (S (2 * num_conn C)))); auto.
+      apply nat_ord_lt. omega. }
+      { rewrite <- e in H2. assert (2 * n + 1 = S (2 * n)). { omega. }
+        rewrite H3. auto. }
+- apply exchange1. inversion H0. rewrite H0.
+  apply (w_rule2 _ _ _ _ _ (fun (k : nat) => (ord_succ (nat_ord (2*n + 1))))).
+  + intros k. apply (LEM_univ B m k 0 (nat_ord (2 * n + 1))).
+    * apply closed_univ_sub; auto. apply eval_closed, eval_represent.
+    * pose proof (H n (le_refl n) (substitution B m (represent k))).
+      rewrite num_conn_sub in H2. rewrite H3 in H2.
+      assert (2 * n + 1 = S (2 * n)). { omega. }
+      rewrite H4. apply H2; auto.
+      apply closed_univ_sub; auto. apply eval_closed, eval_represent.
+  + intros k. rewrite ord_succ_nat. apply nat_ord_lt. omega.
 Qed.
 
 Lemma P3_lemma : forall n, P3 n.
@@ -3276,7 +3515,8 @@ apply (X (num_conn A) A). auto.
 Qed.
 
 Lemma LEM : forall (A : formula),
-  closed A = true -> PA_omega_theorem (lor (neg A) A) 0.
+  closed A = true ->
+  PA_omega_theorem (lor (neg A) A) 0 (nat_ord (S (2 * num_conn A))).
 Proof. apply P1_lemma. Qed.
 
 
@@ -3383,7 +3623,7 @@ Lemma LEM_term_atomic :
     free_list_a a = [n] ->
     PA_omega_theorem (lor (neg (atom (substitution_a a n s)))
                           (atom (substitution_a a n t)))
-                      0.
+                      0 (nat_ord 1).
 Proof.
 intros a n s t H Ha.
 destruct (correctness_decid (substitution_a a n s)) as [H0 | H0].
@@ -3392,13 +3632,12 @@ destruct (correctness_decid (substitution_a a n s)) as [H0 | H0].
   + apply Ha.
 - pose proof (correct_closed _ H0) as HC.
   pose proof (LEM_term_atomic' s t a n H). apply H1 in H0.
-  apply axiom in H0. unfold substitution in H0. apply weakening.
-  + simpl. apply HC.
-  + apply H0.
-- apply exchange1. apply weakening.
-  + simpl. apply (incorrect_subst_closed a n s t).
-    * apply eval_closed. destruct (correct_eval s t H). apply H2.
-    * apply H0.
+  apply axiom in H0. unfold substitution in H0.
+  apply (weakening _ _ _ Zero); auto. apply zero_lt.
+- apply exchange1. apply (weakening _ _ _ Zero); auto.
+  + apply zero_lt.
+  + simpl. apply (incorrect_subst_closed a n s t); auto.
+    apply eval_closed. destruct (correct_eval s t H). apply H2.
   + apply axiom. apply H0.
 Qed.
 
@@ -3410,7 +3649,8 @@ are meant to break this up. *)
 Definition Q1 (A : formula) : Type := forall (n : nat) (s t : term),
   correct_a (equ s t) = true ->
   free_list A = [n] ->
-  PA_omega_theorem (lor (neg (substitution A n s)) (substitution A n t)) 0.
+  PA_omega_theorem (lor (neg (substitution A n s)) (substitution A n t)) 0
+                   (nat_ord (S (2 * num_conn A))).
 
 Definition Q2 (A : formula) (n : nat) : Type := num_conn A = n -> Q1 A.
 
@@ -3453,40 +3693,71 @@ Proof.
 unfold Q3,Q2, Q1. intros.
 destruct A as [| B | B C | m B].
 - inversion H0.
-- inversion H0. simpl. apply negation2. apply exchange1.
-  apply (H n (le_refl n) B H4 n0 t s).
-  + apply equ_symm,H1.
-  + apply H2.
+- inversion H0. rewrite H0.
+  assert (S (2 * S n) = 2*n + 3). { omega. } rewrite H3.
+  simpl. apply (negation2 _ _ _ (nat_ord (S (2 * n)))).
+  + apply nat_ord_lt. omega.
+  + apply exchange1. pose proof (H n (le_refl n) B H4 n0 t s).
+    rewrite H4 in H5. apply H5; auto. apply equ_symm,H1.
 - destruct (free_list_lor B C n0 H2) as [HB HC].
   destruct (num_conn_lor _ _ _ H0) as [HB' HC'].
   destruct (correct_closed_t _ _ H1) as [Hs Ht].
-  simpl. apply (demorgan2 _ _ _ 0 0).
-  + apply associativity1. apply exchange1. apply weakening.
+  rewrite H0. assert (S (2 * S n) = 2*n + 3). { omega. } rewrite H3.
+  simpl. apply (demorgan2 _ _ _ 0 0 (nat_ord (2*n + 2)) (nat_ord (2*n + 2))).
+  + apply nat_ord_lt. omega.
+  + apply nat_ord_lt. omega.
+  + apply associativity1. apply exchange1.
+    apply (weakening _ _ _ (nat_ord (2*n + 1))).
+    * apply nat_ord_lt. omega.
     * destruct HC as [HC | HC].
       { apply (one_var_free_lemma _ _ _ Ht HC). }
       { rewrite closed_subst_eq; apply HC. }
     * destruct HB as [HB | HB].
-      { apply (H (num_conn B) HB' B (eq_refl (num_conn B)) n0 s t H1 HB). }
-      { rewrite closed_subst_eq, closed_subst_eq; auto. apply LEM, HB. }
-  + apply associativity1. apply exchange2. apply exchange1. apply weakening.
+      { pose proof (H (num_conn B) HB' B (eq_refl (num_conn B)) n0 s t H1 HB).
+        clear H. destruct (leq_type _ _ HB').
+        { apply (ord_incr _ _ (nat_ord (S (2 * num_conn B)))); auto.
+        apply nat_ord_lt. omega. }
+        { rewrite <- e in H4. assert (2 * n + 1 = S (2 * n)). { omega. }
+          rewrite H. auto. } }
+      { rewrite closed_subst_eq, closed_subst_eq; auto. pose proof (LEM B HB).
+        apply (ord_monot _ _ (nat_ord (S (2 * num_conn B)))); auto.
+        apply leq_type in HB'. destruct HB' as [HB' | HB'].
+        { left. apply nat_ord_lt. omega. }
+        { right. rewrite <- HB'. apply nat_ord_eq. omega. } }
+  + apply associativity1. apply exchange2. apply exchange1.
+    apply (weakening _ _ _ (nat_ord (2*n + 1))).
+    * apply nat_ord_lt. omega.
     * destruct HB as [HB | HB].
       { apply (one_var_free_lemma _ _ _ Ht HB). }
       { rewrite closed_subst_eq; apply HB. }
     * destruct HC as [HC | HC].
-      { apply (H (num_conn C) HC' C (eq_refl (num_conn C)) n0 s t H1 HC). }
-      { rewrite closed_subst_eq, closed_subst_eq; auto. apply LEM, HC. }
-- apply exchange1. inversion H0.
+      { pose proof (H (num_conn C) HC' C (eq_refl (num_conn C)) n0 s t H1 HC).
+        destruct (leq_type _ _ HC').
+        { apply (ord_incr _ _ (nat_ord (S (2 * num_conn C)))); auto.
+        apply nat_ord_lt. omega. }
+        { rewrite <- e in H4. assert (2 * n + 1 = S (2 * n)). { omega. }
+          rewrite H5. auto. } }
+      { rewrite closed_subst_eq, closed_subst_eq; auto. pose proof (LEM C HC).
+        apply (ord_monot _ _ (nat_ord (S (2 * num_conn C)))); auto.
+        apply leq_type in HC'. destruct HC' as [HC' | HC'].
+        { left. apply nat_ord_lt. omega. }
+        { right. rewrite <- HC'. apply nat_ord_eq. omega. } }
+- apply exchange1. inversion H0. rewrite H0.
+  assert (S (2 * S n) = 2*n + 3). { omega. } rewrite H3.
   simpl. pose proof (univ_free_var _ _ _ H2) as Heq. rewrite Heq.
-  apply w_rule2. intros. apply exchange1.
-  apply (quantification2 _ _ _ (represent m0)).
-  + apply repr_closed.
-  + destruct (correct_closed_t _ _ H1) as [Hs Ht].
-    rewrite (substitution_order B m n0 s _ Hs (repr_closed m0) Heq).
-    rewrite (substitution_order B m n0 t _ Ht (repr_closed m0) Heq).
-    apply (H n (le_refl n) (substitution B m (represent m0))).
-    * rewrite num_conn_sub. apply H4.
-    * apply H1.
-    * apply free_list_univ_sub. apply repr_closed. apply H2.
+  apply (w_rule2 _ _ _ _ _ (fun (k : nat) => (ord_succ (nat_ord (2*n + 1))))).
+  + intros k. apply exchange1.
+    apply (quantification2 _ _ _ (represent k) _ (nat_ord (2 * n + 1))).
+    * apply ord_succ_monot.
+    * apply repr_closed.
+    * destruct (correct_closed_t _ _ H1) as [Hs Ht].
+      rewrite (substitution_order B m n0 s _ Hs (repr_closed k) Heq).
+      rewrite (substitution_order B m n0 t _ Ht (repr_closed k) Heq).
+      pose proof (H n (le_refl n) (substitution B m (represent k))).
+      rewrite num_conn_sub in H5. rewrite H4 in H5.
+      assert (2 * n + 1 = S (2 * n)). { omega. } rewrite H6.
+      apply H5; auto. apply free_list_univ_sub. apply repr_closed. apply H2.
+  + intros k. rewrite ord_succ_nat. apply nat_ord_lt. omega.
 Qed.
 
 Lemma Q3_lemma : forall n, Q3 n.
@@ -3506,11 +3777,9 @@ Qed.
 Lemma LEM_term : forall (A : formula) (n : nat) (s t : term),
   correct_a (equ s t) = true ->
   free_list A = [n] ->
-  PA_omega_theorem (lor (neg (substitution A n s)) (substitution A n t)) 0.
+  PA_omega_theorem (lor (neg (substitution A n s)) (substitution A n t)) 0
+                   (nat_ord (S (2 * num_conn A))).
 Proof. apply Q1_lemma. Qed.
-
-
-
 
 
 
@@ -4023,39 +4292,6 @@ Lemma valid_w_rule_ad : forall (A D : formula) (n d : nat) (g : nat -> ftree),
 Proof.
 intros. destruct (X m) as [[H1 H2] H3]. fold valid in H2. repeat split; auto.
 Qed.
-
-
-(*
-Lemma x : forall (m n : nat), (m > n) + (m = n) + (n > m).
-Proof. intros. lia.
-
-Lemma ge_lemma : forall (m n : nat), true.
-
-Lemma ge_lemma : forall (m n : nat), m >= n -> (m > n) + (m = n).
-Proof.
-intros.
-destruct (eq_nat m n) eqn:H1.
-- right. apply nat_eq_decid. auto.
-- destruct (lt_nat n m) eqn:H2.
-  + left. apply lt_nat_decid. auto.
-  + apply lt_nat_decid in H2.
-*)
-
-
-
-
-Lemma deg_monot : forall (A : formula) (d d' : nat),
-  d' >= d -> PA_omega_theorem A d -> PA_omega_theorem A d'.
-Proof.
-Admitted.
-(*
-intros. apply ge_lemma in H. destruct H.
-- apply (deg_incr A d d'); auto.
-- rewrite e. auto.
-Qed.
-*)
-
-
 
 
 Lemma theorem_provable' : forall (t : ftree) (d : nat),
