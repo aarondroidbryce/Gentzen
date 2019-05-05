@@ -5716,21 +5716,24 @@ Qed.
 (* We finally show that if the formulas ~~A and/or ~~A \/ D are provable,
 so are the formulas A and/or A \/ D *)
 (* *)
-Lemma double_negation_invertible_a : forall (A : formula) (d : nat),
-  provable (neg (neg A)) d -> provable A d.
+Lemma double_negation_invertible_a :
+  forall (A : formula) (d : nat) (alpha : ord),
+  provable (neg (neg A)) d alpha -> provable A d alpha.
 Proof.
-unfold provable. intros A d H. destruct H as [t [[Ht1 Ht2] Ht3]].
+unfold provable. intros A d alpha H. destruct H as [t [[[Ht1 Ht2] Ht3] Ht4]].
 exists (dub_neg_sub_ftree t A (1)). unfold t_proves. repeat split.
 - rewrite dub_neg_ftree_formula; auto.
   rewrite Ht1. unfold dub_neg_sub_formula. simpl. rewrite eq_f_refl. auto.
 - apply dub_neg_valid; auto. rewrite Ht1. auto.
 - rewrite dub_neg_ftree_deg; auto.
+- rewrite dub_neg_ftree_ord; auto.
 Qed.
 
-Lemma double_negation_invertible_ad : forall (A D : formula) (d : nat),
-  provable (lor (neg (neg A)) D) d -> provable (lor A D) d.
+Lemma double_negation_invertible_ad :
+  forall (A D : formula) (d : nat) (alpha : ord),
+  provable (lor (neg (neg A)) D) d alpha -> provable (lor A D) d alpha.
 Proof.
-unfold provable. intros A D d H. destruct H as [t [[Ht1 Ht2] Ht3]].
+unfold provable. intros A D d alpha H. destruct H as [t [[[Ht1 Ht2] Ht3] Ht4]].
 exists (dub_neg_sub_ftree t A (lor_ind (1) (non_target D))).
 unfold t_proves. repeat split.
 - rewrite dub_neg_ftree_formula; auto.
@@ -5738,6 +5741,7 @@ unfold t_proves. repeat split.
   rewrite non_target_fit. rewrite non_target_sub'. auto.
 - apply dub_neg_valid; auto. rewrite Ht1. simpl. rewrite non_target_fit. auto.
 - rewrite dub_neg_ftree_deg; auto.
+- rewrite dub_neg_ftree_ord; auto.
 Qed.
 
 
@@ -5773,69 +5777,71 @@ Qed.
 Fixpoint demorgan_sub_ftree_fit
   (P : ftree) (E F : formula) (S : subst_ind) : ftree :=
 match P, S with
-| deg_up n P', _ => deg_up n (demorgan_sub_ftree_fit P' E F S)
+| deg_up d P', _ => deg_up d (demorgan_sub_ftree_fit P' E F S)
+
+| ord_up alpha P', _ => ord_up alpha (demorgan_sub_ftree_fit P' E F S)
 
 | node A, _ => P
 
-| exchange_ab A B P' d, lor_ind S_B S_A =>
+| exchange_ab A B P' d alpha, lor_ind S_B S_A =>
     exchange_ab
       (demorgan_sub_formula A E F S_A)
       (demorgan_sub_formula B E F S_B)
       (demorgan_sub_ftree_fit P' E F (lor_ind S_A S_B))
-      d
+      d alpha
 
-| exchange_cab C A B P' d, lor_ind (lor_ind S_C S_B) S_A =>
+| exchange_cab C A B P' d alpha, lor_ind (lor_ind S_C S_B) S_A =>
     exchange_cab
       (demorgan_sub_formula C E F S_C)
       (demorgan_sub_formula A E F S_A)
       (demorgan_sub_formula B E F S_B)
       (demorgan_sub_ftree_fit P' E F (lor_ind (lor_ind S_C S_A) S_B))
-      d
+      d alpha
 
-| exchange_abd A B D P' d, lor_ind (lor_ind S_B S_A) S_D =>
+| exchange_abd A B D P' d alpha, lor_ind (lor_ind S_B S_A) S_D =>
     exchange_abd
       (demorgan_sub_formula A E F S_A)
       (demorgan_sub_formula B E F S_B)
       (demorgan_sub_formula D E F S_D)
       (demorgan_sub_ftree_fit P' E F (lor_ind (lor_ind S_A S_B) S_D))
-      d
+      d alpha
 
-| exchange_cabd C A B D P' d, lor_ind (lor_ind (lor_ind S_C S_B) S_A) S_D =>
+| exchange_cabd C A B D P' d alpha, lor_ind (lor_ind (lor_ind S_C S_B) S_A) S_D =>
     exchange_cabd
       (demorgan_sub_formula C E F S_C)
       (demorgan_sub_formula A E F S_A)
       (demorgan_sub_formula B E F S_B)
       (demorgan_sub_formula D E F S_D)
       (demorgan_sub_ftree_fit P' E F (lor_ind (lor_ind (lor_ind S_C S_A) S_B) S_D))
-      d
+      d alpha
 
-| contraction_a A P' d, _ =>
+| contraction_a A P' d alpha, _ =>
     contraction_a
       (demorgan_sub_formula A E F S)
       (demorgan_sub_ftree_fit P' E F (lor_ind S S))
-      d
+      d alpha
 
-| contraction_ad A D P' d, lor_ind S_A S_D =>
+| contraction_ad A D P' d alpha, lor_ind S_A S_D =>
     contraction_ad
       (demorgan_sub_formula A E F S_A)
       (demorgan_sub_formula D E F S_D)
       (demorgan_sub_ftree_fit P' E F (lor_ind (lor_ind S_A S_A) S_D))
-      d
+      d alpha
 
-| weakening_ad A D P' d, lor_ind S_A S_D =>
+| weakening_ad A D P' d alpha, lor_ind S_A S_D =>
     weakening_ad
       (demorgan_sub_formula A E F S_A)
       (demorgan_sub_formula D E F S_D)
       (demorgan_sub_ftree_fit P' E F S_D)
-      d
+      d alpha
 
-| demorgan_ab A B P1 P2 d1 d2, _ =>
+| demorgan_ab A B P1 P2 d1 d2 alpha1 alpha2, _ =>
     (match eq_f A E, eq_f B F, S with
     | true, true, (1) => P1
     | _, _, _ => P
     end)
 
-| demorgan_abd A B D P1 P2 d1 d2, lor_ind S_AB S_D =>
+| demorgan_abd A B D P1 P2 d1 d2 alpha1 alpha2, lor_ind S_AB S_D =>
     (match eq_f A E, eq_f B F, S_AB with
     | true, true, (1) =>
         demorgan_sub_ftree_fit P1 E F (lor_ind (non_target (neg A)) S_D)
@@ -5845,62 +5851,62 @@ match P, S with
           (demorgan_sub_formula D E F S_D)
           (demorgan_sub_ftree_fit P1 E F (lor_ind (non_target (neg A)) S_D))
           (demorgan_sub_ftree_fit P2 E F (lor_ind (non_target (neg B)) S_D))
-          d1 d2
+          d1 d2 alpha1 alpha2
     end)
 
-| negation_a A P' d, _ => P
+| negation_a A P' d alpha, _ => P
 
-| negation_ad A D P' d, lor_ind S_A S_D =>
+| negation_ad A D P' d alpha, lor_ind S_A S_D =>
     negation_ad
       A
       (demorgan_sub_formula D E F S_D)
       (demorgan_sub_ftree_fit P' E F (lor_ind (non_target A) S_D))
-      d
+      d alpha
 
-| quantification_a A n t P' d, _ => P
+| quantification_a A n t P' d alpha, _ => P
 
-| quantification_ad A D n t P' d, lor_ind S_A S_D =>
+| quantification_ad A D n t P' d alpha, lor_ind S_A S_D =>
     quantification_ad
       A
       (demorgan_sub_formula D E F S_D)
       n t
       (demorgan_sub_ftree_fit P' E F (lor_ind (0) S_D))
-      d
+      d alpha
 
-| w_rule_a A n g d, _ => P
+| w_rule_a A n g d alpha, _ => P
 
-| w_rule_ad A D n g d, lor_ind S_A S_D =>
+| w_rule_ad A D n g d alpha, lor_ind S_A S_D =>
     w_rule_ad
       A
       (demorgan_sub_formula D E F S_D)
       n
       (fun (n : nat) =>
           demorgan_sub_ftree_fit (g n) E F (lor_ind (non_target A) S_D))
-      d
+      d alpha
 
-| cut_ca C A P1 P2 d1 d2, _ =>
+| cut_ca C A P1 P2 d1 d2 alpha1 alpha2, _ =>
     cut_ca
       (demorgan_sub_formula C E F S)
       A
       (demorgan_sub_ftree_fit P1 E F (lor_ind S (non_target A)))
-      P2 d1 d2
+      P2 d1 d2 alpha1 alpha2
 
-| cut_ad A D P1 P2 d1 d2, _ =>
+| cut_ad A D P1 P2 d1 d2 alpha1 alpha2, _ =>
     cut_ad
       A
       (demorgan_sub_formula D E F S)
       P1
       (demorgan_sub_ftree_fit P2 E F (lor_ind (0) S))
-      d1 d2
+      d1 d2 alpha1 alpha2
 
-| cut_cad C A D P1 P2 d1 d2, lor_ind S_C S_D =>
+| cut_cad C A D P1 P2 d1 d2 alpha1 alpha2, lor_ind S_C S_D =>
     cut_cad
       (demorgan_sub_formula C E F S_C)
       A
       (demorgan_sub_formula D E F S_D)
       (demorgan_sub_ftree_fit P1 E F (lor_ind S_C (non_target A)))
       (demorgan_sub_ftree_fit P2 E F (lor_ind (0) S_D))
-      d1 d2
+      d1 d2 alpha1 alpha2
 
 | _, _ => P
 end.
@@ -5953,6 +5959,10 @@ induction P; try intros H S Hs.
   rewrite (demorgan_ftree_formula_true _ _ _ _ Hs).
   destruct H as [H1 H2]. apply (IHP H2). auto.
 
+- simpl in Hs. simpl. rewrite Hs. simpl.
+  rewrite (demorgan_ftree_formula_true _ _ _ _ Hs).
+  destruct H as [H1 H2]. apply (IHP H2). auto.
+
 - simpl. inversion H.
   destruct (axiom_atomic _ H1); destruct H0; rewrite H0;
   unfold demorgan_sub_formula; simpl; destruct S; auto.
@@ -5995,7 +6005,7 @@ induction P; try intros H S Hs.
     unfold demorgan_sub_formula; rewrite formula_sub_ind_0; auto.
   + simpl. unfold demorgan_sub_formula. rewrite formula_sub_ind_0. auto.
   + destruct (eq_f f0 F) eqn:HF.
-    * inversion H as [[[[[H1 H2] H3] H4] H5] H6].
+    * inversion H as [[[[[[[H1 H2] H3] H4] H5] H6] H7] H8].
       rewrite H1. unfold demorgan_sub_formula. simpl. rewrite HE,HF.
       simpl. rewrite (f_eq_decid _ _ HE). auto.
     * simpl. unfold demorgan_sub_formula. simpl. rewrite HE,HF. auto.
@@ -6009,7 +6019,8 @@ induction P; try intros H S Hs.
   + destruct (eq_f f E) eqn:HE.
     * destruct (eq_f f0 F) eqn:HF.
       { destruct (subst_ind_fit f1 S2) eqn:HS2.
-        { clear IHP2. simpl. inversion H as [[[[[H1 H2] H3] H4] H5] H6].
+        { clear IHP2. simpl.
+          inversion H as [[[[[[[H1 H2] H3] H4] H5] H6] H7] H8].
           rewrite demorgan_ftree_formula_true; auto.
           { rewrite IHP1; auto; rewrite H1; auto.
             unfold demorgan_sub_formula. simpl. rewrite HE,HF,HS2.
@@ -6077,6 +6088,52 @@ Lemma demorgan_ftree_deg : forall (P : ftree) (E F : formula),
 Proof.
 intros P E F H. induction P; intros S.
 - simpl. case (subst_ind_fit (ftree_formula P) S); auto.
+- simpl. case (subst_ind_fit (ftree_formula P) S) eqn:Hfit; auto. simpl.
+  rewrite (demorgan_ftree_formula_true _ _ _ _ Hfit).
+  apply IHP. inversion H. auto.
+- simpl. case (subst_ind_fit f S); auto.
+- simpl.
+  destruct S; auto. case (subst_ind_fit f0 S1 && subst_ind_fit f S2); auto.
+- simpl. destruct S; auto. destruct S1; auto.
+  case (subst_ind_fit f S1_1 && subst_ind_fit f1 S1_2 && subst_ind_fit f0 S2);
+  auto.
+- simpl. destruct S; auto. destruct S1; auto.
+  case (subst_ind_fit f0 S1_1 && subst_ind_fit f S1_2 && subst_ind_fit f1 S2);
+  auto.
+- simpl. destruct S; auto. destruct S1; auto. destruct S1_1; auto.
+  case (subst_ind_fit f S1_1_1 && subst_ind_fit f1 S1_1_2 &&
+        subst_ind_fit f0 S1_2 && subst_ind_fit f2 S2); auto.
+- simpl. destruct (subst_ind_fit f S); auto.
+- simpl.
+  destruct S; auto. destruct (subst_ind_fit f S1 && subst_ind_fit f0 S2); auto.
+- simpl.
+  destruct S; auto. destruct (subst_ind_fit f S1 && subst_ind_fit f0 S2); auto.
+- admit. (* not true here, since the degree could be less *)
+- admit.
+- admit.
+- admit.
+- simpl. destruct S; auto.
+- simpl.
+  destruct S; auto; destruct S1; auto; destruct (subst_ind_fit f0 S2); auto.
+- simpl. destruct S; auto.
+- simpl.
+  destruct S; auto; destruct S1; auto; destruct (subst_ind_fit f0 S2); auto.
+- simpl. destruct (subst_ind_fit f S); auto.
+- simpl. destruct (subst_ind_fit f0 S); auto.
+- simpl.
+  destruct S; auto. destruct (subst_ind_fit f S1 && subst_ind_fit f1 S2); auto.
+Admitted.
+
+
+Lemma demorgan_ftree_ord : forall (P : ftree) (E F : formula),
+  valid P ->
+  forall (S : subst_ind), ftree_ord (demorgan_sub_ftree P E F S) = ftree_ord P.
+Proof.
+intros P E F H. induction P; intros S.
+- simpl. case (subst_ind_fit (ftree_formula P) S) eqn:Hfit; auto. simpl.
+  rewrite (demorgan_ftree_formula_true _ _ _ _ Hfit).
+  apply IHP. inversion H. auto.
+- simpl. case (subst_ind_fit (ftree_formula P) S); auto.
 - simpl. case (subst_ind_fit f S); auto.
 - simpl.
   destruct S; auto. case (subst_ind_fit f0 S1 && subst_ind_fit f S2); auto.
@@ -6119,18 +6176,22 @@ Lemma demorgan_valid : forall (P : ftree) (E F : formula),
     subst_ind_fit (ftree_formula P) S = true ->
     valid (demorgan_sub_ftree P E F S).
 Proof.
-intros P E F.
-induction P; try intros H S Hs.
+intros P E F. induction P; try intros H S Hs.
 
 - simpl. inversion H as [H1 H2]. inversion Hs. rewrite H3.
   rewrite demorgan_ftree_formula_true; auto. split.
   + rewrite demorgan_ftree_deg; auto.
   + apply (IHP H2 S H3).
 
+- simpl. inversion H as [H1 H2]. inversion Hs. rewrite H3.
+  rewrite demorgan_ftree_formula_true; auto. split.
+  + rewrite demorgan_ftree_ord; auto.
+  + apply (IHP H2 S H3).
+
 - simpl. destruct (subst_ind_fit f S); apply H.
 
 - simpl. destruct S; inversion Hs. rewrite H1. simpl.
-  inversion H as [[H2 H3] H4].
+  inversion H as [[[H2 H3] H4] H5].
   repeat split; rewrite demorgan_ftree_formula_true.
   + rewrite demorgan_ftree_formula; auto.
     rewrite H2. unfold demorgan_sub_formula.
@@ -6140,9 +6201,11 @@ induction P; try intros H S Hs.
   + rewrite H2. simpl. apply (and_bool_symm _ _ H1).
   + rewrite demorgan_ftree_deg; auto.
   + rewrite H2. simpl. apply (and_bool_symm _ _ H1).
+  + rewrite demorgan_ftree_ord; auto.
+  + rewrite H2. simpl. apply (and_bool_symm _ _ H1).
 
 - simpl. destruct S; try destruct S1; inversion Hs.
-  rewrite H1. simpl. inversion H as [[H4 H5] H6].
+  rewrite H1. simpl. inversion H as [[[H4 H5] H6] H7].
   destruct (and_bool_prop _ _ H1). clear H1.
   destruct (and_bool_prop _ _ H0). clear H0.
   repeat split; rewrite demorgan_ftree_formula_true.
@@ -6156,9 +6219,11 @@ induction P; try intros H S Hs.
   + rewrite H4. simpl. rewrite H1, H2, H3. auto.
   + rewrite demorgan_ftree_deg; auto.
   + rewrite H4. simpl. rewrite H1, H2, H3. auto.
+  + rewrite demorgan_ftree_ord; auto.
+  + rewrite H4. simpl. rewrite H1, H2, H3. auto.
 
 - simpl. destruct S; try destruct S1; inversion Hs.
-  rewrite H1. simpl. inversion H as [[H4 H5] H6].
+  rewrite H1. simpl. inversion H as [[[H4 H5] H6] H7].
   destruct (and_bool_prop _ _ H1). clear H1.
   destruct (and_bool_prop _ _ H0). clear H0.
   repeat split; rewrite demorgan_ftree_formula_true.
@@ -6172,9 +6237,11 @@ induction P; try intros H S Hs.
   + rewrite H4. simpl. rewrite H1, H2, H3. auto.
   + rewrite demorgan_ftree_deg; auto.
   + rewrite H4. simpl. rewrite H1, H2, H3. auto.
+  + rewrite demorgan_ftree_ord; auto.
+  + rewrite H4. simpl. rewrite H1, H2, H3. auto.
 
 - simpl. destruct S; try destruct S1; try destruct S1_1; inversion Hs.
-  rewrite H1. simpl. inversion H as [[H5 H6] H7].
+  rewrite H1. simpl. inversion H as [[[H5 H6] H7] H8].
   destruct (and_bool_prop _ _ H1). clear H1.
   destruct (and_bool_prop _ _ H0). clear H0.
   destruct (and_bool_prop _ _ H1). clear H1.
@@ -6190,8 +6257,10 @@ induction P; try intros H S Hs.
   + rewrite H5. simpl. rewrite H0, H2, H3, H4. auto.
   + rewrite demorgan_ftree_deg; auto.
   + rewrite H5. simpl. rewrite H0, H2, H3, H4. auto.
+  + rewrite demorgan_ftree_ord; auto.
+  + rewrite H5. simpl. rewrite H0, H2, H3, H4. auto.
 
-- simpl. inversion Hs. rewrite H1. inversion H as [[H2 H3] H4].
+- simpl. inversion Hs. rewrite H1. inversion H as [[[H2 H3] H4] H5].
   repeat split; rewrite demorgan_ftree_formula_true.
   + rewrite demorgan_ftree_formula; auto.
     unfold demorgan_sub_formula. rewrite H2.
@@ -6201,23 +6270,27 @@ induction P; try intros H S Hs.
   + rewrite H2. simpl. rewrite H1. auto.
   + rewrite demorgan_ftree_deg; auto.
   + rewrite H2. simpl. rewrite H1. auto.
+  + rewrite demorgan_ftree_ord; auto.
+  + rewrite H2. simpl. rewrite H1. auto.
 
 - simpl. destruct S; inversion Hs. rewrite H1.
-  inversion H as [[H2 H3] H4]. destruct (and_bool_prop _ _ H1).
+  inversion H as [[[H2 H3] H4] H5]. destruct (and_bool_prop _ _ H1).
   repeat split; rewrite demorgan_ftree_formula_true.
   + rewrite demorgan_ftree_formula; auto.
     unfold demorgan_sub_formula. rewrite H2.
     repeat rewrite formula_sub_ind_lor; auto.
     * rewrite H0. auto.
-    * simpl. rewrite H0, H5. auto.
-  + rewrite H2. simpl. rewrite H0, H5. auto.
-  + apply IHP. apply H. rewrite H2. simpl. rewrite H0, H5. auto.
-  + rewrite H2. simpl. rewrite H0, H5. auto.
+    * simpl. rewrite H0, H6. auto.
+  + rewrite H2. simpl. rewrite H0, H6. auto.
+  + apply IHP. apply H. rewrite H2. simpl. rewrite H0, H6. auto.
+  + rewrite H2. simpl. rewrite H0, H6. auto.
   + rewrite demorgan_ftree_deg; auto.
-  + rewrite H2. simpl. rewrite H0, H5. auto.
+  + rewrite H2. simpl. rewrite H0, H6. auto.
+  + rewrite demorgan_ftree_ord; auto.
+  + rewrite H2. simpl. rewrite H0, H6. auto.
 
 - simpl. destruct S; inversion Hs. rewrite H1. simpl.
-  inversion H as [[[H2 H3] H4] H5]. destruct (and_bool_prop _ _ H1).
+  inversion H as [[[[H2 H3] H4] H5] H6]. destruct (and_bool_prop _ _ H1).
   repeat split.
   + rewrite demorgan_ftree_formula_true.
     * rewrite demorgan_ftree_formula; auto. rewrite H2. auto.
@@ -6229,17 +6302,21 @@ induction P; try intros H S Hs.
   + rewrite demorgan_ftree_formula_true.
     * rewrite demorgan_ftree_deg; auto.
     * rewrite H2. auto.
+  + rewrite demorgan_ftree_formula_true.
+    * rewrite demorgan_ftree_ord; auto.
+    * rewrite H2. auto.
 
-- simpl. inversion H as [[[[[H1 H2] H3] H4] H5] H6].
+- simpl. inversion H as [[[[[[[H1 H2] H3] H4] H5] H6] H7] H8].
   destruct S; auto; destruct (eq_f f E); destruct (eq_f f0 F);
   simpl; repeat split; auto.
 
-- simpl. inversion H as [[[[[H1 H2] H3] H4] H5] H6].
+- simpl. inversion H as [[[[[[[H1 H2] H3] H4] H5] H6] H7] H8].
   destruct S; auto.
   destruct S1; auto; destruct (subst_ind_fit f1 S2) eqn:HS2;
   destruct (eq_f f E) eqn:HE; destruct (eq_f f0 F) eqn:HF;
   simpl; repeat split; auto; rewrite demorgan_ftree_formula_true;
-  try rewrite demorgan_ftree_deg; try rewrite demorgan_ftree_formula;
+  try rewrite demorgan_ftree_deg; try rewrite demorgan_ftree_ord;
+  try rewrite demorgan_ftree_formula;
   try apply IHP1; try apply IHP2; try rewrite H1; try rewrite H3;
   auto; unfold demorgan_sub_formula; simpl; rewrite HS2;
   try destruct (eq_f f0 (lor E F)); try destruct (eq_f f (lor E F));
@@ -6247,11 +6324,11 @@ induction P; try intros H S Hs.
 
 - simpl. destruct S; auto.
 
-- simpl. inversion H as [[H1 H2] H3]. destruct S; auto.
+- simpl. inversion H as [[[H1 H2] H3] H4]. destruct S; auto.
   destruct S1; auto; destruct (subst_ind_fit f0 S2) eqn:HS2; simpl;
   repeat split; auto; rewrite demorgan_ftree_formula_true;
   try apply IHP; auto; try rewrite H1; simpl; try rewrite non_target_fit,HS2;
-  try rewrite demorgan_ftree_deg; auto.
+  try rewrite demorgan_ftree_deg; try rewrite demorgan_ftree_ord; auto.
   + rewrite demorgan_ftree_formula; auto. rewrite H1.
     unfold demorgan_sub_formula. simpl. rewrite non_target_fit,HS2.
     simpl. rewrite <- sub_fit_true; auto.
@@ -6265,33 +6342,39 @@ induction P; try intros H S Hs.
 
 - simpl. destruct S; apply H.
 
-- simpl. destruct S; try apply H. inversion H as [[[H0 H1] H2] H3].
-  destruct S1; inversion Hs; rewrite H5; simpl.
+- simpl. destruct S; try apply H. inversion H as [[[[H0 H1] H2] H3] H4].
+  destruct S1; inversion Hs; rewrite H6; simpl.
   + repeat split; auto.
     * rewrite demorgan_ftree_formula_true, demorgan_ftree_formula; auto.
       { rewrite H0. unfold demorgan_sub_formula.
         { rewrite formula_sub_ind_lor. simpl.
           { destruct (eq_f (substitution f n t)); auto. }
-          { simpl. apply H5. } } }
-      { rewrite H0. simpl. apply H5. }
+          { simpl. apply H6. } } }
+      { rewrite H0. simpl. apply H6. }
     * rewrite demorgan_ftree_formula_true.
-      { apply IHP; auto. rewrite H0. simpl. apply H5. }
-      { rewrite H0. simpl. apply H5. }
+      { apply IHP; auto. rewrite H0. simpl. apply H6. }
+      { rewrite H0. simpl. apply H6. }
     * rewrite demorgan_ftree_formula_true.
       { rewrite demorgan_ftree_deg; auto. }
+      { rewrite H0. simpl. auto. }
+    * rewrite demorgan_ftree_formula_true.
+      { rewrite demorgan_ftree_ord; auto. }
       { rewrite H0. simpl. auto. }
   + repeat split; auto.
     * rewrite demorgan_ftree_formula_true, demorgan_ftree_formula; auto.
       { rewrite H0. unfold demorgan_sub_formula.
         { rewrite formula_sub_ind_lor. simpl.
           { destruct (eq_f (substitution f n t)); auto. }
-          { simpl. apply H5. } } }
-      { rewrite H0. simpl. apply H5. }
+          { simpl. apply H6. } } }
+      { rewrite H0. simpl. apply H6. }
     * rewrite demorgan_ftree_formula_true.
-      { apply IHP; auto. rewrite H0. simpl. apply H5. }
-      { rewrite H0. simpl. apply H5. }
+      { apply IHP; auto. rewrite H0. simpl. apply H6. }
+      { rewrite H0. simpl. apply H6. }
     * rewrite demorgan_ftree_formula_true.
       { rewrite demorgan_ftree_deg; auto. }
+      { rewrite H0. simpl. auto. }
+    * rewrite demorgan_ftree_formula_true.
+      { rewrite demorgan_ftree_ord; auto. }
       { rewrite H0. simpl. auto. }
 
 - intros. simpl. destruct S; apply H.
@@ -6299,7 +6382,8 @@ induction P; try intros H S Hs.
 - rename H into H0. rename X into H. rename Hs into H1.
   simpl. destruct S; try apply H0. destruct S1; inversion H1.
   + rewrite H3. simpl. intros.
-    destruct (valid_w_rule_ad _ _ _ _ _ H0 m) as [[H4 H5] H6]. repeat split.
+    destruct (valid_w_rule_ad _ _ _ _ _ _ H0 m) as [[[H4 H5] H6] H7].
+    repeat split.
     * rewrite demorgan_ftree_formula_true, demorgan_ftree_formula; auto.
       { rewrite H4. unfold demorgan_sub_formula. rewrite formula_sub_ind_lor.
         { rewrite (non_target_term_sub f n (represent m)).
@@ -6318,8 +6402,13 @@ induction P; try intros H S Hs.
       { rewrite demorgan_ftree_deg; auto. }
       { rewrite H4. simpl. rewrite (non_target_term_sub f n (represent m)).
         rewrite non_target_fit. rewrite H3. auto. }
+    * rewrite demorgan_ftree_formula_true.
+      { rewrite demorgan_ftree_ord; auto. }
+      { rewrite H4. simpl. rewrite (non_target_term_sub f n (represent m)).
+        rewrite non_target_fit. rewrite H3. auto. }
   + rewrite H3. simpl. intros.
-    destruct (valid_w_rule_ad _ _ _ _ _ H0 m) as [[H4 H5] H6]. repeat split.
+    destruct (valid_w_rule_ad _ _ _ _ _ _ H0 m) as [[[H4 H5] H6] H7].
+    repeat split.
     * rewrite demorgan_ftree_formula_true, demorgan_ftree_formula; auto.
       { rewrite H4. unfold demorgan_sub_formula. rewrite formula_sub_ind_lor.
         { rewrite (non_target_term_sub f n (represent m)).
@@ -6336,11 +6425,15 @@ induction P; try intros H S Hs.
         rewrite non_target_fit. apply H3. }
     * rewrite demorgan_ftree_formula_true.
       { rewrite demorgan_ftree_deg; auto. }
+      { rewrite H4. simpl. rewrite (non_target_term_sub f n (represent m)).
+        rewrite non_target_fit. rewrite H3. auto. }
+    * rewrite demorgan_ftree_formula_true.
+      { rewrite demorgan_ftree_ord; auto. }
       { rewrite H4. simpl. rewrite (non_target_term_sub f n (represent m)).
         rewrite non_target_fit. rewrite H3. auto. }
 
 - clear IHP2. simpl. destruct (subst_ind_fit f S) eqn:Heq; try apply H. simpl.
-  inversion H as [[[[[H1 H2] H3] H4] H5] H6].
+  inversion H as [[[[[[[H1 H2] H3] H4] H5] H6] H7] H8].
   repeat split; auto; rewrite demorgan_ftree_formula_true.
   + rewrite demorgan_ftree_formula; auto.
     rewrite H1. unfold demorgan_sub_formula. rewrite formula_sub_ind_lor.
@@ -6351,9 +6444,11 @@ induction P; try intros H S Hs.
   + rewrite H1. simpl. rewrite Heq, non_target_fit. auto.
   + rewrite demorgan_ftree_deg; auto.
   + rewrite H1. simpl. rewrite Heq, non_target_fit. auto.
+  + rewrite demorgan_ftree_ord; auto.
+  + rewrite H1. simpl. rewrite Heq, non_target_fit. auto.
 
 - clear IHP1. simpl. destruct (subst_ind_fit f0 S) eqn:Heq; try apply H. simpl.
-  inversion H as [[[[[H1 H2] H3] H4] H5] H6].
+  inversion H as [[[[[[[H1 H2] H3] H4] H5] H6] H7] H8].
   repeat split; auto; rewrite demorgan_ftree_formula_true.
   + rewrite demorgan_ftree_formula; auto.
     rewrite H3. unfold demorgan_sub_formula. rewrite formula_sub_ind_lor.
@@ -6364,28 +6459,34 @@ induction P; try intros H S Hs.
   + rewrite H3. simpl. auto.
   + rewrite demorgan_ftree_deg; auto.
   + rewrite H3. simpl. auto.
+  + rewrite demorgan_ftree_ord; auto.
+  + rewrite H3. simpl. auto.
 
-- simpl. inversion H as [[[[[H1 H2] H3] H4] H5] H6].
-  destruct S; try inversion Hs. rewrite H7.
-  destruct (and_bool_prop _ _ H7) as [H8 H9].
+- simpl. inversion H as [[[[[[[H1 H2] H3] H4] H5] H6] H7] H8].
+  destruct S; try inversion Hs. rewrite H9.
+  destruct (and_bool_prop _ _ H9) as [H10 H11].
   simpl. repeat split; rewrite demorgan_ftree_formula_true.
   + rewrite demorgan_ftree_formula; auto.
     rewrite H1. unfold demorgan_sub_formula. rewrite formula_sub_ind_lor.
     * rewrite non_target_sub. auto.
-    * rewrite H8, non_target_fit. auto.
-  + rewrite H1. simpl. rewrite H8, non_target_fit. auto.
-  + apply IHP1; auto. rewrite H1. simpl. rewrite H8, non_target_fit. auto.
-  + rewrite H1. simpl. rewrite H8, non_target_fit. auto.
+    * rewrite H10, non_target_fit. auto.
+  + rewrite H1. simpl. rewrite H10, non_target_fit. auto.
+  + apply IHP1; auto. rewrite H1. simpl. rewrite H10, non_target_fit. auto.
+  + rewrite H1. simpl. rewrite H10, non_target_fit. auto.
   + rewrite demorgan_ftree_formula; auto.
     rewrite H3. unfold demorgan_sub_formula. rewrite formula_sub_ind_lor.
     * rewrite non_target_sub. auto.
-    * rewrite H9, non_target_fit. auto.
+    * rewrite H11, non_target_fit. auto.
   + rewrite H3. simpl. auto.
   + apply IHP2; auto. rewrite H3. simpl. auto.
   + rewrite H3. simpl. auto.
   + rewrite demorgan_ftree_deg; auto.
-  + rewrite H1. simpl. rewrite H8, non_target_fit. auto.
+  + rewrite H1. simpl. rewrite H10, non_target_fit. auto.
   + rewrite demorgan_ftree_deg; auto.
+  + rewrite H3. simpl. auto.
+  + rewrite demorgan_ftree_ord; auto.
+  + rewrite H1. simpl. rewrite H10, non_target_fit. auto.
+  + rewrite demorgan_ftree_ord; auto.
   + rewrite H3. simpl. auto.
 Qed.
 
@@ -6396,21 +6497,24 @@ Qed.
 (* We finally show that if the formulas ~~A and/or ~~A \/ D are provable,
 so are the formulas A and/or A \/ D *)
 (* *)
-Lemma demorgan_invertible_a : forall (A B : formula) (d : nat),
-  provable (neg (lor A B)) d -> provable (neg A) d.
+Lemma demorgan_invertible_a :
+  forall (A B : formula) (d : nat) (alpha : ord),
+  provable (neg (lor A B)) d alpha -> provable (neg A) d alpha.
 Proof.
-unfold provable. intros A B d H. destruct H as [t [[Ht1 Ht2] Ht3]].
+unfold provable. intros A B d alpha H. destruct H as [t [[[Ht1 Ht2] Ht3] Ht4]].
 exists (demorgan_sub_ftree t A B (1)). unfold t_proves. repeat split.
 - rewrite demorgan_ftree_formula; auto. rewrite Ht1.
   unfold demorgan_sub_formula. simpl. repeat rewrite eq_f_refl. auto.
 - apply demorgan_valid; auto. rewrite Ht1. auto.
 - rewrite demorgan_ftree_deg; auto.
+- rewrite demorgan_ftree_ord; auto.
 Qed.
 
-Lemma demorgan_invertible_ad : forall (A B D : formula) (d : nat),
-  provable (lor (neg (lor A B)) D) d -> provable (lor (neg A) D) d.
+Lemma demorgan_invertible_ad :
+  forall (A B D : formula) (d : nat) (alpha : ord),
+  provable (lor (neg (lor A B)) D) d alpha -> provable (lor (neg A) D) d alpha.
 Proof.
-unfold provable. intros A B D d H. destruct H as [t [[Ht1 Ht2] Ht3]].
+unfold provable. intros A B D d alpha H. destruct H as [t [[[Ht1 Ht2] Ht3] Ht4]].
 exists (demorgan_sub_ftree t A B (lor_ind (1) (non_target D))).
 unfold t_proves. repeat split.
 - rewrite demorgan_ftree_formula; auto. rewrite Ht1.
@@ -6420,6 +6524,7 @@ unfold t_proves. repeat split.
   + apply non_target_fit.
 - apply demorgan_valid; auto. rewrite Ht1. simpl. apply non_target_fit.
 - rewrite demorgan_ftree_deg; auto.
+- rewrite demorgan_ftree_ord; auto.
 Qed.
 
 
