@@ -278,6 +278,9 @@ induction n as [| n' IH].
 - simpl. rewrite IH. auto.
 Qed.
 
+
+(* Our proof of nat_semiconnex_type is heavily based on the ideas here:
+cs.stackexchange.com/questions/18765/theorem-proofs-in-coq *)
 Lemma nat_semiconnex : forall (m n : nat), m < n \/ n < m \/ m = n.
 Proof. intros. omega. Qed.
 
@@ -296,7 +299,7 @@ intros. destruct H.
 Qed.
 
 Lemma leq_prop_sum : forall (m n : nat),
-  m = S n \/ m <= n -> sum (m = S n) (m <= n).
+  m = S n \/ m <= n -> (m = S n) + (m <= n).
 Proof.
 intros. pose proof (leq_prop_sum_aux _ _ H).
 case_eq (eq_nat m (S n)); case_eq (eq_nat m n); case_eq (lt_nat m n); intros.
@@ -320,8 +323,35 @@ destruct (nat_semiconnex m n) as [H | [H | H]].
 - right. right. rewrite H. apply eq_nat_refl.
 Qed.
 
+Definition less (m n : nat) := { z : nat & S (z + m) = n}.
+
+Lemma less_le : forall (m n : nat), less m n -> m < n.
+Proof. intros. destruct H as [p H]. omega. Qed.
+
+Theorem nat_semiconnex_type_aux : forall (m n : nat),
+  (less n m) + (n = m) + (less m n).
+Proof.
+intros.
+induction n.
+- destruct m.
+  + left. right. auto.
+  + left. left. exists m. omega.
+- destruct m.
+  + right. exists n. omega.
+  + destruct IHn as [[IHn | IHn] | IHn].
+    * destruct IHn as [p H]. destruct p.
+      { left. right. omega. }
+      { left. left. exists p. omega. }
+    * right. exists 0. omega.
+    * right. destruct IHn as [p H]. exists (S p). omega.
+Qed.
+
 Lemma nat_semiconnex_type : forall (m n : nat), (m > n) + (m = n) + (n > m).
-Proof. intros. Admitted.
+Proof.
+intros. destruct (nat_semiconnex_type_aux m n) as [[H | H] | H]; auto.
+- left. left. apply less_le. auto.
+- right. apply less_le. auto.
+Qed.
 
 Lemma leq_type : forall (m n : nat), m >= n -> (m > n) + (m = n).
 Proof.
