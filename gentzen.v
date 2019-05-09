@@ -328,6 +328,22 @@ Proof.
 intros. destruct (nat_semiconnex_type m n) as [[Hm | Hm] | Hm]; auto. omega.
 Qed.
 
+Lemma max_n_n : forall (n : nat), max n n = n.
+Proof. intros. lia. Qed.
+
+Lemma max_m_n : forall (m n n' : nat), m >= max n n' -> m >= n /\ m >= n'.
+Proof. intros. lia. Qed.
+
+Lemma max_lem : forall (m n : nat), eq_nat n (max n m) = false -> max n m > n.
+Proof.
+intros. destruct (nat_semiconnex m n) as [H0 | [H0 | H0]].
+- assert (n = max n m). { lia. }
+  rewrite <- H1 in H. rewrite eq_nat_refl in H. inversion H.
+- lia.
+- rewrite H0 in H. simpl in H. rewrite max_n_n in H.
+  rewrite eq_nat_refl in H. inversion H.
+Qed.
+
 
 (* Basic properties of lists and lists of nats *)
 (* *)
@@ -990,11 +1006,7 @@ Qed.
 
 Lemma ord_lt_ltb : forall (alpha beta : ord),
   alpha < beta -> ord_ltb alpha beta = true.
-Proof.
-intros.
-apply ord_lt_ltb_aux.
-apply H.
-Qed.
+Proof. intros. apply ord_lt_ltb_aux. apply H. Qed.
 
 Lemma ltb_trans_aux : forall (a a' b b' : ord) (n n' : nat),
   ord_ltb (cons a n b) (cons a' n' b') = true ->
@@ -1003,21 +1015,18 @@ Lemma ltb_trans_aux : forall (a a' b b' : ord) (n n' : nat),
 Proof.
 intros.
 inversion H.
-case_eq (ord_ltb a a').
-- auto.
-- intros. rewrite H0 in H1. case_eq (ord_eqb a a').
-  + intros. right. rewrite H2 in H1. case_eq (lt_nat n n').
-    * intros. rewrite H3 in H1. auto.
-    * intros. rewrite H3 in H1. case_eq (lt_nat n' n).
-      { intros. rewrite H4 in H1. inversion H1. }
-      { intros. rewrite H4 in H1. right. split. rewrite H1. auto. split.
-        { pose proof (nat_semiconnex n n'). destruct H5.
-          { apply lt_nat_decid_conv in H5. rewrite H5 in H3. inversion H3. }
-          { destruct H5.
-            { apply lt_nat_decid_conv in H5. rewrite H5 in H4. inversion H4. }
-            { apply H5. } } }
-        { auto. } }
-  + intros. left. auto.
+case_eq (ord_ltb a a'); auto.
+intros. rewrite H0 in H1. case_eq (ord_eqb a a').
+- intros. right. rewrite H2 in H1. case_eq (lt_nat n n').
+  + intros. rewrite H3 in H1. auto.
+  + intros. rewrite H3 in H1. case_eq (lt_nat n' n).
+    * intros. rewrite H4 in H1. inversion H1.
+    * intros. rewrite H4 in H1. right. split. rewrite H1. auto. split; auto.
+      destruct (nat_semiconnex n n').
+      { apply lt_nat_decid_conv in H5. rewrite H5 in H3. inversion H3. }
+      { destruct H5; auto.
+        apply lt_nat_decid_conv in H5. rewrite H5 in H4. inversion H4. }
+- intros. left. auto.
 Qed.
 
 Definition ord_eqb_eq_aux' (alpha : ord) := forall (beta : ord),
@@ -1025,26 +1034,21 @@ Definition ord_eqb_eq_aux' (alpha : ord) := forall (beta : ord),
 
 Lemma ord_eqb_eq_aux : forall (alpha : ord), ord_eqb_eq_aux' alpha.
 Proof.
-intros.
-induction alpha.
-- unfold ord_eqb_eq_aux'. intros. destruct beta.
-  + auto.
-  + inversion H.
-- unfold ord_eqb_eq_aux'. intros. destruct beta.
-  + inversion H.
-  + inversion H.
-    * case_eq (ord_eqb alpha1 beta1).
-      { intros. unfold ord_eqb_eq_aux' in IHalpha1. specialize IHalpha1 with beta1.
-        assert (alpha1 = beta1). { apply IHalpha1. apply H0. } rewrite H2.
-        case_eq (eq_nat n n0).
-        { intros. assert (n = n0). { apply (nat_eq_decid n n0 H3). } rewrite H4.
-          case_eq (ord_eqb alpha2 beta2).
-          { intros. assert (alpha2 = beta2). { apply IHalpha2. apply H5. }
-            rewrite H6. auto. }
-          { intros. rewrite H0 in H1. rewrite H3 in H1. rewrite H5 in H1.
-            inversion H1. } }
-        { intros. rewrite H0 in H1. rewrite H3 in H1. inversion H1. } }
-      { intros. rewrite H0 in H1. inversion H1. }
+intros. induction alpha.
+- unfold ord_eqb_eq_aux'. intros. destruct beta; auto. inversion H.
+- unfold ord_eqb_eq_aux'. intros. destruct beta; inversion H.
+  + case_eq (ord_eqb alpha1 beta1); intros.
+    * unfold ord_eqb_eq_aux' in IHalpha1. specialize IHalpha1 with beta1.
+      assert (alpha1 = beta1). { apply IHalpha1. apply H0. } rewrite H2.
+      case_eq (eq_nat n n0).
+      { intros. assert (n = n0). { apply (nat_eq_decid n n0 H3). } rewrite H4.
+        case_eq (ord_eqb alpha2 beta2).
+        { intros. assert (alpha2 = beta2). { apply IHalpha2. apply H5. }
+          rewrite H6. auto. }
+        { intros. rewrite H0 in H1. rewrite H3 in H1. rewrite H5 in H1.
+          inversion H1. } }
+      { intros. rewrite H0 in H1. rewrite H3 in H1. inversion H1. }
+    * rewrite H0 in H1. inversion H1.
 Qed.
 
 Lemma ord_eqb_eq : forall (alpha beta : ord),
@@ -1421,6 +1425,14 @@ Proof.
 intros. destruct (ord_max_succ_r' alpha beta).
 - rewrite <- H. apply ord_succ_monot.
 - apply (lt_trans _ (ord_max alpha beta)); auto. apply ord_succ_monot.
+Qed.
+
+Lemma ord_max_lt : forall (alpha beta : ord),
+  ord_eqb alpha (ord_max alpha beta) = false ->
+  ord_lt alpha (ord_max alpha beta).
+Proof.
+intros. destruct (ord_max_succ_l' alpha beta); auto.
+rewrite <- H0 in H. rewrite ord_eqb_refl in H. inversion H.
 Qed.
 
 
@@ -4343,12 +4355,6 @@ try (destruct t as [[[Ht1 Ht2] Ht3] Ht4]).
   exists (cut_cad C A D x x' d1 d2 alpha1 alpha2). repeat split; auto.
 Qed.
 
-Lemma max_n_n : forall (n : nat), max n n = n.
-Proof. intros. lia. Qed.
-
-Lemma max_m_n : forall (m n n' : nat), m >= max n n' -> m >= n /\ m >= n'.
-Proof. intros. lia. Qed.
-
 Lemma valid_w_rule_a :
   forall (A : formula) (n d : nat) (alpha : ord) (g : nat -> ftree),
   valid (w_rule_a A n g d alpha) ->
@@ -5774,6 +5780,9 @@ intros. unfold demorgan_sub_formula. apply formula_sub_ind_closed; auto.
 simpl. intros. destruct (and_bool_prop _ _ H0). auto.
 Qed.
 
+Check ftree_deg.
+Compute ftree_deg.
+
 Fixpoint demorgan_sub_ftree_fit
   (P : ftree) (E F : formula) (S : subst_ind) : ftree :=
 match P, S with
@@ -5837,14 +5846,38 @@ match P, S with
 
 | demorgan_ab A B P1 P2 d1 d2 alpha1 alpha2, _ =>
     (match eq_f A E, eq_f B F, S with
-    | true, true, (1) => P1
+    | true, true, (1) =>
+      (match eq_nat d1 (ftree_deg P), ord_eqb alpha1 (ftree_ord P) with
+      | true, true => P1
+      | false, true => deg_up (ftree_deg P) P1
+      | true, false => ord_up (ftree_ord P) P1
+      | false, false => deg_up (ftree_deg P) (ord_up (ftree_ord P) P1)
+      end)
     | _, _, _ => P
     end)
 
 | demorgan_abd A B D P1 P2 d1 d2 alpha1 alpha2, lor_ind S_AB S_D =>
     (match eq_f A E, eq_f B F, S_AB with
     | true, true, (1) =>
-        demorgan_sub_ftree_fit P1 E F (lor_ind (non_target (neg A)) S_D)
+      (match eq_nat d1 (ftree_deg P), ord_eqb alpha1 (ftree_ord P) with
+      | true, true =>
+          demorgan_sub_ftree_fit P1 E F (lor_ind (non_target (neg A)) S_D)
+      | false, true =>
+          deg_up
+            (ftree_deg P)
+            (demorgan_sub_ftree_fit P1 E F (lor_ind (non_target (neg A)) S_D))
+      | true, false =>
+          ord_up
+            (ftree_ord P)
+            (demorgan_sub_ftree_fit P1 E F (lor_ind (non_target (neg A)) S_D))
+      | false, false =>
+          deg_up
+            (ftree_deg P)
+              (ord_up
+                (ftree_ord P)
+                (demorgan_sub_ftree_fit P1 E F
+                                        (lor_ind (non_target (neg A)) S_D)))
+      end)
     | _, _, _ =>
         demorgan_abd
           A B
@@ -6006,8 +6039,11 @@ induction P; try intros H S Hs.
   + simpl. unfold demorgan_sub_formula. rewrite formula_sub_ind_0. auto.
   + destruct (eq_f f0 F) eqn:HF.
     * inversion H as [[[[[[[H1 H2] H3] H4] H5] H6] H7] H8].
-      rewrite H1. unfold demorgan_sub_formula. simpl. rewrite HE,HF.
-      simpl. rewrite (f_eq_decid _ _ HE). auto.
+      clear IHP1. clear IHP2.
+      case (eq_nat n (Init.Nat.max n n0)) eqn:Hn;
+      case (ord_eqb o (ord_max o o0)) eqn:Ho;
+      simpl; rewrite H1; unfold demorgan_sub_formula; simpl; rewrite HE,HF;
+      simpl; rewrite (f_eq_decid _ _ HE); auto.
     * simpl. unfold demorgan_sub_formula. simpl. rewrite HE,HF. auto.
   + simpl. unfold demorgan_sub_formula. simpl. rewrite HE. auto.
 
@@ -6022,8 +6058,10 @@ induction P; try intros H S Hs.
         { clear IHP2. simpl.
           inversion H as [[[[[[[H1 H2] H3] H4] H5] H6] H7] H8].
           rewrite demorgan_ftree_formula_true; auto.
-          { rewrite IHP1; auto; rewrite H1; auto.
-            unfold demorgan_sub_formula. simpl. rewrite HE,HF,HS2.
+          { case (eq_nat n (Init.Nat.max n n0)) eqn:Hn;
+            case (ord_eqb o (ord_max o o0)) eqn:Ho;
+            simpl; rewrite IHP1; auto; rewrite H1; auto;
+            unfold demorgan_sub_formula; simpl; rewrite HE,HF,HS2;
             destruct (eq_f f (lor E F)); rewrite (f_eq_decid _ _ HE); auto. }
           { rewrite H1. auto. } }
         { simpl. unfold demorgan_sub_formula. simpl. rewrite HE,HF,HS2. auto. } }
@@ -6108,10 +6146,26 @@ intros P E F H. induction P; intros S.
   destruct S; auto. destruct (subst_ind_fit f S1 && subst_ind_fit f0 S2); auto.
 - simpl.
   destruct S; auto. destruct (subst_ind_fit f S1 && subst_ind_fit f0 S2); auto.
-- admit. (* not true here, since the degree could be less *)
-- admit.
-- admit.
-- admit.
+- simpl. destruct S; auto.
+  + case (eq_f f E) eqn:HE; case (eq_f f0 F) eqn:HF; auto.
+  + inversion H as [[[[[H1 H2] H3] H4] H5] H6].
+    case (eq_f f E) eqn:HE; case (eq_f f0 F) eqn:HF; auto.
+    case (eq_nat n (Init.Nat.max n n0)) eqn:Hn;
+    case (ord_eqb o (ord_max o o0)) eqn:Ho; simpl; auto;
+    rewrite <- (nat_eq_decid _ _ Hn); auto.
+- simpl. destruct S; auto.
+  destruct S1; auto; destruct (subst_ind_fit f1 S2) eqn:HS2; auto; simpl.
+  + case (eq_f f E) eqn:HE; case (eq_f f0 F) eqn:HF; auto.
+  + inversion H as [[[[[[[H1 H2] H3] H4] H5] H6] H7] H8].
+    case (eq_f f E) eqn:HE; case (eq_f f0 F) eqn:HF; auto.
+    case (eq_nat n (Init.Nat.max n n0)) eqn:Hn;
+    case (ord_eqb o (ord_max o o0)) eqn:Ho; simpl; auto;
+    rewrite <- (nat_eq_decid _ _ Hn); auto;
+    rewrite demorgan_ftree_formula_true;
+    try rewrite IHP1; auto; rewrite H1; simpl; auto.
+- simpl. destruct S; auto.
+- simpl. destruct S; auto.
+  destruct S1; auto; destruct (subst_ind_fit f0 S2); auto.
 - simpl. destruct S; auto.
 - simpl.
   destruct S; auto; destruct S1; auto; destruct (subst_ind_fit f0 S2); auto.
@@ -6122,7 +6176,8 @@ intros P E F H. induction P; intros S.
 - simpl. destruct (subst_ind_fit f0 S); auto.
 - simpl.
   destruct S; auto. destruct (subst_ind_fit f S1 && subst_ind_fit f1 S2); auto.
-Admitted.
+Qed.
+
 
 
 Lemma demorgan_ftree_ord : forall (P : ftree) (E F : formula),
@@ -6151,10 +6206,26 @@ intros P E F H. induction P; intros S.
   destruct S; auto. destruct (subst_ind_fit f S1 && subst_ind_fit f0 S2); auto.
 - simpl.
   destruct S; auto. destruct (subst_ind_fit f S1 && subst_ind_fit f0 S2); auto.
-- admit. (* not true here, since the degree could be less *)
-- admit.
-- admit.
-- admit.
+- simpl. destruct S; auto.
+  + case (eq_f f E) eqn:HE; case (eq_f f0 F) eqn:HF; auto.
+  + inversion H as [[[[[H1 H2] H3] H4] H5] H6].
+    case (eq_f f E) eqn:HE; case (eq_f f0 F) eqn:HF; auto.
+    case (eq_nat n (Init.Nat.max n n0)) eqn:Hn;
+    case (ord_eqb o (ord_max o o0)) eqn:Ho; simpl; auto;
+    rewrite <- (ord_eqb_eq _ _ Ho); auto.
+- simpl. destruct S; auto.
+  destruct S1; auto; destruct (subst_ind_fit f1 S2) eqn:HS2; auto; simpl.
+  + case (eq_f f E) eqn:HE; case (eq_f f0 F) eqn:HF; auto.
+  + inversion H as [[[[[[[H1 H2] H3] H4] H5] H6] H7] H8].
+    case (eq_f f E) eqn:HE; case (eq_f f0 F) eqn:HF; auto.
+    case (eq_nat n (Init.Nat.max n n0)) eqn:Hn;
+    case (ord_eqb o (ord_max o o0)) eqn:Ho; simpl; auto;
+    rewrite <- (ord_eqb_eq _ _ Ho); auto;
+    rewrite demorgan_ftree_formula_true;
+    try rewrite IHP1; auto; rewrite H1; simpl; auto.
+- simpl. destruct S; auto.
+- simpl. destruct S; auto.
+  destruct S1; auto; destruct (subst_ind_fit f0 S2); auto.
 - simpl. destruct S; auto.
 - simpl.
   destruct S; auto; destruct S1; auto; destruct (subst_ind_fit f0 S2); auto.
@@ -6165,7 +6236,8 @@ intros P E F H. induction P; intros S.
 - simpl. destruct (subst_ind_fit f0 S); auto.
 - simpl.
   destruct S; auto. destruct (subst_ind_fit f S1 && subst_ind_fit f1 S2); auto.
-Admitted.
+Qed.
+
 
 (* Now we prove that if we have a valid ftree, performing our
 double negation substitution on it results in a valid ftree *)
@@ -6309,6 +6381,12 @@ intros P E F. induction P; try intros H S Hs.
 - simpl. inversion H as [[[[[[[H1 H2] H3] H4] H5] H6] H7] H8].
   destruct S; auto; destruct (eq_f f E); destruct (eq_f f0 F);
   simpl; repeat split; auto.
+  case (eq_nat n (Init.Nat.max n n0)) eqn:Hn;
+  case (ord_eqb o (ord_max o o0)) eqn:Ho; simpl; repeat split; auto.
+  + rewrite <- H7. apply ord_max_lt. auto.
+  + rewrite <- H5. apply max_lem. auto.
+  + rewrite <- H5. apply max_lem. auto.
+  + rewrite <- H7. apply ord_max_lt. auto.
 
 - simpl. inversion H as [[[[[[[H1 H2] H3] H4] H5] H6] H7] H8].
   destruct S; auto.
@@ -6318,9 +6396,16 @@ intros P E F. induction P; try intros H S Hs.
   try rewrite demorgan_ftree_deg; try rewrite demorgan_ftree_ord;
   try rewrite demorgan_ftree_formula;
   try apply IHP1; try apply IHP2; try rewrite H1; try rewrite H3;
-  auto; unfold demorgan_sub_formula; simpl; rewrite HS2;
+  auto; unfold demorgan_sub_formula; simpl; try rewrite HS2;
   try destruct (eq_f f0 (lor E F)); try destruct (eq_f f (lor E F));
-  rewrite sub_fit_true; auto.
+  try rewrite sub_fit_true; auto;
+  case (eq_nat n (Init.Nat.max n n0)) eqn:Hn;
+  case (ord_eqb o (ord_max o o0)) eqn:Ho;
+  simpl; repeat split; auto;
+  try apply IHP1; auto; try rewrite H1; auto;
+  try rewrite demorgan_ftree_ord; auto;
+  try rewrite <- H7; try apply ord_max_lt; auto;
+  rewrite demorgan_ftree_deg; auto; rewrite <- H5; apply max_lem; auto.
 
 - simpl. destruct S; auto.
 
