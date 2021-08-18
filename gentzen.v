@@ -2011,8 +2011,8 @@ Lemma ord_mult_exp_monot' : forall (alpha b : ord),
   nf b -> alpha <= ord_mult alpha (ord_2_exp b).
 Proof.
 intros.
-pose proof (exp_geq_1).
-pose proof (ord_mult_exp_monot_aux1).
+(*pose proof (exp_geq_1).
+pose proof (ord_mult_exp_monot_aux1).*)
 apply ord_mult_exp_monot_aux2.
 - apply (nf_2_exp _ H).
 - apply ord_mult_exp_monot_aux1.
@@ -9935,7 +9935,7 @@ Lemma formula_sub_ind_list_single :
   formula_sub_ind_list A [E] [F] [S] = formula_sub_ind A E F S.
 Proof. intros. unfold formula_sub_ind_list. simpl. auto. Qed.
 
-
+(*
 (* Defining term substitution on proof trees *)
 (* *)
 Program Fixpoint term_sub_ptree_fit_list
@@ -10593,7 +10593,7 @@ Qed.
 
 
 
-
+*)
 
 
 
@@ -10809,8 +10809,61 @@ end.
 
 (* Defining cut_elimination_univ, the case where the cut formula is univ n E *)
 (* *)
+(*
+Fixpoint cut_elimination_univ (P : ptree) : ptree :=
+match P with
+| cut_ca C (univ n F) d1 d2 alpha1 alpha2 P1 P2 =>
+    cut_ca
+      C E
+      (max (max d1 d2) (num_conn F))
+      d2
+      (ord_succ (ord_max alpha1 alpha2))
+      alpha2
+      (cut_ca (lor C E) F d1 d2 alpha1 alpha2
+        (associativity_2' P1)
+        (demorgan2_sub_ptree P2 E F (1)))
+      (demorgan1_sub_ptree P2 E F (1))
 
+| cut_ad (lor E F) D d1 d2 alpha1 alpha2 P1 P2 =>
+    contraction_a
+      D
+      (max (max d1 d2) (max (num_conn E) (num_conn F)))
+      (ord_succ (ord_succ (ord_max alpha1 alpha2)))
+      (cut_cad
+        D E D
+        (max (max d1 d2) (num_conn F))
+        d2
+        (ord_succ (ord_max alpha1 alpha2))
+        alpha2
+        (exchange_ab
+          E D
+          (max (max d1 d2) (num_conn F))
+          (ord_succ (ord_max alpha1 alpha2))
+          (cut_cad
+            E F D d1 d2 alpha1 alpha2 P1
+            (demorgan2_sub_ptree P2 E F (lor_ind (1) (non_target D)))))
+        (demorgan1_sub_ptree P2 E F (lor_ind (1) (non_target D))))
 
+| cut_cad C (lor E F) D d1 d2 alpha1 alpha2 P1 P2 =>
+    contraction_help
+      (cut_cad
+        (lor C D) E D
+        (max (max d1 d2) (max (num_conn E) (num_conn F)))
+        d2
+        (ord_succ (ord_succ (ord_max alpha1 alpha2)))
+        alpha2
+        (exchange_cab
+          C E D
+          (max (max d1 d2) (num_conn F))
+          (ord_succ (ord_max alpha1 alpha2))
+          (cut_cad (lor C E) F D d1 d2 alpha1 alpha2
+            (associativity_2' P1)
+            (demorgan2_sub_ptree P2 E F (lor_ind (1) (non_target D)))))
+        (demorgan1_sub_ptree P2 E F (lor_ind (1) (non_target D))))
+
+| _ => P
+end.
+*)
 
 
 
@@ -10826,7 +10879,7 @@ match ptree_ord P with
     (match A with
     | atom a => cut_elimination_atom P
     | neg E => cut_elimination_neg P
-    | lor E F => P
+    | lor E F => cut_elimination_lor P
     | univ n E => P
     end)
   | _ => P
@@ -10854,6 +10907,35 @@ then cut_elimination(P) is a valid ptree with ordinal 2^alpha and degree d
 (* *)
 
 
+(*Lemmas I needed*)
+Lemma formula_sub_ind_1 : forall (A B : formula),
+(subst_ind_fit A (1) = true) -> formula_sub_ind A A B (1) = B.
+Proof.
+intros.
+destruct A.
+- simpl. rewrite eq_atom_refl. auto.
+- simpl. rewrite eq_f_refl. auto.
+- inversion H.
+- simpl. rewrite eq_f_refl. rewrite eq_nat_refl. auto.
+Qed.
+
+Theorem good_replace1: forall f g r , (subst_ind_fit r (1) = true) -> formula_sub_ind (lor f r) r g (lor_ind (non_target f) (1)) = lor f g.
+Proof.
+intros.
+rewrite formula_sub_ind_lor.
+- rewrite (formula_sub_ind_1 _ g H). rewrite non_target_sub. auto.
+- rewrite non_target_fit. auto.
+Qed.
+
+Theorem good_replace2: forall f g r, (subst_ind_fit r (1) = true) -> formula_sub_ind (lor r f) r g (lor_ind (1) (non_target f)) = lor g f.
+Proof.
+intros.
+rewrite formula_sub_ind_lor.
+- rewrite (formula_sub_ind_1 _ g H). rewrite non_target_sub. auto.
+- rewrite non_target_fit. rewrite H. auto.
+Qed.
+
+(*Morgans Work which I am editing*)
 Theorem cut_elimination_formula : forall (P : ptree),
   valid P -> ptree_formula (cut_elimination P) = ptree_formula P.
 Proof.
@@ -10878,12 +10960,19 @@ intros. induction P.
 - simpl. destruct o; simpl; auto.
 - simpl. destruct (ord_succ (ord_max o o0)); simpl; auto.
 - simpl. destruct (ord_succ (ord_max o o0)); simpl; auto.
-- simpl. destruct (ord_succ (ord_max o o0)); simpl; auto.
-  destruct f0; auto.
+- simpl. destruct (ord_succ (ord_max o o0)). simpl. auto.
+  destruct f0.
+  + destruct (correct_a a).
+   * auto.
+   * auto.
+  + auto.
+  + unfold ptree_formula. unfold contraction_help. simpl. rewrite eq_f_refl. auto.
+  + auto.
 Qed.
 
 Theorem cut_elimination_ord : forall (P : ptree),
   valid P -> ptree_ord (cut_elimination P) = ord_2_exp (ptree_ord P).
+Proof.
 Admitted.
 
 Theorem cut_elimination_deg : forall (P : ptree),
@@ -10892,6 +10981,70 @@ Admitted.
 
 Theorem cut_elimination_valid : forall (P : ptree),
   valid P -> valid (cut_elimination P).
+Proof.
+  intros. induction P.
+- simpl. destruct (ptree_ord P); simpl; auto.
+- simpl. destruct o; simpl; auto. simpl in X. destruct X. auto.
+- simpl. auto.
+- simpl. destruct o; simpl; auto.
+- simpl. destruct o; simpl; auto.
+- simpl. destruct o; simpl; auto.
+- simpl. destruct o; simpl; auto.
+- simpl. destruct o; simpl; auto.
+- simpl. destruct o; simpl; auto.
+- simpl. destruct o; simpl; auto.
+- simpl. destruct (ord_max o o0); simpl; auto.
+- simpl. destruct (ord_max o o0); simpl; auto.
+- simpl. destruct o; simpl; auto.
+- simpl. destruct o; simpl; auto.
+- simpl. destruct o; simpl; auto.
+- simpl. destruct o; simpl; auto.
+- simpl. destruct o; simpl; auto.
+- simpl. destruct o; simpl; auto.
+- simpl. destruct (ord_succ (ord_max o o0)); simpl; auto.
+- simpl. destruct (ord_succ (ord_max o o0)); simpl; auto.
+- simpl. destruct (ord_succ (ord_max o o0)) eqn:F. simpl. auto.
+  destruct f0.
+  + case (correct_a a) eqn:H.
+   * simpl. simpl in X. destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8].
+     pose proof (provable_closed' P4 (lor f (atom a)) X2 X1) as Y1.
+     simpl in Y1. apply and_bool_prop in Y1. destruct Y1 as [Y1 Y2].
+     pose proof (provable_closed' P5 (lor (neg (atom a)) f1) X4 X3) as Z1.
+     simpl in Z1. apply and_bool_prop in Z1. destruct Z1 as [Z1 Z2].
+     repeat split; auto.
+     { pose proof (formula_sub_ptree_formula_neg P5 a f1 X4 (lor_ind (1) (non_target f1))). rewrite H0.
+       rewrite X3. apply good_replace2. auto. }
+     { apply formula_sub_valid_neg; simpl; auto. apply correct_correctness in H. unfold incorrect_a. rewrite H. auto. rewrite X3. simpl. apply non_target_fit. }
+     { rewrite X6. apply eq_sym. apply formula_sub_ptree_deg_neg. auto. }
+     { rewrite X8. apply eq_sym. apply formula_sub_ptree_ord_neg. auto. }
+   * simpl. simpl in X. destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8].
+     pose proof (provable_closed' P4 (lor f (atom a)) X2 X1) as Y1.
+     simpl in Y1. apply and_bool_prop in Y1. destruct Y1 as [Y1 Y2].
+     pose proof (provable_closed' P5 (lor (neg (atom a)) f1) X4 X3) as Z1.
+     simpl in Z1. apply and_bool_prop in Z1. destruct Z1 as [Z1 Z2].
+     repeat split; auto.
+     { pose proof (formula_sub_ptree_formula_atom P4 a f X2 (lor_ind (non_target f) (1) )). rewrite H0.
+       rewrite X1. apply good_replace1. auto. }
+     { apply formula_sub_valid_atom; simpl; auto. rewrite X1. simpl. apply and_bool_symm. apply non_target_fit. }
+     { rewrite X5. apply eq_sym. apply formula_sub_ptree_deg_atom. auto. }
+     { rewrite X7. apply eq_sym. apply formula_sub_ptree_ord_atom. auto. }
+
+  + 
+  (*+ simpl. simpl in X. destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8].
+    repeat split; auto.
+    * pose proof (dub_neg_ptree_formula P5 f0 X4 (lor_ind (1) (non_target f1))). rewrite H.
+      rewrite X3. unfold dub_neg_sub_formula. apply good_replace2. auto.
+    * apply dub_neg_valid. auto. rewrite X3. simpl. apply non_target_fit.
+    * rewrite X6. apply eq_sym. apply dub_neg_ptree_deg. auto.
+    * rewrite X8. apply eq_sym. apply dub_neg_ptree_ord. auto.
+    * 
+    admit.
+    * rewrite <- F. rewrite ord_max_symm. reflexivity.
+    *)
+  + (*unfold contraction_help. simpl. rewrite eq_f_refl. unfold valid. repeat split.
+    *)
+  admit.
+  + auto.
 Admitted.
 
 
