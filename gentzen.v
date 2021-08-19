@@ -10611,6 +10611,7 @@ separately before piecing them together.
 Fixpoint cut_elimination_0 (P : ptree) : ptree :=
 match P with
 | ord_up alpha P' => P'
+| deg_up d P' => P'
 | _ => P
 end.
 
@@ -10655,6 +10656,7 @@ match P with
             C d1 alpha1
             (formula_sub_ptree P1 (atom a) C (lor_ind (non_target C) (1)))))
   end)
+| deg_up d P' => cut_elimination_atom P'
 | _ => P
 end.
 
@@ -10686,7 +10688,7 @@ match P with
           E D d2 alpha2
           (dub_neg_sub_ptree P2 E (lor_ind (1) (non_target D))))
         (exchange_ab C (neg E) d1 alpha1 P1))
-
+| deg_up d P' => cut_elimination_neg P'
 | _ => P
 end.
 
@@ -10801,6 +10803,7 @@ match P with
             (demorgan2_sub_ptree P2 E F (lor_ind (1) (non_target D)))))
         (demorgan1_sub_ptree P2 E F (lor_ind (1) (non_target D))))
 
+| deg_up d P' => cut_elimination_lor P'
 | _ => P
 end.
 
@@ -10882,19 +10885,21 @@ match ptree_ord P with
     | lor E F => cut_elimination_lor P
     | univ n E => P
     end)
+  | deg_up d P' => P'
   | _ => P
   end)
 end.
 
+Fixpoint cut_last (P : ptree) : bool := 
+match P with
+| cut_ca C A d1 d2 alpha1 alpha2 P1 P2 => true
 
+| cut_ad A D d1 d2 alpha1 alpha2 P1 P2 => true
 
+| cut_cad C A D d1 d2 alpha1 alpha2 P1 P2 => true
 
-
-
-
-
-
-
+| _ => false
+end.
 
 
 (*
@@ -10934,12 +10939,6 @@ rewrite formula_sub_ind_lor.
 - rewrite (formula_sub_ind_1 _ g H). rewrite non_target_sub. auto.
 - rewrite non_target_fit. rewrite H. auto.
 Qed.
-
-Theorem : .
-Proof.
-  
-Qed.
-
 
 (*Morgans Work which I am editing*)
 Theorem cut_elimination_formula : forall (P : ptree),
@@ -10981,11 +10980,13 @@ Theorem cut_elimination_ord_aux : forall (P : ptree),
   valid P -> ord_lt (ptree_ord P) (ptree_ord (cut_elimination P)) \/ (cut_elimination P) = P.
 Proof.
 Admitted.
-
+*)
 Theorem cut_elimination_ord : forall (P : ptree),
   valid P -> ord_lt (ptree_ord (cut_elimination P)) (ord_2_exp (ptree_ord P)).
 Proof.
-  intros. induction P.
+Admitted.
+(*
+intros. induction P.
   - simpl. destruct (ptree_ord P) eqn:O.
    + simpl. rewrite O. apply ord_ltb_lt. auto.
    + destruct X as [X1 X2]. pose proof (IHP X2) as Y1. destruct (cut_elimination_ord_aux P X2) as [Y2 | Y2].
@@ -11052,17 +11053,19 @@ Admitted.
 *)
 
 Theorem cut_elimination_deg : forall (P : ptree),
-  valid P -> lt_nat (ptree_deg (cut_elimination P)) (ptree_deg P) = true.
+  valid P -> (lt_nat (ptree_deg (cut_elimination P)) (ptree_deg P) = true) + ((cut_elimination P) = P).
 Proof.
 intros. induction P.
-  - simpl. destruct (ptree_ord P); simpl; auto.
+  - left. destruct X as [X1 X2]. pose proof (IHP X2). destruct (ptree_ord P) eqn:F; simpl; rewrite F; apply (lt_nat_decid_conv (ptree_deg P) _ X1).
+  - destruct X as [X1 X2]. destruct o; simpl. apply zero_minimal in X1. contradiction. right. auto.
+  - 
 Admitted.
 
 Theorem cut_elimination_valid : forall (P : ptree),
   valid P -> valid (cut_elimination P).
 Proof.
   intros. induction P.
-- simpl. destruct (ptree_ord P); simpl; auto.
+- simpl. destruct X. destruct (ptree_ord P); simpl; auto.
 - simpl. destruct o; simpl; auto. simpl in X. destruct X. auto.
 - simpl. auto.
 - simpl. destruct o; simpl; auto.
@@ -11142,18 +11145,20 @@ terminates, we now complete the reasoning for:
 Lemma cut_elim_aux1 : forall (A : formula) (d : nat) (alpha : ord),
   provable A (S d) alpha -> provable A d (ord_2_exp alpha).
 Proof.
-unfold provable. unfold P_proves. intros A d alpha [P [[[H1 H2] H3] H4]]. pose proof (cut_elimination_deg _ H2). apply lt_nat_decid in H. unfold lt in H. apply leq_type in H. destruct H.
-- exists (deg_up d (ord_up (ord_2_exp alpha) (cut_elimination P))). repeat split.
-  + unfold ptree_formula. rewrite cut_elimination_formula; auto.
-  + unfold ptree_deg. rewrite H3 in g. assert (d > (ptree_deg (cut_elimination P))). omega. apply H.
-  + destruct H4. apply (cut_elimination_ord P H2).
-  + apply cut_elimination_valid. auto.
-- exists (ord_up (ord_2_exp alpha) (cut_elimination P)). repeat split.
-  + unfold ptree_formula. rewrite cut_elimination_formula; auto.
-  + destruct H4. apply (cut_elimination_ord P H2).
-  + apply cut_elimination_valid. auto.
-  + unfold ptree_deg. rewrite e in H3. inversion H3. reflexivity.
-Qed.
+unfold provable. unfold P_proves. intros A d alpha [P [[[H1 H2] H3] H4]]. pose proof (cut_elimination_deg _ H2). destruct H as [H | H].
+- apply lt_nat_decid in H. unfold lt in H. apply leq_type in H. destruct H.
+  + exists (deg_up d (ord_up (ord_2_exp alpha) (cut_elimination P))). repeat split.
+    * unfold ptree_formula. rewrite cut_elimination_formula; auto.
+    * unfold ptree_deg. rewrite H3 in g. assert (d > (ptree_deg (cut_elimination P))). omega. apply H.
+    * destruct H4. apply (cut_elimination_ord P H2).
+    * apply cut_elimination_valid. auto.
+  + exists (ord_up (ord_2_exp alpha) (cut_elimination P)). repeat split.
+    * unfold ptree_formula. rewrite cut_elimination_formula; auto.
+    * destruct H4. apply (cut_elimination_ord P H2).
+    * apply cut_elimination_valid. auto.
+    * unfold ptree_deg. rewrite e in H3. inversion H3. reflexivity.
+- admit.
+Admitted.
 
 
 Lemma cut_elim_aux2 : forall (A : formula) (d : nat),
