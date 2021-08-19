@@ -10886,8 +10886,16 @@ match ptree_ord P with
   end)
 end.
 
-
-
+(*Define Cut Formula*)
+Fixpoint cut_formula (P : ptree) : formula :=
+match ptree_ord P with
+| Zero =>  atom (equ (represent 0) (represent 0))
+| cons a n b =>
+  (match P with
+  | cut_cad C A D d1 d2 alpha1 alpha2 P1 P2 => neg A
+  | _ => atom (equ (represent 0) (represent 0))
+  end)
+end.
 
 
 
@@ -10979,7 +10987,7 @@ Theorem cut_elimination_deg : forall (P : ptree),
   valid P -> ptree_deg (cut_elimination P) = pred (ptree_deg P).
 Admitted.
 
-Theorem cut_elimination_valid : forall (P : ptree),
+Theorem cut_elimination_atom_valid : forall (a : atomic_formula) (P : ptree), (cut_formula P = neg (atom a)) ->
   valid P -> valid (cut_elimination P).
 Proof.
   intros. induction P.
@@ -11003,8 +11011,8 @@ Proof.
 - simpl. destruct o; simpl; auto.
 - simpl. destruct (ord_succ (ord_max o o0)); simpl; auto.
 - simpl. destruct (ord_succ (ord_max o o0)); simpl; auto.
-- unfold cut_elimination. destruct (ptree_ord (cut_cad f f0 f1 n n0 o o0 P4 P5)) eqn:F. auto. induction f0.
-  + simpl. case (correct_a a) eqn:H.
+- unfold cut_elimination. destruct (ptree_ord (cut_cad f f0 f1 n n0 o o0 P4 P5)) eqn:F. auto.
+  unfold cut_formula in H. rewrite F in H. inversion H. rewrite H1 in *. simpl. case (correct_a a) eqn:H2.
    * simpl. simpl in X. destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8].
      pose proof (provable_closed' P4 (lor f (atom a)) X2 X1) as Y1.
      simpl in Y1. apply and_bool_prop in Y1. destruct Y1 as [Y1 Y2].
@@ -11013,7 +11021,59 @@ Proof.
      repeat split; auto.
      { pose proof (formula_sub_ptree_formula_neg P5 a f1 X4 (lor_ind (1) (non_target f1))). rewrite H0.
        rewrite X3. apply good_replace2. auto. }
-     { apply formula_sub_valid_neg; simpl; auto. apply correct_correctness in H. unfold incorrect_a. rewrite H. auto. rewrite X3. simpl. apply non_target_fit. }
+     { apply formula_sub_valid_neg; simpl; auto. apply correct_correctness in H2. unfold incorrect_a. rewrite H2. auto. rewrite X3. simpl. apply non_target_fit. }
+     { rewrite X6. apply eq_sym. apply formula_sub_ptree_deg_neg. auto. }
+     { rewrite X8. apply eq_sym. apply formula_sub_ptree_ord_neg. auto. }
+   * simpl. simpl in X. destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8].
+     pose proof (provable_closed' P4 (lor f (atom a)) X2 X1) as Y1.
+     simpl in Y1. apply and_bool_prop in Y1. destruct Y1 as [Y1 Y2].
+     pose proof (provable_closed' P5 (lor (neg (atom a)) f1) X4 X3) as Z1.
+     simpl in Z1. apply and_bool_prop in Z1. destruct Z1 as [Z1 Z2].
+     repeat split; auto.
+     { pose proof (formula_sub_ptree_formula_atom P4 a f X2 (lor_ind (non_target f) (1) )). rewrite H0.
+       rewrite X1. apply good_replace1. auto. }
+     { apply formula_sub_valid_atom; simpl; auto. rewrite X1. simpl. apply and_bool_symm. apply non_target_fit. }
+     { rewrite X5. apply eq_sym. apply formula_sub_ptree_deg_atom. auto. }
+     { rewrite X7. apply eq_sym. apply formula_sub_ptree_ord_atom. auto. }
+Qed.
+
+Theorem cut_elimination_forumula_valid : forall (P : ptree) (f : formula),
+  (cut_formula P = f) -> valid P -> valid (cut_elimination P).
+Proof.
+intros P.
+induction P.
+- intros. simpl. destruct (ptree_ord P); simpl; auto.
+- intros. simpl. destruct o; simpl; auto. simpl in X. destruct X. auto.
+- intros. simpl. auto.
+- intros. simpl. destruct o; simpl; auto.
+- intros. simpl. destruct o; simpl; auto.
+- intros. simpl. destruct o; simpl; auto.
+- intros. simpl. destruct o; simpl; auto.
+- intros. simpl. destruct o; simpl; auto.
+- intros. simpl. destruct o; simpl; auto.
+- intros. simpl. destruct o; simpl; auto.
+- intros. simpl. destruct (ord_max o o0); simpl; auto.
+- intros. simpl. destruct (ord_max o o0); simpl; auto.
+- intros. simpl. destruct o; simpl; auto.
+- intros. simpl. destruct o; simpl; auto.
+- intros. simpl. destruct o; simpl; auto.
+- intros. simpl. destruct o; simpl; auto.
+- intros. simpl. destruct o; simpl; auto.
+- intros. simpl. destruct o; simpl; auto.
+- intros. simpl. destruct (ord_succ (ord_max o o0)); simpl; auto.
+- intros. simpl. destruct (ord_succ (ord_max o o0)); simpl; auto.
+- intros. unfold cut_elimination. unfold cut_formula in H. destruct (ptree_ord (cut_cad f f0 f1 n n0 o o0 P4 P5)) eqn:F. auto.
+  induction f0.
+  + simpl. case (correct_a a) eqn:H1.
+   * simpl. simpl in X. destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8].
+     pose proof (provable_closed' P4 (lor f (atom a)) X2 X1) as Y1.
+     simpl in Y1. apply and_bool_prop in Y1. destruct Y1 as [Y1 Y2].
+     pose proof (provable_closed' P5 (lor (neg (atom a)) f1) X4 X3) as Z1.
+     simpl in Z1. apply and_bool_prop in Z1. destruct Z1 as [Z1 Z2].
+     repeat split; auto.
+     { pose proof (formula_sub_ptree_formula_neg P5 a f1 X4 (lor_ind (1) (non_target f1))). rewrite H0.
+       rewrite X3. apply good_replace2. auto. }
+     { apply formula_sub_valid_neg; simpl; auto. apply correct_correctness in H1. unfold incorrect_a. rewrite H1. auto. rewrite X3. simpl. apply non_target_fit. }
      { rewrite X6. apply eq_sym. apply formula_sub_ptree_deg_neg. auto. }
      { rewrite X8. apply eq_sym. apply formula_sub_ptree_ord_neg. auto. }
    * simpl. simpl in X. destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8].
@@ -11029,7 +11089,7 @@ Proof.
      { rewrite X7. apply eq_sym. apply formula_sub_ptree_ord_atom. auto. }
   + simpl. simpl in X. destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8].
     repeat split; auto.
-    * pose proof (dub_neg_ptree_formula P5 f0 X4 (lor_ind (1) (non_target f1))). rewrite H.
+    * pose proof (dub_neg_ptree_formula P5 f0 X4 (lor_ind (1) (non_target f1))). rewrite H0.
       rewrite X3. unfold dub_neg_sub_formula. apply good_replace2. auto.
     * apply dub_neg_valid. auto. rewrite X3. simpl. apply non_target_fit.
     * rewrite X6. apply eq_sym. apply dub_neg_ptree_deg. auto.
@@ -11039,19 +11099,19 @@ Proof.
   + simpl. simpl in X. destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. unfold contraction_help. simpl. rewrite eq_f_refl. unfold valid. repeat split; auto.
     * unfold associativity_2'. rewrite X1. auto.
     * admit.
-    * pose proof (demorgan2_ptree_formula P5 f0_1 f0_2 X4 (lor_ind (1) (non_target f1))). rewrite H. rewrite X3. apply good_replace2. auto.
+    * pose proof (demorgan2_ptree_formula P5 f0_1 f0_2 X4 (lor_ind (1) (non_target f1))). rewrite H0. rewrite X3. apply good_replace2. auto.
     * admit.
     * unfold associativity_2'. rewrite X1. auto.
-    * pose proof (demorgan2_ptree_deg P5 f0_1 f0_2 X4 (lor_ind (1) (non_target f1))). rewrite H. auto.
+    * pose proof (demorgan2_ptree_deg P5 f0_1 f0_2 X4 (lor_ind (1) (non_target f1))). rewrite H0. auto.
     * unfold associativity_2'. rewrite X1. auto.
-    * pose proof (demorgan2_ptree_ord P5 f0_1 f0_2 X4 (lor_ind (1) (non_target f1))). rewrite H. auto.
+    * pose proof (demorgan2_ptree_ord P5 f0_1 f0_2 X4 (lor_ind (1) (non_target f1))). rewrite H0. auto.
     * simpl. admit.
-    * pose proof (demorgan1_ptree_formula P5 f0_1 f0_2 X4 (lor_ind (1) (non_target f1))). rewrite H. rewrite X3. apply good_replace2. auto.
+    * pose proof (demorgan1_ptree_formula P5 f0_1 f0_2 X4 (lor_ind (1) (non_target f1))). rewrite H0. rewrite X3. apply good_replace2. auto.
     * admit.
     * simpl. admit.
-    * pose proof (demorgan1_ptree_deg P5 f0_1 f0_2 X4 (lor_ind (1) (non_target f1))). rewrite H. auto.
+    * pose proof (demorgan1_ptree_deg P5 f0_1 f0_2 X4 (lor_ind (1) (non_target f1))). rewrite H0. auto.
     * simpl. admit.
-    * pose proof (demorgan1_ptree_ord P5 f0_1 f0_2 X4 (lor_ind (1) (non_target f1))). rewrite H. auto.
+    * pose proof (demorgan1_ptree_ord P5 f0_1 f0_2 X4 (lor_ind (1) (non_target f1))). rewrite H0. auto.
   + auto.
 Admitted.
 
