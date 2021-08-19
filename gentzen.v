@@ -10935,6 +10935,12 @@ rewrite formula_sub_ind_lor.
 - rewrite non_target_fit. rewrite H. auto.
 Qed.
 
+Theorem : .
+Proof.
+  
+Qed.
+
+
 (*Morgans Work which I am editing*)
 Theorem cut_elimination_formula : forall (P : ptree),
   valid P -> ptree_formula (cut_elimination P) = ptree_formula P.
@@ -10970,13 +10976,86 @@ intros. induction P.
   + auto.
 Qed.
 
-Theorem cut_elimination_ord : forall (P : ptree),
-  valid P -> ptree_ord (cut_elimination P) = ord_2_exp (ptree_ord P).
+(*
+Theorem cut_elimination_ord_aux : forall (P : ptree),
+  valid P -> ord_lt (ptree_ord P) (ptree_ord (cut_elimination P)) \/ (cut_elimination P) = P.
 Proof.
 Admitted.
 
+Theorem cut_elimination_ord : forall (P : ptree),
+  valid P -> ord_lt (ptree_ord (cut_elimination P)) (ord_2_exp (ptree_ord P)).
+Proof.
+  intros. induction P.
+  - simpl. destruct (ptree_ord P) eqn:O.
+   + simpl. rewrite O. apply ord_ltb_lt. auto.
+   + destruct X as [X1 X2]. pose proof (IHP X2) as Y1. destruct (cut_elimination_ord_aux P X2) as [Y2 | Y2].
+     * apply ord_lt_ltb in Y2. apply ord_lt_ltb in Y1. pose proof (ord_ltb_trans _ _ _ Y2 Y1). apply ord_ltb_lt. auto.
+     * rewrite Y2 in Y1. auto.
+  - admit.
+  - simpl. apply ord_ltb_lt. auto.
+  - destruct X as  [[[X1 X2] X3] X4]. pose proof (IHP X2) as Y1. destruct (cut_elimination_ord_aux P X2) as [Y2 | Y2].
+    + destruct o.
+     * simpl.  apply ord_ltb_lt. auto.
+     * apply ord_lt_ltb in Y2. apply ord_lt_ltb in Y1. pose proof (ord_ltb_trans _ _ _ Y2 Y1) as Y3. apply ord_ltb_lt. simpl. auto. apply Y3.  admit. (*apply ord_2_exp_fp.*)
+    * rewrite Y2 in Y1. auto.
+  - simpl. destruct o. simpl. apply ord_ltb_lt. auto.
+    destruct X as [[[X1 X2] X3] X4]. pose proof (IHP X2). assert (ord_lt (ptree_ord P) (ptree_ord (cut_elimination P))).
+    admit. apply ord_lt_ltb in H. apply ord_lt_ltb in H0. pose proof (ord_ltb_trans _ _ _ H0 H). apply ord_ltb_lt. unfold ptree_ord. admit. (*apply ord_2_exp_fp.*)
+    - simpl. destruct o. simpl. apply ord_ltb_lt. auto.
+    destruct X as [[[X1 X2] X3] X4]. pose proof (IHP X2). assert (ord_lt (ptree_ord P) (ptree_ord (cut_elimination P))).
+    admit. apply ord_lt_ltb in H. apply ord_lt_ltb in H0. pose proof (ord_ltb_trans _ _ _ H0 H). apply ord_ltb_lt. unfold ptree_ord. admit. (*apply ord_2_exp_fp.*)
+    - simpl. destruct o. simpl. apply ord_ltb_lt. auto.
+    destruct X as [[[X1 X2] X3] X4]. pose proof (IHP X2). assert (ord_lt (ptree_ord P) (ptree_ord (cut_elimination P))).
+    admit. apply ord_lt_ltb in H. apply ord_lt_ltb in H0. pose proof (ord_ltb_trans _ _ _ H0 H). apply ord_ltb_lt. unfold ptree_ord. admit. (*apply ord_2_exp_fp.*)
+    - simpl. destruct o. simpl. apply ord_ltb_lt. auto.
+    destruct X as [[[X1 X2] X3] X4]. pose proof (IHP X2). assert (ord_lt (ptree_ord P) (ptree_ord (cut_elimination P))).
+    admit. apply ord_lt_ltb in H. apply ord_lt_ltb in H0. pose proof (ord_ltb_trans _ _ _ H0 H). apply ord_ltb_lt. unfold ptree_ord. admit. (*apply ord_2_exp_fp.*)
+    - simpl. destruct o. simpl. apply ord_ltb_lt. auto.
+    destruct X as [[[X1 X2] X3] X4]. pose proof (IHP X2). assert (ord_lt (ptree_ord P) (ptree_ord (cut_elimination P))).
+    admit. apply ord_lt_ltb in H. apply ord_lt_ltb in H0. pose proof (ord_ltb_trans _ _ _ H0 H). apply ord_ltb_lt. unfold ptree_ord. admit. (*apply ord_2_exp_fp.*)
+    - simpl. destruct o. simpl. apply ord_ltb_lt. auto.
+    destruct X as [[[X1 X2] X3] X4]. pose proof (IHP X2). assert (ord_lt (ptree_ord P) (ptree_ord (cut_elimination P))).
+    admit. apply ord_lt_ltb in H. apply ord_lt_ltb in H0. pose proof (ord_ltb_trans _ _ _ H0 H). apply ord_ltb_lt. unfold ptree_ord. admit. (*apply ord_2_exp_fp.*)
+    - simpl. destruct o. simpl. apply ord_ltb_lt. auto.
+    destruct X as [[[X1 X2] X3] X4]. pose proof (IHP X2). assert (ord_lt (ptree_ord P) (ptree_ord (cut_elimination P))).
+    admit. apply ord_lt_ltb in H. apply ord_lt_ltb in H0. pose proof (ord_ltb_trans _ _ _ H0 H). apply ord_ltb_lt. unfold ptree_ord. admit. (*apply ord_2_exp_fp.*)
+    - simpl. destruct o. simpl. apply ord_ltb_lt. auto.
+    destruct X as [[[X1 X2] X3] X4]. pose proof (IHP X2). assert (ord_lt (ptree_ord P) (ptree_ord (cut_elimination P))).
+    admit. apply ord_lt_ltb in H. apply ord_lt_ltb in H0. pose proof (ord_ltb_trans _ _ _ H0 H). apply ord_ltb_lt. unfold ptree_ord. admit. (*apply ord_2_exp_fp.*)
+    - simpl. destruct o. simpl. apply ord_ltb_lt. auto.
+    destruct X as [[[X1 X2] X3] X4]. pose proof (IHP X2). assert (ord_lt (ptree_ord P) (ptree_ord (cut_elimination P))).
+    admit. apply ord_lt_ltb in H. apply ord_lt_ltb in H0. pose proof (ord_ltb_trans _ _ _ H0 H). apply ord_ltb_lt. unfold ptree_ord. admit. (*apply ord_2_exp_fp.*)
+  - simpl. destruct o; simpl; auto.
+  - simpl. destruct o; simpl; auto.
+  - simpl. destruct o; simpl; auto.
+  - simpl. destruct o; simpl; auto.
+  - simpl. destruct o; simpl; auto.
+  - simpl. destruct (ord_max o o0); simpl; auto.
+  - simpl. destruct (ord_max o o0); simpl; auto.
+  - simpl. destruct o; simpl; auto.
+  - simpl. destruct o; simpl; auto.
+  - simpl. destruct o; simpl; auto.
+  - simpl. destruct o; simpl; auto.
+  - simpl. destruct o; simpl; auto.
+  - simpl. destruct o; simpl; auto.
+  - simpl. destruct (ord_succ (ord_max o o0)); simpl; auto.
+  - simpl. destruct (ord_succ (ord_max o o0)); simpl; auto.
+  - simpl. destruct (ord_succ (ord_max o o0)). simpl. auto.
+    destruct f0.
+    + destruct (correct_a a).
+     * auto.
+     * auto.
+    + auto.
+    + unfold ptree_formula. unfold contraction_help. simpl. rewrite eq_f_refl. auto.
+    + auto.
+Admitted.
+*)
+
 Theorem cut_elimination_deg : forall (P : ptree),
-  valid P -> ptree_deg (cut_elimination P) = pred (ptree_deg P).
+  valid P -> lt_nat (ptree_deg (cut_elimination P)) (ptree_deg P) = true.
+Proof.
+intros. induction P.
+  - simpl. destruct (ptree_ord P); simpl; auto.
 Admitted.
 
 Theorem cut_elimination_valid : forall (P : ptree),
@@ -11028,19 +11107,16 @@ Proof.
      { apply formula_sub_valid_atom; simpl; auto. rewrite X1. simpl. apply and_bool_symm. apply non_target_fit. }
      { rewrite X5. apply eq_sym. apply formula_sub_ptree_deg_atom. auto. }
      { rewrite X7. apply eq_sym. apply formula_sub_ptree_ord_atom. auto. }
-
-  + 
-  (*+ simpl. simpl in X. destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8].
+  + simpl. simpl in X. destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8].
     repeat split; auto.
     * pose proof (dub_neg_ptree_formula P5 f0 X4 (lor_ind (1) (non_target f1))). rewrite H.
       rewrite X3. unfold dub_neg_sub_formula. apply good_replace2. auto.
     * apply dub_neg_valid. auto. rewrite X3. simpl. apply non_target_fit.
     * rewrite X6. apply eq_sym. apply dub_neg_ptree_deg. auto.
     * rewrite X8. apply eq_sym. apply dub_neg_ptree_ord. auto.
-    * 
-    admit.
+    * admit.
     * rewrite <- F. rewrite ord_max_symm. reflexivity.
-    *)
+
   + (*unfold contraction_help. simpl. rewrite eq_f_refl. unfold valid. repeat split.
     *)
   admit.
@@ -11066,12 +11142,17 @@ terminates, we now complete the reasoning for:
 Lemma cut_elim_aux1 : forall (A : formula) (d : nat) (alpha : ord),
   provable A (S d) alpha -> provable A d (ord_2_exp alpha).
 Proof.
-unfold provable. unfold P_proves. intros A d alpha [P [[[H1 H2] H3] H4]].
-exists (cut_elimination P). repeat split.
-- rewrite cut_elimination_formula; auto.
-- apply cut_elimination_valid. auto.
-- rewrite cut_elimination_deg; auto. rewrite H3. auto.
-- rewrite cut_elimination_ord; auto. rewrite H4. auto.
+unfold provable. unfold P_proves. intros A d alpha [P [[[H1 H2] H3] H4]]. pose proof (cut_elimination_deg _ H2). apply lt_nat_decid in H. unfold lt in H. apply leq_type in H. destruct H.
+- exists (deg_up d (ord_up (ord_2_exp alpha) (cut_elimination P))). repeat split.
+  + unfold ptree_formula. rewrite cut_elimination_formula; auto.
+  + unfold ptree_deg. rewrite H3 in g. assert (d > (ptree_deg (cut_elimination P))). omega. apply H.
+  + destruct H4. apply (cut_elimination_ord P H2).
+  + apply cut_elimination_valid. auto.
+- exists (ord_up (ord_2_exp alpha) (cut_elimination P)). repeat split.
+  + unfold ptree_formula. rewrite cut_elimination_formula; auto.
+  + destruct H4. apply (cut_elimination_ord P H2).
+  + apply cut_elimination_valid. auto.
+  + unfold ptree_deg. rewrite e in H3. inversion H3. reflexivity.
 Qed.
 
 
