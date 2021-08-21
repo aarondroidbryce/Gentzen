@@ -2867,10 +2867,10 @@ end.
     of inference to another theorem *)
 (* *)
 Inductive PA_omega_theorem : formula -> nat -> ord -> Type :=
-| deg_incr : forall (A : formula) (d d' : nat) (alpha : ord),
+(*| deg_incr : forall (A : formula) (d d' : nat) (alpha : ord),
     PA_omega_theorem A d alpha ->
     d' > d ->
-    PA_omega_theorem A d' alpha
+    PA_omega_theorem A d' alpha*)
 
 | ord_incr : forall (A : formula) (d : nat) (alpha beta : ord),
     PA_omega_theorem A d alpha ->
@@ -3063,13 +3063,13 @@ Qed.
 
 (* Other miscellaneous lemmas we will need in the next section. *)
 (* *)
-Lemma deg_monot : forall (A : formula) (d d' : nat) (alpha : ord),
+(*Lemma deg_monot : forall (A : formula) (d d' : nat) (alpha : ord),
   d' >= d -> PA_omega_theorem A d alpha -> PA_omega_theorem A d' alpha.
 Proof.
 intros. apply leq_type in H. destruct H.
 - apply (deg_incr A d d'); auto.
 - rewrite e. auto.
-Qed.
+Qed.*)
 
 Lemma ord_monot : forall (A : formula) (d : nat) (alpha beta : ord),
   ((ord_lt alpha beta) + (alpha = beta)) ->
@@ -4029,7 +4029,7 @@ Section 8: Proof trees for PA_omega proofs.
 (* Defining proof trees *)
 (* *)
 Inductive ptree : Type :=
-| deg_up : nat -> ptree -> ptree
+(*| deg_up : nat -> ptree -> ptree*)
 
 | ord_up : ord -> ptree -> ptree
 
@@ -4091,7 +4091,7 @@ Inductive ptree : Type :=
 
 Fixpoint ptree_formula (P : ptree) : formula :=
 match P with
-| deg_up d P' => ptree_formula P'
+(*| deg_up d P' => ptree_formula P'*)
 
 | ord_up alpha P' => ptree_formula P'
 
@@ -4141,7 +4141,7 @@ end.
 
 Fixpoint ptree_deg (P : ptree) : nat :=
 match P with
-| deg_up d P' => d
+(*| deg_up d P' => d*)
 
 | ord_up alpha P' => ptree_deg P'
 
@@ -4191,7 +4191,7 @@ end.
 
 Fixpoint ptree_ord (P : ptree) : ord :=
 match P with
-| deg_up d P' => ptree_ord P'
+(*| deg_up d P' => ptree_ord P'*)
 
 | ord_up alpha P' => alpha
 
@@ -4241,7 +4241,7 @@ end.
 
 Fixpoint valid (P : ptree) : Type :=
 match P with
-| deg_up d P' => (d > ptree_deg P') * (valid P')
+(*| deg_up d P' => (d > ptree_deg P') * (valid P')*)
 
 | ord_up alpha P' => (ord_lt (ptree_ord P') alpha) * (valid P')
 
@@ -4337,6 +4337,7 @@ match P with
 
 end.
 
+(*
 (*Seems Like I need This Up Here, oh dear*)
 Fixpoint ptree_real_deg (P : ptree) : nat :=
 match P with
@@ -4536,14 +4537,48 @@ intros. induction P.
 - destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. simpl. pose proof (IHP1 X2). pose proof (IHP2 X4). auto.
 - destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. simpl. pose proof (IHP1 X2). pose proof (IHP2 X4). auto.
 Qed.
+*)
 
+Axiom univ_alt : forall (x : Type) (f : x -> Prop), (forall x, f x) \/ exists x, ~(f x).
+
+Lemma bound_max_acheive : forall m (f : nat -> nat), (forall n, m >= f n) -> exists x, forall y, f x >= f y.
+Proof.
+intros.
+induction m.
+- exists 0.
+  intros.
+  pose proof (H 0).
+  inversion H0.
+  repeat rewrite H2 in *.
+  apply (H y).
+- assert ((forall n : nat, m >= f n) \/ (exists n : nat, ~m >= f n)). apply (univ_alt nat (fun n => m >= f n)).
+  destruct H0.
+  + apply (IHm H0).
+  + destruct H0.
+    exists x.
+    intros.
+    pose proof (H y).
+    assert  (m < f x). omega. omega.
+Qed.
+
+
+
+Lemma deg_bound : forall A d alpha n (X : forall m : nat, {P : ptree & ((ptree_formula P = substitution A n (represent m)) * valid P * (d >= ptree_deg P) * (ptree_ord P = alpha))%type}),
+    exists x, (forall (y : nat), ptree_deg (projT1 (X x)) >= ptree_deg (projT1 (X y))).
+Proof.
+intros.
+pose proof (bound_max_acheive d  (fun m => ptree_deg (projT1 (X m)))).
+assert (forall n0 : nat, d >= (fun m : nat => ptree_deg (projT1 (X m))) n0).
+intros. destruct (X n0) as [P [[[X1 X2] X3] X4]].
+simpl. apply X3.
+apply (H H0).
+Qed.
 
 (* Proof trees are equivalent to theorems *)
 (* *)
-
 Definition P_proves (P : ptree) (A : formula) (d : nat) (alpha : ord) : Type :=
   (ptree_formula P = A) * (valid P) *
-  (ptree_deg P = d) * (ptree_ord P = alpha).
+  (d >= ptree_deg P) * (ptree_ord P = alpha).
 
 Definition provable (A : formula) (d : nat) (alpha : ord) : Type :=
   {P : ptree & P_proves P A d alpha}.
@@ -4553,33 +4588,35 @@ Lemma provable_theorem : forall (A : formula) (d : nat) (alpha : ord),
 Proof.
 intros. unfold provable.
 induction H; try destruct IHPA_omega_theorem as [P [[[HP1 HP2] HP3] HP4]].
-- exists (deg_up d' P). repeat split; auto. omega.
+(*- exists (deg_up d' P). repeat split; auto. omega.*)
 - exists (ord_up beta P). repeat split; auto. rewrite HP4. auto.
-- exists (node A). repeat split. apply e.
-- exists (exchange_ab A B d alpha P). repeat split; auto.
-- exists (exchange_cab C A B d alpha P). repeat split; auto.
-- exists (exchange_abd A B D d alpha P). repeat split; auto.
-- exists (exchange_cabd C A B D d alpha P). repeat split; auto.
-- exists (contraction_a A d alpha P). repeat split; auto.
-- exists (contraction_ad A D d alpha P). repeat split; auto.
-- exists (weakening_ad A D d alpha P). repeat split; auto.
+- exists (node A). repeat split. apply e. auto.
+- exists (exchange_ab A B (ptree_deg P) alpha P). repeat split; auto.
+- exists (exchange_cab C A B (ptree_deg P) alpha P). repeat split; auto.
+- exists (exchange_abd A B D (ptree_deg P) alpha P). repeat split; auto.
+- exists (exchange_cabd C A B D (ptree_deg P) alpha P). repeat split; auto.
+- exists (contraction_a A (ptree_deg P) alpha P). repeat split; auto.
+- exists (contraction_ad A D (ptree_deg P) alpha P). repeat split; auto.
+- exists (weakening_ad A D (ptree_deg P) alpha P). repeat split; auto.
 - destruct IHPA_omega_theorem1 as [P [[[HP1 HP2] HP3] HP4]].
   destruct IHPA_omega_theorem2 as [P' [[[HP'1 HP'2] HP'3] HP'4]].
-  exists (demorgan_ab A B d1 d2 alpha1 alpha2 P P'). repeat split; auto.
+  exists (demorgan_ab A B (ptree_deg P) (ptree_deg P') alpha1 alpha2 P P'). repeat split; auto. admit.
 - destruct IHPA_omega_theorem1 as [P [[[HP1 HP2] HP3] HP4]].
   destruct IHPA_omega_theorem2 as [P' [[[HP'1 HP'2] HP'3] HP'4]].
-  exists (demorgan_abd A B D d1 d2 alpha1 alpha2 P P'). repeat split; auto.
-- exists (negation_a A d alpha P). repeat split; auto.
-- exists (negation_ad A D d alpha P). repeat split; auto.
-- exists (quantification_a A n t d alpha P). repeat split; auto.
-- exists (quantification_ad A D n t d alpha P). repeat split; auto.
-- unfold P_proves in X. exists (w_rule_a A n d alpha (fun m => (projT1 (X m)))).
+  exists (demorgan_abd A B D (ptree_deg P) (ptree_deg P') alpha1 alpha2 P P'). repeat split; auto. admit.
+- exists (negation_a A (ptree_deg P) alpha P). repeat split; auto.
+- exists (negation_ad A D (ptree_deg P) alpha P). repeat split; auto.
+- exists (quantification_a A n t (ptree_deg P) alpha P). repeat split; auto.
+- exists (quantification_ad A D n t (ptree_deg P) alpha P). repeat split; auto.
+- unfold P_proves in X. pose proof (deg_bound A d alpha n X). (*destruct H as [a b].*)
+ exists (w_rule_a A n d alpha (fun m => (projT1 (X m)))).
   repeat split; unfold projT1.
     + destruct (X m) as [P [[[HP1 HP2] HP3] HP4]]; auto.
     + destruct (X m) as [P [[[HP1 HP2] HP3] HP4]]; auto.
-    + destruct (X m) as [P [[[HP1 HP2] HP3] HP4]]; auto. rewrite HP3. auto.
     + destruct (X m) as [P [[[HP1 HP2] HP3] HP4]]; auto.
-    + exists d. destruct X as [P [[[X1 X2] X3] X4]]. auto.
+    + destruct (X m) as [P [[[HP1 HP2] HP3] HP4]]; auto.
+    + 
+    exists d. destruct X as [P [[[X1 X2] X3] X4]]. auto.
 - unfold P_proves in X.
   exists (w_rule_ad A D n d alpha (fun m => (projT1 (X m)))).
   repeat split; unfold projT1.
@@ -4628,8 +4665,8 @@ Lemma theorem_provable' : forall (t : ptree),
   valid t -> PA_omega_theorem (ptree_formula t) (ptree_deg t) (ptree_ord t).
 Proof.
 intros t H. induction t.
-- inversion H. simpl. apply (deg_incr _ (ptree_deg t)); auto.
-- inversion H. simpl. apply (ord_incr _ _ (ptree_ord t)); auto.
+- inversion H. simpl. apply (deg_incr _ (ptree_deg t)); auto.*)
+- inversion H. simpl. apply (ord_incr _ _ (ptree_ord t)); auto. apply (IHt X).
 - inversion H. simpl. apply axiom. auto.
 - inversion H as [[[H0 H1] H2] H3]. simpl. apply exchange1.
   rewrite H0 in IHt. rewrite H2,H3. apply IHt. auto.
@@ -10926,11 +10963,11 @@ intros. induction P.
 - destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). destruct X1 as [X0 X1].
   repeat split; auto. rewrite deg_elimination_formula; auto. rewrite real_deg_is_deg_elim_deg; auto. rewrite deg_elimination_ord; auto.
 - destruct X as [T1 T2]. split. simpl. intros. destruct (T1 m) as [[[X1 X2] X3] X4]. pose proof (X0 m X2). repeat split.
-  + admit.
+  + rewrite deg_elimination_formula; auto.
   + apply X.
-  + admit.
-  + admit. 
-  + admit.
+  + rewrite <- (real_deg_is_deg_elim_deg (p m) X2). pose proof (real_deg_le (p m) X2). omega.
+  + rewrite deg_elimination_ord; auto. 
+  + destruct (T1 x) as [[[X1 X2] X3] X4].
 - admit.
 - destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. simpl. pose proof (IHP1 X2). pose proof (IHP2 X4).
   repeat split; auto. rewrite deg_elimination_formula; auto. rewrite deg_elimination_formula; auto. rewrite real_deg_is_deg_elim_deg; auto. rewrite real_deg_is_deg_elim_deg; auto. rewrite deg_elimination_ord; auto. rewrite deg_elimination_ord; auto.
