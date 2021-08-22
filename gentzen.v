@@ -2869,7 +2869,7 @@ end.
 Inductive PA_omega_theorem : formula -> nat -> ord -> Type :=
 | deg_incr : forall (A : formula) (d d' : nat) (alpha : ord),
     PA_omega_theorem A d alpha ->
-    d' > d ->
+    d' >= d ->
     PA_omega_theorem A d' alpha
 
 | ord_incr : forall (A : formula) (d : nat) (alpha beta : ord),
@@ -3067,7 +3067,7 @@ Lemma deg_monot : forall (A : formula) (d d' : nat) (alpha : ord),
   d' >= d -> PA_omega_theorem A d alpha -> PA_omega_theorem A d' alpha.
 Proof.
 intros. apply leq_type in H. destruct H.
-- apply (deg_incr A d d'); auto.
+- apply (deg_incr A d d'); auto. omega.
 - rewrite e. auto.
 Qed.
 
@@ -4241,7 +4241,7 @@ end.
 
 Fixpoint valid (P : ptree) : Type :=
 match P with
-| deg_up d P' => (d > ptree_deg P') * (valid P')
+| deg_up d P' => (d >= ptree_deg P') * (valid P')
 
 | ord_up alpha P' => (ord_lt (ptree_ord P') alpha) * (valid P')
 
@@ -4338,7 +4338,6 @@ match P with
 end.
 
 
-
 (* Proof trees are equivalent to theorems *)
 (* *)
 
@@ -4354,7 +4353,7 @@ Lemma provable_theorem : forall (A : formula) (d : nat) (alpha : ord),
 Proof.
 intros. unfold provable.
 induction H; try destruct IHPA_omega_theorem as [P [[[HP1 HP2] HP3] HP4]].
-- exists (deg_up d' P). repeat split; auto. rewrite HP3. auto.
+- exists (deg_up d' P). repeat split; auto. rewrite HP3. omega.
 - exists (ord_up beta P). repeat split; auto. rewrite HP4. auto.
 - exists (node A). repeat split. apply e.
 - exists (exchange_ab A B d alpha P). repeat split; auto.
@@ -6418,8 +6417,8 @@ intros P E F. induction P; try intros H S Hs.
   case (eq_nat n (Init.Nat.max n n0)) eqn:Hn;
   case (ord_eqb o (ord_max o o0)) eqn:Ho; simpl; repeat split; auto.
   + rewrite <- H7. apply ord_max_lt1. auto.
-  + rewrite <- H5. apply max_lem1. auto.
-  + rewrite <- H5. apply max_lem1. auto.
+  + rewrite <- H5. lia.
+  + rewrite <- H5. lia.
   + rewrite <- H7. apply ord_max_lt1. auto.
 
 - simpl. inversion H as [[[[[[[H1 H2] H3] H4] H5] H6] H7] H8].
@@ -6439,7 +6438,7 @@ intros P E F. induction P; try intros H S Hs.
   try apply IHP1; auto; try rewrite H1; auto;
   try rewrite demorgan1_ptree_ord; auto;
   try rewrite <- H7; try apply ord_max_lt1; auto;
-  rewrite demorgan1_ptree_deg; auto; rewrite <- H5; apply max_lem1; auto.
+  rewrite demorgan1_ptree_deg; auto; rewrite <- H5; lia.
 
 - simpl. destruct S; auto.
 
@@ -7282,8 +7281,8 @@ intros P E F. induction P; try intros H S Hs.
   case (eq_nat n0 (Init.Nat.max n n0)) eqn:Hn0;
   case (ord_eqb o0 (ord_max o o0)) eqn:Ho0; simpl; repeat split; auto.
   + rewrite <- H8. apply ord_max_lt2. auto.
-  + rewrite <- H6. apply max_lem2. auto.
-  + rewrite <- H6. apply max_lem2. auto.
+  + rewrite <- H6. lia.
+  + rewrite <- H6. lia.
   + rewrite <- H8. apply ord_max_lt2. auto.
 
 - simpl. inversion H as [[[[[[[H1 H2] H3] H4] H5] H6] H7] H8].
@@ -7303,7 +7302,7 @@ intros P E F. induction P; try intros H S Hs.
   try apply IHP2; auto; try rewrite H3; auto;
   try rewrite demorgan2_ptree_ord; auto;
   try rewrite <- H8; try apply ord_max_lt2; auto;
-  rewrite demorgan2_ptree_deg; auto; rewrite <- H6; apply max_lem2; auto.
+  rewrite demorgan2_ptree_deg; auto; rewrite <- H6; lia.
 
 - simpl. destruct S; auto.
 
@@ -10546,54 +10545,406 @@ induction P; try intros H Hst S Hs.
 - simpl. destruct S; auto. inversion Hs. rewrite H1. simpl. auto.
 Qed.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 *)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(*
+##############################
+New Section Degree Elimination
+##############################
+*)
+Definition supremeum (m : nat) (f : nat -> nat) := (forall n, m >= f n) /\ ((forall x, (forall n, x >= f n) -> x >= m)).
+
+Lemma sup_achieve : forall (m : nat) (f : nat -> nat) (X : forall n, m >= f n), exists x, supremeum x f.
+Proof.
+intros.
+induction m.
+- exists 0.
+  unfold supremeum.
+  split. auto.
+  intros. omega.
+- admit.
+Admitted.
+
+
+Fixpoint ptree_real_deg (P : ptree) : nat :=
+match P with
+| deg_up d P' => ptree_real_deg P'
+
+| ord_up alpha P' => ptree_real_deg P'
+
+| node A => 0
+
+| exchange_ab A B d alpha P' => ptree_real_deg P'
+
+| exchange_cab C A B d alpha P' => ptree_real_deg P'
+
+| exchange_abd A B D d alpha P' => ptree_real_deg P'
+
+| exchange_cabd C A B D d alpha P' => ptree_real_deg P'
+
+| contraction_a A d alpha P' => ptree_real_deg P'
+
+| contraction_ad A D d alpha P' => ptree_real_deg P'
+
+| weakening_ad A D d alpha P' => ptree_real_deg P'
+
+| demorgan_ab A B d1 d2 alpha1 alpha2 P1 P2 => max (ptree_real_deg P1) (ptree_real_deg P2)
+
+| demorgan_abd A B D d1 d2 alpha1 alpha2 P1 P2 => max (ptree_real_deg P1) (ptree_real_deg P2)
+
+| negation_a A d alpha P' => ptree_real_deg P'
+
+| negation_ad A D d alpha P' => ptree_real_deg P'
+
+| quantification_a A n t d alpha P' => ptree_real_deg P'
+
+| quantification_ad A D n t d alpha P' => ptree_real_deg P'
+
+| w_rule_a A n d alpha g => d
+
+| w_rule_ad A D n d alpha g => d
+
+| cut_ca C A d1 d2 alpha1 alpha2 P1 P2 => max (max (ptree_real_deg P1) (ptree_real_deg P2)) (num_conn (neg A))
+
+| cut_ad A D d1 d2 alpha1 alpha2 P1 P2 => max (max (ptree_real_deg P1) (ptree_real_deg P2)) (num_conn (neg A))
+
+| cut_cad C A D d1 d2 alpha1 alpha2 P1 P2 => max (max (ptree_real_deg P1) (ptree_real_deg P2)) (num_conn (neg A))
+
+end.
+
+Fixpoint deg_elimination (P : ptree) : ptree :=
+match P with
+| deg_up d P' => deg_elimination P'
+
+| ord_up alpha P' => ord_up alpha (deg_elimination P')
+
+| node A => node A
+
+| exchange_ab A B d alpha P' => exchange_ab A B (ptree_real_deg P') alpha (deg_elimination P')
+
+| exchange_cab C A B d alpha P' => exchange_cab C A B (ptree_real_deg P') alpha (deg_elimination P')
+
+| exchange_abd A B D d alpha P' => exchange_abd A B D (ptree_real_deg P') alpha (deg_elimination P')
+
+| exchange_cabd C A B D d alpha P' => exchange_cabd C A B D (ptree_real_deg P') alpha (deg_elimination P')
+
+| contraction_a A d alpha P' => contraction_a A (ptree_real_deg P') alpha (deg_elimination P')
+
+| contraction_ad A D d alpha P' => contraction_ad A D (ptree_real_deg P') alpha (deg_elimination P')
+
+| weakening_ad A D d alpha P' => weakening_ad A D (ptree_real_deg P') alpha (deg_elimination P')
+
+| demorgan_ab A B d1 d2 alpha1 alpha2 P1 P2 => demorgan_ab A B (ptree_real_deg P1) (ptree_real_deg P2) alpha1 alpha2 (deg_elimination P1) (deg_elimination P2)
+
+| demorgan_abd A B D d1 d2 alpha1 alpha2 P1 P2 => demorgan_abd A B D (ptree_real_deg P1) (ptree_real_deg P2) alpha1 alpha2 (deg_elimination P1) (deg_elimination P2)
+
+| negation_a A d alpha P' => negation_a A (ptree_real_deg P') alpha (deg_elimination P')
+
+| negation_ad A D d alpha P' => negation_ad A D (ptree_real_deg P') alpha (deg_elimination P')
+
+| quantification_a A n t d alpha P' => quantification_a A n t (ptree_real_deg P') alpha (deg_elimination P')
+
+| quantification_ad A D n t d alpha P' => quantification_ad A D n t (ptree_real_deg P') alpha (deg_elimination P')
+
+| w_rule_a A n d alpha g => w_rule_a A n d alpha (fun (m : nat) => (deg_up d (deg_elimination (g m)))) 
+
+| w_rule_ad A D n d alpha g => w_rule_ad A D n d alpha (fun (m : nat) => (deg_up d (deg_elimination (g m)))) 
+
+
+| cut_ca C A d1 d2 alpha1 alpha2 P1 P2 => cut_ca C A (ptree_real_deg P1) (ptree_real_deg P2) alpha1 alpha2 (deg_elimination P1) (deg_elimination P2)
+
+| cut_ad A D d1 d2 alpha1 alpha2 P1 P2 => cut_ad A D (ptree_real_deg P1) (ptree_real_deg P2) alpha1 alpha2 (deg_elimination P1) (deg_elimination P2)
+
+| cut_cad C A D d1 d2 alpha1 alpha2 P1 P2 => cut_cad C A D (ptree_real_deg P1) (ptree_real_deg P2) alpha1 alpha2 (deg_elimination P1) (deg_elimination P2)
+
+end.
+
+Theorem real_deg_le: forall (P : ptree), valid P -> ptree_deg P >= ptree_real_deg P.
+Proof.
+intros. induction P.
+- destruct X as [X1 X2]. simpl. pose proof (IHP X2). omega.
+- destruct X as [X1 X2]. simpl. pose proof (IHP X2). omega.
+- auto.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). omega.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). omega.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). omega.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). omega.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). omega.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). omega.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). omega.
+- destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. simpl. pose proof (IHP1 X2). pose proof (IHP2 X4). lia.
+- destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. simpl. pose proof (IHP1 X2). pose proof (IHP2 X4). lia.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). omega.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). omega.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). omega.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). omega.
+- auto.
+- auto.
+- destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. simpl. pose proof (IHP1 X2). pose proof (IHP2 X4). lia.
+- destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. simpl. pose proof (IHP1 X2). pose proof (IHP2 X4). lia.
+- destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. simpl. pose proof (IHP1 X2). pose proof (IHP2 X4). lia.
+Qed.
+
+Theorem deg_elimination_formula: forall (P : ptree),
+valid P -> ptree_formula (deg_elimination P) = ptree_formula P.
+Proof.
+intros. induction P.
+- destruct X as [X1 X2]. simpl. pose proof (IHP X2). auto.
+- destruct X as [X1 X2]. simpl. pose proof (IHP X2). auto.
+- auto.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). auto.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). auto.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). auto.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). auto.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). auto.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). auto.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). auto.
+- destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. simpl. pose proof (IHP1 X2). pose proof (IHP2 X4). auto.
+- destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. simpl. pose proof (IHP1 X2). pose proof (IHP2 X4). auto.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). auto.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). auto.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). auto.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). auto.
+- auto.
+- auto.
+- destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. simpl. pose proof (IHP1 X2). pose proof (IHP2 X4). auto.
+- destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. simpl. pose proof (IHP1 X2). pose proof (IHP2 X4). auto.
+- destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. simpl. pose proof (IHP1 X2). pose proof (IHP2 X4). auto.
+Qed.
+
+Theorem real_deg_is_deg_elim_deg: forall (P : ptree), valid P -> ptree_real_deg P = ptree_deg (deg_elimination P).
+Proof.
+intros. induction P.
+  - destruct X as [X1 X2]. simpl. pose proof (IHP X2). omega.
+  - destruct X as [X1 X2]. simpl. pose proof (IHP X2). omega.
+  - auto.
+  - destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). omega.
+  - destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). omega.
+  - destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). omega.
+  - destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). omega.
+  - destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). omega.
+  - destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). omega.
+  - destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). omega.
+  - destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. simpl. pose proof (IHP1 X2). pose proof (IHP2 X4). lia.
+  - destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. simpl. pose proof (IHP1 X2). pose proof (IHP2 X4). lia.
+  - destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). omega.
+  - destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). omega.
+  - destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). omega.
+  - destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). omega.
+  - auto.
+  - auto.
+  - destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. simpl. pose proof (IHP1 X2). pose proof (IHP2 X4). lia.
+  - destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. simpl. pose proof (IHP1 X2). pose proof (IHP2 X4). lia.
+  - destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. simpl. pose proof (IHP1 X2). pose proof (IHP2 X4). lia.
+Qed.  
+
+Theorem deg_elimination_ord: forall (P : ptree),
+valid P -> ptree_ord (deg_elimination P) = ptree_ord P.
+Proof.
+intros. induction P.
+- destruct X as [X1 X2]. simpl. pose proof (IHP X2). auto.
+- destruct X as [X1 X2]. simpl. pose proof (IHP X2). auto.
+- auto.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). auto.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). auto.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). auto.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). auto.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). auto.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). auto.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). auto.
+- destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. simpl. pose proof (IHP1 X2). pose proof (IHP2 X4). auto.
+- destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. simpl. pose proof (IHP1 X2). pose proof (IHP2 X4). auto.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). auto.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). auto.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). auto.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). auto.
+- auto.
+- auto.
+- destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. simpl. pose proof (IHP1 X2). pose proof (IHP2 X4). auto.
+- destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. simpl. pose proof (IHP1 X2). pose proof (IHP2 X4). auto.
+- destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. simpl. pose proof (IHP1 X2). pose proof (IHP2 X4). auto.
+Qed.
+
+
+
+Theorem deg_elimination_valid: forall (P : ptree),
+valid P -> valid (deg_elimination P).
+Proof.
+intros. induction P.
+- destruct X as [X1 X2]. simpl. auto.
+- destruct X as [X1 X2]. simpl. pose proof (IHP X2). split; auto. rewrite deg_elimination_ord; auto.
+- auto.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2).
+  repeat split; auto. rewrite deg_elimination_formula; auto. rewrite real_deg_is_deg_elim_deg; auto. rewrite deg_elimination_ord; auto.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2).
+  repeat split; auto. rewrite deg_elimination_formula; auto. rewrite real_deg_is_deg_elim_deg; auto. rewrite deg_elimination_ord; auto.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). auto.
+  repeat split; auto. rewrite deg_elimination_formula; auto. rewrite real_deg_is_deg_elim_deg; auto. rewrite deg_elimination_ord; auto.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). auto.
+  repeat split; auto. rewrite deg_elimination_formula; auto. rewrite real_deg_is_deg_elim_deg; auto. rewrite deg_elimination_ord; auto.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). auto.
+  repeat split; auto. rewrite deg_elimination_formula; auto. rewrite real_deg_is_deg_elim_deg; auto. rewrite deg_elimination_ord; auto.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). auto.
+  repeat split; auto. rewrite deg_elimination_formula; auto. rewrite real_deg_is_deg_elim_deg; auto. rewrite deg_elimination_ord; auto.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). auto. destruct X1 as [X0 X1].
+  repeat split; auto. rewrite deg_elimination_formula; auto. rewrite real_deg_is_deg_elim_deg; auto. rewrite deg_elimination_ord; auto.
+- destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. simpl. pose proof (IHP1 X2). pose proof (IHP2 X4). auto.
+  repeat split; auto. rewrite deg_elimination_formula; auto. rewrite deg_elimination_formula; auto. rewrite real_deg_is_deg_elim_deg; auto. rewrite real_deg_is_deg_elim_deg; auto. rewrite deg_elimination_ord; auto. rewrite deg_elimination_ord; auto.
+- destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. simpl. pose proof (IHP1 X2). pose proof (IHP2 X4). auto.
+  repeat split; auto. rewrite deg_elimination_formula; auto. rewrite deg_elimination_formula; auto. rewrite real_deg_is_deg_elim_deg; auto. rewrite real_deg_is_deg_elim_deg; auto. rewrite deg_elimination_ord; auto. rewrite deg_elimination_ord; auto.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). auto.
+  repeat split; auto. rewrite deg_elimination_formula; auto. rewrite real_deg_is_deg_elim_deg; auto. rewrite deg_elimination_ord; auto.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). auto.
+  repeat split; auto. rewrite deg_elimination_formula; auto. rewrite real_deg_is_deg_elim_deg; auto. rewrite deg_elimination_ord; auto.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). auto. destruct X1 as [X0 X1].
+  repeat split; auto. rewrite deg_elimination_formula; auto. rewrite real_deg_is_deg_elim_deg; auto. rewrite deg_elimination_ord; auto.
+- destruct X as [[[X1 X2] X3] X4]. simpl. pose proof (IHP X2). destruct X1 as [X0 X1].
+  repeat split; auto. rewrite deg_elimination_formula; auto. rewrite real_deg_is_deg_elim_deg; auto. rewrite deg_elimination_ord; auto.
+- simpl. intros m. destruct (X m) as [[[X1 X2] X3] X4]. pose proof (X0 m X2).
+ repeat split.
+  + rewrite deg_elimination_formula; auto.
+  + pose (real_deg_le (p m) X2). rewrite X3. rewrite <- real_deg_is_deg_elim_deg; auto.
+  + apply X5.
+  + rewrite deg_elimination_ord; auto. 
+- simpl. intros m. destruct (X m) as [[[X1 X2] X3] X4]. pose proof (X0 m X2).
+  repeat split.
+   + rewrite deg_elimination_formula; auto.
+   + pose (real_deg_le (p m) X2). rewrite X3. rewrite <- real_deg_is_deg_elim_deg; auto.
+   + apply X5.
+   + rewrite deg_elimination_ord; auto. 
+ - destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. simpl. pose proof (IHP1 X2). pose proof (IHP2 X4).
+  repeat split; auto. rewrite deg_elimination_formula; auto. rewrite deg_elimination_formula; auto. rewrite real_deg_is_deg_elim_deg; auto. rewrite real_deg_is_deg_elim_deg; auto. rewrite deg_elimination_ord; auto. rewrite deg_elimination_ord; auto.
+- destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. simpl. pose proof (IHP1 X2). pose proof (IHP2 X4).
+  repeat split; auto. rewrite deg_elimination_formula; auto. rewrite deg_elimination_formula; auto. rewrite real_deg_is_deg_elim_deg; auto. rewrite real_deg_is_deg_elim_deg; auto. rewrite deg_elimination_ord; auto. rewrite deg_elimination_ord; auto.
+- destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. simpl. pose proof (IHP1 X2). pose proof (IHP2 X4).
+  repeat split; auto. rewrite deg_elimination_formula; auto. rewrite deg_elimination_formula; auto. rewrite real_deg_is_deg_elim_deg; auto. rewrite real_deg_is_deg_elim_deg; auto. rewrite deg_elimination_ord; auto. rewrite deg_elimination_ord; auto.
+Qed.
+
+Fixpoint deg_free (P : ptree) : Type :=
+match P with
+| deg_up d P' => False
+
+| ord_up alpha P' => deg_free P'
+
+| node A => True
+
+| exchange_ab A B d alpha P' => deg_free P'
+
+| exchange_cab C A B d alpha P' => deg_free P'
+
+| exchange_abd A B D d alpha P' => deg_free P'
+
+| exchange_cabd C A B D d alpha P' => deg_free P'
+
+| contraction_a A d alpha P' => deg_free P'
+
+| contraction_ad A D d alpha P' => deg_free P'
+
+| weakening_ad A D d alpha P' => deg_free P'
+
+| demorgan_ab A B d1 d2 alpha1 alpha2 P1 P2 => (deg_free P1) * (deg_free P2)
+
+| demorgan_abd A B D d1 d2 alpha1 alpha2 P1 P2 => (deg_free P1) * (deg_free P2)
+
+| negation_a A d alpha P' => deg_free P'
+
+| negation_ad A D d alpha P' => deg_free P'
+
+| quantification_a A n t d alpha P' => deg_free P'
+
+| quantification_ad A D n t d alpha P' => deg_free P'
+
+| w_rule_a A n d alpha g => forall (m : nat), deg_free (g m)
+
+| w_rule_ad A D n d alpha g => forall (m : nat), deg_free (g m)
+
+| cut_ca C A d1 d2 alpha1 alpha2 P1 P2 => (deg_free P1) * (deg_free P2)
+
+| cut_ad A D d1 d2 alpha1 alpha2 P1 P2 => (deg_free P1) * (deg_free P2)
+
+| cut_cad C A D d1 d2 alpha1 alpha2 P1 P2 => (deg_free P1) * (deg_free P2)
+end.
+
+Lemma deg_elim_deg_free: forall (P : ptree), deg_free (deg_elimination P).
+Proof.
+intros. induction P.
+- simpl. auto.
+- simpl. auto.
+- simpl. auto.
+- simpl. auto.
+- simpl. auto.
+- simpl. auto.
+- simpl. auto.
+- simpl. auto.
+- simpl. auto.
+- simpl. auto.
+- simpl. auto.
+- simpl. auto.
+- simpl. auto.
+- simpl. auto.
+- simpl. auto.
+- simpl. auto.
+- admit.
+- admit.
+- simpl. auto.
+- simpl. auto.
+- simpl. auto.
+Qed.
+
+Definition P_proves' (P : ptree) (A : formula) : Type :=
+  (ptree_formula P = A) * (valid P) *
+  {d : nat & ptree_deg P = d & {alpha : ord & ptree_ord P = alpha}}.
+
+Lemma deg_elim : forall (A : formula) (d : nat) (alpha : ord),
+  provable A d alpha -> {P : ptree & P_proves' P A & deg_free P}.
+Proof.
+intros. destruct X as [P [[[X1 X2] X3] X4] ]. exists (deg_elimination P).
+- repeat split; auto. rewrite deg_elimination_formula; auto. apply deg_elimination_valid. auto.
+  exists (ptree_deg (deg_elimination P)). auto.
+  exists (ptree_ord (deg_elimination P)). auto.
+- apply deg_elim_deg_free. 
+Qed.
+
+
+
+
+
+
+
+
+
+
+
 
 
 
