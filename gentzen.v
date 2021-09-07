@@ -2912,52 +2912,49 @@ Inductive PA_omega_theorem : formula -> nat -> ord -> Type :=
 | weakening : forall (A D : formula) (d : nat) (alpha : ord),
     closed A = true ->
     PA_omega_theorem D d alpha ->
-    PA_omega_theorem (lor A D) d alpha
+    PA_omega_theorem (lor A D) d (ord_succ alpha)
 
 | demorgan1 : forall (A B : formula) (d1 d2 : nat)
                      (alpha1 alpha2 : ord),
     PA_omega_theorem (neg A) d1 alpha1 ->
     PA_omega_theorem (neg B) d2 alpha2 ->
-    PA_omega_theorem (neg (lor A B)) (max d1 d2) (ord_max alpha1 alpha2)
+    PA_omega_theorem (neg (lor A B)) (max d1 d2) (ord_succ (ord_max alpha1 alpha2))
 
 | demorgan2 : forall (A B D : formula) (d1 d2 : nat) (alpha1 alpha2 : ord),
     PA_omega_theorem (lor (neg A) D) d1 alpha1 ->
     PA_omega_theorem (lor (neg B) D) d2 alpha2 ->
     PA_omega_theorem (lor (neg (lor A B)) D)
-                     (max d1 d2)
-                     (ord_max alpha1 alpha2)
+                     (max d1 d2) (ord_succ (ord_max alpha1 alpha2))
 
 | negation1 : forall (A : formula) (d : nat) (alpha : ord),
     PA_omega_theorem A d alpha ->
-    PA_omega_theorem (neg (neg A)) d alpha
+    PA_omega_theorem (neg (neg A)) d (ord_succ alpha)
 
 | negation2 : forall (A D : formula) (d : nat) (alpha : ord),
     PA_omega_theorem (lor A D) d alpha ->
-    PA_omega_theorem (lor (neg (neg A)) D) d alpha
+    PA_omega_theorem (lor (neg (neg A)) D) d (ord_succ alpha)
 
 | quantification1 : forall (A : formula) (n : nat) (t : term)
                            (d : nat) (alpha : ord),
     closed_t t = true ->
     PA_omega_theorem (neg (substitution A n t)) d alpha ->
-    PA_omega_theorem (neg (univ n A)) d alpha
+    PA_omega_theorem (neg (univ n A)) d (ord_succ alpha)
 
 | quantification2 : forall (A D : formula) (n : nat) (t : term)
                            (d : nat) (alpha : ord),
     closed_t t = true ->
     PA_omega_theorem (lor (neg (substitution A n t)) D) d alpha ->
-    PA_omega_theorem (lor (neg (univ n A)) D) d alpha
-
+    PA_omega_theorem (lor (neg (univ n A)) D) d (ord_succ alpha)
 
 | w_rule1 : forall (A : formula) (n : nat) (d : nat) (alpha : ord)
   (g : forall (m : nat),
       PA_omega_theorem (substitution A n (represent m)) d alpha),
-  PA_omega_theorem (univ n A) d alpha
+  PA_omega_theorem (univ n A) d (ord_succ alpha)
 
 | w_rule2 : forall (A D : formula) (n : nat) (d : nat) (alpha : ord)
   (g : forall (m : nat),
     PA_omega_theorem (lor (substitution A n (represent m)) D) d alpha),
-  PA_omega_theorem (lor (univ n A) D) d alpha
-
+  PA_omega_theorem (lor (univ n A) D) d (ord_succ alpha)
 
 | cut1 : forall (C A : formula) (d1 d2 : nat) (alpha1 alpha2 : ord),
     PA_omega_theorem (lor C A) d1 alpha1 ->
@@ -2979,11 +2976,6 @@ Inductive PA_omega_theorem : formula -> nat -> ord -> Type :=
     PA_omega_theorem (lor C D)
                      (max (max d1 d2) (num_conn (neg A)))
                      (ord_succ (ord_max alpha1 alpha2)).
-
-
-
-
-
 
 
 
@@ -3029,12 +3021,11 @@ apply eval_represent.
 Qed.
 
 Lemma w_rule_exmp : forall (n : nat),
-  PA_omega_theorem (univ n (atom (equ (var n) (var n)))) 0 Zero.
+  PA_omega_theorem (univ n (atom (equ (var n) (var n)))) 0 (ord_succ Zero).
 Proof.
 intros.
 apply w_rule1. simpl. rewrite eq_nat_refl. apply equ_refl.
 Qed.
-
 
 (* Show that PA_omega proves the associativity laws *)
 (* *)
@@ -3089,13 +3080,8 @@ Qed.
 Lemma ord_nf : forall (A : formula) (d : nat) (alpha : ord),
   PA_omega_theorem A d alpha -> nf alpha.
 Proof.
-intros. induction H; auto.
+intros. induction H; try apply ord_succ_nf; try apply ord_max_nf; auto.
 - apply zero_nf.
-- apply ord_max_nf; auto.
-- apply ord_max_nf; auto.
-- apply ord_succ_nf. apply ord_max_nf; auto.
-- apply ord_succ_nf. apply ord_max_nf; auto.
-- apply ord_succ_nf. apply ord_max_nf; auto.
 Qed.
 
 Lemma ord_monot : forall (A : formula) (d : nat) (alpha beta : ord),
@@ -3433,7 +3419,7 @@ Lemma LEM_univ : forall (B : formula) (n m d : nat) (alpha : ord),
     d alpha ->
   PA_omega_theorem
     (lor (substitution B n (represent m)) (neg (univ n B)))
-    d alpha.
+    d (ord_succ alpha).
 Proof.
 intros. apply exchange1.
 apply (quantification2 _ _ _ (represent m)); auto.
@@ -3521,14 +3507,13 @@ proves ~A(s) \/ A(t). We will need these results in the next section.
 
 Lemma LEM_atomic : forall (a : atomic_formula),
   closed_a a = true ->
-  PA_omega_theorem (lor (neg (atom a)) (atom a)) 0 Zero.
+  PA_omega_theorem (lor (neg (atom a)) (atom a)) 0 (ord_succ Zero).
 Proof.
 intros.
 destruct (correctness_decid a H) as [H0 | H0].
 - apply weakening; auto. apply axiom. apply H0.
 - apply exchange1. apply weakening; auto. apply axiom. apply H0.
 Qed.
-
 
 (*
 The logical structure of the inductive argument here is rather subtle
@@ -3538,8 +3523,7 @@ by strong induction on n, the number of connectives.
 *)
 (* *)
 Definition P1 (A : formula) : Type :=
-  closed A = true ->
-  PA_omega_theorem (lor (neg A) A) 0 Zero.
+  closed A = true -> PA_omega_theorem (lor (neg A) A) 0 (ord_2_exp (nat_ord (num_conn A))).
 
 Definition P2 (A : formula) (n : nat) : Type :=
   num_conn A = n -> P1 A.
@@ -3551,16 +3535,11 @@ Lemma P3_0 : P3 0.
 Proof.
 unfold P3, P2. intros.
 destruct A as [a | | | ].
-- unfold P1. apply LEM_atomic.
+- unfold P1. simpl. intros. apply LEM_atomic. auto.
 - inversion H.
 - inversion H.
 - inversion H.
 Qed.
-
-
-
-
-
 
 (* Prove strong induction holds for P3, adapted from
 pldev.blogspot.com/2012/02/proving-strong-induction-principle-for.html *)
@@ -3585,6 +3564,27 @@ Lemma P3_strongind :
   (forall n, P3 n).
 Proof. intros. apply (P3_strongind_aux X X0 n n). auto. Qed.
 
+Lemma succ_exp_less : forall (alpha : ord), ord_lt (ord_succ (ord_2_exp alpha)) (ord_2_exp (ord_succ alpha)).
+Proof.
+
+Admitted.
+
+Lemma succ_exp_less_nat : forall (n : nat), 2 + 2^n <= 2^(n+1).
+Proof.
+intros.
+induction n.
+simpl.
+
+Admitted.
+
+Lemma exp_2_succ : forall (alpha : ord), {beta : ord & ord_succ beta = ord_2_exp alpha}.
+Proof.
+intros.
+induction alpha.
+- simpl. admit.
+- 
+Admitted.
+
 
 (* The (strong) inductive step for LEM *)
 (* *)
@@ -3594,22 +3594,47 @@ unfold P3,P2,P1. intros.
 destruct A as [a | B | B C | m B].
 - inversion H0.
 - inversion H0. pose proof (H n (le_refl n) B H3 H1).
-  apply negation2. apply exchange1. apply H2.
+  apply negation2. apply exchange1.
+   unfold num_conn.
+   pose proof (succ_exp_less (nat_ord (num_conn B))).
+   apply (ord_incr _ _ (ord_succ (ord_2_exp (nat_ord (num_conn B))))).
+   + auto.
+   + rewrite ord_succ_nat in H4. apply H4.
+   + apply nf_2_exp. apply nf_nat.
 - destruct (closed_lor _ _ H1) as [HB HC].
   destruct (num_conn_lor _ _ _ H0) as [HB' HC'].
-  apply (demorgan2 _ _ _ 0 0 Zero Zero).
-  + apply associativity1. apply exchange1.
-    apply weakening; auto.
-    apply (H (num_conn B) HB' B (eq_refl (num_conn B)) HB).
-  + apply associativity1. apply exchange2. apply exchange1.
-    apply weakening; auto.
-    apply (H (num_conn C) HC' C (eq_refl (num_conn C)) HC).
-- apply exchange1. inversion H0.
+  pose proof (H (num_conn B) HB' B (eq_refl (num_conn B)) HB).
+  apply (weakening C _ _ _ HC) in H2. apply exchange1 in H2. apply associativity1 in H2.
+  pose proof (H (num_conn C) HC' C (eq_refl (num_conn C)) HC).
+  apply (weakening B _ _ _ HB) in H3. apply exchange1 in H3. apply exchange2 in H3. apply associativity1 in H3.
+  pose proof (demorgan2 B C (lor B C) 0 0 (ord_succ (ord_succ (ord_2_exp (nat_ord (num_conn B))))) (ord_succ (ord_succ (ord_2_exp (nat_ord (num_conn C))))) H2 H3).
+  simpl in H4.
+  apply (ord_incr _ _ (ord_succ (ord_max (ord_succ (ord_succ (ord_2_exp (nat_ord (num_conn B))))) (ord_succ (ord_succ (ord_2_exp (nat_ord (num_conn C)))))))).
+  + apply H4.
+  + simpl. rewrite ord_succ_nat. case_eq (ord_eqb (ord_succ (ord_succ (ord_2_exp (nat_ord (num_conn B))))) (ord_max (ord_succ (ord_succ (ord_2_exp (nat_ord (num_conn B))))) (ord_succ (ord_succ (ord_2_exp (nat_ord (num_conn C))))))).
+    * intros. apply ord_eqb_eq in H5. rewrite <- H5.
+  pose ord_max_lt2.
+   apply nat_ord_lt.
+  apply ord_ltb_lt.  
+   simpl.
+  admit.
+  + apply ord_succ_nf. apply nf_nat.
+- inversion H0.
+  apply exchange1. apply w_rule2. intros k. apply LEM_univ. 
+  + apply closed_univ_sub; auto. apply eval_closed, eval_represent.
+  + 
+
+inversion H0. pose proof (fun m => num_conn_sub B m). rewrite H3 in H2.
+  pose proof (fun x => H n (le_refl n) (substitution B m (represent x)) (H2 _ (represent x)) (closed_univ_sub _ _ H1 _ (eval_closed _ (eval_represent x)))).
+  exists (ord_succ (projT1 (H4 0))).
+  apply exchange1.
   apply w_rule2. intros k. apply LEM_univ.
   + apply closed_univ_sub; auto. apply eval_closed, eval_represent.
-  + apply (H n (le_refl n) (substitution B m (represent k))).
+  + pose proof (H n (le_refl n) (substitution B m (represent k))). destruct H2 as [alpha H2].
     * rewrite num_conn_sub. auto.
     * apply closed_univ_sub; auto. apply eval_closed, eval_represent.
+    * 
+    admit.
 Qed.
 
 Lemma P3_lemma : forall n, P3 n.
@@ -4238,24 +4263,23 @@ match P with
 | contraction_ad A D d alpha P' => alpha
 
 
-| weakening_ad A D d alpha P' => alpha
+| weakening_ad A D d alpha P' => ord_succ alpha
 
-| demorgan_ab A B d1 d2 alpha1 alpha2 P1 P2 => ord_max alpha1 alpha2
+| demorgan_ab A B d1 d2 alpha1 alpha2 P1 P2 => ord_succ (ord_max alpha1 alpha2)
 
-| demorgan_abd A B D d1 d2 alpha1 alpha2 P1 P2 => ord_max alpha1 alpha2
+| demorgan_abd A B D d1 d2 alpha1 alpha2 P1 P2 => ord_succ (ord_max alpha1 alpha2)
 
-| negation_a A d alpha P' => alpha
+| negation_a A d alpha P' => ord_succ alpha
 
-| negation_ad A D d alpha P' => alpha
+| negation_ad A D d alpha P' => ord_succ alpha
 
-| quantification_a A n t d alpha P' => alpha
+| quantification_a A n t d alpha P' => ord_succ alpha
 
-| quantification_ad A D n t d alpha P' => alpha
+| quantification_ad A D n t d alpha P' => ord_succ alpha
 
-| w_rule_a A n d alpha g => alpha
+| w_rule_a A n d alpha g => ord_succ alpha
 
-| w_rule_ad A D n d alpha g => alpha
-
+| w_rule_ad A D n d alpha g => ord_succ alpha
 
 | cut_ca C A d1 d2 alpha1 alpha2 P1 P2 => ord_succ (ord_max alpha1 alpha2)
 
@@ -11463,6 +11487,162 @@ Qed.
 
 Lemma w_fp : *)
 
+(*
+The inductive proof here is quite similar with LEM, and Q1,Q2,Q3
+are meant to break this up. *)
+(* *)
+Definition C1 (P : ptree) : Type := forall (alpha : ord) (d : nat) (A : formula),
+  P_proves P A (S d) alpha ->
+  provable A d (ord_2_exp alpha).
+
+Definition C2 (P : ptree) (alpha : ord) : Type := ptree_ord P = alpha -> C1 P.
+
+Definition C3 (alpha : ord) : Type := forall (P : ptree), C2 P alpha.
+
+Lemma C3_strongind_aux :
+  C3 Zero ->
+  (forall alpha,
+    ((forall beta, ord_lt beta alpha -> C3 beta) -> C3 alpha)) ->
+  (forall beta gamma, ord_lt gamma beta -> C3 gamma).
+Proof.
+induction gamma as [| n' IHn' ].
+- admit.
+(* intros m H1. assert (m = 0). { inversion H1. auto. } rewrite H. apply X. *)
+- admit. (* intros. assert ((m = S n') + (m <= n')). { apply leq_prop_sum. omega. }
+  destruct H0 as [H1 | H1].
+  + rewrite H1. apply X0. apply IHn'.
+  + apply IHn'. apply H1.
+Qed.*)
+Admitted.
+
+Lemma C3_strongind :
+  C3 Zero ->
+  (forall n,
+    ((forall m, ord_lt m n -> C3 m) -> C3 n)) ->
+  (forall n, C3 n).
+Proof. intros. apply (C3_strongind_aux X X0 (ord_succ n) _). apply ord_succ_monot. Qed.
+
+Lemma C3_0 : C3 Zero.
+Proof.
+unfold C3, C2, C1. intros.
+unfold provable. unfold P_proves.
+destruct X as [[[H1 H2] H3] H4].
+
+induction P; rewrite H in *.
++ exists (ord_up (ord_2_exp Zero) P). simpl in H1,H4,H. destruct H2 as [H2a H2b]. repeat split; auto. apply ord_ltb_lt. rewrite H. auto. apply one_nf. simpl. simpl in H3. omega. rewrite <- H4. auto.
++ destruct H2. destruct p. simpl in H. rewrite H in o0. apply ord_lt_ltb in o0. destruct H4. destruct (ptree_ord P) in o0; inversion o0.
++ exists (ord_up (ord_2_exp Zero) (node f)). destruct H4. repeat split; simpl; auto. apply ord_ltb_lt. auto. apply one_nf. omega.
++ destruct H2 as [[[X1 X2] X3] X4]. simpl in H3,H4. rewrite X3 in *. rewrite X4 in *. destruct (IHP (lor f f0) d (X1,X2,H3,H4)) as [T [[[Y1 Y2] Y3] Y4]].
+  exists (exchange_ab f f0 (ptree_deg T) (ptree_ord T) T). repeat split; auto.
++ destruct H2 as [[[X1 X2] X3] X4]. simpl in H3,H4. rewrite X3 in *. rewrite X4 in *. destruct (IHP _ _ (X1,X2,H3,H4)) as [T [[[Y1 Y2] Y3] Y4]].
+  exists (exchange_cab f f0 f1 (ptree_deg T) (ptree_ord T) T). repeat split; simpl; auto.
++ destruct H2 as [[[X1 X2] X3] X4]. simpl in H3,H4. rewrite X3 in *. rewrite X4 in *. destruct (IHP _ _ (X1,X2,H3,H4)) as [T [[[Y1 Y2] Y3] Y4]].
+  exists (exchange_abd f f0 f1 (ptree_deg T) (ptree_ord T) T). repeat split; simpl; auto.
++ destruct H2 as [[[X1 X2] X3] X4]. simpl in H3,H4. rewrite X3 in *. rewrite X4 in *. destruct (IHP _ _ (X1,X2,H3,H4)) as [T [[[Y1 Y2] Y3] Y4]].
+  exists (exchange_cabd f f0 f1 f2 (ptree_deg T) (ptree_ord T) T). repeat split; simpl; auto.
++ destruct H2 as [[[X1 X2] X3] X4]. simpl in H3,H4. rewrite X3 in *. rewrite X4 in *. destruct (IHP _ _ (X1,X2,H3,H4)) as [T [[[Y1 Y2] Y3] Y4]].
+  exists (contraction_a f (ptree_deg T) (ptree_ord T) T). repeat split; simpl; auto.
++ destruct H2 as [[[X1 X2] X3] X4]. simpl in H3,H4. rewrite X3 in *. rewrite X4 in *. destruct (IHP _ _ (X1,X2,H3,H4)) as [T [[[Y1 Y2] Y3] Y4]].
+  exists (contraction_ad f f0 (ptree_deg T) (ptree_ord T) T). repeat split; simpl; auto.
++ destruct H2 as [[[[X1 X2] X3] X4] X5]. simpl in H3,H4. rewrite X4 in *. rewrite X5 in *. destruct (IHP _ _ (X1,X3,H3,H4)) as [T [[[Y1 Y2] Y3] Y4]].
+  exists (weakening_ad f f0 (ptree_deg T) (ptree_ord T) T). repeat split; simpl; auto.
++ destruct H2 as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. simpl in H3,H4. rewrite X5 in *. rewrite X6 in *. rewrite X7 in *. rewrite X8 in *. apply max_m_n in H3. destruct H3 as [Z1 Z2].
+  apply ord_max_0 in H4. destruct H4 as [Z3 Z4]. destruct (IHP1 _ _ (X1,X2,Z1,Z3)) as [T [[[Y1 Y2] Y3] Y4]].
+  destruct (IHP2 _ _ (X3,X4,Z2,Z4)) as [T' [[[Y1' Y2'] Y3'] Y4']].
+  exists (demorgan_ab f f0 (ptree_deg T) (ptree_deg T') (ptree_ord T) (ptree_ord T') T T'). repeat split; simpl; auto. lia. rewrite Y4,Y4'. auto.
++ destruct H2 as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. simpl in H3,H4. rewrite X5 in *. rewrite X6 in *. rewrite X7 in *. rewrite X8 in *. apply max_m_n in H3. destruct H3 as [Z1 Z2].
+  apply ord_max_0 in H4. destruct H4 as [Z3 Z4]. destruct (IHP1 _ _ (X1,X2,Z1,Z3)) as [T [[[Y1 Y2] Y3] Y4]].
+  destruct (IHP2 _ _ (X3,X4,Z2,Z4)) as [T' [[[Y1' Y2'] Y3'] Y4']].
+  exists (demorgan_abd f f0 f1 (ptree_deg T) (ptree_deg T') (ptree_ord T) (ptree_ord T') T T'). repeat split; simpl; auto. lia. rewrite Y4,Y4'. auto.
++ destruct H2 as [[[X1 X2] X3] X4]. simpl in H3,H4. rewrite X4 in *. rewrite X3 in *. destruct (IHP _ _ (X1,X2,H3,H4)) as [T [[[Y1 Y2] Y3] Y4]].
+  exists (negation_a f (ptree_deg T) (ptree_ord T) T). repeat split; simpl; auto.
++ destruct H2 as [[[X1 X2] X3] X4]. simpl in H3,H4. rewrite X4 in *. rewrite X3 in *. destruct (IHP _ _ (X1,X2,H3,H4)) as [T [[[Y1 Y2] Y3] Y4]].
+  exists (negation_ad f f0 (ptree_deg T) (ptree_ord T) T). repeat split; simpl; auto.
++ destruct H2 as [[[[X1 X2] X3] X4] X5]. simpl in H3,H4. rewrite X4 in *. rewrite X5 in *. destruct (IHP _ _ (X1,X3,H3,H4)) as [T [[[Y1 Y2] Y3] Y4]].
+  exists (quantification_a f n t (ptree_deg T) (ptree_ord T) T). repeat split; simpl; auto.
++ destruct H2 as [[[[X1 X2] X3] X4] X5]. simpl in H3,H4. rewrite X4 in *. rewrite X5 in *. destruct (IHP _ _ (X1,X3,H3,H4)) as [T [[[Y1 Y2] Y3] Y4]].
+  exists (quantification_ad f f0 n t (ptree_deg T) (ptree_ord T) T). repeat split; simpl; auto.
++ unfold valid in H2. fold valid in H2. simpl in H1,H3,H4. rewrite <- H1, H4 in *. 
+  assert (forall m : nat,
+   (ptree_formula (p m) = substitution f n (represent m)) * valid (p m) *
+   (S d >= ptree_deg (p m)) * (ptree_ord (p m) = Zero)).
+   { intros m. destruct (H2 m) as [[[X1 X2] X3] X4]. repeat split; simpl; auto. omega. }
+  pose proof (fun m => X m (substitution f n (represent m)) d (X0 m)).
+  exists (w_rule_a f n d (ord_2_exp Zero) (fun m => projT1 (X1 m))). repeat split;
+  try destruct (X1 m) as [T [[[Y1 Y2] Y3] Y4]]; simpl; auto.
++ unfold valid in H2. fold valid in H2. simpl in H1,H3,H4. rewrite <- H1, H4 in *. 
+  assert (forall m : nat,
+   (ptree_formula (p m) = lor (substitution f n (represent m)) f0) * valid (p m) *
+   (S d >= ptree_deg (p m)) * (ptree_ord (p m) = Zero)).
+   { intros m. destruct (H2 m) as [[[X1 X2] X3] X4]. repeat split; simpl; auto. omega. }
+  pose proof (fun m => X m (lor (substitution f n (represent m)) f0) d (X0 m)).
+  exists (w_rule_ad f f0 n d (ord_2_exp Zero) (fun m => projT1 (X1 m))). repeat split;
+  try destruct (X1 m) as [T [[[Y1 Y2] Y3] Y4]]; simpl; auto.
++ inversion H4. destruct (ord_max o o0) in H0. inversion H0. simpl in H0. destruct o1_1 in H0. inversion H0. inversion H0.
++ inversion H4. destruct (ord_max o o0) in H0. inversion H0. simpl in H0. destruct o1_1 in H0. inversion H0. inversion H0.
++ inversion H4. destruct (ord_max o o0) in H0. inversion H0. simpl in H0. destruct o1_1 in H0. inversion H0. inversion H0.
+Qed.
+
+
+Lemma Q3_inductive : forall n, (forall m, m <= n -> Q3 m) -> Q3 (S n).
+Proof.
+unfold Q3,Q2, Q1. intros.
+destruct A as [| B | B C | m B].
+- inversion H0.
+- inversion H0. simpl. apply negation2. apply exchange1.
+  apply (H n (le_refl n) B H4 n0 t s); auto. apply equ_symm,H1.
+- destruct (free_list_lor B C n0 H2) as [HB HC].
+  destruct (num_conn_lor _ _ _ H0) as [HB' HC'].
+  destruct (correct_closed_t _ _ H1) as [Hs Ht].
+  simpl. apply (demorgan2 _ _ _ 0 0 Zero Zero).
+  + apply associativity1. apply exchange1. apply weakening.
+    * destruct HC as [HC | HC].
+      { apply (one_var_free_lemma _ _ _ Ht HC). }
+      { rewrite closed_subst_eq; apply HC. }
+    * destruct HB as [HB | HB].
+      { apply (H (num_conn B) HB' B (eq_refl (num_conn B)) n0 s t H1 HB). }
+      { rewrite closed_subst_eq, closed_subst_eq; auto. apply (LEM B HB). }
+  + apply associativity1. apply exchange2. apply exchange1. apply weakening.
+    * destruct HB as [HB | HB].
+      { apply (one_var_free_lemma _ _ _ Ht HB). }
+      { rewrite closed_subst_eq; apply HB. }
+    * destruct HC as [HC | HC].
+      { apply (H (num_conn C) HC' C (eq_refl (num_conn C)) n0 s t H1 HC). }
+      { rewrite closed_subst_eq, closed_subst_eq; auto. apply (LEM C HC). }
+- apply exchange1. inversion H0.
+  simpl. pose proof (univ_free_var _ _ _ H2) as Heq. rewrite Heq.
+  apply w_rule2. intros k. apply exchange1.
+  apply (quantification2 _ _ _ (represent k)).
+  + apply repr_closed.
+  + destruct (correct_closed_t _ _ H1) as [Hs Ht].
+    rewrite (substitution_order B m n0 s _ Hs (repr_closed k) Heq).
+    rewrite (substitution_order B m n0 t _ Ht (repr_closed k) Heq).
+    apply (H n (le_refl n) (substitution B m (represent k))); auto.
+    * rewrite num_conn_sub. auto.
+    * apply free_list_univ_sub; auto. apply repr_closed.
+Qed.
+
+Lemma Q3_lemma : forall n, Q3 n.
+Proof. apply Q3_strongind. apply Q3_0. apply Q3_inductive. Qed.
+
+Lemma Q2_lemma : forall (n : nat) (A : formula), Q2 A n.
+Proof. apply Q3_lemma. Qed.
+
+Lemma Q1_lemma : forall (A : formula), Q1 A.
+Proof.
+intros.
+pose proof (Q2_lemma) as H.
+unfold Q2 in H.
+apply (H (num_conn A) A). auto.
+Qed.
+
+Lemma LEM_term : forall (A : formula) (n : nat) (s t : term),
+  correct_a (equ s t) = true ->
+  free_list A = [n] ->
+  PA_omega_theorem (lor (neg (substitution A n s)) (substitution A n t))
+                   0 Zero.
+Proof. apply Q1_lemma. Qed.
+
 (* Having done the hard work of showing the Cut-elimination algorithm
 terminates, we now complete the reasoning for:
 'if A is provable, it has a Cut-free proof' *)
@@ -11531,7 +11711,7 @@ intros alpha. induction alpha.
         assert (nf (nat_ord 1)). rewrite <- O. rewrite <- H4. apply ptree_ord_nf. apply v.
         destruct (ord_2_exp_fp _ H). apply ord_lt_ltb. rewrite O in *. auto. inversion H0.
         apply nf_2_exp. apply nf_nat. simpl. simpl in H3. omega. rewrite O. auto.
-      * destruct H2 as [[X1 X2] X3]. simpl in H1. simpl in H3. pose proof (IHP A d (H1,X2,H3, H4)).
+      * destruct H2 as [[X1 X2] X3]. simpl in H1. simpl in H3. simpl in H4. pose proof (IHP A d (H1,X2,H3, H4)).
       destruct H2. destruct p. simpl in H4. rewrite H4 in o0. apply ord_lt_ltb in o0. destruct (ptree_ord P) in o0; inversion o0.
       * exists (ord_up (ord_2_exp (cons alpha1 n alpha2)) (node f)). repeat split; simpl; auto. pose ord_mult_exp_monot.
       apply ord_ltb_lt. auto. destruct alpha1.
