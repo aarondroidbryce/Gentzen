@@ -3918,8 +3918,68 @@ Qed.
 
 Lemma ord_nf_succ : forall alpha, nf (ord_succ alpha) -> nf alpha.
 Proof.
+intros.
+induction alpha.
+- apply zero_nf.
+- unfold ord_succ in H. fold ord_succ in H. destruct alpha1.
+  + apply (nf_scalar _ _ _ _ H).
+  + pose proof (IHalpha2 (nf_hered_third _ _ _ H)).
+    pose proof (nf_hered_first _ _ _ H).
+    destruct alpha2.
+    * apply single_nf. apply H1.
+    * apply cons_nf. 
+      { inversion H. destruct alpha2_1; inversion H5. destruct alpha2_1. apply zero_lt. inversion H4. destruct H9. apply H5. }
+      apply H1. apply H0.
+Qed.
 
-Admitted.
+Lemma w_tower_succ : forall n, ord_lt (ord_succ (w_tower n)) (w_tower (S n)).
+Proof.
+intros.
+destruct n.
+- simpl. apply ord_ltb_lt. auto.
+- simpl. destruct (w_tower n).
+  + apply ord_ltb_lt. auto.
+  + apply ord_ltb_lt. unfold ord_ltb. fold ord_ltb. pose proof (omega_exp_incr' o1 o2 n0). apply ord_lt_ltb in H. rewrite H. auto.
+Qed.
+
+Lemma w_tower_succ2 : forall n, ord_lt (ord_succ (ord_succ (w_tower n))) (w_tower (S n)).
+Proof.
+intros.
+destruct n.
+- simpl. apply ord_ltb_lt. auto.
+- simpl. destruct (w_tower n).
+  + apply ord_ltb_lt. auto.
+  + apply ord_ltb_lt. unfold ord_succ. unfold ord_ltb. fold ord_ltb. pose proof (omega_exp_incr' o1 o2 n0). apply ord_lt_ltb in H. rewrite H. auto.
+Qed.
+
+Lemma w_tower_lt : forall n m,  m < n -> ord_lt (w_tower m) (w_tower n).
+Proof.
+intros n. induction n.
+- intros. inversion H.
+- intros. inversion H.
+  + simpl. apply ord_ltb_lt. destruct (w_tower n). auto. unfold ord_ltb. fold ord_ltb. rewrite (ord_lt_ltb _ _ (omega_exp_incr' o1 o2 n0)). auto.
+  + apply ord_ltb_lt. apply (ord_ltb_trans _ _ _ (ord_lt_ltb _ _ (IHn _ H1))). simpl. apply ord_lt_ltb. apply omega_exp_incr.
+Qed.
+
+Lemma w_tower_max : forall n m, ord_lt (ord_max (ord_succ (ord_succ (w_tower m))) (ord_succ (ord_succ (w_tower n)))) (w_tower (S (m+n))).
+Proof.
+intros. case (ord_ltb (ord_succ (ord_succ (w_tower m))) (ord_succ (ord_succ (w_tower n)))) eqn:H.
+- rewrite (ord_max_lem1 _ _ H). destruct m.
+  + apply w_tower_succ2.
+  + apply ord_ltb_lt. apply (ord_ltb_trans _ _ _ (ord_lt_ltb _ _ (w_tower_succ2 _))).
+    apply ord_lt_ltb. apply w_tower_lt. omega.
+- rewrite (ord_max_lem2 _ _ H). destruct n.
+  + rewrite <- plus_n_O. apply w_tower_succ2.
+  + apply ord_ltb_lt. apply (ord_ltb_trans _ _ _ (ord_lt_ltb _ _ (w_tower_succ2 _))).
+    apply ord_lt_ltb. apply w_tower_lt. omega.
+Qed.
+
+Lemma w_tower_nf : forall n, nf (w_tower n).
+Proof.
+intros. induction n.
+- simpl. apply single_nf. apply Zero_nf.
+- simpl. apply single_nf. apply IHn.
+Qed.
 
 (* The (strong) inductive step for LEM *)
 (* *)
@@ -3933,15 +3993,8 @@ destruct A as [a | B | B C | m B].
   + apply negation2. apply exchange1. apply H2.
   + apply ord_lt_succ. unfold num_conn. fold num_conn. destruct (num_conn B).
     * simpl. apply ord_ltb_lt. auto.
-    * unfold ord_succ. unfold w_tower. fold w_tower. destruct (w_tower n0).
-      { apply ord_ltb_lt. auto. }
-      { unfold nat_ord. apply ord_ltb_lt. auto. admit. }
-  + pose proof (ord_nf _ _ _ H2). simpl. destruct (w_tower (num_conn B)).
-    * apply single_nf. apply zero_nf.
-    * apply cons_nf.
-      { apply zero_lt. }
-      { apply ord_nf_succ. apply H4. }
-      { apply single_nf. apply zero_nf. }
+    * apply w_tower_succ. 
+  + apply ord_succ_nf. apply w_tower_nf.
 
 - destruct (closed_lor _ _ H1) as [HB HC].
   destruct (num_conn_lor _ _ _ H0) as [HB' HC'].
@@ -3950,34 +4003,14 @@ destruct A as [a | B | B C | m B].
   pose proof (H (num_conn C) HC' C (eq_refl (num_conn C)) HC).
   apply (weakening B _ _ _ HB) in H3. apply exchange1 in H3. apply exchange2 in H3. apply associativity1 in H3.
   pose proof (demorgan2 B C (lor B C) 0 0 _ _ H2 H3).
-  apply (ord_incr _ _ (ord_succ (ord_max (ord_succ (ord_succ (cons (nat_ord (num_conn B)) 0 Zero))) (ord_succ (ord_succ (cons  (nat_ord (num_conn C)) 0 Zero)))))).
+  apply (ord_incr _ _ (ord_succ (ord_max (ord_succ (ord_succ (w_tower (num_conn B)))) (ord_succ (ord_succ (w_tower (num_conn C))))))).
   + apply H4.
-  + simpl. unfold nat_ord. destruct (num_conn B).
-    * destruct (num_conn C).
-      { unfold ord_succ. fold ord_succ. apply ord_ltb_lt. auto. }
-      { unfold ord_succ. fold ord_succ. apply ord_ltb_lt. unfold ord_max.
-        case (ord_ltb (cons (cons Zero 0 Zero) 0 (cons Zero 0 Zero)) (cons (cons Zero (S n0) Zero) 0 (cons Zero 0 Zero))) eqn:H5.
-        { simpl. assert (lt_nat n0 (S n0) = true). apply lt_nat_decid_conv. omega.
-          rewrite H6. auto. }
-        { inversion H5. }
-        }
-    * destruct (num_conn C).
-      { unfold ord_succ. fold ord_succ. apply ord_ltb_lt. unfold ord_max.
-        simpl. assert (lt_nat n0 (S (n0 + 0)) = true). apply lt_nat_decid_conv. omega.
-        rewrite H5. auto.
-        }
-      { unfold ord_succ. fold ord_succ. apply ord_ltb_lt. unfold ord_max.
-        case (ord_ltb (cons (cons Zero n0 Zero) 0 (cons Zero 1 Zero)) (cons (cons Zero n1 Zero) 0 (cons Zero 1 Zero))) eqn:H5.
-        { simpl. assert (lt_nat n1 (S (n0 + S n1)) = true). apply lt_nat_decid_conv. omega.
-          rewrite H6. auto. }
-        { simpl. assert (lt_nat n0 (S (n0 + S n1)) = true). apply lt_nat_decid_conv. omega.
-          rewrite H6. auto. }
-        }
-  + apply ord_succ_nf. apply single_nf. apply nf_nat. 
+  + unfold num_conn. fold num_conn. apply ord_lt_succ. apply w_tower_max.
+  + apply ord_succ_nf. apply w_tower_nf.
 
 - inversion H0. apply exchange1.
-  apply (ord_incr _ _ (cons (nat_ord (num_conn (univ m B))) 0 Zero)).
-  + apply w_rule2. intros k. rewrite H0. assert (nat_ord (S n) = ord_succ (nat_ord n)). admit.
+  apply (ord_incr _ _ (w_tower (num_conn (univ m B)))).
+  + apply w_rule2. fold w_tower. fold num_conn. intros k. rewrite H0. assert (nat_ord (S n) = ord_succ (nat_ord n)). admit.
     rewrite H2. apply LEM_univ. 
     * apply closed_univ_sub; auto. apply eval_closed, eval_represent.
     * destruct H3. pose proof (H (num_conn B) (le_refl _) (substitution B m (represent k)) (num_conn_sub B m (represent k)) (closed_univ_sub _ _ H1 _ (eval_closed _ (eval_represent k)))).
