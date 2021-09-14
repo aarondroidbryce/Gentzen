@@ -3956,13 +3956,11 @@ The inductive proof here is quite similar with LEM, and Q1,Q2,Q3
 are meant to break this up. *)
 (* *)
 
-(*
-
 Definition Q1 (A : formula) : Type := forall (n : nat) (s t : term),
   correct_a (equ s t) = true ->
   free_list A = [n] ->
   PA_omega_theorem (lor (neg (substitution A n s)) (substitution A n t))
-                   0 (ord_succ Zero).
+                   0 (ord_succ (w_tower ((num_conn A)+(num_conn A)))).
 
 Definition Q2 (A : formula) (n : nat) : Type := num_conn A = n -> Q1 A.
 
@@ -3993,7 +3991,8 @@ Lemma Q3_0 : Q3 0.
 Proof.
 unfold Q3, Q2. intros.
 destruct A as [a | | | ].
-- unfold Q1. apply LEM_term_atomic.
+- unfold Q1. intros. apply (ord_incr _ _ (ord_succ Zero)). apply LEM_term_atomic; auto.
+  apply ord_lt_succ. apply zero_lt. apply ord_succ_nf. apply w_tower_nf.
 - inversion H.
 - inversion H.
 - inversion H.
@@ -4002,40 +4001,57 @@ Qed.
 
 Lemma Q3_inductive : forall n, (forall m, m <= n -> Q3 m) -> Q3 (S n).
 Proof.
-unfold Q3,Q2, Q1. intros.
+unfold Q3,Q2,Q1. intros.
 destruct A as [| B | B C | m B].
 - inversion H0.
-- inversion H0. apply negation2. fold substitution. apply exchange1. simpl.
+- inversion H0. apply negation2. fold substitution. apply exchange1. unfold num_conn. fold num_conn.
+  apply (ord_incr _ _ (ord_succ (w_tower ((num_conn B)+(num_conn B))))).
   apply (H n (le_refl n) B H4 n0 t s); auto. apply equ_symm,H1.
+  apply ord_ltb_lt. apply (ord_ltb_trans _ _ _ (ord_lt_ltb _ _ (w_tower_succ _))). apply ord_lt_ltb. apply w_tower_lt. omega.
+  apply single_nf. apply w_tower_nf.
 - destruct (free_list_lor B C n0 H2) as [HB HC].
   destruct (num_conn_lor _ _ _ H0) as [HB' HC'].
   destruct (correct_closed_t _ _ H1) as [Hs Ht].
-  simpl. apply (demorgan2 _ _ _ 0 0 Zero Zero).
-  + apply associativity1. apply exchange1. apply weakening.
-    * destruct HC as [HC | HC].
-      { apply (one_var_free_lemma _ _ _ Ht HC). }
-      { rewrite closed_subst_eq; apply HC. }
-    * destruct HB as [HB | HB].
-      { apply (H (num_conn B) HB' B (eq_refl (num_conn B)) n0 s t H1 HB). }
-      { rewrite closed_subst_eq, closed_subst_eq; auto. apply (LEM B HB). }
-  + apply associativity1. apply exchange2. apply exchange1. apply weakening.
-    * destruct HB as [HB | HB].
-      { apply (one_var_free_lemma _ _ _ Ht HB). }
-      { rewrite closed_subst_eq; apply HB. }
-    * destruct HC as [HC | HC].
-      { apply (H (num_conn C) HC' C (eq_refl (num_conn C)) n0 s t H1 HC). }
-      { rewrite closed_subst_eq, closed_subst_eq; auto. apply (LEM C HC). }
+  apply (ord_incr _ _ (ord_succ (ord_max (ord_succ (ord_succ (w_tower ((num_conn B) + (num_conn B))))) (ord_succ (ord_succ (w_tower ((num_conn C)+(num_conn C)))))))).
+  + apply (demorgan2 _ _ _ 0 0 (ord_succ (ord_succ (w_tower ((num_conn B) + (num_conn B))))) (ord_succ (ord_succ (w_tower ((num_conn C)+(num_conn C)))))).
+    * apply associativity1. apply exchange1. apply weakening.
+      { destruct HC as [HC | HC].
+        { apply (one_var_free_lemma _ _ _ Ht HC). }
+        { rewrite closed_subst_eq; apply HC. }
+        }
+      { destruct HB as [HB | HB].
+        { apply (H (num_conn B) HB' B (eq_refl (num_conn B)) n0 s t H1 HB). }
+        { rewrite closed_subst_eq, closed_subst_eq; auto. apply (LEM B HB). }
+        }
+      * apply associativity1. apply exchange2. apply exchange1. apply weakening.
+      { destruct HB as [HB | HB].
+        { apply (one_var_free_lemma _ _ _ Ht HB). }
+        { rewrite closed_subst_eq; apply HB. }
+        }
+      { destruct HC as [HC | HC].
+        { apply (H (num_conn C) HC' C (eq_refl (num_conn C)) n0 s t H1 HC). }
+        { rewrite closed_subst_eq, closed_subst_eq; auto. apply (LEM C HC). }
+        }
+  + unfold num_conn. fold num_conn. apply ord_lt_succ. apply ord_ltb_lt. apply (ord_ltb_trans _ _ _ (ord_lt_ltb _ _ (w_tower_max _ _))). apply ord_lt_ltb. apply w_tower_lt. omega.
+  + apply ord_succ_nf. apply w_tower_nf.
 - apply exchange1. inversion H0.
-  simpl. pose proof (univ_free_var _ _ _ H2) as Heq. rewrite Heq.
-  apply w_rule2. intros k. apply exchange1.
-  apply (quantification2 _ _ _ (represent k)).
-  + apply repr_closed.
-  + destruct (correct_closed_t _ _ H1) as [Hs Ht].
-    rewrite (substitution_order B m n0 s _ Hs (repr_closed k) Heq).
-    rewrite (substitution_order B m n0 t _ Ht (repr_closed k) Heq).
-    apply (H n (le_refl n) (substitution B m (represent k))); auto.
-    * rewrite num_conn_sub. auto.
-    * apply free_list_univ_sub; auto. apply repr_closed.
+  unfold substitution. fold substitution. pose proof (univ_free_var _ _ _ H2) as Heq. rewrite Heq.
+  apply (ord_incr _ _ (w_tower ((num_conn (univ m B))+(num_conn (univ m B))))).
+  + apply w_rule2. intros k. apply exchange1. apply (ord_incr _ _ (ord_succ ( ord_succ (w_tower ((num_conn B)+(num_conn B)))))).
+    * apply (quantification2 _ _ _ (represent k)).
+      { apply repr_closed. }
+      { destruct (correct_closed_t _ _ H1) as [Hs Ht].
+        rewrite (substitution_order B m n0 s _ Hs (repr_closed k) Heq).
+        rewrite (substitution_order B m n0 t _ Ht (repr_closed k) Heq).
+        rewrite <- (num_conn_sub B m (represent k)).
+        apply (H n (le_refl n) (substitution B m (represent k))); auto.
+        { rewrite num_conn_sub. auto. }
+        { apply free_list_univ_sub; auto. apply repr_closed. }
+        }
+    * unfold num_conn. fold num_conn. fold w_tower. rewrite <- plus_n_Sm. apply w_tower_succ2.
+    * apply w_tower_nf.
+  + apply ord_succ_monot.
+  + apply ord_succ_nf. apply w_tower_nf.
 Qed.
 
 Lemma Q3_lemma : forall n, Q3 n.
@@ -4056,10 +4072,9 @@ Lemma LEM_term : forall (A : formula) (n : nat) (s t : term),
   correct_a (equ s t) = true ->
   free_list A = [n] ->
   PA_omega_theorem (lor (neg (substitution A n s)) (substitution A n t))
-                   0 Zero.
+                   0 (ord_succ (w_tower ((num_conn A)+(num_conn A)))).
 Proof. apply Q1_lemma. Qed.
 
-*)
 
 
 
@@ -4947,16 +4962,6 @@ Qed.
 
 
 
-
-
-
-
-
-
-
-
-
-
 (*
 ###############################################################################
 Section 9: Invertibility lemmas: We show that double negation, DeMorgan,
@@ -5267,13 +5272,13 @@ match P, S with
 
 | negation_a A d alpha P', _ =>
     (match eq_f A E, S with
-    | true, (1) => P'
+    | true, (1) => ord_up (ord_succ alpha) P'
     | _, _ => P
     end)
 
 | negation_ad A D d alpha P', lor_ind S_A S_D =>
     (match eq_f A E, S_A with
-    | true, (1) => dub_neg_sub_ptree_fit P' E (lor_ind (non_target A) S_D)
+    | true, (1) => ord_up (ord_succ alpha) (dub_neg_sub_ptree_fit P' E (lor_ind (non_target A) S_D))
     | _, _ => 
         negation_ad
           A
@@ -5554,71 +5559,43 @@ of an ptree. *)
 (* *)
 Lemma dub_neg_ptree_ord : forall (P : ptree) (E : formula),
   valid P ->
-  forall (S : subst_ind), leq (ptree_ord (dub_neg_sub_ptree P E S)) (ptree_ord P).
+  forall (S : subst_ind), (ptree_ord (dub_neg_sub_ptree P E S)) = (ptree_ord P).
 Proof.
 intros P E H. induction P; intros S.
 - simpl. case (subst_ind_fit (ptree_formula P) S) eqn:Hfit; simpl; auto.
   rewrite (dub_neg_ptree_formula_true _ _ _ Hfit).
-  apply IHP. inversion H. auto. left. auto.
-- simpl. case (subst_ind_fit (ptree_formula P) S); left; auto.
-- simpl. case (subst_ind_fit f S); left; auto.
+  apply IHP. inversion H. auto.
+- simpl. case (subst_ind_fit (ptree_formula P) S); auto.
+- simpl. case (subst_ind_fit f S); auto.
 - simpl.
-  destruct S; left; auto. case (subst_ind_fit f0 S1 && subst_ind_fit f S2); auto.
-- simpl. destruct S; left; auto. destruct S1; auto.
+  destruct S; auto. case (subst_ind_fit f0 S1 && subst_ind_fit f S2); auto.
+- simpl. destruct S; auto. destruct S1; auto.
   case (subst_ind_fit f S1_1 && subst_ind_fit f1 S1_2 && subst_ind_fit f0 S2);
   auto.
-- simpl. destruct S; left; auto. destruct S1; auto.
+- simpl. destruct S; auto. destruct S1; auto.
   case (subst_ind_fit f0 S1_1 && subst_ind_fit f S1_2 && subst_ind_fit f1 S2);
   auto.
-- simpl. destruct S; left; auto. destruct S1; auto. destruct S1_1; auto.
+- simpl. destruct S; auto. destruct S1; auto. destruct S1_1; auto.
   case (subst_ind_fit f S1_1_1 && subst_ind_fit f1 S1_1_2 &&
         subst_ind_fit f0 S1_2 && subst_ind_fit f2 S2); auto.
-- simpl. destruct (subst_ind_fit f S); left; auto.
+- simpl. destruct (subst_ind_fit f S); auto.
 - simpl.
-  destruct S; left; auto. destruct (subst_ind_fit f S1 && subst_ind_fit f0 S2); auto.
+  destruct S; auto. destruct (subst_ind_fit f S1 && subst_ind_fit f0 S2); auto.
 - simpl.
-  destruct S; left; auto. destruct (subst_ind_fit f S1 && subst_ind_fit f0 S2); auto.
-- simpl. destruct S; left; auto.
-- simpl. destruct S; left; auto. destruct S1; destruct (subst_ind_fit f1 S2); auto.
-- simpl. destruct S.
-  + destruct (eq_f f E); left; auto.
-  + destruct (eq_f f E). right. inversion H. destruct H0. apply ord_succ_monot. left. auto.
-  + left. auto. 
-- simpl. destruct S. 
-  + left. auto.
-  + left. auto.
-  + destruct S1; destruct (subst_ind_fit f0 S2) eqn:HS2;
-    destruct (eq_f f E); auto.
-    * left; auto.
-    * left; auto.
-    * left; auto.
-    * left; auto.
-    * simpl. inversion H as [[[H1 H2] H3] H4]. rewrite H4.
-      rewrite dub_neg_ptree_formula_true.
-      { destruct (IHP H2 (lor_ind (non_target f) S2)).
-        { rewrite H0. right. apply ord_succ_monot. }
-        { right. apply ord_ltb_lt. apply ord_lt_ltb in H0. apply (ord_ltb_trans _ _ _ H0 (ord_lt_ltb _ _ (ord_succ_monot _))). }
-        }
-      { rewrite H1. simpl. rewrite HS2,non_target_fit. auto. }
-    * left; auto.
-    * left; auto.
-    * left; auto.
-    * left; auto.
-    * left; auto.
-    * left; auto.
-    * left; auto.
-- simpl. destruct S; left; auto.
-- simpl.
-  destruct S; left; auto; destruct S1; auto; destruct (subst_ind_fit f0 S2); auto.
-- simpl. destruct S; left; auto.
-- simpl.
-  destruct S; left; auto; destruct S1; auto; destruct (subst_ind_fit f0 S2); auto.
-- simpl. destruct (subst_ind_fit f S); left; auto.
-- simpl. destruct (subst_ind_fit f0 S); left; auto.
-- simpl.
-  destruct S; left; auto. destruct (subst_ind_fit f S1 && subst_ind_fit f1 S2); auto.
+  destruct S; auto. destruct (subst_ind_fit f S1 && subst_ind_fit f0 S2); auto.
+- simpl. destruct S; auto.
+- simpl. destruct S; auto. destruct S1; destruct (subst_ind_fit f1 S2); auto.
+- simpl. destruct S; destruct (eq_f f E); auto.
+- simpl. destruct S; auto; destruct S1; destruct (subst_ind_fit f0 S2) eqn:HS2;
+  destruct (eq_f f E); auto.
+- simpl. destruct S; auto.
+- simpl. destruct S; auto; destruct S1; auto; destruct (subst_ind_fit f0 S2); auto.
+- simpl. destruct S; auto.
+- simpl. destruct S; auto; destruct S1; auto; destruct (subst_ind_fit f0 S2); auto.
+- simpl. destruct (subst_ind_fit f S); auto.
+- simpl. destruct (subst_ind_fit f0 S); auto.
+- simpl. destruct S; auto. destruct (subst_ind_fit f S1 && subst_ind_fit f1 S2); auto.
 Qed.
-
 
 (* Now we prove that if we have a valid ptree, performing our
 double negation substitution on it results in a valid ptree *)
@@ -5639,9 +5616,7 @@ induction P; try intros H S Hs.
 
 - simpl. inversion H as [[H1 H2] H3]. inversion Hs. rewrite H4.
   rewrite dub_neg_ptree_formula_true; auto. repeat split.
-  + destruct (dub_neg_ptree_ord _ E H2 S).
-    * rewrite H0. apply H1.
-    * apply (ord_ltb_lt _ _ (ord_ltb_trans _ _ _ (ord_lt_ltb _ _ H0) (ord_lt_ltb _ _ H1))).
+  + rewrite (dub_neg_ptree_ord _ E H2 S). apply H1.
   + auto.
   + apply H3.
 
@@ -5658,9 +5633,7 @@ induction P; try intros H S Hs.
   + rewrite H2. simpl. apply (and_bool_symm _ _ H1).
   + rewrite dub_neg_ptree_deg; auto.
   + rewrite H2. simpl. apply (and_bool_symm _ _ H1).
-  + destruct (dub_neg_ptree_ord _ E H3 (lor_ind S2 S1)).
-    * destruct H5. symmetry. apply H0.
-    * apply (ord_ltb_lt _ _ (ord_ltb_trans _ _ _ (ord_lt_ltb _ _ H0) (ord_lt_ltb _ _ H1))).
+  + rewrite (dub_neg_ptree_ord _ E H3 (lor_ind S2 S1)). apply H5.
   + rewrite H2. simpl. apply (and_bool_symm _ _ H1).
 
 - simpl. destruct S; try destruct S1; inversion Hs.
@@ -5818,7 +5791,7 @@ induction P; try intros H S Hs.
     * rewrite dub_neg_ptree_ord; auto.
     * rewrite H4. simpl. apply H1.
 
-- simpl. destruct S; destruct (eq_f f E); apply H.
+- simpl. destruct S; destruct (eq_f f E); try apply H. simpl. inversion H. rewrite H0. destruct X as [[H1 H2] H3]. repeat split; auto. apply ord_succ_monot. apply ord_succ_nf. apply ptree_ord_nf. apply H2.
 
 - simpl. inversion H as [[[H2 H3] H4] H5]. destruct S; try apply H.
   destruct S1; inversion Hs; rewrite H1; simpl.
@@ -5851,9 +5824,14 @@ induction P; try intros H S Hs.
       { rewrite dub_neg_ptree_formula_true.
         { rewrite dub_neg_ptree_ord; auto. }
         { rewrite H2. simpl. rewrite non_target_fit, H1. auto. } }
-  + destruct (eq_f f E).
-    * rewrite dub_neg_ptree_formula_true; try (apply (IHP H3));
-      rewrite H2; simpl; rewrite non_target_fit, H1; auto.
+  + destruct (eq_f f E). 
+    * simpl. repeat split.
+      { rewrite H5. rewrite dub_neg_ptree_formula_true.
+        { rewrite dub_neg_ptree_ord. apply ord_succ_monot. apply H3. }
+        { rewrite H2. simpl. rewrite non_target_fit, H1. auto. }
+        }
+      { rewrite dub_neg_ptree_formula_true; try (apply (IHP H3)); rewrite H2; simpl; rewrite non_target_fit, H1; auto. }
+      { rewrite H5. apply ord_succ_nf. apply ptree_ord_nf. apply H3. }
     * simpl. repeat split.
       { rewrite dub_neg_ptree_formula_true, dub_neg_ptree_formula; auto.
         { rewrite H2. unfold dub_neg_sub_formula. rewrite formula_sub_ind_lor.
@@ -6340,7 +6318,7 @@ induction P; try intros H S Hs.
     * inversion H as [[[[[[[H1 H2] H3] H4] H5] H6] H7] H8].
       clear IHP1. clear IHP2.
       case (eq_nat n (Init.Nat.max n n0)) eqn:Hn;
-      case (ord_eqb o (ord_max o o0)) eqn:Ho;
+      case (ord_eqb o (ord_succ (ord_max o o0))) eqn:Ho;
       simpl; rewrite H1; unfold demorgan1_sub_formula; simpl; rewrite HE,HF;
       simpl; rewrite (f_eq_decid _ _ HE); auto.
     * simpl. unfold demorgan1_sub_formula. simpl. rewrite HE,HF. auto.
@@ -6358,7 +6336,7 @@ induction P; try intros H S Hs.
           inversion H as [[[[[[[H1 H2] H3] H4] H5] H6] H7] H8].
           rewrite demorgan1_ptree_formula_true; auto.
           { case (eq_nat n (Init.Nat.max n n0)) eqn:Hn;
-            case (ord_eqb o (ord_max o o0)) eqn:Ho;
+            case (ord_eqb o (ord_succ (ord_max o o0))) eqn:Ho;
             simpl; rewrite IHP1; auto; rewrite H1; auto;
             unfold demorgan1_sub_formula; simpl; rewrite HE,HF,HS2;
             destruct (eq_f f (lor E F)); rewrite (f_eq_decid _ _ HE); auto. }
