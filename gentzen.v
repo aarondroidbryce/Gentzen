@@ -7087,7 +7087,6 @@ match subst_ind_fit (ptree_formula P) S with
 | true => demorgan2_sub_ptree_fit P E F S
 end.
 
-
 (* First, we must prove that demorgan2_sub_ptree simply changes the base formula
 of an ptree the way we expect with demorgan2_sub_formula *)
 (* *)
@@ -11292,13 +11291,13 @@ match P with
     contraction_help
       (cut_cad
         (lor C D) E D
-        (max (max d1 d2) (max (num_conn E) (num_conn F)))
+        (max (max d1 d2) (S (num_conn F)))
         d2
-        (ord_succ (ord_succ (ord_max alpha1 alpha2)))
+        (ord_succ (ord_max alpha1 alpha2))
         alpha2
         (exchange_cab
           C E D
-          (max (max d1 d2) (num_conn F))
+          (max (max d1 d2) (S (num_conn F)))
           (ord_succ (ord_max alpha1 alpha2))
           (cut_cad (lor C E) F D d1 d2 alpha1 alpha2
             (associativity_2' P1)
@@ -11631,30 +11630,22 @@ Proof.
       { rewrite X8. apply eq_sym. apply dub_neg_ptree_ord. auto. }
       { pose (max_lem2 _ _ (eq_nat_symm' _ _ Hd)). lia. }
       { rewrite <- F. rewrite ord_max_symm. reflexivity. }
-  + destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. unfold contraction_help. simpl. rewrite eq_f_refl. unfold valid. repeat split; simpl; auto.
+  + destruct X as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. unfold contraction_help. simpl. rewrite eq_f_refl. simpl. repeat split; simpl; auto.
     * unfold associativity_2'. rewrite X1. simpl. auto.
     * unfold associativity_2'. rewrite X1. simpl. repeat split; auto.
-    * rewrite demorgan2_ptree_formula; auto. rewrite X3. unfold demorgan2_sub_formula. simpl. rewrite non_target_fit. repeat rewrite eq_f_refl. simpl. 
-      unfold formula_sub_ind_fit. admit.
-    * admit.
+    * rewrite demorgan2_ptree_formula; auto. rewrite X3. unfold demorgan2_sub_formula. simpl. rewrite non_target_fit. repeat rewrite eq_f_refl. simpl. rewrite non_target_sub'. auto. 
+    * apply demorgan2_valid. auto. rewrite X3. simpl. rewrite non_target_fit. auto.
     * unfold associativity_2'. rewrite X1. simpl. auto.
     * rewrite demorgan2_ptree_deg; auto.
     * unfold associativity_2'. rewrite X1. simpl. auto.
     * rewrite demorgan2_ptree_ord; auto.
-    * admit.
-    * admit.
-    * admit.
-    * admit.
+    * rewrite demorgan1_ptree_formula; auto. rewrite X3. unfold demorgan1_sub_formula. simpl. rewrite non_target_fit. repeat rewrite eq_f_refl. simpl. rewrite non_target_sub'. auto. 
+    * apply demorgan1_valid. auto. rewrite X3. simpl. rewrite non_target_fit. auto.
     * rewrite demorgan1_ptree_deg; auto.
-    * destruct o1_1.
-      admit.
-      admit.
     * rewrite demorgan1_ptree_ord; auto.
-    *)
-  + simpl.
-  admit.
+
   + auto.
-Admitted.
+Qed.
 
 
 
