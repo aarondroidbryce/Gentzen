@@ -1,8 +1,9 @@
-Require Import Omega.
 Require Import Lia.
+Require Import Nat.
 Notation "b1 && b2" := (andb b1 b2).
 Notation "b1 || b2" := (orb b1 b2).
 Notation eq_nat := Nat.eqb.
+
 
 (*
 ###############################################################################
@@ -30,7 +31,7 @@ Lemma eq_refl : forall (n : nat), n = n. Proof. auto. Qed.
 Lemma leq_refl : forall (n : nat), n <= n. Proof. auto. Qed.
 
 Lemma addends_leq : forall (m n p : nat), n + m = p -> n <= p /\ m <= p.
-Proof. intros. omega. Qed.
+Proof. intros. lia. Qed.
 
 Lemma eq_nat_refl : forall (n : nat), eq_nat n n = true.
 Proof.
@@ -81,13 +82,13 @@ intros.
 induction n.
 - unfold lt_nat_decid_nice. intros. destruct m.
   + inversion H.
-  + omega.
+  + lia.
 - unfold lt_nat_decid_nice. intros. destruct m.
   + inversion H.
   + unfold lt_nat_decid_nice in IHn.
     assert (lt_nat n m = true). case_eq (lt_nat n m); intros; auto.
     * unfold lt_nat in H,H0. simpl in H. rewrite H0 in H. auto.
-    * apply IHn in H0. omega.
+    * apply IHn in H0. lia.
 Qed.
 
 Lemma lt_nat_decid : forall (n m : nat), lt_nat n m = true -> n < m.
@@ -106,7 +107,7 @@ induction n.
 - unfold lt_nat_decid_conv_nice. intros. destruct m.
   + inversion H.
   + unfold lt_nat_decid_nice in IHn.
-    assert (n < m). { omega. }
+    assert (n < m). { lia. }
     apply IHn in H0. simpl.
     inversion H. unfold lt_nat. rewrite (succ_geq (S n)). simpl.
     rewrite (succ_not_eq n). auto.
@@ -185,7 +186,7 @@ Lemma mult_left_incr_aux_aux : forall (n m p : nat),
 Proof. intros. induction p; lia. Qed.
 
 Lemma minus_n_0 : forall (n : nat), n - 0 = n.
-Proof. intros. omega. Qed.
+Proof. intros. lia. Qed.
 
 Lemma plus_n_0 : forall n:nat,
   n + 0 = n.
@@ -220,7 +221,7 @@ induction m as [| m' IH].
   auto.
 Qed.
 
-Lemma nat_exp_monot_lem : forall (n : nat), S n < 2 ^ n + 2 ^ n.
+Lemma nat_exp_monot_lem : forall (n : nat), S n < (2 ^ n) + (2 ^ n).
 Proof.
 intros.
 induction n.
@@ -282,17 +283,17 @@ Qed.
 (* Our proof of nat_semiconnex_type is heavily based on the ideas here:
 cs.stackexchange.com/questions/18765/theorem-proofs-in-coq *)
 Lemma nat_semiconnex : forall (m n : nat), m < n \/ n < m \/ m = n.
-Proof. intros. omega. Qed.
+Proof. intros. lia. Qed.
 
 Lemma nat_transitive : forall (n n' n'' : nat), n < n' -> n' < n'' -> n < n''.
-Proof. intros. omega. Qed.
+Proof. intros. lia. Qed.
 
 Lemma leq_prop_sum_aux : forall (m n : nat),
-  m = S n \/ m <= n -> (beq_nat m (S n) || eq_nat m n || lt_nat m n) = true.
+  m = S n \/ m <= n -> (eq_nat m (S n) || eq_nat m n || lt_nat m n) = true.
 Proof.
 intros. destruct H.
 - rewrite <- H. rewrite eq_nat_refl. auto.
-- assert (m = n \/ m < n). { omega. } destruct H0.
+- assert (m = n \/ m < n). { lia. } destruct H0.
   + rewrite H0. rewrite eq_nat_refl. case (eq_nat n (S n)); auto.
   + rewrite (lt_nat_decid_conv _ _ H0).
     case (eq_nat m (S n)); case (eq_nat m n); auto.
@@ -309,7 +310,7 @@ case_eq (eq_nat m (S n)); case_eq (eq_nat m n); case_eq (lt_nat m n); intros.
 - left. apply nat_eq_decid in H3. auto.
 - right. apply nat_eq_decid in H2. rewrite H2. auto.
 - right. apply nat_eq_decid in H2. rewrite H2. auto.
-- right. assert (m < n). { apply (lt_nat_decid _ _ H1). } omega.
+- right. assert (m < n). { apply (lt_nat_decid _ _ H1). } lia.
 - rewrite H1,H2,H3 in H0. inversion H0.
 Qed.
 
@@ -326,7 +327,7 @@ Qed.
 Definition less (m n : nat) := { z : nat & S (z + m) = n}.
 
 Lemma less_le : forall (m n : nat), less m n -> m < n.
-Proof. intros. destruct H as [p H]. omega. Qed.
+Proof. intros. destruct H as [p H]. lia. Qed.
 
 Theorem nat_semiconnex_type_aux : forall (m n : nat),
   (less n m) + (n = m) + (less m n).
@@ -335,15 +336,15 @@ intros.
 induction n.
 - destruct m.
   + left. right. auto.
-  + left. left. exists m. omega.
+  + left. left. exists m. lia.
 - destruct m.
-  + right. exists n. omega.
+  + right. exists n. lia.
   + destruct IHn as [[IHn | IHn] | IHn].
     * destruct IHn as [p H]. destruct p.
-      { left. right. omega. }
-      { left. left. exists p. omega. }
-    * right. exists 0. omega.
-    * right. destruct IHn as [p H]. exists (S p). omega.
+      { left. right. lia. }
+      { left. left. exists p. lia. }
+    * right. exists 0. lia.
+    * right. destruct IHn as [p H]. exists (S p). lia.
 Qed.
 
 Lemma nat_semiconnex_type : forall (m n : nat), (m > n) + (m = n) + (n > m).
@@ -355,7 +356,7 @@ Qed.
 
 Lemma leq_type : forall (m n : nat), m >= n -> (m > n) + (m = n).
 Proof.
-intros. destruct (nat_semiconnex_type m n) as [[Hm | Hm] | Hm]; auto. omega.
+intros. destruct (nat_semiconnex_type m n) as [[Hm | Hm] | Hm]; auto. lia.
 Qed.
 
 Lemma max_n_n : forall (n : nat), max n n = n.
@@ -780,7 +781,7 @@ Section 2: Basic Facts about ordinals under epsilon_0.
 (* We borrows Pierre Casteran's definition of ordinals, which can be found at
 www.labri.fr/perso/casteran, under "Ordinal notations and rpo".
 The file that we borrow from is EPSILON0.v, in the epsilon0 folder.
-In this framework, cons a n b represents  omega^a *(S n)  + b *)
+In this framework, cons a n b represents  lia^a *(S n)  + b *)
 (* *)
 Inductive ord : Set :=
 | Zero : ord
@@ -926,7 +927,7 @@ induction alpha as [Zero | a IHa n b IHb].
 - inversion H.
 - inversion H.
   + apply IHa. apply H1.
-  + omega.
+  + lia.
   + apply IHb. apply H1.
 Qed.
 
@@ -1359,7 +1360,7 @@ intros alpha nf_alpha.
 induction alpha as [Zero | a IHa n b IHb].
 - simpl. reflexivity.
 - destruct a as [Zero | a' n' b'].
-  + simpl. assert (S n = n + 0 + 1). { omega. } rewrite H.
+  + simpl. assert (S n = n + 0 + 1). { lia. } rewrite H.
     assert (b = Zero).
     { inversion nf_alpha. reflexivity. inversion H3. }
     rewrite H0. reflexivity.
@@ -1373,7 +1374,7 @@ Proof.
 intros. rewrite nf_add_one.
 - assert (cons Zero 0 Zero = nat_ord 1). { auto. } rewrite H.
   rewrite <- ord_add_nat. auto.
-  assert (n + 1 = S n). { omega. } rewrite H0. auto.
+  assert (n + 1 = S n). { lia. } rewrite H0. auto.
 - apply nf_nat.
 Qed.
 
@@ -1558,7 +1559,7 @@ destruct n.
 - destruct b as [Zero | a'' n'' b''].
   + unfold leq. left. auto.
   + unfold leq. right. apply tail_lt. apply zero_lt.
-- unfold leq. right. apply coeff_lt. omega.
+- unfold leq. right. apply coeff_lt. lia.
 Qed.
 
 Lemma omega_exp_incr : forall (a : ord), a < cons a 0 Zero.
@@ -1681,7 +1682,7 @@ induction gamma as [| gamma1 IHgamma1 n_gamma gamma2 IHgamma2].
         unfold add_right_nice in IHgamma2.
         apply (IHgamma2 Zero (cons beta1 n_beta beta2) H). }
       { apply ord_eqb_eq in H0. rewrite H0.
-        rewrite ord_ltb_irrefl. rewrite ord_eqb_refl. apply coeff_lt. omega. }
+        rewrite ord_ltb_irrefl. rewrite ord_eqb_refl. apply coeff_lt. lia. }
 
   + destruct beta as [| beta1 n_beta beta2].
     * inversion H.
@@ -1713,7 +1714,7 @@ induction gamma as [| gamma1 IHgamma1 n_gamma gamma2 IHgamma2].
           unfold add_right_nice in IHgamma2.
           apply IHgamma2. apply H. }
         { apply ord_eqb_eq in b3. rewrite b3. rewrite ord_ltb_irrefl.
-          rewrite ord_eqb_refl. apply coeff_lt. omega. } }
+          rewrite ord_eqb_refl. apply coeff_lt. lia. } }
 
       { apply ord_eqb_eq in a3. rewrite a3. 
         rewrite ord_ltb_irrefl. rewrite ord_eqb_refl.
@@ -1914,7 +1915,7 @@ Proof.
 intros.
 induction alpha as [| alpha1 IHalpha1 n_alpha alpha2 IHalpha2].
 - auto.
-- simpl. assert (n_alpha * 1 - 0 = n_alpha). { omega. } rewrite H. auto.
+- simpl. assert (n_alpha * 1 - 0 = n_alpha). { lia. } rewrite H. auto.
 Qed.
 
 Lemma ord_mult_monot : forall (alpha beta : ord),
@@ -1945,7 +1946,7 @@ induction n; destruct m.
 - inversion H.
 - simpl. apply zero_lt.
 - inversion H.
-- simpl. apply coeff_lt. omega.
+- simpl. apply coeff_lt. lia.
 Qed.
 
 Lemma nat_ord_eq : forall (n m : nat), n = m -> nat_ord n = nat_ord m.
@@ -1959,7 +1960,7 @@ induction b as [| a' IHa' n' b' IHb'].
 - destruct a' as [| a'' n'' b''].
   + simpl. assert (Zero = nat_ord 0). { auto. } rewrite H.
     apply nat_ord_lt. rewrite plus_n_0.
-    pose proof (nat_exp_monot_lem n'). omega.
+    pose proof (nat_exp_monot_lem n'). lia.
   + destruct a'' as [| a''' n''' b'''].
     * simpl. assert (b'' = Zero).
       { apply nf_hered_first in nf_b. inversion nf_b. auto. inversion H2. }
@@ -2107,7 +2108,7 @@ induction alpha.
     * case (ord_eqb alpha1 beta1) eqn:H3.
       { apply ord_eqb_eq in H3. destruct H3. case (lt_nat n n0) eqn:H4.
         { simpl. rewrite H2,ord_eqb_refl,H4. case (lt_nat n0 n) eqn:H5.
-          { apply lt_nat_decid in H4. apply lt_nat_decid in H5. omega. }
+          { apply lt_nat_decid in H4. apply lt_nat_decid in H5. lia. }
           { auto. }
           }
         { case (lt_nat n0 n) eqn:H5.
@@ -2249,11 +2250,11 @@ Close Scope cantor_scope.
 (*
 ###############################################################################
 Section 3: FOL machinery. Here we define and prove basic facts about terms
-and formulas in first-order logic and the language of PA/PA_omega.
+and formulas in first-order logic and the language of PA/PA_lia.
 ###############################################################################
 *)
 
-(* Definition of formulas in the language of PA/PA_omega*)
+(* Definition of formulas in the language of PA/PA_lia*)
 (* *)
 Inductive term : Type :=
 | zero : term
@@ -2605,7 +2606,7 @@ intros.
 simpl in H.
 case_eq (eval s); intros.
 - rewrite H0 in H. inversion H.
-- omega.
+- lia.
 Qed.
 
 Lemma eval_plus_lemma : forall (t1 t2 : term),
@@ -2614,7 +2615,7 @@ Proof.
 intros.
 simpl in H.
 case_eq (eval t1); case_eq (eval t2); intros;
-rewrite H0 in H; rewrite H1 in H; inversion H; split; omega.
+rewrite H0 in H; rewrite H1 in H; inversion H; split; lia.
 Qed.
 
 Lemma eval_times_lemma : forall (t1 t2 : term),
@@ -2623,7 +2624,7 @@ Proof.
 intros.
 simpl in H.
 case_eq (eval t1); case_eq (eval t2); intros;
-rewrite H0 in H; rewrite H1 in H; inversion H; split; omega.
+rewrite H0 in H; rewrite H1 in H; inversion H; split; lia.
 Qed.
 
 Lemma eval_closed : forall (t : term), eval t > 0 -> closed_t t = true.
@@ -2642,14 +2643,14 @@ Proof.
 intros. induction t; auto.
 - simpl in H. apply IHt in H. simpl. destruct (eval t).
   + inversion H.
-  + omega.
+  + lia.
 - simpl in H. case_eq (closed_t t1); case_eq (closed_t t2); intros Ht2 Ht1.
   + simpl. apply IHt1 in Ht1. apply IHt2 in Ht2.
     destruct (eval t1); destruct (eval t2).
     * inversion Ht1.
     * inversion Ht1.
     * inversion Ht2.
-    * omega.
+    * lia.
   + rewrite Ht1 in H. rewrite Ht2 in H. inversion H.
   + rewrite Ht1 in H. rewrite Ht2 in H. inversion H.
   + rewrite Ht1 in H. rewrite Ht2 in H. inversion H.
@@ -2956,11 +2957,11 @@ Proof. intros. apply f_eq_decid'. apply H. Qed.
 
 (*
 ###############################################################################
-Section 4: Axioms and Rules of inference of PA_omega
+Section 4: Axioms and Rules of inference of PA_lia
 ###############################################################################
 *)
 
-(* Axioms of PA_omega *)
+(* Axioms of PA_lia *)
 (* *)
 Definition PA_omega_axiom (A : formula) : bool :=
 match A with
@@ -2970,7 +2971,7 @@ match A with
 end.
 
 
-(* A theorem of PA_omega is either an axiom, or the result of applying a rule
+(* A theorem of PA_lia is either an axiom, or the result of applying a rule
     of inference to another theorem *)
 (* *)
 Inductive PA_omega_theorem : formula -> nat -> ord -> Type :=
@@ -3087,7 +3088,7 @@ Inductive PA_omega_theorem : formula -> nat -> ord -> Type :=
 
 
 (* Extended example of using the w_rule to show "forall x (x = x)"
-   is a Cut-free theorem of PA_omega *)
+   is a Cut-free theorem of PA_lia *)
 (* *)
 Lemma equ_refl_aux1 : forall (t : term),
   eval t > 0 -> correctness (equ t t) = correct.
@@ -3114,7 +3115,7 @@ induction n.
 - auto.
 - simpl. case_eq (eval (represent n)); intros.
   + rewrite H in IHn. inversion IHn.
-  + omega.
+  + lia.
 Qed.
 
 Lemma equ_refl : forall (m : nat),
@@ -3134,7 +3135,7 @@ intros.
 apply w_rule1. simpl. rewrite eq_nat_refl. apply equ_refl.
 Qed.
 
-(* Show that PA_omega proves the associativity laws *)
+(* Show that PA_lia proves the associativity laws *)
 (* *)
 Lemma associativity1 : forall (C A B : formula) (d : nat) (alpha : ord),
   PA_omega_theorem (lor (lor C A) B) d alpha ->
@@ -3228,7 +3229,7 @@ rewrite H0 in H.
 unfold correctness in H0.
 case_eq (eval s); case_eq (eval t); intros;
 rewrite H1 in H0; rewrite H2 in H0; inversion H0;
-split; omega.
+split; lia.
 Qed.
 
 Lemma incorrect_eval : forall (s t : term),
@@ -3242,7 +3243,7 @@ rewrite H0 in H.
 unfold correctness in H0.
 case_eq (eval s); case_eq (eval t); intros;
 rewrite H1 in H0; rewrite H2 in H0; inversion H0;
-split; omega.
+split; lia.
 Qed.
 
 Lemma correct_closed : forall (a : atomic_formula),
@@ -3606,9 +3607,9 @@ Qed.
 
 (*
 ###############################################################################
-Section 5: Here we prove that PA_omega proves the Law of Excluded Middle (LEM),
+Section 5: Here we prove that PA_lia proves the Law of Excluded Middle (LEM),
 and a certain generalization: if s,t are closed terms that evaluate to the
-same value, and A is a formula with exactly one free variable, then PA_omega
+same value, and A is a formula with exactly one free variable, then PA_lia
 proves ~A(s) \/ A(t). We will need these results in the next section.
 ###############################################################################
 *)
@@ -3668,7 +3669,7 @@ Lemma P3_strongind_aux :
 Proof.
 induction n as [| n' IHn' ].
 - intros m H1. assert (m = 0). { inversion H1. auto. } rewrite H. apply X.
-- intros. assert ((m = S n') + (m <= n')). { apply leq_prop_sum. omega. }
+- intros. assert ((m = S n') + (m <= n')). { apply leq_prop_sum. lia. }
   destruct H0 as [H1 | H1].
   + rewrite H1. apply X0. apply IHn'.
   + apply IHn'. apply H1.
@@ -3699,7 +3700,7 @@ induction alpha.
         { destruct H0,H3,H4,H5,H6,H7. repeat rewrite ord_ltb_irrefl. repeat rewrite ord_eqb_refl. repeat rewrite lt_nat_irrefl. apply ord_lt_ltb in H2. rewrite H2. auto. }
        } 
   + destruct H0,H2,H3,H4,H5,H6. simpl. destruct a.
-    * apply ord_ltb_lt. simpl. assert (lt_nat (S n1) (S n') = true). apply lt_nat_decid_conv. omega. rewrite H0. auto.
+    * apply ord_ltb_lt. simpl. assert (lt_nat (S n1) (S n') = true). apply lt_nat_decid_conv. lia. rewrite H0. auto.
     * apply ord_ltb_lt. simpl. repeat rewrite ord_ltb_irrefl. repeat rewrite ord_eqb_refl. repeat rewrite lt_nat_irrefl. repeat rewrite eq_nat_refl. rewrite lt_nat_decid_conv. auto. apply H1.
   + destruct H0,H2,H3,H4,H5,H6. simpl. destruct a.
     * apply ord_ltb_lt. simpl. rewrite lt_nat_irrefl. apply ord_lt_ltb. apply H1.
@@ -3757,11 +3758,11 @@ intros. case (ord_ltb (ord_succ (ord_succ (w_tower m))) (ord_succ (ord_succ (w_t
 - rewrite (ord_max_lem1 _ _ H). destruct m.
   + apply w_tower_succ2.
   + apply ord_ltb_lt. apply (ord_ltb_trans _ _ _ (ord_lt_ltb _ _ (w_tower_succ2 _))).
-    apply ord_lt_ltb. apply w_tower_lt. omega.
+    apply ord_lt_ltb. apply w_tower_lt. lia.
 - rewrite (ord_max_lem2 _ _ H). destruct n.
   + rewrite <- plus_n_O. apply w_tower_succ2.
   + apply ord_ltb_lt. apply (ord_ltb_trans _ _ _ (ord_lt_ltb _ _ (w_tower_succ2 _))).
-    apply ord_lt_ltb. apply w_tower_lt. omega.
+    apply ord_lt_ltb. apply w_tower_lt. lia.
 Qed.
 
 Lemma w_tower_nf : forall n, nf (w_tower n).
@@ -3783,7 +3784,7 @@ destruct A as [a | B | B C | m B].
   + apply negation2. apply exchange1. apply H2.
   + apply ord_lt_succ. unfold num_conn. fold num_conn. destruct (num_conn B).
     * simpl. apply ord_ltb_lt. auto.
-    * apply ord_ltb_lt. apply (ord_ltb_trans _ _ _ (ord_lt_ltb _ _ (w_tower_succ _))). apply ord_lt_ltb. apply w_tower_lt. omega.
+    * apply ord_ltb_lt. apply (ord_ltb_trans _ _ _ (ord_lt_ltb _ _ (w_tower_succ _))). apply ord_lt_ltb. apply w_tower_lt. lia.
   + apply ord_succ_nf. apply w_tower_nf.
 
 - destruct (closed_lor _ _ H1) as [HB HC].
@@ -3795,7 +3796,7 @@ destruct A as [a | B | B C | m B].
   pose proof (demorgan2 B C (lor B C) 0 0 _ _ H2 H3).
   apply (ord_incr _ _ (ord_succ (ord_max (ord_succ (ord_succ (w_tower ((num_conn B)+ (num_conn B))))) (ord_succ (ord_succ (w_tower ((num_conn C) + (num_conn C)))))))).
   + apply H4.
-  + unfold num_conn. fold num_conn. apply ord_lt_succ. apply ord_ltb_lt. apply (ord_ltb_trans _ _ _ (ord_lt_ltb _ _ (w_tower_max _ _))). apply ord_lt_ltb. apply w_tower_lt. omega.
+  + unfold num_conn. fold num_conn. apply ord_lt_succ. apply ord_ltb_lt. apply (ord_ltb_trans _ _ _ (ord_lt_ltb _ _ (w_tower_max _ _))). apply ord_lt_ltb. apply w_tower_lt. lia.
   + apply ord_succ_nf. apply w_tower_nf.
 
 - inversion H0. apply exchange1.
@@ -3833,7 +3834,7 @@ Proof. intros. apply (P1_lemma A H). Qed.
 (*
 Now we show a slight generalization of LEM that we will call LEM_term:
 if closed terms s and t are equal, and formula A has only one free variable,
-then PA_omega proves (lor (neg A(s)) A(t)). First we handle the atomic case.
+then PA_lia proves (lor (neg A(s)) A(t)). First we handle the atomic case.
 *)
 (* *)
 Lemma LEM_term_atomic_aux1 : forall (T s t : term) (n : nat),
@@ -3974,7 +3975,7 @@ Lemma Q3_strongind_aux :
 Proof.
 induction n as [| n' IHn' ].
 - intros m H1. assert (m = 0). { inversion H1. auto. } rewrite H. apply X.
-- intros. assert ((m = S n') + (m <= n')). { apply leq_prop_sum. omega. }
+- intros. assert ((m = S n') + (m <= n')). { apply leq_prop_sum. lia. }
   destruct H0 as [H1 | H1].
   + rewrite H1. apply X0. apply IHn'.
   + apply IHn'. apply H1.
@@ -4007,7 +4008,7 @@ destruct A as [| B | B C | m B].
 - inversion H0. apply negation2. fold substitution. apply exchange1. unfold num_conn. fold num_conn.
   apply (ord_incr _ _ (ord_succ (w_tower ((num_conn B)+(num_conn B))))).
   apply (H n (le_refl n) B H4 n0 t s); auto. apply equ_symm,H1.
-  apply ord_ltb_lt. apply (ord_ltb_trans _ _ _ (ord_lt_ltb _ _ (w_tower_succ _))). apply ord_lt_ltb. apply w_tower_lt. omega.
+  apply ord_ltb_lt. apply (ord_ltb_trans _ _ _ (ord_lt_ltb _ _ (w_tower_succ _))). apply ord_lt_ltb. apply w_tower_lt. lia.
   apply single_nf. apply w_tower_nf.
 - destruct (free_list_lor B C n0 H2) as [HB HC].
   destruct (num_conn_lor _ _ _ H0) as [HB' HC'].
@@ -4032,7 +4033,7 @@ destruct A as [| B | B C | m B].
         { apply (H (num_conn C) HC' C (eq_refl (num_conn C)) n0 s t H1 HC). }
         { rewrite closed_subst_eq, closed_subst_eq; auto. apply (LEM C HC). }
         }
-  + unfold num_conn. fold num_conn. apply ord_lt_succ. apply ord_ltb_lt. apply (ord_ltb_trans _ _ _ (ord_lt_ltb _ _ (w_tower_max _ _))). apply ord_lt_ltb. apply w_tower_lt. omega.
+  + unfold num_conn. fold num_conn. apply ord_lt_succ. apply ord_ltb_lt. apply (ord_ltb_trans _ _ _ (ord_lt_ltb _ _ (w_tower_max _ _))). apply ord_lt_ltb. apply w_tower_lt. lia.
   + apply ord_succ_nf. apply w_tower_nf.
 - apply exchange1. inversion H0.
   unfold substitution. fold substitution. pose proof (univ_free_var _ _ _ H2) as Heq. rewrite Heq.
@@ -4200,7 +4201,7 @@ Section 6: Here we will set up the axioms and rules of inference of PA.
 
 (*
 ###############################################################################
-Section 7: Here we will prove that if PA proves some A, then so does PA_omega.
+Section 7: Here we will prove that if PA proves some A, then so does PA_lia.
 ###############################################################################
 *)
 
@@ -4263,7 +4264,7 @@ Section 7: Here we will prove that if PA proves some A, then so does PA_omega.
 
 (*
 ###############################################################################
-Section 8: Proof trees for PA_omega proofs.
+Section 8: Proof trees for PA_lia proofs.
 ###############################################################################
 *)
 
@@ -4591,7 +4592,7 @@ Lemma provable_theorem : forall (A : formula) (d : nat) (alpha : ord),
 Proof.
 intros. unfold provable.
 induction H; try destruct IHPA_omega_theorem as [P [[[HP1 HP2] HP3] HP4]].
-- exists (deg_up d' P). repeat split; auto. omega.
+- exists (deg_up d' P). repeat split; auto. lia.
 - exists (ord_up beta P). repeat split; auto. rewrite HP4. auto.
 - exists (node A). repeat split. apply e. auto.
 - exists (exchange_ab A B (ptree_deg P) alpha P). repeat split; auto.
@@ -4760,7 +4761,7 @@ exists (exchange_ab A B (ptree_deg P) alpha P). repeat split; auto.
 Qed.
 
 
-(* Show that PA_omega proves the associativity laws *)
+(* Show that PA_lia proves the associativity laws *)
 (* *)
 Lemma associativity_1 : forall (C A B : formula) (d : nat) (alpha : ord),
   provable (lor (lor C A) B) d alpha -> provable (lor C (lor A B)) d alpha.
@@ -4965,7 +4966,7 @@ Qed.
 (*
 ###############################################################################
 Section 9: Invertibility lemmas: We show that double negation, DeMorgan,
-and the w_rule are invertible, e.g. if PA_omega proves ~~A \/ D, then it also
+and the w_rule are invertible, e.g. if PA_lia proves ~~A \/ D, then it also
 proves A \/ D. Essentially we need to substitute A for ~~A in the proof tree
 ~~A \/ D, though we need to introduce some machinery to handle these
 substitutions properly.
@@ -8322,7 +8323,7 @@ induction P; try intros H S Hs.
 
 - simpl. inversion H as [H1 H2]. inversion Hs. rewrite H3.
   rewrite w_rule_ptree_formula_true; auto. split.
-  + pose proof (w_rule_ptree_deg P E n m H2 S). omega.
+  + pose proof (w_rule_ptree_deg P E n m H2 S). lia.
   + apply (IHP H2 S H3).
 
 - simpl. inversion H as [[H1 H2] H3]. inversion Hs. rewrite H4.
@@ -8578,14 +8579,14 @@ induction P; try intros H S Hs.
             try rewrite H1; simpl; try rewrite (non_target_term_sub A n0 (represent p));
             try rewrite non_target_fit,HS2; auto;
             unfold w_rule_sub_formula; try rewrite non_target_sub_lor; auto.
-            pose proof (w_rule_ptree_deg (g p) E n m H2 (lor_ind (non_target (substitution A n0 (represent p))) S2 )). omega. }
+            pose proof (w_rule_ptree_deg (g p) E n m H2 (lor_ind (non_target (substitution A n0 (represent p))) S2 )). lia. }
           { repeat split; rewrite w_rule_ptree_formula_true;
           try rewrite w_rule_ptree_deg; try rewrite w_rule_ptree_ord; auto;
           try rewrite w_rule_ptree_formula; try apply X; auto;
           try rewrite H1; simpl; try rewrite (non_target_term_sub A n0 (represent p));
           try rewrite non_target_fit,HS2; auto;
           unfold w_rule_sub_formula; try rewrite non_target_sub_lor; auto.
-          pose proof (w_rule_ptree_deg (g p) E n m H2 (lor_ind (non_target (substitution A n0 (represent p))) S2 )). omega. } }
+          pose proof (w_rule_ptree_deg (g p) E n m H2 (lor_ind (non_target (substitution A n0 (represent p))) S2 )). lia. } }
         { destruct (eq_nat n0 n) eqn:Hn; simpl; intros p;
           destruct (valid_w_rule_ad A D n0 d alpha g H p) as [[[H1 H2] H3] H4];
           repeat split; auto. } }
@@ -8597,7 +8598,7 @@ induction P; try intros H S Hs.
         try rewrite H1; simpl; rewrite (non_target_term_sub A n0 (represent p));
         try rewrite non_target_fit,HS2; auto.
         unfold w_rule_sub_formula. rewrite non_target_sub_lor. auto.
-        pose proof (w_rule_ptree_deg (g p) E n m H2 (lor_ind (non_target (substitution A n0 (represent p))) S2 )). omega. }
+        pose proof (w_rule_ptree_deg (g p) E n m H2 (lor_ind (non_target (substitution A n0 (represent p))) S2 )). lia. }
     * destruct (eq_f A E) eqn:HE.
       { destruct (subst_ind_fit D S2) eqn:HS2; simpl.
         { destruct (eq_nat n0 n) eqn:Hn; simpl; intros p;
@@ -8608,14 +8609,14 @@ induction P; try intros H S Hs.
             try rewrite H1; simpl; try rewrite (non_target_term_sub A n0 (represent p));
             try rewrite non_target_fit,HS2; auto;
             unfold w_rule_sub_formula; try rewrite non_target_sub_lor; auto.
-            pose proof (w_rule_ptree_deg (g p) E n m H2 (lor_ind (non_target (substitution A n0 (represent p))) S2 )). omega. }
+            pose proof (w_rule_ptree_deg (g p) E n m H2 (lor_ind (non_target (substitution A n0 (represent p))) S2 )). lia. }
           { repeat split; rewrite w_rule_ptree_formula_true;
           try rewrite w_rule_ptree_deg; try rewrite w_rule_ptree_ord; auto;
           try rewrite w_rule_ptree_formula; try apply X; auto;
           try rewrite H1; simpl; try rewrite (non_target_term_sub A n0 (represent p));
           try rewrite non_target_fit,HS2; auto;
           unfold w_rule_sub_formula; try rewrite non_target_sub_lor; auto.
-          pose proof (w_rule_ptree_deg (g p) E n m H2 (lor_ind (non_target (substitution A n0 (represent p))) S2 )). omega. } }
+          pose proof (w_rule_ptree_deg (g p) E n m H2 (lor_ind (non_target (substitution A n0 (represent p))) S2 )). lia. } }
         { destruct (eq_nat n0 n) eqn:Hn; simpl; intros p;
           destruct (valid_w_rule_ad A D n0 d alpha g H p) as [[[H1 H2] H3] H4];
           repeat split; auto. } }
@@ -8627,7 +8628,7 @@ induction P; try intros H S Hs.
         try rewrite H1; simpl; rewrite (non_target_term_sub A n0 (represent p));
         try rewrite non_target_fit,HS2; auto.
         unfold w_rule_sub_formula. rewrite non_target_sub_lor. auto.
-        pose proof (w_rule_ptree_deg (g p) E n m H2 (lor_ind (non_target (substitution A n0 (represent p))) S2 )). omega. }
+        pose proof (w_rule_ptree_deg (g p) E n m H2 (lor_ind (non_target (substitution A n0 (represent p))) S2 )). lia. }
   + destruct (eq_nat d (ptree_deg (g m))) eqn:HD.
     * destruct (eq_f A E) eqn:HE.
       { destruct (subst_ind_fit D S2) eqn:HS2.
@@ -8644,7 +8645,7 @@ induction P; try intros H S Hs.
             try rewrite H1; simpl; rewrite (non_target_term_sub A n0 (represent p));
             try rewrite non_target_fit,HS2; auto.
             unfold w_rule_sub_formula. rewrite non_target_sub_lor. auto. 
-            pose proof (w_rule_ptree_deg (g p) E n m H2 (lor_ind (non_target (substitution A n0 (represent p))) S2 )). omega. } }
+            pose proof (w_rule_ptree_deg (g p) E n m H2 (lor_ind (non_target (substitution A n0 (represent p))) S2 )). lia. } }
         { simpl. intro p.
           destruct (valid_w_rule_ad A D n0 d alpha g H p) as [[[H1 H2] H3] H4].
           repeat split; auto. } }
@@ -8656,7 +8657,7 @@ induction P; try intros H S Hs.
         try rewrite H1; simpl; rewrite (non_target_term_sub A n0 (represent p));
         try rewrite non_target_fit,HS2; auto.
         unfold w_rule_sub_formula. rewrite non_target_sub_lor. auto.
-        pose proof (w_rule_ptree_deg (g p) E n m H2 (lor_ind (non_target (substitution A n0 (represent p))) S2 )). omega. }
+        pose proof (w_rule_ptree_deg (g p) E n m H2 (lor_ind (non_target (substitution A n0 (represent p))) S2 )). lia. }
     * destruct (eq_f A E) eqn:HE.
       { destruct (subst_ind_fit D S2) eqn:HS2.
         { simpl. destruct (eq_nat n0 n) eqn:Hn.
@@ -8678,7 +8679,7 @@ induction P; try intros H S Hs.
             try rewrite H1; simpl; rewrite (non_target_term_sub A n0 (represent p));
             try rewrite non_target_fit,HS2; auto.
             unfold w_rule_sub_formula. rewrite non_target_sub_lor. auto. 
-            pose proof (w_rule_ptree_deg (g p) E n m H2 (lor_ind (non_target (substitution A n0 (represent p))) S2 )). omega. } }
+            pose proof (w_rule_ptree_deg (g p) E n m H2 (lor_ind (non_target (substitution A n0 (represent p))) S2 )). lia. } }
         { simpl. intro p.
           destruct (valid_w_rule_ad A D n0 d alpha g H p) as [[[H1 H2] H3] H4].
           repeat split; auto. } }
@@ -8690,7 +8691,7 @@ induction P; try intros H S Hs.
         try rewrite H1; simpl; rewrite (non_target_term_sub A n0 (represent p));
         try rewrite non_target_fit,HS2; auto.
         unfold w_rule_sub_formula. rewrite non_target_sub_lor. auto.
-        pose proof (w_rule_ptree_deg (g p) E n m H2 (lor_ind (non_target (substitution A n0 (represent p))) S2 )). omega. }
+        pose proof (w_rule_ptree_deg (g p) E n m H2 (lor_ind (non_target (substitution A n0 (represent p))) S2 )). lia. }
 
 - clear IHP2. simpl. destruct (subst_ind_fit f S) eqn:Heq; try apply H. simpl.
   inversion H as [[[[[[[H1 H2] H3] H4] H5] H6] H7] H8].
@@ -11016,7 +11017,7 @@ intros. induction P.
 - destruct X as [T1 T2]. split. simpl. intros. destruct (T1 m) as [[[X1 X2] X3] X4]. pose proof (X0 m X2). repeat split.
   + rewrite deg_elimination_formula; auto.
   + apply X.
-  + rewrite <- (real_deg_is_deg_elim_deg (p m) X2). pose proof (real_deg_le (p m) X2). omega.
+  + rewrite <- (real_deg_is_deg_elim_deg (p m) X2). pose proof (real_deg_le (p m) X2). lia.
   + rewrite deg_elimination_ord; auto. 
   + destruct (T1 x) as [[[X1 X2] X3] X4].
 - admit.
@@ -11683,7 +11684,7 @@ Proof.
 induction gamma as [| n' IHn' ].
 - admit.
 (* intros m H1. assert (m = 0). { inversion H1. auto. } rewrite H. apply X. *)
-- admit. (* intros. assert ((m = S n') + (m <= n')). { apply leq_prop_sum. omega. }
+- admit. (* intros. assert ((m = S n') + (m <= n')). { apply leq_prop_sum. lia. }
   destruct H0 as [H1 | H1].
   + rewrite H1. apply X0. apply IHn'.
   + apply IHn'. apply H1.
@@ -11704,9 +11705,9 @@ unfold provable. unfold P_proves.
 destruct X as [[[H1 H2] H3] H4].
 
 induction P; rewrite H in *.
-+ exists (ord_up (ord_2_exp Zero) P). simpl in H1,H4,H. destruct H2 as [H2a H2b]. repeat split; auto. apply ord_ltb_lt. rewrite H. auto. apply one_nf. simpl. simpl in H3. omega. rewrite <- H4. auto.
++ exists (ord_up (ord_2_exp Zero) P). simpl in H1,H4,H. destruct H2 as [H2a H2b]. repeat split; auto. apply ord_ltb_lt. rewrite H. auto. apply one_nf. simpl. simpl in H3. lia. rewrite <- H4. auto.
 + destruct H2. destruct p. simpl in H. rewrite H in o0. apply ord_lt_ltb in o0. destruct H4. destruct (ptree_ord P) in o0; inversion o0.
-+ exists (ord_up (ord_2_exp Zero) (node f)). destruct H4. repeat split; simpl; auto. apply ord_ltb_lt. auto. apply one_nf. omega.
++ exists (ord_up (ord_2_exp Zero) (node f)). destruct H4. repeat split; simpl; auto. apply ord_ltb_lt. auto. apply one_nf. lia.
 + destruct H2 as [[[X1 X2] X3] X4]. simpl in H3,H4. rewrite X3 in *. rewrite X4 in *. destruct (IHP (lor f f0) d (X1,X2,H3,H4)) as [T [[[Y1 Y2] Y3] Y4]].
   exists (exchange_ab f f0 (ptree_deg T) (ptree_ord T) T). repeat split; auto.
 + destruct H2 as [[[X1 X2] X3] X4]. simpl in H3,H4. rewrite X3 in *. rewrite X4 in *. destruct (IHP _ _ (X1,X2,H3,H4)) as [T [[[Y1 Y2] Y3] Y4]].
@@ -11741,7 +11742,7 @@ induction P; rewrite H in *.
   assert (forall m : nat,
    (ptree_formula (p m) = substitution f n (represent m)) * valid (p m) *
    (S d >= ptree_deg (p m)) * (ptree_ord (p m) = Zero)).
-   { intros m. destruct (H2 m) as [[[X1 X2] X3] X4]. repeat split; simpl; auto. omega. }
+   { intros m. destruct (H2 m) as [[[X1 X2] X3] X4]. repeat split; simpl; auto. lia. }
   pose proof (fun m => X m (substitution f n (represent m)) d (X0 m)).
   exists (w_rule_a f n d (ord_2_exp Zero) (fun m => projT1 (X1 m))). repeat split;
   try destruct (X1 m) as [T [[[Y1 Y2] Y3] Y4]]; simpl; auto.
@@ -11749,7 +11750,7 @@ induction P; rewrite H in *.
   assert (forall m : nat,
    (ptree_formula (p m) = lor (substitution f n (represent m)) f0) * valid (p m) *
    (S d >= ptree_deg (p m)) * (ptree_ord (p m) = Zero)).
-   { intros m. destruct (H2 m) as [[[X1 X2] X3] X4]. repeat split; simpl; auto. omega. }
+   { intros m. destruct (H2 m) as [[[X1 X2] X3] X4]. repeat split; simpl; auto. lia. }
   pose proof (fun m => X m (lor (substitution f n (represent m)) f0) d (X0 m)).
   exists (w_rule_ad f f0 n d (ord_2_exp Zero) (fun m => projT1 (X1 m))). repeat split;
   try destruct (X1 m) as [T [[[Y1 Y2] Y3] Y4]]; simpl; auto.
@@ -11827,9 +11828,9 @@ Lemma cut_elim_aux1 : forall (alpha : ord) (P : ptree) (A : formula) (d : nat),
 Proof.
 intros alpha. induction alpha.
 - unfold provable. unfold P_proves. intros P. induction P; intros A d [[[H1 H2] H3] H4].
-  + exists (ord_up (ord_2_exp Zero) P). destruct H2. simpl in H1,H4. repeat split; auto. apply ord_ltb_lt. rewrite H4. auto. apply one_nf. simpl. simpl in H3. omega.
+  + exists (ord_up (ord_2_exp Zero) P). destruct H2. simpl in H1,H4. repeat split; auto. apply ord_ltb_lt. rewrite H4. auto. apply one_nf. simpl. simpl in H3. lia.
   + destruct H2. destruct p. simpl in H4. rewrite H4 in o0. apply ord_lt_ltb in o0. destruct (ptree_ord P) in o0; inversion o0.
-  + exists (ord_up (ord_2_exp Zero) (node f)). repeat split; simpl; auto. apply ord_ltb_lt. auto. apply one_nf. omega.
+  + exists (ord_up (ord_2_exp Zero) (node f)). repeat split; simpl; auto. apply ord_ltb_lt. auto. apply one_nf. lia.
   + destruct H2 as [[[X1 X2] X3] X4]. simpl in H3,H4. rewrite X3 in *. rewrite X4 in *. destruct (IHP (lor f f0) d (X1,X2,H3,H4)) as [T [[[Y1 Y2] Y3] Y4]].
     exists (exchange_ab f f0 (ptree_deg T) (ptree_ord T) T). repeat split; auto.
   + destruct H2 as [[[X1 X2] X3] X4]. simpl in H3,H4. rewrite X3 in *. rewrite X4 in *. destruct (IHP _ _ (X1,X2,H3,H4)) as [T [[[Y1 Y2] Y3] Y4]].
@@ -11864,7 +11865,7 @@ intros alpha. induction alpha.
     assert (forall m : nat,
      (ptree_formula (p m) = substitution f n (represent m)) * valid (p m) *
      (S d >= ptree_deg (p m)) * (ptree_ord (p m) = Zero)).
-     { intros m. destruct (H2 m) as [[[X1 X2] X3] X4]. repeat split; simpl; auto. omega. }
+     { intros m. destruct (H2 m) as [[[X1 X2] X3] X4]. repeat split; simpl; auto. lia. }
     pose proof (fun m => X m (substitution f n (represent m)) d (X0 m)).
     exists (w_rule_a f n d (ord_2_exp Zero) (fun m => projT1 (X1 m))). repeat split;
     try destruct (X1 m) as [T [[[Y1 Y2] Y3] Y4]]; simpl; auto.
@@ -11872,7 +11873,7 @@ intros alpha. induction alpha.
     assert (forall m : nat,
      (ptree_formula (p m) = lor (substitution f n (represent m)) f0) * valid (p m) *
      (S d >= ptree_deg (p m)) * (ptree_ord (p m) = Zero)).
-     { intros m. destruct (H2 m) as [[[X1 X2] X3] X4]. repeat split; simpl; auto. omega. }
+     { intros m. destruct (H2 m) as [[[X1 X2] X3] X4]. repeat split; simpl; auto. lia. }
     pose proof (fun m => X m (lor (substitution f n (represent m)) f0) d (X0 m)).
     exists (w_rule_ad f f0 n d (ord_2_exp Zero) (fun m => projT1 (X1 m))). repeat split;
     try destruct (X1 m) as [T [[[Y1 Y2] Y3] Y4]]; simpl; auto.
@@ -11885,12 +11886,12 @@ intros alpha. induction alpha.
       * exists (ord_up (ord_2_exp (nat_ord 1)) P). destruct H2. simpl in H1,H4. repeat split; auto. apply ord_ltb_lt. rewrite H4. 
         assert (nf (nat_ord 1)). rewrite <- O. rewrite <- H4. apply ptree_ord_nf. apply v.
         destruct (ord_2_exp_fp _ H). apply ord_lt_ltb. rewrite O in *. auto. inversion H0.
-        apply nf_2_exp. apply nf_nat. simpl. simpl in H3. omega. rewrite O. auto.
+        apply nf_2_exp. apply nf_nat. simpl. simpl in H3. lia. rewrite O. auto.
       * destruct H2 as [[X1 X2] X3]. simpl in H1. simpl in H3. simpl in H4. pose proof (IHP A d (H1,X2,H3, H4)).
       destruct H2. destruct p. simpl in H4. rewrite H4 in o0. apply ord_lt_ltb in o0. destruct (ptree_ord P) in o0; inversion o0.
       * exists (ord_up (ord_2_exp (cons alpha1 n alpha2)) (node f)). repeat split; simpl; auto. pose ord_mult_exp_monot.
       apply ord_ltb_lt. auto. destruct alpha1.
-        simpl. unfold nat_ord. admit. simpl. omega.
+        simpl. unfold nat_ord. admit. simpl. lia.
       * destruct H2 as [[[X1 X2] X3] X4]. simpl in H3,H4. rewrite X3 in *. rewrite X4 in *. destruct (IHP (lor f f0) d (X1,X2,H3,H4)) as [T [[[Y1 Y2] Y3] Y4]].
         exists (exchange_ab f f0 (ptree_deg T) (ptree_ord T) T). repeat split; auto.
       * destruct H2 as [[[X1 X2] X3] X4]. simpl in H3,H4. rewrite X3 in *. rewrite X4 in *. destruct (IHP _ _ (X1,X2,H3,H4)) as [T [[[Y1 Y2] Y3] Y4]].
@@ -11925,7 +11926,7 @@ intros alpha. induction alpha.
         assert (forall m : nat,
          (ptree_formula (p m) = substitution f n (represent m)) * valid (p m) *
          (S d >= ptree_deg (p m)) * (ptree_ord (p m) = Zero)).
-         { intros m. destruct (H2 m) as [[[X1 X2] X3] X4]. repeat split; simpl; auto. omega. }
+         { intros m. destruct (H2 m) as [[[X1 X2] X3] X4]. repeat split; simpl; auto. lia. }
         pose proof (fun m => X m (substitution f n (represent m)) d (X0 m)).
         exists (w_rule_a f n d (ord_2_exp Zero) (fun m => projT1 (X1 m))). repeat split;
         try destruct (X1 m) as [T [[[Y1 Y2] Y3] Y4]]; simpl; auto.
@@ -11933,7 +11934,7 @@ intros alpha. induction alpha.
         assert (forall m : nat,
          (ptree_formula (p m) = lor (substitution f n (represent m)) f0) * valid (p m) *
          (S d >= ptree_deg (p m)) * (ptree_ord (p m) = Zero)).
-         { intros m. destruct (H2 m) as [[[X1 X2] X3] X4]. repeat split; simpl; auto. omega. }
+         { intros m. destruct (H2 m) as [[[X1 X2] X3] X4]. repeat split; simpl; auto. lia. }
         pose proof (fun m => X m (lor (substitution f n (represent m)) f0) d (X0 m)).
         exists (w_rule_ad f f0 n d (ord_2_exp Zero) (fun m => projT1 (X1 m))). repeat split;
         try destruct (X1 m) as [T [[[Y1 Y2] Y3] Y4]]; simpl; auto.
@@ -12017,7 +12018,7 @@ Lemma cut_elim_aux4 : forall (P : ptree),
   valid P -> ptree_deg P = 0 -> cut_free P.
 Proof.
 intros. induction P; simpl; auto.
-- destruct X as [H1 H2]. simpl in H. rewrite H in H1. omega.
+- destruct X as [H1 H2]. simpl in H. rewrite H in H1. lia.
 - destruct X as [H1 H2]. simpl in H. apply IHP; auto.
 - destruct X as [[[H1 H2] H3] H4]. simpl in H. rewrite H in H3.
   apply IHP; auto.
