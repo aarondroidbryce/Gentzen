@@ -1,5 +1,6 @@
 Require Import Lia.
 Require Import Nat.
+Require Import Coq.Init.Wf.
 Notation "b1 && b2" := (andb b1 b2).
 Notation "b1 || b2" := (orb b1 b2).
 Notation eq_nat := Nat.eqb.
@@ -781,7 +782,7 @@ Section 2: Basic Facts about ordinals under epsilon_0.
 (* We borrows Pierre Casteran's definition of ordinals, which can be found at
 www.labri.fr/perso/casteran, under "Ordinal notations and rpo".
 The file that we borrow from is EPSILON0.v, in the epsilon0 folder.
-In this framework, cons a n b represents  lia^a *(S n)  + b *)
+In this framework, cons a n b represents  omega^a *(S n)  + b *)
 (* *)
 Inductive ord : Set :=
 | Zero : ord
@@ -967,6 +968,65 @@ induction n.
   apply Zero_nf.
 Qed.
 
+Definition cantor := { value : ord | nf value }.
+
+Definition cantor_to_ord (alpha : cantor) : ord := match alpha with | exist _ a _ => a end.
+
+Coercion cantor_to_ord : cantor >-> ord.
+
+Inductive cantor_lt : cantor -> cantor -> Prop :=
+|  czero_lt : forall a n b F, cantor_lt (exist _ Zero zero_nf) (exist _ (cons a n b) F)
+|  chead_lt :
+    forall a a' n n' b b' F F', a < a' ->
+                           cantor_lt (exist _ (cons a n b) F) (exist _ (cons a' n' b') F')
+|  ccoeff_lt : forall a n n' b b' F F', (n < n')%nat ->
+                                 cantor_lt (exist _ (cons a n b) F) (exist _ (cons a n' b') F')
+|  ctail_lt : forall a n b b' F F', b < b' ->
+                             cantor_lt (exist _ (cons a n b) F) (exist _ (cons a n b') F').
+
+Theorem cantor_implies_ord: forall alpha beta F F', cantor_lt (exist _ alpha F) (exist _ beta F') -> ord_lt alpha beta.
+Proof.
+intros. induction alpha.
+- induction beta.
+  + inversion H.
+  + apply zero_lt.
+- inversion H.
+  + destruct H0,H2,H3,H4. apply head_lt. auto.
+  + destruct H0,H2,H3,H4. apply coeff_lt. auto.
+  + destruct H0,H2,H3,H4. apply tail_lt. auto.
+Qed.
+
+Definition cantor_cons (alpha beta : cantor) (n : nat) (H : cantor_lt beta alpha ) : cantor :=
+  match alpha, beta with
+  | (exist _ a _), (exist _ Zero _) => exist _ (cons a n Zero) (single_nf _ _ _)
+  | (exist _ a F), (exist _ (cons a' n' b') F') => exist _ (cons a n (cons a' n' b')) (cons_nf a n a' n' b' (cantor_implies_ord _ _ F F' H) F F')
+  end.
+
+
+Theorem tests : forall (alpha : cantor), nf alpha.
+Proof.
+intros. destruct alpha. auto.
+Qed.
+
+Lemma nf_hered_third : forall (a b : ord) (n : nat),
+  nf (cons a n b) -> nf b.
+Proof.
+intros a b n H.
+destruct b as [Zero | a' n' b'].
+- apply Zero_nf.
+- destruct b' as [Zero | a'' n'' b''].
+  + apply single_nf. inversion H. inversion H7. apply H9.
+  + inversion H. apply H7.
+Qed.
+
+Lemma nf_hered_first : forall (a b : ord) (n : nat),
+  nf (cons a n b) -> nf a.
+Proof.
+intros a b n H.
+destruct b as [Zero | a' n' b'].
+- inversion H. apply H1.
+- inversion H. apply H6.
+Qed.
 
 (* Defining boolean equality and less than, assuming normal form *)
 (* *)
@@ -985,7 +1045,23 @@ match alpha, beta with
         end)
     end)
 end.
-
+(*
+Fixpoint cantor_eqb (alpha beta : cantor) : bool :=
+match alpha, beta with
+| exist _ Zero _, exist _ Zero _ => true
+| _, exist _ Zero _ => false
+| exist _ Zero _, _ => false
+| exist _ (cons a n b) F, exist _ (cons a' n' b') F' =>
+    (match cantor_eqb (exist _ a (nf_hered_first _ _ _ F)) (exist _ a' (nf_hered_first _ _ _ F')) with
+    | false => false
+    | true =>
+        (match eq_nat n n' with
+        | false => false
+        | true => cantor_eqb (exist _ b (nf_hered_third _ _ _ F)) (exist _ b' (nf_hered_third _ _ _ F'))
+        end)
+    end)
+end.
+*)
 Fixpoint ord_ltb (alpha beta : ord) : bool :=
 match alpha, beta with
 | Zero, Zero => false
@@ -993,6 +1069,24 @@ match alpha, beta with
 | Zero, _ => true
 | cons a n b, cons a' n' b' =>
     (match ord_ltb a a', ord_eqb a a' with
+    | true, _ => true
+    | _, false => false
+    | _, true =>
+        (match lt_nat n n', lt_nat n' n with
+        | true, _ => true
+        | _, true => false
+        | _, _ => ord_ltb b b'
+        end)
+    end)
+end.
+
+Fixpoint cantor_ltb (alpha beta : cantor) : bool :=
+match alpha, beta with
+| exist _ Zero _, exist _ Zero _ => false
+| _, exist _ Zero _ => false
+| exist _ Zero _, _ => true
+| exist _ (cons a n b) _, exist _ (cons a' n' b') _ =>
+    (match cantor_ltb (exist _ a _) (exist _ a' _), ord_eqb a a' with
     | true, _ => true
     | _, false => false
     | _, true =>
@@ -1505,7 +1599,7 @@ inversion H.
   + apply H5.
 Qed.
 
-Lemma nf_hered_third : forall (a b : ord) (n : nat),
+(*Lemma nf_hered_third : forall (a b : ord) (n : nat),
   nf (cons a n b) -> nf b.
 Proof.
 intros a b n H.
@@ -1523,7 +1617,7 @@ intros a b n H.
 destruct b as [Zero | a' n' b'].
 - inversion H. apply H1.
 - inversion H. apply H6.
-Qed.
+Qed.*)
 
 Lemma zero_minimal : forall (alpha : ord), ~ (alpha < Zero).
 intros alpha.
@@ -2975,12 +3069,12 @@ end.
     of inference to another theorem *)
 (* *)
 Inductive PA_omega_theorem : formula -> nat -> ord -> Type :=
-| deg_incr : forall (A : formula) (d d' : nat) (alpha : ord),
+| deg_incr : forall (A : formula) (d d' : nat) (alpha : cantor),
     PA_omega_theorem A d alpha ->
     d' > d ->
     PA_omega_theorem A d' alpha
 
-| ord_incr : forall (A : formula) (d : nat) (alpha beta : ord),
+| ord_incr : forall (A : formula) (d : nat) (alpha beta : cantor),
     PA_omega_theorem A d alpha ->
     ord_lt alpha beta -> nf beta ->
     PA_omega_theorem A d beta
@@ -2991,33 +3085,33 @@ Inductive PA_omega_theorem : formula -> nat -> ord -> Type :=
     PA_omega_theorem A 0 Zero
 
 
-| exchange1 : forall (A B : formula) (d : nat) (alpha : ord),
+| exchange1 : forall (A B : formula) (d : nat) (alpha : cantor),
     PA_omega_theorem (lor A B) d alpha ->
     PA_omega_theorem (lor B A) d alpha
 
-| exchange2 : forall (C A B : formula) (d : nat) (alpha : ord),
+| exchange2 : forall (C A B : formula) (d : nat) (alpha : cantor),
     PA_omega_theorem (lor (lor C A) B) d alpha ->
     PA_omega_theorem (lor (lor C B) A) d alpha
 
-| exchange3 : forall (A B D : formula) (d : nat) (alpha : ord),
+| exchange3 : forall (A B D : formula) (d : nat) (alpha : cantor),
     PA_omega_theorem (lor (lor A B) D) d alpha ->
     PA_omega_theorem (lor (lor B A) D) d alpha
 
-| exchange4 : forall (C A B D : formula) (d : nat) (alpha : ord),
+| exchange4 : forall (C A B D : formula) (d : nat) (alpha : cantor),
     PA_omega_theorem (lor (lor (lor C A) B) D) d alpha ->
     PA_omega_theorem (lor (lor (lor C B) A) D) d alpha
 
-| contraction1 : forall (A : formula) (d : nat) (alpha : ord),
+| contraction1 : forall (A : formula) (d : nat) (alpha : cantor),
     PA_omega_theorem (lor A A) d alpha ->
     PA_omega_theorem A d alpha
 
-| contraction2 : forall (A D : formula) (d : nat) (alpha : ord),
+| contraction2 : forall (A D : formula) (d : nat) (alpha : cantor),
     PA_omega_theorem (lor (lor A A) D) d alpha ->
     PA_omega_theorem (lor A D) d alpha
 
 
 
-| weakening : forall (A D : formula) (d : nat) (alpha : ord),
+| weakening : forall (A D : formula) (d : nat) (alpha : cantor),
     closed A = true ->
     PA_omega_theorem D d alpha ->
     PA_omega_theorem (lor A D) d (ord_succ alpha)
@@ -3028,57 +3122,57 @@ Inductive PA_omega_theorem : formula -> nat -> ord -> Type :=
     PA_omega_theorem (neg B) d2 alpha2 ->
     PA_omega_theorem (neg (lor A B)) (max d1 d2) (ord_succ (ord_max alpha1 alpha2))
 
-| demorgan2 : forall (A B D : formula) (d1 d2 : nat) (alpha1 alpha2 : ord),
+| demorgan2 : forall (A B D : formula) (d1 d2 : nat) (alpha1 alpha2 : cantor),
     PA_omega_theorem (lor (neg A) D) d1 alpha1 ->
     PA_omega_theorem (lor (neg B) D) d2 alpha2 ->
     PA_omega_theorem (lor (neg (lor A B)) D)
                      (max d1 d2) (ord_succ (ord_max alpha1 alpha2))
 
-| negation1 : forall (A : formula) (d : nat) (alpha : ord),
+| negation1 : forall (A : formula) (d : nat) (alpha : cantor),
     PA_omega_theorem A d alpha ->
     PA_omega_theorem (neg (neg A)) d (ord_succ alpha)
 
-| negation2 : forall (A D : formula) (d : nat) (alpha : ord),
+| negation2 : forall (A D : formula) (d : nat) (alpha : cantor),
     PA_omega_theorem (lor A D) d alpha ->
     PA_omega_theorem (lor (neg (neg A)) D) d (ord_succ alpha)
 
 | quantification1 : forall (A : formula) (n : nat) (t : term)
-                           (d : nat) (alpha : ord),
+                           (d : nat) (alpha : cantor),
     closed_t t = true ->
     PA_omega_theorem (neg (substitution A n t)) d alpha ->
     PA_omega_theorem (neg (univ n A)) d (ord_succ alpha)
 
 | quantification2 : forall (A D : formula) (n : nat) (t : term)
-                           (d : nat) (alpha : ord),
+                           (d : nat) (alpha : cantor),
     closed_t t = true ->
     PA_omega_theorem (lor (neg (substitution A n t)) D) d alpha ->
     PA_omega_theorem (lor (neg (univ n A)) D) d (ord_succ alpha)
 
-| w_rule1 : forall (A : formula) (n : nat) (d : nat) (alpha : ord)
+| w_rule1 : forall (A : formula) (n : nat) (d : nat) (alpha : cantor)
   (g : forall (m : nat),
       PA_omega_theorem (substitution A n (represent m)) d alpha),
   PA_omega_theorem (univ n A) d (cons alpha 0 Zero)
 
-| w_rule2 : forall (A D : formula) (n : nat) (d : nat) (alpha : ord)
+| w_rule2 : forall (A D : formula) (n : nat) (d : nat) (alpha : cantor)
   (g : forall (m : nat),
     PA_omega_theorem (lor (substitution A n (represent m)) D) d alpha),
   PA_omega_theorem (lor (univ n A) D) d (cons alpha 0 Zero)
 
-| cut1 : forall (C A : formula) (d1 d2 : nat) (alpha1 alpha2 : ord),
+| cut1 : forall (C A : formula) (d1 d2 : nat) (alpha1 alpha2 : cantor),
     PA_omega_theorem (lor C A) d1 alpha1 ->
     PA_omega_theorem (neg A) d2 alpha2 ->
     PA_omega_theorem C
                      (max (max d1 d2) (num_conn (neg A)))
                      (ord_succ (ord_max alpha1 alpha2))
 
-| cut2 : forall (A D : formula) (d1 d2 : nat) (alpha1 alpha2 : ord),
+| cut2 : forall (A D : formula) (d1 d2 : nat) (alpha1 alpha2 : cantor),
     PA_omega_theorem A d1 alpha1 ->
     PA_omega_theorem (lor (neg A) D) d2 alpha2 ->
     PA_omega_theorem D
                      (max (max d1 d2) (num_conn (neg A)))
                      (ord_succ (ord_max alpha1 alpha2))
 
-| cut3 : forall (C A D : formula) (d1 d2 : nat) (alpha1 alpha2 : ord),
+| cut3 : forall (C A D : formula) (d1 d2 : nat) (alpha1 alpha2 : cantor),
     PA_omega_theorem (lor C A) d1 alpha1 ->
     PA_omega_theorem (lor (neg A) D) d2 alpha2 ->
     PA_omega_theorem (lor C D)
@@ -3131,7 +3225,7 @@ Qed.
 Lemma w_rule_exmp : forall (n : nat),
   PA_omega_theorem (univ n (atom (equ (var n) (var n)))) 0 (cons Zero 0 Zero).
 Proof.
-intros.
+intros. 
 apply w_rule1. simpl. rewrite eq_nat_refl. apply equ_refl.
 Qed.
 
@@ -11652,10 +11746,30 @@ Proof.
   + auto.
 Qed.
 
+Theorem ord_lt_wf: well_founded ord_lt.
+Proof.
+intros alpha. induction alpha.
+- constructor; intros l Hl. inversion Hl.
+- constructor; intros l Hl. inversion Hl.
+  + constructor; intros l' Hl'. inversion Hl'.
+  + destruct H,H2,H3,H0. admit.
+  + destruct H,H2,H3,H0. induction n'; inversion H1.
+    * destruct H0. admit.
+    * destruct H. apply IHn'. apply coeff_lt. lia. lia.
+  + destruct H,H2,H3,H0.
+  
+Qed.
+
+
+Theorem strong_ind_ord: forall (P : ord -> Prop), (forall alpha, (forall beta, ord_lt beta alpha -> P beta) -> P alpha) -> forall gamma, P gamma.
+Proof.
+apply well_founded_ind.
+unfold well_founded.
+
+Qed.
 
 
 (*
-
 
 
 Lemma ord_max_0 : forall alpha beta, ord_max alpha beta = Zero -> alpha = Zero /\ beta = Zero.
