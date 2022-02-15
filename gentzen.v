@@ -784,9 +784,13 @@ www.labri.fr/perso/casteran, under "Ordinal notations and rpo".
 The file that we borrow from is EPSILON0.v, in the epsilon0 folder.
 In this framework, cons a n b represents  omega^a *(S n)  + b *)
 (* *)
+Require Import List.
+
 Inductive ord : Set :=
 | Zero : ord
 | cons : ord -> nat -> ord -> ord.
+
+Declare Scope cantor_scope.
 
 Inductive ord_lt : ord -> ord -> Prop :=
 |  zero_lt : forall a n b, Zero < cons a n b
@@ -968,6 +972,50 @@ induction n.
   apply Zero_nf.
 Qed.
 
+Fixpoint ord_eqb (alpha beta : ord) : bool :=
+match alpha, beta with
+| Zero, Zero => true
+| _, Zero => false
+| Zero, _ => false
+| cons a n b, cons a' n' b' =>
+    (match ord_eqb a a' with
+    | false => false
+    | true =>
+        (match eq_nat n n' with
+        | false => false
+        | true => ord_eqb b b'
+        end)
+    end)
+end.
+
+Fixpoint ord_ltb (alpha beta : ord) : bool :=
+match alpha, beta with
+| Zero, Zero => false
+| _, Zero => false
+| Zero, _ => true
+| cons a n b, cons a' n' b' =>
+    (match ord_ltb a a', ord_eqb a a' with
+    | true, _ => true
+    | _, false => false
+    | _, true =>
+        (match lt_nat n n', lt_nat n' n with
+        | true, _ => true
+        | _, true => false
+        | _, _ => ord_ltb b b'
+        end)
+    end)
+end.
+
+Fixpoint nfbool (alpha : ord) : bool := 
+match alpha with
+  | Zero => true
+  | cons a n b => match b with
+    | Zero => true
+    | cons a' n' b' => (ord_ltb a' a) && nfbool a && nfbool b
+  end
+end.
+
+(*
 Definition cantor := { value : ord | nf value }.
 
 Definition cantor_to_ord (alpha : cantor) : ord := match alpha with | exist _ a _ => a end.
@@ -1008,6 +1056,8 @@ Proof.
 intros. destruct alpha. auto.
 Qed.
 
+*)
+
 Lemma nf_hered_third : forall (a b : ord) (n : nat),
   nf (cons a n b) -> nf b.
 Proof.
@@ -1030,21 +1080,7 @@ Qed.
 
 (* Defining boolean equality and less than, assuming normal form *)
 (* *)
-Fixpoint ord_eqb (alpha beta : ord) : bool :=
-match alpha, beta with
-| Zero, Zero => true
-| _, Zero => false
-| Zero, _ => false
-| cons a n b, cons a' n' b' =>
-    (match ord_eqb a a' with
-    | false => false
-    | true =>
-        (match eq_nat n n' with
-        | false => false
-        | true => ord_eqb b b'
-        end)
-    end)
-end.
+
 (*
 Fixpoint cantor_eqb (alpha beta : cantor) : bool :=
 match alpha, beta with
@@ -1061,24 +1097,8 @@ match alpha, beta with
         end)
     end)
 end.
-*)
-Fixpoint ord_ltb (alpha beta : ord) : bool :=
-match alpha, beta with
-| Zero, Zero => false
-| _, Zero => false
-| Zero, _ => true
-| cons a n b, cons a' n' b' =>
-    (match ord_ltb a a', ord_eqb a a' with
-    | true, _ => true
-    | _, false => false
-    | _, true =>
-        (match lt_nat n n', lt_nat n' n with
-        | true, _ => true
-        | _, true => false
-        | _, _ => ord_ltb b b'
-        end)
-    end)
-end.
+
+
 
 Fixpoint cantor_ltb (alpha beta : cantor) : bool :=
 match alpha, beta with
@@ -1098,6 +1118,7 @@ match alpha, beta with
     end)
 end.
 
+*)
 
 (* Order-theoretic properties of these boolean relations *)
 (* *)
@@ -1356,6 +1377,151 @@ inversion H.
 - inversion H0.
   + right. left. apply ord_lt_ltb. apply H1.
   + right. right. rewrite H1. apply ord_eqb_refl.
+Qed.
+
+Fixpoint sorting (alpha : ord) : ord :=
+match alpha with 
+| Zero => Zero
+| cons a n b => match sorting b with
+    | Zero => cons (sorting a) n Zero
+    | cons a' n' b' => match ord_ltb a' a with
+        | true => cons (sorting a) n (sorting b)
+        | false => cons a' n' (cons (sorting a) n b')
+        end
+    end
+end.
+
+Fixpoint full_sort (alpha : ord) : ord :=
+match alpha with 
+| Zero => Zero
+| cons a n b => match full_sort b with
+    | Zero => cons (full_sort a) n Zero
+    | cons a' n' b' => match ord_ltb a' a with
+        | true => cons (full_sort a) n (full_sort b)
+        | false => cons a' n' (sorting (cons (full_sort a) n (sorting b')))
+        end
+    end
+end.
+
+
+Theorem sort_big: forall alpha, ord_ltb (full_sort alpha) alpha = false.
+Proof.
+intros. induction alpha. simpl. auto. simpl. induction (full_sort alpha2).
+- induction alpha2.
+  + simpl. rewrite IHalpha1. case (ord_eqb (full_sort alpha1) alpha1); auto. rewrite lt_nat_irrefl. auto.
+  + inversion IHalpha2.
+- case (ord_ltb o1 alpha1) eqn:X.
+  + destruct alpha1.
+    * apply ord_ltb_lt in X. inversion X.
+    * unfold ord_ltb. fold ord_ltb. rewrite IHalpha1. case (ord_eqb (full_sort (cons alpha1_1 n1 alpha1_2)) (cons alpha1_1 n1 alpha1_2)); auto.
+      rewrite lt_nat_irrefl. destruct alpha2. auto. inversion IHalpha2.  case (ord_ltb o1 alpha2_1) eqn:X1; auto. case (ord_eqb o1 alpha2_1) eqn:X2; auto.
+      case (lt_nat n0 n2) eqn: X3; auto. case (lt_nat n2 n0) eqn: X4; auto. 
+  + destruct o2.
+    * unfold ord_ltb. fold ord_ltb. rewrite X. case (ord_eqb o1 alpha1); auto. case (lt_nat n0 n) eqn: X1; auto. admit. case (lt_nat n n0) eqn: X2; auto. simpl. destruct alpha2. auto.
+      simpl.
+    
+    rewrite lt_nat_irrefl. destruct alpha2. auto. inversion IHalpha2.  case (ord_ltb o1 alpha2_1) eqn:X1; auto. case (ord_eqb o1 alpha2_1) eqn:X2; auto.
+    case (lt_nat n0 n2) eqn: X3; auto. case (lt_nat n2 n0) eqn: X4; auto. 
+
+Qed.
+
+
+Theorem sort_works : forall gamma alpha beta n, cons alpha n beta = full_sort gamma -> ord_lt beta alpha \/ alpha = Zero.
+Proof.
+intros gamma. induction gamma.
+- intros. simpl in H. inversion H.
+- intros. simpl in H. induction (full_sort gamma2).
+  + inversion H. induction (full_sort gamma1).
+    * auto.
+    * left. apply zero_lt.
+  + case (ord_ltb o1 gamma1) eqn:X.
+    * induction gamma1.
+      { apply ord_ltb_lt in X. inversion X. }
+      { left. inversion H. destruct (full_sort gamma1_2).
+        { }
+      
+      }
+    
+    apply ord_eqb_eq in X. inversion H. destruct H0,H2,H3,H4,X. apply (IHgamma2 o1 o1 n1); auto.
+    * inversion H. destruct H0. H2,H3,H4. 
+
+Qed.
+
+Fixpoint normalise (alpha : ord) : ord :=
+match alpha with 
+| Zero => Zero
+| cons a n b => match sorting b with
+    | Zero => cons (sorting a) n Zero
+    | cons a' n' b' => match ord_ltb a' a with
+        | true => cons (sorting a) n (sorting b)
+        | false => cons a' n' (cons a n b')
+        end
+    end
+end.
+
+Fixpoint compact (alpha : ord) : ord :=
+match alpha with
+  | Zero => Zero
+  | cons a n b => match compact b with
+      | Zero => match compact a with
+          | Zero => cons Zero n Zero
+          | _ => cons (compact a) n Zero
+          end
+      | (cons a' n' b') => match ord_eqb a' (compact a) with 
+          | true => cons (compact a) (n + n') b' 
+          | false => cons (compact a) n (compact b)
+          end
+      end
+  end.
+
+Theorem compact_works : forall gamma alpha beta n, cons alpha n beta = compact gamma -> alpha = beta -> alpha = Zero.
+Proof.
+intros gamma. induction gamma.
+- intros. simpl in H. inversion H.
+- intros. simpl in H. induction (compact gamma2).
+  + induction (compact gamma1).
+    * inversion H. auto.
+    * inversion H. destruct H0,H2,H3,H4. auto.
+  + case (ord_eqb o1 (compact gamma1)) eqn:X.
+    *  apply ord_eqb_eq in X. inversion H. destruct H0,H2,H3,H4,X. apply (IHgamma2 o1 o1 n1); auto.
+    * inversion H. destruct H0. H2,H3,H4. 
+
+Qed.
+
+(*          | cons a'' n'' b'' => match ord_ltb (normalise a') (normalise a), ord_ltb (normalise b') (normalise a') with
+              | true, true => cons (normalise a) n (cons (normalise a') n (normalise b'))
+              | true, false => match ord_ltb (normalise b') (normalise a) with
+                  | true => cons (normalise a) n (cons (normalise b') n'' (normalise a'))
+                  | false => cons (normalise b') n'' (cons (normalise a) n (normalise a'))
+                  end
+              | false, true => match ord_ltb (normalise b') (normalise a') with
+                  | true => cons (normalise a') n' (cons (normalise a) n (normalise b'))
+                  | false => cons (normalise a') n' (cons (normalise b') n'' (normalise a))
+                  end 
+              | false, false => cons (normalise b') n'' (cons (normalise a') n' (normalise a))           
+              end
+          end
+end.
+*)
+
+
+
+Theorem normalise_works : forall alpha, nf (normalise alpha).
+Proof.
+intros. induction alpha.
+- simpl. apply zero_nf.
+- induction alpha2.
+  + simpl. apply single_nf. auto.
+  + induction alpha2_2.
+    * simpl. case (ord_ltb (normalise alpha2_1) (normalise alpha1)) eqn:X.
+      { apply cons_nf; auto. apply ord_ltb_lt. auto. }
+      { case (ord_eqb (normalise alpha2_1) (normalise alpha1)) eqn:X1.
+        { apply single_nf. auto. }
+        { apply cons_nf; auto. apply ord_ltb_lt. auto. destruct (ord_semiconnex_bool (normalise alpha1) (normalise alpha2_1)). auto.
+          destruct H. rewrite H in X. inversion X. rewrite ord_eqb_symm in H. rewrite H in X1. inversion X1.
+          simpl in IHalpha2. apply nf_hered_first in IHalpha2. auto. apply single_nf. auto. } }
+    * case (ord_ltb (normalise alpha2_1) (normalise alpha1)) eqn:X.  
+
 Qed.
 
 
