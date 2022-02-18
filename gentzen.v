@@ -29,6 +29,8 @@ Proof. intros. case_eq b1; case_eq b2; intros; rewrite H0,H1 in H; auto. Qed.
 (* *)
 Lemma eq_refl : forall (n : nat), n = n. Proof. auto. Qed.
 
+Lemma eq_succ : forall (n m : nat), S n = S m <-> n = m. Proof. intros. split; auto. Qed.
+
 Lemma leq_refl : forall (n : nat), n <= n. Proof. auto. Qed.
 
 Lemma addends_leq : forall (m n p : nat), n + m = p -> n <= p /\ m <= p.
@@ -386,8 +388,29 @@ intros. destruct (nat_semiconnex m n) as [H0 | [H0 | H0]].
   rewrite eq_nat_refl in H. inversion H.
 Qed.
 
+Lemma max_split1 : forall (n m : nat), eq_nat n (max n m) = false -> max n m = m.
+Proof.
+intros n. induction n.
+- auto.
+- intros. destruct m. rewrite eq_nat_refl in H. inversion H. simpl in H. simpl. apply eq_succ. apply IHn. auto.
+Qed.
+
+Lemma max_split2 : forall (m n : nat), eq_nat m (max n m) = false -> max n m = n.
+Proof.
+intros m. induction m.
+- intros. destruct n; auto.
+- intros. destruct n. rewrite eq_nat_refl in H. inversion H. simpl in H. simpl. apply eq_succ. apply IHm. auto. 
+Qed.
+
+
 Lemma max_0 : forall (m n : nat), max m n = 0 -> m = 0 /\ n = 0.
 Proof. intros. lia. Qed.
+
+Lemma max_simp0 : forall (n : nat), (max n 0) = n.
+Proof.
+intros n. induction n; auto.
+Qed.
+
 
 Lemma max_succ_0 : forall (m n : nat), max m (S n) = 0 -> False.
 Proof. intros. lia. Qed.
@@ -784,11 +807,145 @@ www.labri.fr/perso/casteran, under "Ordinal notations and rpo".
 The file that we borrow from is EPSILON0.v, in the epsilon0 folder.
 In this framework, cons a n b represents  omega^a *(S n)  + b *)
 (* *)
-Require Import List.
 
 Inductive ord : Set :=
 | Zero : ord
 | cons : ord -> nat -> ord -> ord.
+
+
+(*Inductive ord : Set :=
+| cls : ord
+| opn : ord -> ord -> ord.
+
+Require Import List.
+Import ListNotations.*)
+
+
+
+Declare Scope cantor_scope.
+
+(*Fixpoint is_tower (alpha : ord) : bool :=
+  match alpha with
+  | cls => false
+  | opn cls cls =>true
+  | opn a cls => is_tower a
+  | _ => false
+  end.
+
+Fixpoint depth (alpha : ord) : nat :=
+match alpha with
+| cls => 0
+| opn cls cls => 1
+| opn cls a => depth a
+| opn a b => max ((depth a) + 1) (depth b)
+end.
+
+Fixpoint deepest (alpha : ord) : list ord :=
+  match alpha with
+  | cls => []
+  | opn a b => match eqb (depth alpha) ((depth a) + 1) with
+      | true => match eqb (depth alpha) (depth b) with
+          | true => (opn a cls) :: deepest b
+          | false => [ opn a cls ]
+          end
+      | false => deepest b
+      end
+  end.
+
+Theorem deepest_good : forall (alpha : ord), forall beta, In beta (deepest alpha) -> depth beta = depth alpha.
+Proof.
+intros alpha. induction alpha.
+- intros. inversion H.
+- intros. unfold deepest in H. fold deepest in H. case (eq_nat (depth (opn alpha1 alpha2)) (depth alpha1 + 1)) eqn: X.
+  + case (eq_nat (depth (opn alpha1 alpha2)) (depth alpha2)) eqn: X1.
+    * apply nat_eq_decid in X. unfold depth in X. fold depth in X. unfold depth in X1. fold depth in X1. unfold depth. fold depth. destruct alpha1.
+      { simpl in X. destruct H. rewrite X. destruct H. auto. destruct alpha2; auto. simpl in H. inversion H. }
+      { apply nat_eq_decid in X1. destruct H. destruct H. rewrite X. apply max_simp0. rewrite X1. apply IHalpha2. auto. }
+    * unfold depth in X. fold depth in X. unfold depth in X1. fold depth in X1. unfold depth. fold depth. destruct H. destruct H. destruct alpha1. destruct alpha2. auto.
+      rewrite eq_nat_refl in X1. inversion X1. apply nat_eq_decid in X. rewrite X. apply max_simp0. inversion H.
+  + unfold depth in X. fold depth in X. unfold depth. fold depth. destruct alpha1.
+    * destruct alpha2. simpl in H. inversion H. apply IHalpha2. auto.
+    * rewrite (max_split1 _ _ (eq_nat_symm' _ _ X)). apply IHalpha2. auto.
+Qed.
+
+
+(*
+Fixpoint remove_deep (alpha : ord) : ord :=
+  match alpha with 
+  | cls => cls
+  | opn cls cls => cls
+  | opn cls a => opn cls (remove_deep a)
+  | opn a b => match ltb (depth a) (depth b) with
+      | true => opn a (remove_deep b)
+      | false => opn (remove_deep a) b
+      end
+  end.
+  
+Theorem rem_dp_wk: forall (alpha : ord), depth (remove_deep alpha) <= depth alpha.
+Proof.
+intros. induction alpha.
+- simpl. auto.
+- induction alpha1.
+  + induction alpha2; simpl; auto.
+  + unfold remove_deep. fold remove_deep. case (ltb (depth (opn alpha1_1 alpha1_2)) (depth alpha2)) eqn:H; simpl; lia.
+Qed.
+*)
+
+Fixpoint size (alpha : ord) : nat :=
+match alpha with
+| cls => 2
+| opn a b => size a + size b
+end.
+
+
+
+Fixpoint ord_lt (alpha beta : ord) : bool :=
+  match ltb (depth alpha) (depth beta) with
+  | true => true
+  | false => match ltb (depth beta) (depth alpha) with
+      | true => false
+      | false => 
+
+
+match alpha, beta with
+| cls, cls => false
+| cls, _ => true
+| _ , cls => false
+| opn cls b, opn cls b' => ord_lt b b'
+| opn cls b, opn (opn c' d') b' => ord_lt b b' \/ ord_lt (opn c' d') \/ 
+
+| opn a b, opn a' cls => match b with
+    | cls => ord_lt a a'
+    | opn c d => ord_lt a a' 
+    
+    
+    
+    && ord_lt b a' && ( (ltb (depth a) (depth a') && ltb (depth b) (depth a')) \/ (leb (depth a) (depth a') && leb (depth b) (depth a') && ) )
+    end
+| opn a b, _ => false
+end.
+*)
+
+Inductive ord_lt : ord -> ord -> Prop :=
+|  zero_lt : forall a n b, Zero < cons a n b
+|  head_lt :
+    forall a a' n n' b b', a < a' ->
+                           cons a n b < cons a' n' b'
+|  coeff_lt : forall a n n' b b', (n < n')%nat ->
+                                 cons a n b < cons a n' b'
+|  tail_lt : forall a n b b', b < b' ->
+                             cons a n b < cons a n b'
+where "o < o'" := (ord_lt o o') : cantor_scope.
+
+Open Scope cantor_scope.
+
+(*
+
+Fixpoint depth (alpha : ord) : nat :=
+match alpha with 
+| Zero => 0
+| cons a n b => max ((depth a) + 1) (depth b)
+end.
 
 Declare Scope cantor_scope.
 
@@ -804,6 +961,8 @@ Inductive ord_lt : ord -> ord -> Prop :=
 where "o < o'" := (ord_lt o o') : cantor_scope.
 
 Open Scope cantor_scope.
+
+*)
 
 Definition leq (alpha beta : ord) := alpha = beta \/ alpha < beta.
 Notation "alpha <= beta" := (leq alpha beta) : cantor_scope.
@@ -1403,7 +1562,7 @@ match alpha with
     end
 end.
 
-
+(*
 Theorem sort_big: forall alpha, ord_ltb (full_sort alpha) alpha = false.
 Proof.
 intros. induction alpha. simpl. auto. simpl. induction (full_sort alpha2).
@@ -1446,6 +1605,9 @@ intros gamma. induction gamma.
     * inversion H. destruct H0. H2,H3,H4. 
 
 Qed.
+*)
+
+(*
 
 Fixpoint normalise (alpha : ord) : ord :=
 match alpha with 
@@ -1523,7 +1685,7 @@ intros. induction alpha.
     * case (ord_ltb (normalise alpha2_1) (normalise alpha1)) eqn:X.  
 
 Qed.
-
+*)
 
 (* Define ord_add, ord_mult, and ord_exp, which will all assume normal form.
 ord_2_exp is based on Pierre Casteran's more general definition of ordinal
@@ -3235,12 +3397,12 @@ end.
     of inference to another theorem *)
 (* *)
 Inductive PA_omega_theorem : formula -> nat -> ord -> Type :=
-| deg_incr : forall (A : formula) (d d' : nat) (alpha : cantor),
+| deg_incr : forall (A : formula) (d d' : nat) (alpha : ord),
     PA_omega_theorem A d alpha ->
     d' > d ->
     PA_omega_theorem A d' alpha
 
-| ord_incr : forall (A : formula) (d : nat) (alpha beta : cantor),
+| ord_incr : forall (A : formula) (d : nat) (alpha beta : ord),
     PA_omega_theorem A d alpha ->
     ord_lt alpha beta -> nf beta ->
     PA_omega_theorem A d beta
@@ -3251,33 +3413,33 @@ Inductive PA_omega_theorem : formula -> nat -> ord -> Type :=
     PA_omega_theorem A 0 Zero
 
 
-| exchange1 : forall (A B : formula) (d : nat) (alpha : cantor),
+| exchange1 : forall (A B : formula) (d : nat) (alpha : ord),
     PA_omega_theorem (lor A B) d alpha ->
     PA_omega_theorem (lor B A) d alpha
 
-| exchange2 : forall (C A B : formula) (d : nat) (alpha : cantor),
+| exchange2 : forall (C A B : formula) (d : nat) (alpha : ord),
     PA_omega_theorem (lor (lor C A) B) d alpha ->
     PA_omega_theorem (lor (lor C B) A) d alpha
 
-| exchange3 : forall (A B D : formula) (d : nat) (alpha : cantor),
+| exchange3 : forall (A B D : formula) (d : nat) (alpha : ord),
     PA_omega_theorem (lor (lor A B) D) d alpha ->
     PA_omega_theorem (lor (lor B A) D) d alpha
 
-| exchange4 : forall (C A B D : formula) (d : nat) (alpha : cantor),
+| exchange4 : forall (C A B D : formula) (d : nat) (alpha : ord),
     PA_omega_theorem (lor (lor (lor C A) B) D) d alpha ->
     PA_omega_theorem (lor (lor (lor C B) A) D) d alpha
 
-| contraction1 : forall (A : formula) (d : nat) (alpha : cantor),
+| contraction1 : forall (A : formula) (d : nat) (alpha : ord),
     PA_omega_theorem (lor A A) d alpha ->
     PA_omega_theorem A d alpha
 
-| contraction2 : forall (A D : formula) (d : nat) (alpha : cantor),
+| contraction2 : forall (A D : formula) (d : nat) (alpha : ord),
     PA_omega_theorem (lor (lor A A) D) d alpha ->
     PA_omega_theorem (lor A D) d alpha
 
 
 
-| weakening : forall (A D : formula) (d : nat) (alpha : cantor),
+| weakening : forall (A D : formula) (d : nat) (alpha : ord),
     closed A = true ->
     PA_omega_theorem D d alpha ->
     PA_omega_theorem (lor A D) d (ord_succ alpha)
@@ -3288,57 +3450,57 @@ Inductive PA_omega_theorem : formula -> nat -> ord -> Type :=
     PA_omega_theorem (neg B) d2 alpha2 ->
     PA_omega_theorem (neg (lor A B)) (max d1 d2) (ord_succ (ord_max alpha1 alpha2))
 
-| demorgan2 : forall (A B D : formula) (d1 d2 : nat) (alpha1 alpha2 : cantor),
+| demorgan2 : forall (A B D : formula) (d1 d2 : nat) (alpha1 alpha2 : ord),
     PA_omega_theorem (lor (neg A) D) d1 alpha1 ->
     PA_omega_theorem (lor (neg B) D) d2 alpha2 ->
     PA_omega_theorem (lor (neg (lor A B)) D)
                      (max d1 d2) (ord_succ (ord_max alpha1 alpha2))
 
-| negation1 : forall (A : formula) (d : nat) (alpha : cantor),
+| negation1 : forall (A : formula) (d : nat) (alpha : ord),
     PA_omega_theorem A d alpha ->
     PA_omega_theorem (neg (neg A)) d (ord_succ alpha)
 
-| negation2 : forall (A D : formula) (d : nat) (alpha : cantor),
+| negation2 : forall (A D : formula) (d : nat) (alpha : ord),
     PA_omega_theorem (lor A D) d alpha ->
     PA_omega_theorem (lor (neg (neg A)) D) d (ord_succ alpha)
 
 | quantification1 : forall (A : formula) (n : nat) (t : term)
-                           (d : nat) (alpha : cantor),
+                           (d : nat) (alpha : ord),
     closed_t t = true ->
     PA_omega_theorem (neg (substitution A n t)) d alpha ->
     PA_omega_theorem (neg (univ n A)) d (ord_succ alpha)
 
 | quantification2 : forall (A D : formula) (n : nat) (t : term)
-                           (d : nat) (alpha : cantor),
+                           (d : nat) (alpha : ord),
     closed_t t = true ->
     PA_omega_theorem (lor (neg (substitution A n t)) D) d alpha ->
     PA_omega_theorem (lor (neg (univ n A)) D) d (ord_succ alpha)
 
-| w_rule1 : forall (A : formula) (n : nat) (d : nat) (alpha : cantor)
+| w_rule1 : forall (A : formula) (n : nat) (d : nat) (alpha : ord)
   (g : forall (m : nat),
       PA_omega_theorem (substitution A n (represent m)) d alpha),
   PA_omega_theorem (univ n A) d (cons alpha 0 Zero)
 
-| w_rule2 : forall (A D : formula) (n : nat) (d : nat) (alpha : cantor)
+| w_rule2 : forall (A D : formula) (n : nat) (d : nat) (alpha : ord)
   (g : forall (m : nat),
     PA_omega_theorem (lor (substitution A n (represent m)) D) d alpha),
   PA_omega_theorem (lor (univ n A) D) d (cons alpha 0 Zero)
 
-| cut1 : forall (C A : formula) (d1 d2 : nat) (alpha1 alpha2 : cantor),
+| cut1 : forall (C A : formula) (d1 d2 : nat) (alpha1 alpha2 : ord),
     PA_omega_theorem (lor C A) d1 alpha1 ->
     PA_omega_theorem (neg A) d2 alpha2 ->
     PA_omega_theorem C
                      (max (max d1 d2) (num_conn (neg A)))
                      (ord_succ (ord_max alpha1 alpha2))
 
-| cut2 : forall (A D : formula) (d1 d2 : nat) (alpha1 alpha2 : cantor),
+| cut2 : forall (A D : formula) (d1 d2 : nat) (alpha1 alpha2 : ord),
     PA_omega_theorem A d1 alpha1 ->
     PA_omega_theorem (lor (neg A) D) d2 alpha2 ->
     PA_omega_theorem D
                      (max (max d1 d2) (num_conn (neg A)))
                      (ord_succ (ord_max alpha1 alpha2))
 
-| cut3 : forall (C A D : formula) (d1 d2 : nat) (alpha1 alpha2 : cantor),
+| cut3 : forall (C A D : formula) (d1 d2 : nat) (alpha1 alpha2 : ord),
     PA_omega_theorem (lor C A) d1 alpha1 ->
     PA_omega_theorem (lor (neg A) D) d2 alpha2 ->
     PA_omega_theorem (lor C D)
@@ -11912,6 +12074,92 @@ Proof.
   + auto.
 Qed.
 
+Definition true_lt : ord -> ord -> Prop := (fun (x y : ord) => ord_lt x y /\ nf x /\ nf y).
+
+(*
+Theorem ord_acc_last: forall (beta beta' alpha : ord) (n : nat), Acc true_lt (cons alpha n beta) -> Acc true_lt (cons alpha n beta').
+Proof.
+intros beta. induction beta.
+- intros beta'. induction beta'.
+  + intros. auto.
+  + intros. constructor; intros l [Hl1 [Hl2 Hl3]]. apply H. repeat split; auto. apply ord_ltb_lt. apply (ord_ltb_trans _ _ _ (ord_lt_ltb _ _ Hl1) (ord_lt_ltb _ _ (tail_lt _ _ _  _(zero_lt _ _ _)))).
+    destruct H.  admit.
+-  
+
+
+Theorem ord_acc: forall (n n' : nat) (alpha beta : ord), Acc true_lt (cons alpha n' beta) -> Acc true_lt (cons alpha n beta).
+Proof.
+intros n. induction n.
+- intros n'. induction n'.
+  + intros. auto.
+  + intros. constructor; intros l [Hl1 [Hl2 Hl3]]. apply H. repeat split; auto. apply ord_ltb_lt. apply (ord_ltb_trans _ (cons alpha 0 beta) _ (ord_lt_ltb _ _ Hl1)). apply ord_lt_ltb. apply coeff_lt. lia. apply (nf_scalar _ _ _ _ Hl3).
+- intros. constructor; intros l [Hl1 [Hl2 Hl3]]. inversion Hl1.
+    * constructor; intros l' [Hl'1 [Hl'2 Hl'3]]. inversion Hl'1.
+    * destruct H0,H1,H3,H4. apply (IHn _ _ _ H). repeat split; auto. apply head_lt. auto. apply (nf_scalar _ _ _ _ Hl3).
+    * unfold lt in H2. inversion H2.
+      { destruct H0,H1,H4,H6. apply (IHn _ _ _ H). }
+     destruct H0,H1,H3,H4. apply (IHn _ _ _ H). repeat split; auto. apply coeff_lt. admit. apply (nf_scalar _ _ _ _ Hl3).
+    * destruct H0,H1,H3,H4. apply (IHn _ _ _ H). repeat split; auto. apply coeff_lt. auto. apply (nf_scalar _ _ _ _ Hl3).
+
+induction alpha.
+- unfold true_lt. induction n.
+  + constructor; intros l [Hl1 [Hl2 Hl3]]. inversion Hl3.
+    * destruct H2,H3. inversion Hl1.
+      { destruct H2. constructor; intros l [Hl'1 [Hl'2 Hl'3]]. inversion Hl'1. }
+      { inversion H4. }
+      { inversion H4.
+        { destruct H3. rewrite H2 in Hl2. inversion Hl2. destruct H5,H7,H9,H10.
+           admit. }
+        { admit. } }
+      { inversion H4. }
+    * destruct H1,H2. inversion Hl3. inversion H7.
+  + destruct H. apply IHn. apply H. admit.
+- unfold true_lt. constructor; intros l Hl.
+
+assert (l = (cons Zero n0 Zero) \/ ord_lt l (cons Zero n0 Zero)).
+{ inversion Hl1. right. apply zero_lt. inversion H4. inversion H4. left. destruct H3. rewrite H2 in Hl2. inversion Hl2. reflexivity. inversion H10.
+  destruct H3. rewrite H2 in Hl2. inversion Hl2. right. apply coeff_lt. lia. inversion H11. inversion H4. } destruct H2.
+{ rewrite H2. constructor; intros l' [Hl'1 [Hl'2 Hl'3]]. apply IHn0.
+ apply H. unfold true_lt.
+
+admit. }
+{ apply IHn0. auto. apply single_nf. auto. }
++ inversion H3.
+
+
+Qed.
+
+Theorem ord_acc: forall (alpha beta : ord) (n n' : nat), Acc true_lt (cons alpha n beta) -> Acc true_lt (cons alpha n' beta).
+Proof.
+intros. induction alpha.
+- unfold true_lt. induction n.
+  + constructor; intros l [Hl1 [Hl2 Hl3]]. inversion Hl3.
+    * destruct H2,H3. inversion Hl1.
+      { destruct H2. constructor; intros l [Hl'1 [Hl'2 Hl'3]]. inversion Hl'1. }
+      { inversion H4. }
+      { inversion H4.
+        { destruct H3. rewrite H2 in Hl2. inversion Hl2. destruct H5,H7,H9,H10.
+           admit. }
+        { admit. } }
+      { inversion H4. }
+    * destruct H1,H2. inversion Hl3. inversion H7.
+  + destruct H. apply IHn. apply H. admit.
+- unfold true_lt. constructor; intros l Hl.
+
+assert (l = (cons Zero n0 Zero) \/ ord_lt l (cons Zero n0 Zero)).
+{ inversion Hl1. right. apply zero_lt. inversion H4. inversion H4. left. destruct H3. rewrite H2 in Hl2. inversion Hl2. reflexivity. inversion H10.
+  destruct H3. rewrite H2 in Hl2. inversion Hl2. right. apply coeff_lt. lia. inversion H11. inversion H4. } destruct H2.
+{ rewrite H2. constructor; intros l' [Hl'1 [Hl'2 Hl'3]]. apply IHn0.
+ apply H. unfold true_lt.
+
+admit. }
+{ apply IHn0. auto. apply single_nf. auto. }
++ inversion H3.
+
+
+Qed.
+
+
 Theorem ord_lt_wf: well_founded ord_lt.
 Proof.
 intros alpha. induction alpha.
@@ -11922,15 +12170,108 @@ intros alpha. induction alpha.
   + destruct H,H2,H3,H0. induction n'; inversion H1.
     * destruct H0. admit.
     * destruct H. apply IHn'. apply coeff_lt. lia. lia.
-  + destruct H,H2,H3,H0.
+  + destruct H,H2,H3,H0. admit.  
+Admitted.
+
+
+Theorem ord_lt_nf_wf: well_founded (fun (x y : ord) => ord_lt x y /\ nf x /\ nf y).
+Proof.
+intros alpha. induction alpha.
+- constructor; intros l [Hl1 [Hl2 Hl3]]. inversion Hl1.
+- constructor; intros l [Hl1 [Hl2 Hl3]]. inversion Hl1.
+  + constructor; intros l' [Hl'1 [Hl'2 Hl'3]]. inversion Hl'1.
+  + destruct H,H2,H3,H0. 
+    * 
+   admit.
+  + destruct H,H2,H3,H0. induction n'; inversion H1.
+    * destruct H0. admit.
+    * destruct H. apply IHn'. apply coeff_lt. lia. apply (nf_scalar _ _ _ _ Hl3). lia.
+  + destruct H,H2,H3,H0. admit.
   
+Qed.
+*)
+
+Theorem ord_lt_succ_cases : forall beta alpha, ord_lt alpha (ord_succ beta) -> nf alpha -> nf beta -> alpha = beta \/ ord_lt alpha beta.
+Proof.
+intros beta. induction beta.
+- intros. inversion H; inversion H4. auto.
+- intros alpha Hl1 Hl2 Hl3. inversion Hl1.
+  * right. apply zero_lt.
+  * destruct beta1.
+    { inversion H. rewrite H3 in H1. inversion H1. }
+    { inversion H. destruct H0,H,H3,H4,H5. right. apply head_lt. auto. }
+  * destruct beta1.
+    { inversion Hl3.
+      { inversion H. destruct H0,H4,H5. rewrite H8 in H1. unfold lt in H1. inversion H1.
+        { destruct H4. left. rewrite H7 in Hl2. inversion Hl2. auto. inversion H6. }
+        { right. apply coeff_lt. lia. } }
+      { inversion H5. } }
+    { inversion H. destruct H0,H,H3,H4,H5. right. apply coeff_lt. auto. }
+  * destruct beta1.
+    { inversion Hl3.
+      { inversion H. destruct H0,H4,H5. rewrite H9 in H1. inversion H1. }
+      { inversion H5. } }
+    { inversion H. destruct H0,H,H4,H5. destruct (IHbeta2 _ H1 (nf_hered_third _ _ _ Hl2) (nf_hered_third _ _ _ Hl3)).
+      { destruct H. auto. }
+      { right. apply tail_lt. auto. } }
 Qed.
 
 
-Theorem strong_ind_ord: forall (P : ord -> Prop), (forall alpha, (forall beta, ord_lt beta alpha -> P beta) -> P alpha) -> forall gamma, P gamma.
+Theorem acc_help': forall alpha, Acc true_lt alpha -> Acc true_lt (ord_succ alpha).
+Proof.
+intros alpha. induction alpha.
+- intros. constructor; intros l [Hl1 [Hl2 Hl3]]. inversion Hl1; inversion H2. auto.
+- intros. constructor; intros l [Hl1 [Hl2 Hl3]]. destruct (ord_lt_succ_cases _ _ Hl1 Hl2 (ord_nf_succ _ Hl3)).
+  + destruct H0. auto.
+  + apply H. repeat split; auto. apply ord_nf_succ. auto.
+Qed.
+
+Theorem acc_dumb: forall alpha, nf alpha -> Acc true_lt alpha -> forall beta, nf beta -> ord_lt beta alpha -> Acc true_lt beta.
+Proof.
+intros. apply H0. repeat split; auto.
+Qed.
+
+Theorem acc_help: forall (beta alpha : ord) , Acc true_lt alpha -> ord_lt beta alpha -> nf alpha -> nf beta -> Acc true_lt (ord_add alpha beta).
+Proof.
+intros beta. induction beta.
+- intros. induction alpha. inversion H0. unfold ord_add. auto.
+- intros alpha. induction alpha. intros. inversion H0. intros. pose (fun x => IHbeta1 _ H x H1 (nf_hered_first _ _ _ H2)).
+
+Theorem acc_help: forall (alpha : ord) (n : nat), Acc true_lt (cons alpha n Zero) -> Acc true_lt (cons alpha (S n) Zero).
+Proof.
+intros. induction n.
+- induction alpha.
+  + constructor; intros l [Hl1 [Hl2 Hl3]]. inversion Hl1; inversion H2. constructor; intros l' [Hl'1 [Hl'2 Hl'3]]. inversion Hl'1.
+    destruct H1. rewrite H0 in Hl2. inversion Hl2. auto. inversion H8. inversion H6.
+  + constructor; intros l [Hl1 [Hl2 Hl3]]. inversion Hl1.
+    * constructor; intros l' [Hl'1 [Hl'2 Hl'3]]. inversion Hl'1.
+    * destruct H0,H1,H3. apply H. repeat split; auto. apply head_lt. auto. apply (nf_scalar _ _ _ _ Hl3).
+    * inversion H2. destruct H1.  admit. inversion H6.
+    * inversion H2.
+- admit.
+Qed.
+
+Theorem acc_help: forall alpha, nf alpha -> Acc true_lt (cons alpha 0 Zero).
+Proof.
+intros alpha. induction alpha.
+- intros. constructor; intros l [Hl1 [Hl2 Hl3]]. inversion Hl1; inversion H2. constructor; intros l' [Hl'1 [Hl'2 Hl'3]]. inversion Hl'1.
+- intros. constructor; intros l [Hl1 [Hl2 Hl3]]. inversion Hl1.
+  + constructor; intros l' [Hl'1 [Hl'2 Hl'3]]. inversion Hl'1.
+  + destruct H1. admit.
+  + inversion H2.
+  + inversion H2.
+Admitted.
+
+Theorem strong_ind_ord: forall (P : ord -> Prop), (forall alpha, (forall beta, true_lt beta alpha -> P beta) -> P alpha) -> forall gamma, P gamma.
 Proof.
 apply well_founded_ind.
 unfold well_founded.
+intros. induction a.
+- constructor; intros l [Hl1 [Hl2 Hl3]]. inversion Hl1.
+- constructor; intros l [Hl1 [Hl2 Hl3]]. inversion Hl1.
+  + admit.
+  + destruct H0,H,H2,H3. apply (acc_help _ IHa1). repeat split; auto. apply head_lt. auto. apply single_nf. apply (nf_hered_first _ _ _ Hl3).
+  + destruct H0,H,H2,H3. apply (acc_help _ IHa1). repeat split; auto. apply head_lt. auto. apply single_nf. apply (nf_hered_first _ _ _ Hl3).
 
 Qed.
 
