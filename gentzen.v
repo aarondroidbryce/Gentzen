@@ -24,6 +24,14 @@ Lemma and_bool_prop : forall (b1 b2 : bool),
   b1 && b2 = true -> b1 = true /\ b2 = true.
 Proof. intros. case_eq b1; case_eq b2; intros; rewrite H0,H1 in H; auto. Qed.
 
+Lemma or_bool_symm : forall (b1 b2 : bool),
+  b1 || b2 = true -> b2 || b1 = true.
+Proof. intros. case_eq b1; case_eq b2; intros; rewrite H0,H1 in H; auto. Qed.
+
+Lemma or_bool_prop : forall (b1 b2 : bool),
+  b1 || b2 = true -> b1 = true \/ b2 = true.
+Proof. intros. case_eq b1; case_eq b2; intros; rewrite H0,H1 in H; auto. Qed.
+
 
 (* Basic properties of natural numbers *)
 (* *)
@@ -50,6 +58,9 @@ match n, m with
 | 0, S m' => false
 | S n', S m' => geq_nat n' m'
 end.
+
+Lemma geq_type : forall n m, geq_nat n m = true -> n = m \/ n > m.
+Proof. induction n. intros. inversion H. destruct m. auto. inversion H1. intros. inversion H. destruct m. lia. pose (IHn _ H1). lia. Qed. 
 
 Lemma succ_geq : forall (n : nat), geq_nat (S n) n = true.
 Proof.
@@ -1538,17 +1549,256 @@ inversion H.
   + right. right. rewrite H1. apply ord_eqb_refl.
 Qed.
 
-Fixpoint sorting (alpha : ord) : ord :=
-match alpha with 
+Lemma ord_ltb_neb : forall (alpha beta: ord), ord_ltb alpha beta = true -> ord_eqb alpha beta = false.
+Proof.
+intros.
+case (ord_eqb alpha beta) eqn:H1. apply ord_eqb_eq in H1. destruct H1. rewrite ord_ltb_irrefl in H. inversion H. auto.
+Qed.
+
+Fixpoint belongs (alpha beta : ord) : bool :=
+match alpha with
+| Zero => true
+| cons a n b => match beta with
+    | Zero => false
+    | cons a' n' b' => belongs alpha a' || belongs alpha b' || (belongs a a' && belongs b b' && (geq_nat n' n))
+    end
+end.
+
+Lemma ord_lt_self : forall alpha n beta, alpha < cons alpha n beta.
+Proof.
+induction alpha.
+- intros. apply zero_lt.
+- intros. apply head_lt. apply IHalpha1.
+Qed.
+
+Lemma ord_lt_first : forall alpha beta n gamma, alpha < beta -> alpha < cons beta n gamma.
+Proof.
+induction alpha.
+- intros. apply zero_lt.
+- induction beta.
+  + intros. inversion H.
+  + intros. apply head_lt. inversion H.
+    * apply IHalpha1. auto.
+    * apply ord_lt_self.
+    * destruct H4. apply ord_lt_self.
+Qed.
+
+Lemma ord_lt_third : forall alpha beta n, alpha < beta -> alpha < cons beta n alpha.
+Proof.
+induction alpha.
+- intros. apply zero_lt.
+- induction beta.
+  + intros. inversion H.
+  + intros. apply head_lt. inversion H.
+    * apply ord_lt_first. auto.
+    * apply ord_lt_self.
+    * destruct H4. apply ord_lt_self.
+Qed.
+
+Lemma ord_lt_third_nf : forall alpha beta n, nf (cons beta n alpha) -> alpha < cons beta n alpha.
+Proof.
+induction alpha.
+- intros. apply zero_lt.
+- induction beta.
+  + intros. inversion H. inversion H3.
+  + intros. apply head_lt. inversion H. auto.
+Qed.
+
+Lemma nf_less_belong : forall alpha beta, nf alpha -> nf beta -> belongs alpha beta = true -> ord_lt alpha beta \/ alpha = beta.
+Proof.
+intros alpha. induction alpha.
+- intros beta. induction beta.
+  + intros. right. reflexivity.
+  + intros. left. apply zero_lt.
+- induction beta. intros. inversion H1. intros. inversion H1. apply or_bool_prop in H3. destruct H3.
+  + apply or_bool_prop in H2. destruct H2.
+  * destruct (IHbeta1 H (nf_hered_first _ _ _ H0) H2). 
+    { left. apply ord_lt_first. auto. }
+    { destruct H3. left. apply ord_lt_self. }
+  * destruct (IHbeta2 H (nf_hered_third _ _ _ H0) H2). 
+    { left. apply (lt_trans _ beta2 _ H3). apply ord_lt_third_nf. auto. }
+    { destruct H3. left. apply ord_lt_third_nf. auto. }
+  + apply and_bool_prop in H2. destruct H2. apply and_bool_prop in H2. destruct H2. destruct (IHalpha1 _ (nf_hered_first _ _ _ H) (nf_hered_first _ _ _ H0) H2).
+    * left. apply head_lt. auto.
+    * destruct H5. apply geq_type in H3. destruct H3.
+      { destruct H3. destruct (IHalpha2 _ (nf_hered_third _ _ _ H) (nf_hered_third _ _ _ H0) H4).
+        { left. apply tail_lt. auto. }
+        { destruct H3. right. auto. } }
+      { left. apply coeff_lt. lia. }
+Qed.
+
+Definition swap (alpha : ord) : ord :=
+match alpha with
 | Zero => Zero
-| cons a n b => match sorting b with
-    | Zero => cons (sorting a) n Zero
-    | cons a' n' b' => match ord_ltb a' a with
-        | true => cons (sorting a) n (sorting b)
-        | false => cons a' n' (cons (sorting a) n b')
+| cons a n b => match b with
+    | Zero => cons a n Zero
+    | cons a' n' b' => cons a' n' (cons a n b)
+    end
+end.
+
+Fixpoint sort (alpha : ord) : ord :=
+match alpha with
+| Zero => Zero
+| cons a n b => match b with
+    | Zero => cons (sort a) n Zero
+    | cons a' n' b' => match ord_ltb (sort a) (sort a') with
+        | true => cons (sort a') n' (cons (sort a) n (sort b'))
+        | false => match ord_eqb (sort a) (sort a') with
+            | true => cons (sort a) (S (n + n')) (sort b')
+            | false => cons (sort a) n (sort b)
+            end 
         end
     end
 end.
+
+Fixpoint sorting (n : nat) (alpha : ord) : ord :=
+match n with
+| 0 => alpha
+| S m => sorting m (sort alpha)
+end.
+
+Fixpoint size (alpha : ord) : nat :=
+match alpha with 
+| Zero => 0
+| cons a n b => S(size a + size b)
+end.
+
+Lemma sort_type : forall alpha beta gamma n m, sort (cons alpha n (cons beta m gamma)) = cons (sort alpha) n (sort (cons beta m gamma)) \/ sort (cons alpha n (cons beta m gamma)) = cons (sort alpha) (S (n + m)) (sort gamma) \/ sort (cons alpha n (cons beta m gamma)) = cons (sort beta) m (cons (sort alpha) n (sort gamma)).
+Proof.
+intros. unfold sort. fold sort. case (ord_ltb (sort alpha) (sort beta)); auto. case (ord_eqb (sort alpha) (sort beta)); auto.
+Qed.
+
+Lemma sort_not_less : forall alpha, ord_ltb (sort alpha) alpha = false.
+Proof.
+intros. induction alpha.
+- auto.
+- assert (ord_ltb alpha1 (sort alpha1) = true \/ ord_eqb alpha1 (sort alpha1) = true).
+  { destruct (ord_semiconnex_bool alpha1 (sort alpha1)) as [H | [H | H]]; auto. rewrite IHalpha1 in H. inversion H. }
+  assert (ord_ltb alpha2 (sort alpha2) = true \/ ord_eqb alpha2 (sort alpha2) = true).
+  { destruct (ord_semiconnex_bool alpha2 (sort alpha2)) as [H1 | [H1 | H1]]; auto. rewrite IHalpha2 in H1. inversion H1. }
+  destruct H.
+  + destruct alpha2.
+    * apply ltb_asymm. apply ord_lt_ltb. apply head_lt. apply ord_ltb_lt. auto.
+    * unfold sort. fold sort. apply ltb_asymm. apply ord_lt_ltb. case (ord_ltb (sort alpha1) (sort alpha2_1)) eqn:X.
+      { apply head_lt. apply (lt_trans _ (sort alpha1)). apply ord_ltb_lt. auto. apply ord_ltb_lt. auto. }
+      { case (ord_eqb (sort alpha1) (sort alpha2_1)) eqn:X1; apply head_lt; apply ord_ltb_lt; auto. }
+  + apply ord_eqb_eq in H. unfold sort. fold sort. induction alpha2.
+    * destruct H. apply ord_ltb_irrefl.
+    * case (ord_ltb (sort alpha1) (sort alpha2_1)) eqn:Y.
+      { destruct H. apply ltb_asymm. apply ord_lt_ltb. apply head_lt. apply ord_ltb_lt. apply Y. }
+      { case (ord_eqb (sort alpha1) (sort alpha2_1)) eqn:Y1.
+        { destruct H. apply ltb_asymm. apply ord_lt_ltb. apply coeff_lt. lia. }
+        { destruct H. destruct H0.
+          { apply ltb_asymm. apply ord_lt_ltb. apply tail_lt. apply ord_ltb_lt. auto. }
+          { apply ord_eqb_eq in H. destruct H. apply ord_ltb_irrefl. } } }
+Qed.      
+
+Lemma sort_idempotent_triv : forall alpha, sort (sort (alpha)) = alpha -> sort alpha = alpha.
+Proof.
+intros. destruct (ord_semiconnex_bool (sort alpha) alpha) as [H1 | [H1 | H1]].
+- rewrite sort_not_less in H1. inversion H1.
+- rewrite <- H in H1 at 1. rewrite sort_not_less in H1. inversion H1.
+- apply ord_eqb_eq in H1. apply H1.
+Qed.
+
+Lemma plus_succ_ne : forall n m, ~(S(n + m) = n).
+Proof.
+intros. lia.
+Qed.
+
+Lemma ord_eq_type : forall alpha1 alpha2 beta1 beta2 n1 n2, (cons alpha1 n1 beta1) = cons alpha2 n2 beta2 -> alpha1 = alpha2 /\ n1 = n2 /\ beta1 = beta2.
+Proof.
+intros. inversion H. auto.
+Qed.
+
+Lemma sort_triv_nf : forall alpha, sort alpha = alpha -> nf alpha.
+Proof.  
+intros. induction alpha.
+- apply zero_nf.
+- unfold sort in H. fold sort in H. destruct alpha2.
+  + inversion H. apply single_nf. rewrite H1. apply IHalpha1. apply H1.
+  + case (ord_ltb (sort alpha1) (sort alpha2_1)) eqn:X.
+    * inversion H. pose (sort_idempotent_triv _ H3). rewrite e in *. destruct H1,H2,H4. rewrite e in X. rewrite ord_ltb_irrefl in X. inversion X.
+    * case (ord_eqb (sort alpha1) (sort alpha2_1)) eqn:X1.
+      { inversion H. pose (plus_succ_ne n n0). contradiction. }
+      { pose (ord_eq_type _ _ _ _ _ _ H). destruct a as [Y1 [Y2 Y3]].
+        apply cons_nf.
+        { destruct (ord_semiconnex_bool (sort alpha2_1) (sort alpha1)) as [Y | [Y | Y]].
+          { rewrite Y1 in Y. destruct (ord_semiconnex_bool (sort alpha2_1) alpha2_1) as [Z | [Z | Z]].
+            { rewrite sort_not_less in Z. inversion Z. }
+            { apply ord_ltb_lt. apply (ord_ltb_trans _ (sort alpha2_1)); auto. }
+            { apply ord_eqb_eq in Z. destruct Z. apply ord_ltb_lt. auto. } }
+          { rewrite Y in X. inversion X. }
+          { rewrite ord_eqb_symm in Y. rewrite Y in X1. inversion X1. } }
+        { apply IHalpha1. auto. }
+        { apply IHalpha2. auto. } }
+Qed.
+
+Lemma sort_nf_triv : forall alpha, nf alpha -> sort alpha = alpha.
+Proof.
+intros. induction alpha.
+- auto.
+- induction alpha2.
+  + simpl. inversion H.  rewrite (IHalpha1 H1). auto.
+  + inversion H. destruct H0,H1,H2,H4,H5. unfold sort. fold sort. rewrite (IHalpha1 H6). pose (IHalpha2 H7). unfold sort in e. fold sort in e. destruct b.
+      * inversion e. rewrite H1. rewrite H1. apply ord_lt_ltb in H3. pose (ltb_asymm _ _ H3). rewrite e0. pose (ord_ltb_neb _ _ H3). rewrite ord_eqb_symm. rewrite e1. auto.
+      * inversion H7. destruct H0,H1,H2,H5,H8. rewrite ord_eqb_symm in e. case (ord_ltb (sort a0) (sort a'0)) eqn:X.
+        { inversion e. pose (sort_idempotent_triv _ H5). rewrite e0 in *. destruct H1. apply ord_lt_ltb in H4. rewrite ord_ltb_irrefl in H4. inversion H4. }
+        { case (ord_eqb (sort a'0) (sort a0)) eqn:X1.
+          { inversion e. pose (plus_succ_ne n0 n'0). contradiction. }
+          { pose (ord_eq_type _ _ _ _ _ _ e). destruct a1 as [Y1 [Y2 Y3]]. rewrite Y1 in *. case (ord_ltb a a0) eqn:Z.
+            { apply ord_lt_ltb in H3. apply ltb_asymm in H3. rewrite H3 in Z. inversion Z. }
+            { case (ord_eqb a a0) eqn:Z1.
+              { apply ord_eqb_eq in Z1. destruct Z1. apply lt_irrefl in H3. inversion H3. }
+              { rewrite ord_eqb_symm. rewrite X1. rewrite Y3. auto. } } } }
+Qed.
+
+Lemma sorting_works : forall alpha, nf (sorting (size alpha) alpha).
+Proof.
+intros. induction alpha.
+- simpl. apply zero_nf.
+- unfold size. fold size. unfold sorting. fold sorting. unfold sort. fold sort. destruct alpha2.
+  + destruct alpha1.
+    * simpl. apply single_nf. apply zero_nf.
+    * rewrite plus_n_0. unfold size. fold size. unfold sorting. fold sorting.  unfold sort. fold sort.
+
+Qed.
+
+Lemma nat_ref :forall (n : nat), (n <= n)%nat.
+Proof.
+lia.
+Qed.
+
+(*
+Fixpoint sorting (alpha : ord) (m : nat) (H : (m >= size alpha)%nat) : ord.
+Proof.
+destruct alpha. refine Zero.
+destruct m. refine Zero.
+refine ( match sorting alpha2 (size alpha2) (nat_ref (size alpha2)) with
+    | Zero => cons (sorting alpha1 (size alpha1) (nat_ref (size alpha1))) n Zero
+    | cons a' n' b' => match ord_ltb a' (sorting alpha1 (size alpha1) (nat_ref (size alpha1))) with
+        | true => cons (sorting alpha1 (size alpha1) (nat_ref (size alpha1))) n (sorting alpha2 (size alpha2) (nat_ref(size alpha2)))
+        | false => match ord_eqb a' (sorting alpha1 (size alpha1) (nat_ref (size alpha1))) with
+            | true => cons a' (n + n') b'
+            | false => cons a' n' (sorting (cons (sorting alpha1 (size alpha1) (nat_ref (size alpha1))) n b') m _)
+            end
+        end
+    end).
+assert (forall m G , sorting Zero m G = Zero).
+{ intros. unfold sorting. admit. }
+assert(forall beta m G, (size (sorting (beta) m G) <= size beta)%nat).
+{ intros beta. induction beta.
+  - intros. rewrite H0. auto.
+  - intros. unfold size. fold size.
+
+
+}
+assert(size b' < size alpha2)%nat.
+unfold size. fold size. 
+admit.
+unfold size. fold size.
+unfold size in H. fold size in H. destruct (leq_type _ _ (H1 alpha1 (size alpha1) (nat_ref (size alpha1)))). lia. lia.
+Admitted.
 
 Fixpoint full_sort (alpha : ord) : ord :=
 match alpha with 
@@ -1561,6 +1811,7 @@ match alpha with
         end
     end
 end.
+*)
 
 (*
 Theorem sort_big: forall alpha, ord_ltb (full_sort alpha) alpha = false.
@@ -2514,35 +2765,6 @@ Qed.
 Lemma ord_eq_split : forall alpha1 beta1 alpha2 beta2 n1 n2, alpha1 = alpha2 -> beta1 = beta2 -> n1 = n2 ->  (cons alpha1 n1 beta1) = (cons alpha2 n2 beta2).
 Proof.
 intros. apply ord_eqb_eq. simpl. rewrite H,H0,H1. repeat rewrite ord_eqb_refl. rewrite eq_nat_refl. auto.
-Qed.
-
-Lemma ord_ltb_assym : forall (alpha beta : ord), ord_ltb alpha beta = true -> ord_ltb beta alpha = false.
-Proof.
-intros alpha.
-induction alpha.
-- intros. destruct beta; auto.
-- intros beta. destruct beta.
-  + intros. inversion H.
-  + intros. inversion H. case (ord_ltb alpha1 beta1) eqn:H2.
-    * pose proof (IHalpha1 _ H2). simpl. rewrite H0. case (ord_eqb beta1 alpha1) eqn:H3.
-      { apply ord_eqb_eq in H3. destruct H3. rewrite H0 in H2. inversion H2. }
-      { auto. }
-    * case (ord_eqb alpha1 beta1) eqn:H3.
-      { apply ord_eqb_eq in H3. destruct H3. case (lt_nat n n0) eqn:H4.
-        { simpl. rewrite H2,ord_eqb_refl,H4. case (lt_nat n0 n) eqn:H5.
-          { apply lt_nat_decid in H4. apply lt_nat_decid in H5. lia. }
-          { auto. }
-          }
-        { case (lt_nat n0 n) eqn:H5.
-          { inversion H1. }
-          { destruct (nat_semiconnex_bool n n0) as [H0 | [H0 | H0]].
-            { rewrite H0 in H4. inversion H4. }
-            { rewrite H0 in H5. inversion H5. }
-            { simpl. rewrite H2,ord_eqb_refl,H4,H5. apply (IHalpha2 _ H1). }
-            }
-          }
-        }
-      { inversion H1. }
 Qed.
 
 Lemma ord_lt_ne : forall beta alpha, ord_ltb alpha beta = true -> ord_eqb alpha beta = false.
@@ -12230,6 +12452,55 @@ Theorem acc_dumb: forall alpha, nf alpha -> Acc true_lt alpha -> forall beta, nf
 Proof.
 intros. apply H0. repeat split; auto.
 Qed.
+
+Theorem acc_ord_nat: forall n, Acc true_lt (cons Zero n Zero).
+Proof.
+intros. induction n.
+- constructor; intros l [Hl1 [Hl2 Hl3]]. inversion Hl1. constructor; intros l' [Hl'1 [Hl'2 Hl'3]]. inversion Hl'1. inversion H1. inversion H1. inversion H1.
+- pose (acc_help' _ IHn). unfold ord_succ in a. auto.
+Qed.
+
+Theorem acc_add : forall alpha beta, Acc true_lt (cons alpha 0 Zero) -> ord_lt beta alpha -> nf alpha -> nf beta -> Acc true_lt (cons alpha 0 beta).
+Proof.
+intros alpha. induction alpha.
+- intros. inversion H0.
+- intros beta. induction beta.
+  + intros. auto.
+  + intros. 
+
+
+Admitted.
+
+
+Theorem acc_exp : forall alpha, Acc true_lt (cons alpha 0 Zero) -> nf alpha -> Acc true_lt (cons (ord_succ alpha) 0 Zero).
+Proof.
+intros alpha. induction alpha.
+- intros. simpl. constructor; intros l [Hl1 [Hl2 Hl3]]. inversion Hl1.
+  + constructor; intros l' [Hl'1 [Hl'2 Hl'3]]. inversion Hl'1. 
+  + inversion H3.
+    * destruct H2,H6. inversion Hl2. destruct H7,H11. apply acc_ord_nat. inversion H11.
+    * inversion H8.
+    * inversion H8.
+    * inversion H8.
+  + inversion H3.
+  + inversion H3.
+- intros. destruct alpha1.
+  + inversion H0.
+    * destruct H3,H4. unfold ord_succ. constructor; intros l [Hl1 [Hl2 Hl3]]. inversion Hl1.
+      { constructor; intros l' [Hl'1 [Hl'2 Hl'3]]. inversion Hl'1. }
+      { inversion H5.
+        { destruct H4,H8. inversion Hl2. apply acc_ord_nat. inversion H13. }
+        { inversion H10. }
+        { destruct H4,H9. rewrite H8 in *. 
+         admit. }
+        { inversion H10. } }
+      { inversion H5. }
+      { inversion H5. }
+    * inversion H4.
+  + admit.
+
+Qed.
+
 
 Theorem acc_help: forall (beta alpha : ord) , Acc true_lt alpha -> ord_lt beta alpha -> nf alpha -> nf beta -> Acc true_lt (ord_add alpha beta).
 Proof.
