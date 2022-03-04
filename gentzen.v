@@ -1753,15 +1753,146 @@ intros. induction alpha.
               { rewrite ord_eqb_symm. rewrite X1. rewrite Y3. auto. } } } }
 Qed.
 
+Lemma sorting_single : forall n alpha m, sorting n (cons alpha m Zero) = cons (sorting n alpha) m Zero.
+Proof.
+intros n. induction n.
+- intros. auto.
+- intros. unfold sorting. fold sorting. apply IHn.
+Qed.
+
+Lemma sorting_inverse : forall n alpha, sorting n (sort alpha) = sorting (S n) alpha.
+Proof.
+intros. auto.
+Qed.
+
+Lemma sorting_sort_comm : forall n alpha, sorting (S n) alpha = sort (sorting n alpha).
+Proof.
+intros n. induction n.
+- intros. auto.
+- intros. unfold sorting. fold sorting. rewrite <- IHn. auto.
+Qed.
+
+Fixpoint wrongness (alpha : ord) : nat :=
+match alpha with
+| Zero => 0
+| cons a n b => match b with
+    | Zero => wrongness a
+    | cons a' n' b' => match ord_ltb a' a with
+        | true => wrongness a + wrongness b
+        | false => S (wrongness a + wrongness b)
+        end
+    end
+end.
+
+Lemma wrongness_0_sub : forall alpha n beta, wrongness (cons alpha n beta) = 0 -> wrongness alpha = 0 /\ wrongness beta = 0.
+Proof.
+unfold wrongness. fold wrongness.
+intros. induction beta.
+- auto.
+- case (ord_ltb beta1 alpha) eqn:X.
+  + lia.
+  + inversion H.
+Qed.
+
+Lemma not_wrong_is_nf : forall alpha, wrongness alpha = 0 -> nf alpha.
+Proof.
+intros. induction alpha.
+- apply zero_nf.
+- destruct (wrongness_0_sub _ _ _ H). pose (IHalpha1 H0). pose (IHalpha2 H1). destruct alpha2.
+  + apply single_nf. auto.
+  + apply cons_nf; auto. unfold wrongness in H. fold wrongness in H. case (ord_ltb alpha2_1 alpha1) eqn:X.
+    * apply ord_ltb_lt. auto.
+    * inversion H.
+Qed.
+
+Lemma nf_is_not_wrong : forall alpha, nf alpha -> wrongness alpha = 0.
+Proof.
+intros. induction alpha.
+- auto.
+- inversion H.
+  + simpl. auto.
+  + destruct H0,H1,H2. unfold wrongness. fold wrongness. unfold wrongness in IHalpha2. fold wrongness in IHalpha2. rewrite (ord_lt_ltb _ _ H3). rewrite (IHalpha1 H4). apply (IHalpha2 H5).
+Qed.
+
+Lemma wrongness_type : forall alpha n beta, wrongness (cons alpha n beta) = wrongness alpha + wrongness beta \/ wrongness (cons alpha n beta) = S (wrongness alpha + wrongness beta).
+Proof.
+intros. unfold wrongness. fold wrongness. destruct beta.
+- auto.
+- case (ord_ltb beta1 alpha); auto.
+Qed.
+
+Lemma wrongness_type_proof : forall alpha n beta, (wrongness (cons alpha n beta) = wrongness alpha + wrongness beta) \/ (wrongness (cons alpha n beta) = S (wrongness alpha + wrongness beta) /\ ord_ltb beta alpha = false).
+Proof.
+intros. unfold wrongness. fold wrongness. destruct beta.
+- auto. 
+- case (ord_ltb beta1 alpha) eqn:X; auto. right. split; auto. admit. Admitted.
+
+Lemma sort_less_wrong : forall alpha, ((wrongness (sort alpha)) < (wrongness alpha))%nat \/ nf alpha.
+Proof.
+intros alpha. induction alpha.
+- right. apply zero_nf.
+- induction alpha2.
+  + destruct IHalpha1.
+    * auto.
+    * right. apply single_nf. auto.
+  + 
+  unfold sort. fold sort. unfold wrongness. fold wrongness. unfold sort. fold sort. unfold wrongness. fold wrongness. case (ord_ltb (sort alpha1) (sort alpha2_1)) eqn:X.
+    * destruct alpha2_2.
+      { case (ord_ltb alpha2_1 alpha1) eqn:X1.
+        { destruct IHalpha1.
+          { destruct IHalpha2.
+            { simpl in H0. simpl. rewrite X. lia. }
+            { inversion H0. rewrite (sort_nf_triv _ H2) in *. pose (ord_ltb_trans _ _ _ X X1). rewrite sort_not_less in e. inversion e. } }
+          { destruct IHalpha2.
+            { simpl in H0. rewrite (sort_nf_triv _ H) in *. simpl. rewrite X. lia. }
+            { right. apply cons_nf; auto. apply ord_ltb_lt. auto. } } }
+        { destruct IHalpha1.
+          { destruct IHalpha2.
+            { simpl in H0. simpl. rewrite X. lia. }
+            { inversion H0. rewrite (sort_nf_triv _ H2) in *. simpl. rewrite X. lia. } }
+          { destruct IHalpha2.
+            { simpl in H0. rewrite (sort_nf_triv _ H) in *. simpl. rewrite X. lia. }
+            { inversion H0. rewrite (sort_nf_triv _ H) in *. rewrite (sort_nf_triv _ H2) in *. simpl. rewrite X. lia. } } } }
+      { 
+        admit.
+
+       }
+    * case (ord_eqb (sort alpha1) (sort alpha2_1)) eqn:X1.
+      { destruct IHalpha1.
+        { destruct IHalpha2.
+          { admit. }
+          { admit. } }
+        { destruct IHalpha2.
+          { admit. }
+          { inversion H0. 
+            { rewrite (sort_nf_triv _ H) in *. unfold wrongness. fold wrongness. unfold sort. case (ord_ltb alpha2_1 alpha1) eqn:X2.
+              { pose (sort_nf_triv _ H2). rewrite e in *.  apply ord_eqb_eq in X1. destruct X1. rewrite ord_ltb_irrefl in X2. inversion X2. }
+              { lia. } }
+            { apply ord_eqb_eq in X1. destruct H1,H2,H3. rewrite (sort_nf_triv _ H) in *. rewrite (sort_nf_triv _ H5) in *. destruct X1. unfold wrongness. fold wrongness.
+              admit. } 
+             } } }
+      { unfold wrongness. fold wrongness. unfold sort. fold sort. destruct alpha2_2.
+        { assert (ord_ltb (sort alpha2_1) (sort alpha1) = true). { destruct (ord_semiconnex_bool (sort alpha1) (sort alpha2_1)) as [Y | [Y | Y]]; rewrite Y in *. inversion X. auto. inversion X1. } rewrite H. destruct IHalpha1.
+          { destruct IHalpha2.
+            { simpl in H1. simpl. case (ord_ltb alpha2_1 alpha1) eqn:X2; lia. }
+            { inversion H1. simpl. rewrite (sort_nf_triv _ H3). case (ord_ltb alpha2_1 alpha1) eqn:X2; lia. } }
+          { destruct IHalpha2.
+            { simpl in H1. simpl. rewrite (sort_nf_triv _ H0). case (ord_ltb alpha2_1 alpha1) eqn:X2; lia. }
+            { rewrite (sort_nf_triv _ H0) in *. inversion H1. rewrite (sort_nf_triv _ H3) in *. rewrite H. right. apply ord_ltb_lt in H. apply cons_nf; auto. } } }
+          { 
+            assert (ord_ltb (sort alpha2_1) (sort alpha1) = true). { destruct (ord_semiconnex_bool (sort alpha1) (sort alpha2_1)) as [Y | [Y | Y]]; rewrite Y in *. inversion X. auto. inversion X1. } rewrite H. destruct IHalpha1.
+
+            admit. } }
+
+Qed.
+
 Lemma sorting_works : forall alpha, nf (sorting (size alpha) alpha).
 Proof.
 intros. induction alpha.
 - simpl. apply zero_nf.
-- unfold size. fold size. unfold sorting. fold sorting. unfold sort. fold sort. destruct alpha2.
-  + destruct alpha1.
-    * simpl. apply single_nf. apply zero_nf.
-    * rewrite plus_n_0. unfold size. fold size. unfold sorting. fold sorting.  unfold sort. fold sort.
-
+- unfold size. fold size. unfold sorting. fold sorting. unfold sort. fold sort. induction alpha2.
+  + rewrite plus_n_0. rewrite sorting_single. apply single_nf. rewrite sorting_inverse. rewrite sorting_sort_comm. rewrite (sort_nf_triv _ IHalpha1). auto.
+  +    
 Qed.
 
 Lemma nat_ref :forall (n : nat), (n <= n)%nat.
