@@ -1663,9 +1663,27 @@ match alpha with
 | cons a n b => S(size a + size b)
 end.
 
+Arguments sort : simpl nomatch.
+
 Lemma sort_type : forall alpha beta gamma n m, sort (cons alpha n (cons beta m gamma)) = cons (sort alpha) n (sort (cons beta m gamma)) \/ sort (cons alpha n (cons beta m gamma)) = cons (sort alpha) (S (n + m)) (sort gamma) \/ sort (cons alpha n (cons beta m gamma)) = cons (sort beta) m (cons (sort alpha) n (sort gamma)).
 Proof.
 intros. unfold sort. fold sort. case (ord_ltb (sort alpha) (sort beta)); auto. case (ord_eqb (sort alpha) (sort beta)); auto.
+Qed.
+
+Lemma sort_case1 : forall alpha beta gamma n m, ord_ltb (sort alpha) (sort beta) = true -> sort (cons alpha n (cons beta m gamma)) = cons (sort beta) m (cons (sort alpha) n (sort gamma)).
+Proof.
+intros.
+unfold sort. fold sort. rewrite H. auto.
+Qed.
+
+Lemma sort_case2 : forall alpha beta gamma n m, ord_eqb (sort alpha) (sort beta) = true -> sort (cons alpha n (cons beta m gamma)) = cons (sort alpha) (S (n + m)) (sort gamma).
+Proof.
+intros. unfold sort. fold sort. rewrite H. apply ord_eqb_eq in H. destruct H. rewrite ord_ltb_irrefl. auto.
+Qed.
+
+Lemma sort_case3 : forall alpha beta gamma n m, ord_ltb (sort beta) (sort alpha) = true -> sort (cons alpha n (cons beta m gamma)) = cons (sort alpha) n (sort (cons beta m gamma)).
+Proof.
+intros. unfold sort. fold sort. rewrite (ltb_asymm _ _ H). rewrite ord_eqb_symm. rewrite (ord_ltb_neb _ _ H). destruct gamma; auto.
 Qed.
 
 Lemma sort_not_less : forall alpha, ord_ltb (sort alpha) alpha = false.
@@ -1779,7 +1797,7 @@ match alpha with
     | Zero => wrongness a
     | cons a' n' b' => match ord_ltb a' a with
         | true => wrongness a + wrongness b
-        | false => S (wrongness a + wrongness b)
+        | false => wrongness a + wrongness b + size b
         end
     end
 end.
@@ -1791,7 +1809,34 @@ intros. induction beta.
 - auto.
 - case (ord_ltb beta1 alpha) eqn:X.
   + lia.
-  + inversion H.
+  + unfold size in H. fold size in H. rewrite <- plus_n_Sm in H. inversion H.
+Qed.
+
+Lemma wrongness_case_1 : forall alpha beta gamma n m, ord_ltb beta alpha = true -> (wrongness (cons alpha n (cons beta m gamma)) = wrongness (alpha) + wrongness (cons beta m gamma)).
+Proof.
+intros. unfold wrongness. fold wrongness. rewrite H. induction gamma; auto.
+Qed.
+
+Lemma wrongness_case_2_ineq : forall alpha beta gamma n m, ord_eqb beta alpha = true -> (wrongness (cons alpha (S (n + m)) gamma) < wrongness (cons alpha n (cons beta m gamma)))%nat.
+Proof.
+intros. apply ord_eqb_eq in H. destruct H. unfold wrongness. fold wrongness. rewrite ord_ltb_irrefl. unfold size. fold size. destruct gamma.
+- lia.
+- case (ord_ltb gamma1 beta); lia.
+Qed.
+
+Lemma wrongness_case_2 : forall alpha beta gamma n m, ord_eqb beta alpha = true -> wrongness (cons alpha n (cons beta m gamma)) = wrongness (cons alpha (S (n + m)) gamma) + wrongness alpha + size (cons beta m gamma).
+Proof.
+intros. apply ord_eqb_eq in H. destruct H. unfold wrongness. fold wrongness. rewrite ord_ltb_irrefl. unfold size. fold size. destruct gamma; auto. case (ord_ltb gamma1 beta) eqn:X; lia.
+Qed.
+
+Lemma wrongness_case_3 : forall alpha beta gamma n m, ord_ltb alpha beta = true -> wrongness (cons alpha n (cons beta m gamma)) = wrongness (alpha) + wrongness (cons beta m gamma) + size (cons beta m gamma).
+Proof.
+intros. unfold wrongness. fold wrongness. apply ltb_asymm in H. rewrite H. induction gamma; auto.
+Qed.
+
+Lemma wrongness_coeff_inv : forall alpha beta n m, wrongness (cons alpha n beta) = wrongness (cons alpha m beta).
+Proof.
+intros. auto.
 Qed.
 
 Lemma not_wrong_is_nf : forall alpha, wrongness alpha = 0 -> nf alpha.
@@ -1800,9 +1845,10 @@ intros. induction alpha.
 - apply zero_nf.
 - destruct (wrongness_0_sub _ _ _ H). pose (IHalpha1 H0). pose (IHalpha2 H1). destruct alpha2.
   + apply single_nf. auto.
-  + apply cons_nf; auto. unfold wrongness in H. fold wrongness in H. case (ord_ltb alpha2_1 alpha1) eqn:X.
+  + apply cons_nf; auto. destruct (ord_semiconnex_bool alpha2_1 alpha1) as [X | [X | X]].
     * apply ord_ltb_lt. auto.
-    * inversion H.
+    * rewrite (wrongness_case_3 _ _ _ _ _ X) in H. unfold size in H. fold size in H. rewrite <- plus_n_Sm in H. inversion H.
+    * rewrite (wrongness_case_2 _ _ _ _ _ X) in H.  unfold size in H. fold size in H. rewrite <- plus_n_Sm in H. inversion H.
 Qed.
 
 Lemma nf_is_not_wrong : forall alpha, nf alpha -> wrongness alpha = 0.
@@ -1811,9 +1857,10 @@ intros. induction alpha.
 - auto.
 - inversion H.
   + simpl. auto.
-  + destruct H0,H1,H2. unfold wrongness. fold wrongness. unfold wrongness in IHalpha2. fold wrongness in IHalpha2. rewrite (ord_lt_ltb _ _ H3). rewrite (IHalpha1 H4). apply (IHalpha2 H5).
+  + destruct H0,H1,H2. rewrite (wrongness_case_1 _ _ _ _ _ (ord_lt_ltb _ _ H3)). rewrite (IHalpha1 H4). apply (IHalpha2 H5).
 Qed.
 
+(*
 Lemma wrongness_type : forall alpha n beta, wrongness (cons alpha n beta) = wrongness alpha + wrongness beta \/ wrongness (cons alpha n beta) = S (wrongness alpha + wrongness beta).
 Proof.
 intros. unfold wrongness. fold wrongness. destruct beta.
@@ -1821,21 +1868,203 @@ intros. unfold wrongness. fold wrongness. destruct beta.
 - case (ord_ltb beta1 alpha); auto.
 Qed.
 
-Lemma wrongness_type_proof : forall alpha n beta, (wrongness (cons alpha n beta) = wrongness alpha + wrongness beta) \/ (wrongness (cons alpha n beta) = S (wrongness alpha + wrongness beta) /\ ord_ltb beta alpha = false).
+Lemma wrongness_type_proof : forall alpha beta gamma n m, (wrongness (cons alpha n (cons beta m gamma)) = wrongness alpha + wrongness (cons beta m gamma)) \/ (wrongness (cons alpha n (cons beta m gamma)) = S (wrongness alpha + wrongness (cons beta m gamma)) /\ ord_ltb beta alpha = false).
+Proof.
+intros. unfold wrongness. fold wrongness. case (ord_ltb beta alpha) eqn:X; destruct gamma; try case (ord_ltb gamma1 beta) eqn:X1; auto.
+Qed.
+*)
+
+(*
+Lemma sort_not_confused : forall alpha beta gamma delta, gamma = sort alpha -> delta = sort beta -> ord_ltb gamma delta = true -> ord_ltb alpha beta = true.
+Proof.
+intros alpha. induction alpha.
+- intros. simpl in H. rewrite H in H1. destruct beta.
+  + simpl in H0. rewrite H0 in H1. inversion H1.
+  + apply ord_lt_ltb. apply zero_lt.
+- intros. unfold sort in H. fold sort in H. destruct alpha2.
+  + rewrite H in H1. destruct beta.
+    * simpl in H0. rewrite H0 in H1. inversion H1.
+    * unfold sort in H0. fold sort in H0. destruct beta2.
+      { rewrite H0 in H1. simpl in H1. case (ord_ltb (sort alpha1) (sort beta1)) eqn:X.
+        { pose (IHalpha1 beta1 (sort alpha1) (sort beta1) (ord_eqb_eq _ _ (ord_eqb_refl _)) (ord_eqb_eq _ _ (ord_eqb_refl _)) X). apply ord_lt_ltb. apply head_lt. apply ord_ltb_lt. exact e. }
+        { case (ord_eqb (sort alpha1) (sort beta1)) eqn:X1.
+          { case (lt_nat n n0) eqn:X2.
+            { case (ord_eqb alpha1 beta1) eqn:X3.
+              { apply ord_eqb_eq in X3. destruct X3. apply ord_lt_ltb. apply coeff_lt. apply lt_nat_decid. auto. }
+              { admit. } }
+            { case (lt_nat n0 n) eqn:X3; inversion H1. } }
+          { inversion H1. } } }
+          { admit. }
+  + admit.
+
+Qed.
+
+Lemma sort_wrong_nf : forall alpha, (wrongness (sort alpha)) = (wrongness alpha) <-> nf alpha.
+Proof.
+intros. induction alpha.
+- split; intros.
+  + apply zero_nf.
+  + rewrite (sort_nf_triv _ H). auto.
+- split; intros.
+  + unfold sort in H. fold sort in H. destruct alpha2.
+    * simpl in H. apply single_nf. apply IHalpha1. auto.
+    * case (ord_ltb (sort alpha1) (sort alpha2_1)) eqn:X.
+      { 
+        admit. }
+      { case (ord_eqb (sort alpha1) (sort alpha2_1)) eqn:X1.
+        { inversion H. destruct alpha2_2.
+          { unfold sort in H1. fold sort in H1. case (ord_ltb alpha2_1 alpha1) eqn:X2.
+            { admit. } admit. } }
+
+        admit. }
+  + rewrite (sort_nf_triv _ H). auto.
+Admitted.
+*)
+
+(*Lemma sort_type : forall alpha beta n, sort (cons alpha n beta) = cons (sort alpha) n (sort beta) \/ *)
+
+Lemma sort_less_wrong_aux : forall alpha beta gamma n m, ord_ltb alpha beta = true -> (wrongness (cons alpha n (cons beta m gamma)) >= wrongness (cons beta m (cons alpha n gamma)))%nat.
+Proof.
+intros. unfold wrongness. fold wrongness. rewrite H. rewrite (ltb_asymm _ _ H). destruct gamma.
+- lia.
+- case (ord_ltb gamma1 alpha) eqn:X.
+  + rewrite (ord_ltb_trans _ _ _ X H). lia.
+  + unfold size. fold size. case (ord_ltb gamma1 beta) eqn:X1; lia.
+Qed.
+
+Lemma sort_less_wrong_swap_case : forall alpha beta gamma n m, ord_ltb alpha beta = true -> (wrongness (cons beta m (cons alpha n gamma)) < wrongness (cons alpha n (cons beta m gamma)))%nat.
+Proof.
+intros. unfold wrongness. fold wrongness. rewrite H. rewrite (ltb_asymm _ _ H). unfold size. fold size. induction gamma.
+- lia.
+- case (ord_ltb gamma1 alpha) eqn:X.
+  + rewrite (ord_ltb_trans _ _ _ X H). lia.
+  + case (ord_ltb gamma1 beta) eqn:X1; lia.
+Qed.
+
+Lemma wrongness_aux : forall alpha beta gamma n m, ord_ltb (sort beta) (sort alpha) = true -> (wrongness (sort (cons beta m gamma)) < wrongness (cons beta m gamma))%nat -> (wrongness (cons (sort alpha) n (cons (sort beta) m (sort gamma))) >= wrongness (cons (sort alpha) n (sort (cons beta m gamma))))%nat.
+Proof.
+intros. induction gamma.
+- auto.
+- destruct (ord_semiconnex_bool (sort beta) (sort gamma1)) as [X | [X | X]].
+  + admit.
+  + admit.
+  + rewrite (sort_case2 _ _ _ _ _ X) in *. rewrite (wrongness_case_1 _ _ _ _ _ H). rewrite (wrongness_case_1 _ _ _ _ _ H).   
+Admitted.
+
+(*Lemma weak_wrongness_type : forall alpha n beta, S ((wrongness alpha) + (wrongness beta)) >= wrongness (cons alpha n beta).
+Proof.
+intros. induction beta.
+- simpl. lia.
+- unfold size. fold size. destruct (ord_semiconnex_bool beta1 alpha) as [X | [X | X]].
+  + rewrite (wrongness_case_1 _ _ _ _ _ X). lia.
+  + rewrite (wrongness_case_3 _ _ _ _ _ X). lia.
+  + apply ord_eqb_eq in X. destruct X. unfold wrongness. fold wrongness. destruct beta2; case (ord_ltb beta1 beta1) eqn:X; auto. 
+Qed.*)
+Lemma wrong_last : forall alpha beta gamma delta n m, ord_ltb (cons gamma m delta) beta = false -> ord_ltb gamma alpha = true -> (wrongness beta < wrongness (cons gamma m delta))%nat -> (wrongness (cons alpha n beta) < wrongness (cons alpha n (cons gamma m delta)))%nat.
+Proof.
+intros. unfold wrongness. fold wrongness. unfold wrongness in H1. fold wrongness in H1. destruct beta.
+- case (ord_ltb gamma alpha) eqn:X; lia. 
+- case (ord_ltb beta1 alpha) eqn:X; rewrite H0.
+  + lia.
+  + destruct delta.
+    * admit.
+    * admit.
+
+Admitted.
+
+Lemma wrong_cons_worse : forall alpha beta n, (wrongness beta <= wrongness (cons alpha n beta))%nat.
 Proof.
 intros. unfold wrongness. fold wrongness. destruct beta.
-- auto. 
-- case (ord_ltb beta1 alpha) eqn:X; auto. right. split; auto. admit. Admitted.
+- simpl. lia.
+- case (ord_ltb beta1 alpha) eqn:X; lia.
+Qed.
 
-Lemma sort_less_wrong : forall alpha, ((wrongness (sort alpha)) < (wrongness alpha))%nat \/ nf alpha.
+Lemma sort_less_wrong : forall alpha, (wrongness (sort alpha) < wrongness alpha)%nat \/ nf alpha.
 Proof.
 intros alpha. induction alpha.
 - right. apply zero_nf.
-- induction alpha2.
+- destruct alpha2.
+  + simpl. destruct IHalpha1; auto. right. apply single_nf. auto.
+  + destruct (ord_semiconnex_bool (sort alpha1) (sort alpha2_1)) as [X | [X | X]].
+    * rewrite (sort_case1 _ _ _ _ _ X). destruct IHalpha1.
+      { admit. }
+      { destruct IHalpha2.
+        { admit. }
+        { inversion H0.
+          { rewrite (sort_nf_triv _ H) in *. rewrite (sort_nf_triv _ H2) in *.  rewrite (wrongness_case_1 _ _ _ _ _ X).  rewrite (wrongness_case_3 _ _ _ _ _ X). simpl. lia. }
+          { destruct H1,H2,H3. rewrite (sort_nf_triv _ H) in *. rewrite (sort_nf_triv _ H6) in *. rewrite (sort_nf_triv _ H5) in *. rewrite (wrongness_case_1 _ _ _ _ _ X).  rewrite (wrongness_case_3 _ _ _ _ _ X).
+            rewrite (nf_is_not_wrong _ H5). rewrite (nf_is_not_wrong _ H0). destruct (ord_semiconnex_bool alpha1 a') as [X1 | [X1 | X1]].
+            { rewrite (wrongness_case_3 _ _ _ _ _ X1). rewrite (nf_is_not_wrong _ H6). unfold size. fold size. lia. }
+            { rewrite (wrongness_case_1 _ _ _ _ _ X1). rewrite (nf_is_not_wrong _ H6). unfold size. fold size. lia. }
+            { destruct (ord_eqb_eq _ _ X1). rewrite (wrongness_case_2 _ _ _ _ _ X1). rewrite (wrongness_coeff_inv _ _ (S (n + n')) n'). rewrite (nf_is_not_wrong _ H6). unfold size. fold size. lia. } } } } 
+    * rewrite (sort_case3 _ _ _ _ _ X). destruct IHalpha1.
+      { destruct IHalpha2.
+        { admit. } 
+        { inversion H0.
+          { destruct H1,H3,H4. rewrite (sort_nf_triv _ H0) in *. rewrite (sort_nf_triv _ H2) in *. rewrite (wrongness_case_1 _ _ _ _ _ X). destruct (ord_semiconnex_bool alpha1 a) as [X1 | [X1 | X1]].
+            { rewrite (wrongness_case_3 _ _ _ _ _ X1). lia. }
+            { rewrite (wrongness_case_1 _ _ _ _ _ X1). lia. }
+            { rewrite ord_eqb_symm in X1. rewrite (wrongness_case_2 _ _ _ _ _ X1). apply ord_eqb_eq in X1. destruct X1. rewrite (wrongness_coeff_inv _ _ n1 (S (n + n1))). lia. } }
+          { destruct H1,H2,H3. rewrite (sort_nf_triv _ H0). rewrite (sort_nf_triv _ H5) in X. rewrite (wrongness_case_1 _ _ _ _ _ X). destruct (ord_semiconnex_bool alpha1 a) as [X1 | [X1 | X1]].
+            { rewrite (wrongness_case_3 _ _ _ _ _ X1). lia. }
+            { rewrite (wrongness_case_1 _ _ _ _ _ X1). lia. }
+            { rewrite ord_eqb_symm in X1. rewrite (wrongness_case_2 _ _ _ _ _ X1). apply ord_eqb_eq in X1. destruct X1. rewrite (wrongness_coeff_inv _ _ n1 (S (n + n1))). lia. } } } }
+      { destruct IHalpha2.
+        { rewrite (sort_nf_triv _ H) in *. pose (sort_not_less alpha2_1). destruct (ord_semiconnex_bool (sort alpha2_1) alpha2_1) as [Y | [Y | Y]].
+          { rewrite e in Y. inversion Y. }
+          { admit. }
+          { apply ord_eqb_eq in Y. rewrite Y in *.  admit. } } 
+        { inversion H0.
+          { rewrite (sort_nf_triv _ H) in *. rewrite (sort_nf_triv _ H2) in *. right. apply cons_nf; auto. apply ord_ltb_lt. auto. apply single_nf. auto. }
+          { rewrite (sort_nf_triv _ H) in *. destruct H3. rewrite (sort_nf_triv _ H0) in *. rewrite (sort_nf_triv _ H5) in *. right. apply cons_nf; auto. apply ord_ltb_lt. auto. } } }
+    * rewrite (sort_case2 _ _ _ _ _ X). apply ord_eqb_eq in X. rewrite X in *. rewrite (wrongness_coeff_inv _ _ (S (n + n0)) n0). admit.
+
+    *
+
+    rewrite (wrongness_case_3 _ _ _ _ _ X).
+    * rewrite (sort_case2 _ _ _ _ _ X). destruct IHalpha1.
+      { left. pose (sort_less_wrong_compact_case (sort alpha1) (sort alpha2_2) n n0). 
+      admit. }
+      { admit. } 
+  destruct (sort_type alpha1 alpha2_1 alpha2_2 n n0) as [H | [H | H]].
+    * assert (ord_ltb (sort alpha2_1) (sort alpha1) = true). admit.
+      rewrite H. rewrite (wrongness_simpl _ _ _ _ _ H0).
+
+  
+  unfold sort. fold sort. destruct (ord_semiconnex_bool (sort alpha1) (sort alpha2_1)) as [X | [X | X]].
+    * rewrite X. destruct (leq_type _ _ (sort_less_wrong_aux _ _ (sort alpha2_2) n n0 X)).
+      { admit. }
+      { rewrite <- e. admit. }
+    * rewrite (ltb_asymm _ _ X). rewrite ord_eqb_symm. rewrite (ord_ltb_neb _ _ X). destruct alpha2_2.
+      { admit. }
+      { admit. }
+    * rewrite X. apply ord_eqb_eq in X. rewrite X. rewrite ord_ltb_irrefl. unfold wrongness. fold wrongness.
+      assert (Zero < sort)
+
+
   + destruct IHalpha1.
     * auto.
     * right. apply single_nf. auto.
-  + 
+  + unfold sort in IHalpha2. fold sort in IHalpha2. destruct alpha2_2.
+    * unfold wrongness in IHalpha2. fold wrongness in IHalpha2. admit.
+    * 
+  
+  destruct IHalpha1.
+    * destruct IHalpha2.
+      { unfold sort in H0. fold sort in H0.
+        case (ord_ltb (sort alpha1) (sort alpha2_1)) eqn:X.
+        { destruct (wrongness_type_proof (sort alpha2_1) (sort alpha1) (sort alpha2_2) n0 n).
+          { rewrite H1. destruct (wrongness_type_proof alpha1 alpha2_1 alpha2_2 n n0).
+            { rewrite H2. destruct (wrongness_type (sort alpha1) n (sort alpha2_2)); rewrite H3. 
+              destruct (wrongness_type (sort alpha1) n (sort alpha2_2))
+            lia. }
+
+
+
+          unfold wrongness. fold wrongness. rewrite X. }
+        admit. }
+      { unfold sort. fold sort. }
+
   unfold sort. fold sort. unfold wrongness. fold wrongness. unfold sort. fold sort. unfold wrongness. fold wrongness. case (ord_ltb (sort alpha1) (sort alpha2_1)) eqn:X.
     * destruct alpha2_2.
       { case (ord_ltb alpha2_1 alpha1) eqn:X1.
