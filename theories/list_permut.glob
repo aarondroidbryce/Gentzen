@@ -1,0 +1,1142 @@
+DIGEST 43f056fe0e3417185383355fded10993
+FGentzen.list_permut
+R173:185 Gentzen.decidable_set <> <> lib
+R203:206 Coq.Lists.List <> <> lib
+R237:245 Gentzen.more_list <> <> lib
+R263:270 Coq.Sets.Multiset <> <> lib
+R288:292 Coq.Arith.Arith <> <> lib
+R310:315 Coq.Setoids.Setoid <> <> lib
+modtype 331:336 <> Permut
+R360:374 Gentzen.decidable_set S <> mod
+mod 355:356 <> Permut.DS
+def 389:391 Permut elt
+R396:399 Gentzen.list_permut Permut A defax
+def 413:422 Permut eq_elt_dec
+R427:437 Gentzen.list_permut Permut eq_A_dec prfax
+def 450:465 Permut list_to_multiset
+R472:475 Coq.Init.Datatypes <> list ind
+R477:479 Gentzen.list_permut Permut elt def
+binder 468:468 <> l:1
+R495:502 Coq.Sets.Multiset <> multiset ind
+R504:506 Gentzen.list_permut Permut elt def
+R519:519 Gentzen.list_permut <> l:1 var
+R530:532 Coq.Init.Datatypes <> nil constr
+R537:544 Coq.Sets.Multiset <> EmptyBag def
+R546:548 Gentzen.list_permut Permut elt def
+R555:558 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R559:560 Coq.Lists.List <> tl def
+R571:576 Coq.Sets.Multiset <> munion def
+R609:624 Gentzen.list_permut <> list_to_multiset:2 def
+R579:590 Coq.Sets.Multiset <> SingletonBag def
+R594:603 Gentzen.list_permut Permut eq_elt_dec def
+def 649:659 Permut list_permut
+R668:671 Coq.Init.Datatypes <> list ind
+R673:675 Gentzen.list_permut Permut elt def
+binder 662:663 <> l1:4
+binder 665:666 <> l2:5
+R690:692 Coq.Sets.Multiset <> meq def
+R717:732 Gentzen.list_permut Permut list_to_multiset def
+R734:735 Gentzen.list_permut <> l2:5 var
+R695:710 Gentzen.list_permut Permut list_to_multiset def
+R712:713 Gentzen.list_permut <> l1:4 var
+R744:749 Gentzen.list_permut Permut <> modtype
+R820:834 Gentzen.decidable_set S <> mod
+R840:845 Gentzen.list_permut Permut <> mod
+R864:866 Gentzen.list_permut DS1 <> modtype
+mod 808:811 <> Make
+R883:885 Gentzen.list_permut DS1 <> modtype
+mod 877:878 <> Make.DS
+R895:897 Gentzen.list_permut DS1 <> mod
+def 912:914 Make elt
+R919:922 Gentzen.list_permut Make A defax
+def 936:945 Make eq_elt_dec
+R964:966 Gentzen.list_permut Make elt def
+binder 956:957 <> t1:6
+binder 959:960 <> t2:7
+R969:969 Coq.Init.Specif <> ::type_scope:'{'_x_'}'_'+'_'{'_x_'}' not
+R977:981 Coq.Init.Specif <> ::type_scope:'{'_x_'}'_'+'_'{'_x_'}' not
+R990:990 Coq.Init.Specif <> ::type_scope:'{'_x_'}'_'+'_'{'_x_'}' not
+R972:974 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R970:971 Gentzen.list_permut <> t1:6 var
+R975:976 Gentzen.list_permut <> t2:7 var
+R984:987 Coq.Init.Logic <> ::type_scope:x_'<>'_x not
+R982:983 Gentzen.list_permut <> t1:6 var
+R988:989 Gentzen.list_permut <> t2:7 var
+R995:1005 Gentzen.list_permut Make eq_A_dec prfax
+def 1018:1033 Make list_to_multiset
+R1040:1043 Coq.Init.Datatypes <> list ind
+R1045:1047 Gentzen.list_permut Make elt def
+binder 1036:1036 <> l:8
+R1063:1070 Coq.Sets.Multiset <> multiset ind
+R1072:1074 Gentzen.list_permut Make elt def
+R1087:1087 Gentzen.list_permut <> l:8 var
+R1098:1100 Coq.Init.Datatypes <> nil constr
+R1105:1112 Coq.Sets.Multiset <> EmptyBag def
+R1114:1116 Gentzen.list_permut Make elt def
+R1123:1126 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R1127:1128 Coq.Lists.List <> tl def
+R1139:1144 Coq.Sets.Multiset <> munion def
+R1177:1192 Gentzen.list_permut <> list_to_multiset:9 def
+R1147:1158 Coq.Sets.Multiset <> SingletonBag def
+R1162:1171 Gentzen.list_permut Make eq_elt_dec def
+def 1217:1227 Make list_permut
+R1236:1239 Coq.Init.Datatypes <> list ind
+R1241:1243 Gentzen.list_permut Make elt def
+binder 1230:1231 <> l1:11
+binder 1233:1234 <> l2:12
+R1258:1260 Coq.Sets.Multiset <> meq def
+R1285:1300 Gentzen.list_permut Make list_to_multiset def
+R1302:1303 Gentzen.list_permut <> l2:12 var
+R1263:1278 Gentzen.list_permut Make list_to_multiset def
+R1280:1281 Gentzen.list_permut <> l1:11 var
+prf 1355:1370 Make multiplicity_app
+R1389:1392 Coq.Init.Datatypes <> list ind
+R1394:1396 Gentzen.list_permut Make elt def
+binder 1383:1384 <> l1:13
+binder 1386:1387 <> l2:14
+R1404:1406 Gentzen.list_permut Make elt def
+binder 1400:1400 <> t:15
+R1457:1462 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1413:1424 Coq.Sets.Multiset <> multiplicity def
+R1456:1456 Gentzen.list_permut <> t:15 var
+R1427:1442 Gentzen.list_permut Make list_to_multiset def
+R1447:1450 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R1445:1446 Gentzen.list_permut <> l1:13 var
+R1451:1452 Gentzen.list_permut <> l2:14 var
+R1499:1501 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R1463:1474 Coq.Sets.Multiset <> multiplicity def
+R1498:1498 Gentzen.list_permut <> t:15 var
+R1477:1492 Gentzen.list_permut Make list_to_multiset def
+R1494:1495 Gentzen.list_permut <> l1:13 var
+R1502:1513 Coq.Sets.Multiset <> multiplicity def
+R1537:1537 Gentzen.list_permut <> t:15 var
+R1516:1531 Gentzen.list_permut Make list_to_multiset def
+R1533:1534 Gentzen.list_permut <> l2:14 var
+prf 1643:1652 Make out_mult_O
+R1670:1672 Gentzen.list_permut Make elt def
+binder 1666:1666 <> t:16
+R1678:1681 Coq.Init.Datatypes <> list ind
+R1683:1685 Gentzen.list_permut Make elt def
+binder 1676:1676 <> l:17
+R1697:1700 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1689:1690 Coq.Init.Logic <> ::type_scope:'~'_x not
+R1691:1692 Coq.Lists.List <> In def
+R1696:1696 Gentzen.list_permut <> l:17 var
+R1694:1694 Gentzen.list_permut <> t:16 var
+R1736:1738 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1701:1712 Coq.Sets.Multiset <> multiplicity def
+R1735:1735 Gentzen.list_permut <> t:16 var
+R1715:1730 Gentzen.list_permut Make list_to_multiset def
+R1732:1732 Gentzen.list_permut <> l:17 var
+R1765:1780 Gentzen.list_permut Make list_to_multiset def
+R1837:1846 Gentzen.list_permut Make eq_elt_dec def
+R1837:1846 Gentzen.list_permut Make eq_elt_dec def
+R1878:1879 Coq.Lists.List <> In def
+R1885:1888 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R1878:1879 Coq.Lists.List <> In def
+R1885:1888 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R1946:1948 Coq.Init.Logic <> not def
+prf 2006:2014 Make in_mult_S
+R2031:2033 Gentzen.list_permut Make elt def
+binder 2027:2027 <> t:18
+R2041:2044 Coq.Init.Datatypes <> list ind
+R2046:2048 Gentzen.list_permut Make elt def
+binder 2037:2037 <> l:19
+R2058:2061 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2052:2053 Coq.Lists.List <> In def
+R2057:2057 Gentzen.list_permut <> l:19 var
+R2055:2055 Gentzen.list_permut <> t:18 var
+R2097:2100 Coq.Init.Peano <> ::nat_scope:x_'>='_x not
+R2062:2073 Coq.Sets.Multiset <> multiplicity def
+R2096:2096 Gentzen.list_permut <> t:18 var
+R2076:2091 Gentzen.list_permut Make list_to_multiset def
+R2093:2093 Gentzen.list_permut <> l:19 var
+R2127:2142 Gentzen.list_permut Make list_to_multiset def
+R2230:2239 Gentzen.list_permut Make eq_elt_dec def
+R2230:2239 Gentzen.list_permut Make eq_elt_dec def
+R2291:2291 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2291:2291 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2311:2320 Gentzen.list_permut Make eq_elt_dec def
+R2311:2320 Gentzen.list_permut Make eq_elt_dec def
+prf 2474:2489 Make list_permut_refl
+R2506:2509 Coq.Init.Datatypes <> list ind
+R2511:2513 Gentzen.list_permut Make elt def
+binder 2502:2502 <> l:20
+R2517:2527 Gentzen.list_permut Make list_permut def
+R2531:2531 Gentzen.list_permut <> l:20 var
+R2529:2529 Gentzen.list_permut <> l:20 var
+R2548:2558 Gentzen.list_permut Make list_permut def
+R2561:2563 Coq.Sets.Multiset <> meq def
+prf 2613:2627 Make list_permut_sym
+R2647:2650 Coq.Init.Datatypes <> list ind
+R2652:2654 Gentzen.list_permut Make elt def
+binder 2639:2640 <> l1:21
+binder 2642:2643 <> l2:22
+R2674:2677 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2657:2667 Gentzen.list_permut Make list_permut def
+R2672:2673 Gentzen.list_permut <> l2:22 var
+R2669:2670 Gentzen.list_permut <> l1:21 var
+R2678:2688 Gentzen.list_permut Make list_permut def
+R2693:2694 Gentzen.list_permut <> l1:21 var
+R2690:2691 Gentzen.list_permut <> l2:22 var
+R2711:2721 Gentzen.list_permut Make list_permut def
+R2724:2726 Coq.Sets.Multiset <> meq def
+R2743:2748 Coq.Init.Logic <> sym_eq syndef
+R2743:2748 Coq.Init.Logic <> sym_eq syndef
+prf 2859:2875 Make list_permut_trans
+R2899:2902 Coq.Init.Datatypes <> list ind
+R2904:2906 Gentzen.list_permut Make elt def
+binder 2888:2889 <> l1:23
+binder 2891:2892 <> l2:24
+binder 2894:2895 <> l3:25
+R2926:2929 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2909:2919 Gentzen.list_permut Make list_permut def
+R2924:2925 Gentzen.list_permut <> l2:24 var
+R2921:2922 Gentzen.list_permut <> l1:23 var
+R2947:2950 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2930:2940 Gentzen.list_permut Make list_permut def
+R2945:2946 Gentzen.list_permut <> l3:25 var
+R2942:2943 Gentzen.list_permut <> l2:24 var
+R2951:2961 Gentzen.list_permut Make list_permut def
+R2966:2967 Gentzen.list_permut <> l3:25 var
+R2963:2964 Gentzen.list_permut <> l1:23 var
+R2984:2994 Gentzen.list_permut Make list_permut def
+R2997:2999 Coq.Sets.Multiset <> meq def
+R3031:3042 Coq.Sets.Multiset <> multiplicity def
+R3045:3060 Gentzen.list_permut Make list_to_multiset def
+R3016:3023 Coq.Init.Logic <> trans_eq syndef
+R3031:3042 Coq.Sets.Multiset <> multiplicity def
+R3045:3060 Gentzen.list_permut Make list_to_multiset def
+R3016:3023 Coq.Init.Logic <> trans_eq syndef
+R3099:3102 Coq.Init.Datatypes <> list ind
+R3104:3106 Gentzen.list_permut Make elt def
+R3109:3119 Gentzen.list_permut Make list_permut def
+R3099:3102 Coq.Init.Datatypes <> list ind
+R3104:3106 Gentzen.list_permut Make elt def
+R3109:3119 Gentzen.list_permut Make list_permut def
+R3144:3159 Gentzen.list_permut Make list_permut_refl thm
+R3099:3102 Coq.Init.Datatypes <> list ind
+R3104:3106 Gentzen.list_permut Make elt def
+R3109:3119 Gentzen.list_permut Make list_permut def
+R3180:3194 Gentzen.list_permut Make list_permut_sym thm
+R3099:3102 Coq.Init.Datatypes <> list ind
+R3104:3106 Gentzen.list_permut Make elt def
+R3109:3119 Gentzen.list_permut Make list_permut def
+R3219:3235 Gentzen.list_permut Make list_permut_trans thm
+R3099:3102 Coq.Init.Datatypes <> list ind
+R3104:3106 Gentzen.list_permut Make elt def
+R3109:3119 Gentzen.list_permut Make list_permut def
+R3144:3159 Gentzen.list_permut Make list_permut_refl thm
+R3180:3194 Gentzen.list_permut Make list_permut_sym thm
+R3219:3235 Gentzen.list_permut Make list_permut_trans thm
+prf 3288:3302 Make list_permut_nil
+binder 3314:3314 <> l:26
+R3334:3337 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3317:3327 Gentzen.list_permut Make list_permut def
+R3331:3333 Coq.Init.Datatypes <> nil constr
+R3329:3329 Gentzen.list_permut <> l:26 var
+R3339:3341 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R3338:3338 Gentzen.list_permut <> l:26 var
+R3342:3344 Coq.Init.Datatypes <> nil constr
+R3417:3427 Gentzen.list_permut Make list_permut def
+R3438:3440 Coq.Init.Datatypes <> nil constr
+R3431:3434 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R3417:3427 Gentzen.list_permut Make list_permut def
+R3438:3440 Coq.Init.Datatypes <> nil constr
+R3431:3434 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R3460:3462 Coq.Init.Logic <> not def
+R3472:3482 Gentzen.list_permut Make list_permut def
+R3485:3487 Coq.Sets.Multiset <> meq def
+R3531:3540 Gentzen.list_permut Make eq_elt_dec def
+R3531:3540 Gentzen.list_permut Make eq_elt_dec def
+R3588:3588 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R3588:3588 Coq.Init.Logic <> ::type_scope:x_'='_x not
+prf 3688:3699 Make in_permut_in
+binder 3712:3713 <> l1:27
+binder 3715:3716 <> l2:28
+binder 3718:3718 <> e:29
+R3728:3731 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3721:3722 Coq.Lists.List <> In def
+R3726:3727 Gentzen.list_permut <> l1:27 var
+R3724:3724 Gentzen.list_permut <> e:29 var
+R3749:3752 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3732:3742 Gentzen.list_permut Make list_permut def
+R3747:3748 Gentzen.list_permut <> l2:28 var
+R3744:3745 Gentzen.list_permut <> l1:27 var
+R3753:3754 Coq.Lists.List <> In def
+R3758:3759 Gentzen.list_permut <> l2:28 var
+R3756:3756 Gentzen.list_permut <> e:29 var
+R3776:3786 Gentzen.list_permut Make list_permut def
+R3789:3791 Coq.Sets.Multiset <> meq def
+R3828:3833 Coq.Lists.List <> In_dec syndef
+R3835:3844 Gentzen.list_permut Make eq_elt_dec def
+R3828:3833 Coq.Lists.List <> In_dec syndef
+R3835:3844 Gentzen.list_permut Make eq_elt_dec def
+R3917:3926 Gentzen.list_permut Make out_mult_O thm
+R3966:3974 Gentzen.list_permut Make in_mult_S thm
+R4008:4009 Coq.Init.Peano <> ge def
+R4032:4033 Coq.Init.Peano <> ::nat_scope:x_'<='_x not
+R3917:3926 Gentzen.list_permut Make out_mult_O thm
+R3917:3926 Gentzen.list_permut Make out_mult_O thm
+R3966:3974 Gentzen.list_permut Make in_mult_S thm
+R4032:4033 Coq.Init.Peano <> ::nat_scope:x_'<='_x not
+R4096:4097 Coq.Lists.List <> In def
+R4104:4106 Gentzen.list_permut Make elt def
+R4158:4169 Gentzen.list_permut Make in_permut_in thm
+R4158:4169 Gentzen.list_permut Make in_permut_in thm
+R4194:4205 Gentzen.list_permut Make in_permut_in thm
+R4231:4245 Gentzen.list_permut Make list_permut_sym thm
+R4194:4205 Gentzen.list_permut Make in_permut_in thm
+R4231:4245 Gentzen.list_permut Make list_permut_sym thm
+prf 4269:4282 Make cons_permut_in
+binder 4295:4296 <> l1:30
+binder 4298:4299 <> l2:31
+binder 4301:4301 <> e:32
+R4328:4331 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4304:4314 Gentzen.list_permut Make list_permut def
+R4326:4327 Gentzen.list_permut <> l2:31 var
+R4318:4321 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R4317:4317 Gentzen.list_permut <> e:32 var
+R4322:4323 Gentzen.list_permut <> l1:30 var
+R4332:4333 Coq.Lists.List <> In def
+R4337:4338 Gentzen.list_permut <> l2:31 var
+R4335:4335 Gentzen.list_permut <> e:32 var
+prf 4471:4494 Make context_list_permut_cons
+binder 4507:4507 <> e:33
+binder 4509:4510 <> l1:34
+binder 4512:4513 <> l2:35
+R4533:4536 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4516:4526 Gentzen.list_permut Make list_permut def
+R4531:4532 Gentzen.list_permut <> l2:35 var
+R4528:4529 Gentzen.list_permut <> l1:34 var
+R4537:4547 Gentzen.list_permut Make list_permut def
+R4561:4564 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R4560:4560 Gentzen.list_permut <> e:33 var
+R4565:4566 Gentzen.list_permut <> l2:35 var
+R4551:4554 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R4550:4550 Gentzen.list_permut <> e:33 var
+R4555:4556 Gentzen.list_permut <> l1:34 var
+R4600:4610 Gentzen.list_permut Make list_permut def
+R4613:4615 Coq.Sets.Multiset <> meq def
+R4707:4715 Coq.Lists.List <> cons syndef
+R4721:4723 Gentzen.list_permut Make elt def
+R4765:4788 Gentzen.list_permut Make context_list_permut_cons thm
+R4765:4788 Gentzen.list_permut Make context_list_permut_cons thm
+prf 4812:4833 Make list_permut_add_inside
+binder 4844:4844 <> a:36
+binder 4846:4847 <> l1:37
+binder 4849:4850 <> l2:38
+binder 4852:4853 <> l3:39
+binder 4855:4856 <> l4:40
+R4895:4900 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4862:4872 Gentzen.list_permut Make list_permut def
+R4888:4891 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R4886:4887 Gentzen.list_permut <> l3:39 var
+R4892:4893 Gentzen.list_permut <> l4:40 var
+R4877:4880 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R4875:4876 Gentzen.list_permut <> l1:37 var
+R4881:4882 Gentzen.list_permut <> l2:38 var
+R4901:4911 Gentzen.list_permut Make list_permut def
+R4932:4935 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R4930:4931 Gentzen.list_permut <> l3:39 var
+R4937:4940 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R4936:4936 Gentzen.list_permut <> a:36 var
+R4941:4942 Gentzen.list_permut <> l4:40 var
+R4916:4919 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R4914:4915 Gentzen.list_permut <> l1:37 var
+R4921:4924 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R4920:4920 Gentzen.list_permut <> a:36 var
+R4925:4926 Gentzen.list_permut <> l2:38 var
+R4982:4992 Gentzen.list_permut Make list_permut def
+R4995:4997 Coq.Sets.Multiset <> meq def
+R5061:5076 Gentzen.list_permut Make multiplicity_app thm
+R5103:5111 Coq.Arith.Plus <> plus_comm syndef
+R5125:5134 Coq.Arith.Plus <> plus_assoc syndef
+R5143:5148 Coq.Init.Logic <> sym_eq syndef
+R5159:5167 Coq.Arith.Plus <> plus_comm syndef
+R5181:5190 Coq.Arith.Plus <> plus_assoc syndef
+R5201:5207 Coq.Init.Logic <> f_equal thm
+binder 5214:5214 <> n:41
+R5329:5331 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R5225:5234 Gentzen.list_permut Make eq_elt_dec def
+R5273:5276 Coq.Init.Specif <> left constr
+R5313:5317 Coq.Init.Specif <> right constr
+R5332:5332 Gentzen.list_permut <> n:41 var
+R5345:5353 Coq.Arith.Plus <> plus_comm syndef
+R5376:5384 Coq.Arith.Plus <> plus_comm syndef
+R5061:5076 Gentzen.list_permut Make multiplicity_app thm
+R5061:5076 Gentzen.list_permut Make multiplicity_app thm
+R5061:5076 Gentzen.list_permut Make multiplicity_app thm
+R5061:5076 Gentzen.list_permut Make multiplicity_app thm
+R5061:5076 Gentzen.list_permut Make multiplicity_app thm
+R5061:5076 Gentzen.list_permut Make multiplicity_app thm
+R5061:5076 Gentzen.list_permut Make multiplicity_app thm
+R5061:5076 Gentzen.list_permut Make multiplicity_app thm
+R5061:5076 Gentzen.list_permut Make multiplicity_app thm
+R5103:5111 Coq.Arith.Plus <> plus_comm syndef
+R5103:5111 Coq.Arith.Plus <> plus_comm syndef
+R5125:5134 Coq.Arith.Plus <> plus_assoc syndef
+R5125:5134 Coq.Arith.Plus <> plus_assoc syndef
+R5143:5148 Coq.Init.Logic <> sym_eq syndef
+R5159:5167 Coq.Arith.Plus <> plus_comm syndef
+R5159:5167 Coq.Arith.Plus <> plus_comm syndef
+R5181:5190 Coq.Arith.Plus <> plus_assoc syndef
+R5181:5190 Coq.Arith.Plus <> plus_assoc syndef
+R5201:5207 Coq.Init.Logic <> f_equal thm
+binder 5214:5214 <> n:42
+R5329:5331 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R5225:5234 Gentzen.list_permut Make eq_elt_dec def
+R5273:5276 Coq.Init.Specif <> left constr
+R5313:5317 Coq.Init.Specif <> right constr
+R5332:5332 Gentzen.list_permut <> n:42 var
+R5345:5353 Coq.Arith.Plus <> plus_comm syndef
+R5345:5353 Coq.Arith.Plus <> plus_comm syndef
+R5376:5384 Coq.Arith.Plus <> plus_comm syndef
+prf 5399:5425 Make list_permut_add_cons_inside
+binder 5436:5436 <> a:43
+binder 5438:5438 <> l:44
+binder 5440:5441 <> l1:45
+binder 5443:5444 <> l2:46
+R5474:5479 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R5450:5460 Gentzen.list_permut Make list_permut def
+R5467:5470 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R5465:5466 Gentzen.list_permut <> l1:45 var
+R5471:5472 Gentzen.list_permut <> l2:46 var
+R5462:5462 Gentzen.list_permut <> l:44 var
+R5480:5490 Gentzen.list_permut Make list_permut def
+R5504:5507 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R5502:5503 Gentzen.list_permut <> l1:45 var
+R5509:5512 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R5508:5508 Gentzen.list_permut <> a:43 var
+R5513:5514 Gentzen.list_permut <> l2:46 var
+R5494:5497 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R5493:5493 Gentzen.list_permut <> a:43 var
+R5498:5498 Gentzen.list_permut <> l:44 var
+R5543:5546 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R5559:5562 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R5556:5558 Coq.Init.Datatypes <> nil constr
+R5564:5567 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R5587:5608 Gentzen.list_permut Make list_permut_add_inside thm
+R5543:5546 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R5559:5562 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R5556:5558 Coq.Init.Datatypes <> nil constr
+R5564:5567 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R5587:5608 Gentzen.list_permut Make list_permut_add_inside thm
+prf 5678:5701 Make context_list_permut_app1
+binder 5714:5714 <> l:47
+binder 5716:5717 <> l1:48
+binder 5719:5720 <> l2:49
+R5740:5743 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R5723:5733 Gentzen.list_permut Make list_permut def
+R5738:5739 Gentzen.list_permut <> l2:49 var
+R5735:5736 Gentzen.list_permut <> l1:48 var
+R5744:5754 Gentzen.list_permut Make list_permut def
+R5768:5771 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R5767:5767 Gentzen.list_permut <> l:47 var
+R5772:5773 Gentzen.list_permut <> l2:49 var
+R5758:5761 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R5757:5757 Gentzen.list_permut <> l:47 var
+R5762:5763 Gentzen.list_permut <> l1:48 var
+R5807:5817 Gentzen.list_permut Make list_permut def
+R5820:5822 Coq.Sets.Multiset <> meq def
+R5854:5869 Gentzen.list_permut Make multiplicity_app thm
+R5887:5902 Gentzen.list_permut Make multiplicity_app thm
+R5854:5869 Gentzen.list_permut Make multiplicity_app thm
+R5854:5869 Gentzen.list_permut Make multiplicity_app thm
+R5887:5902 Gentzen.list_permut Make multiplicity_app thm
+R5887:5902 Gentzen.list_permut Make multiplicity_app thm
+prf 5948:5971 Make context_list_permut_app2
+binder 5984:5984 <> l:50
+binder 5986:5987 <> l1:51
+binder 5989:5990 <> l2:52
+R6010:6013 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R5993:6003 Gentzen.list_permut Make list_permut def
+R6008:6009 Gentzen.list_permut <> l2:52 var
+R6005:6006 Gentzen.list_permut <> l1:51 var
+R6014:6024 Gentzen.list_permut Make list_permut def
+R6039:6042 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R6037:6038 Gentzen.list_permut <> l2:52 var
+R6043:6043 Gentzen.list_permut <> l:50 var
+R6029:6032 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R6027:6028 Gentzen.list_permut <> l1:51 var
+R6033:6033 Gentzen.list_permut <> l:50 var
+R6077:6087 Gentzen.list_permut Make list_permut def
+R6090:6092 Coq.Sets.Multiset <> meq def
+R6124:6139 Gentzen.list_permut Make multiplicity_app thm
+R6157:6172 Gentzen.list_permut Make multiplicity_app thm
+R6124:6139 Gentzen.list_permut Make multiplicity_app thm
+R6124:6139 Gentzen.list_permut Make multiplicity_app thm
+R6157:6172 Gentzen.list_permut Make multiplicity_app thm
+R6157:6172 Gentzen.list_permut Make multiplicity_app thm
+R6252:6259 Coq.Lists.List <> app syndef
+R6265:6267 Gentzen.list_permut Make elt def
+R6330:6333 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R6305:6321 Gentzen.list_permut Make list_permut_trans thm
+R6330:6333 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R6305:6321 Gentzen.list_permut Make list_permut_trans thm
+R6345:6368 Gentzen.list_permut Make context_list_permut_app1 thm
+R6345:6368 Gentzen.list_permut Make context_list_permut_app1 thm
+R6386:6409 Gentzen.list_permut Make context_list_permut_app2 thm
+R6386:6409 Gentzen.list_permut Make context_list_permut_app2 thm
+prf 6433:6451 Make list_permut_app_app
+binder 6463:6464 <> l1:53
+binder 6466:6467 <> l2:54
+R6470:6480 Gentzen.list_permut Make list_permut def
+R6496:6499 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R6494:6495 Gentzen.list_permut <> l2:54 var
+R6500:6501 Gentzen.list_permut <> l1:53 var
+R6485:6488 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R6483:6484 Gentzen.list_permut <> l1:53 var
+R6489:6490 Gentzen.list_permut <> l2:54 var
+R6533:6543 Gentzen.list_permut Make list_permut def
+R6546:6548 Coq.Sets.Multiset <> meq def
+R6569:6584 Gentzen.list_permut Make multiplicity_app thm
+R6595:6610 Gentzen.list_permut Make multiplicity_app thm
+R6619:6627 Coq.Arith.Plus <> plus_comm syndef
+R6569:6584 Gentzen.list_permut Make multiplicity_app thm
+R6569:6584 Gentzen.list_permut Make multiplicity_app thm
+R6595:6610 Gentzen.list_permut Make multiplicity_app thm
+R6595:6610 Gentzen.list_permut Make multiplicity_app thm
+R6619:6627 Coq.Arith.Plus <> plus_comm syndef
+prf 6707:6737 Make remove_context_list_permut_cons
+binder 6750:6750 <> e:55
+binder 6752:6753 <> l1:56
+binder 6755:6756 <> l2:57
+R6790:6793 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R6759:6769 Gentzen.list_permut Make list_permut def
+R6783:6786 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R6782:6782 Gentzen.list_permut <> e:55 var
+R6787:6788 Gentzen.list_permut <> l2:57 var
+R6773:6776 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R6772:6772 Gentzen.list_permut <> e:55 var
+R6777:6778 Gentzen.list_permut <> l1:56 var
+R6794:6804 Gentzen.list_permut Make list_permut def
+R6809:6810 Gentzen.list_permut <> l2:57 var
+R6806:6807 Gentzen.list_permut <> l1:56 var
+R6843:6853 Gentzen.list_permut Make list_permut def
+R6856:6858 Coq.Sets.Multiset <> meq def
+R6904:6913 Coq.Arith.Plus <> plus_reg_l thm
+R6904:6913 Coq.Arith.Plus <> plus_reg_l thm
+prf 6928:6958 Make remove_context_list_permut_app2
+binder 6971:6971 <> l:58
+binder 6973:6974 <> l1:59
+binder 6976:6977 <> l2:60
+R7011:7014 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R6980:6990 Gentzen.list_permut Make list_permut def
+R7005:7008 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R7003:7004 Gentzen.list_permut <> l2:60 var
+R7009:7009 Gentzen.list_permut <> l:58 var
+R6995:6998 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R6993:6994 Gentzen.list_permut <> l1:59 var
+R6999:6999 Gentzen.list_permut <> l:58 var
+R7015:7025 Gentzen.list_permut Make list_permut def
+R7030:7031 Gentzen.list_permut <> l2:60 var
+R7027:7028 Gentzen.list_permut <> l1:59 var
+R7064:7074 Gentzen.list_permut Make list_permut def
+R7077:7079 Coq.Sets.Multiset <> meq def
+R7128:7143 Gentzen.list_permut Make multiplicity_app thm
+R7161:7176 Gentzen.list_permut Make multiplicity_app thm
+R7217:7228 Coq.Sets.Multiset <> multiplicity def
+R7231:7246 Gentzen.list_permut Make list_to_multiset def
+R7200:7209 Coq.Arith.Plus <> plus_reg_l thm
+R7128:7143 Gentzen.list_permut Make multiplicity_app thm
+R7128:7143 Gentzen.list_permut Make multiplicity_app thm
+R7161:7176 Gentzen.list_permut Make multiplicity_app thm
+R7161:7176 Gentzen.list_permut Make multiplicity_app thm
+R7217:7228 Coq.Sets.Multiset <> multiplicity def
+R7231:7246 Gentzen.list_permut Make list_to_multiset def
+R7200:7209 Coq.Arith.Plus <> plus_reg_l thm
+R7263:7271 Coq.Arith.Plus <> plus_comm syndef
+R7294:7302 Coq.Arith.Plus <> plus_comm syndef
+R7263:7271 Coq.Arith.Plus <> plus_comm syndef
+R7263:7271 Coq.Arith.Plus <> plus_comm syndef
+R7294:7302 Coq.Arith.Plus <> plus_comm syndef
+R7294:7302 Coq.Arith.Plus <> plus_comm syndef
+prf 7326:7346 Make list_permut_remove_hd
+binder 7359:7359 <> l:61
+binder 7361:7362 <> l1:62
+binder 7364:7365 <> l2:63
+binder 7367:7367 <> a:64
+R7411:7414 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7375:7385 Gentzen.list_permut Make list_permut def
+R7399:7402 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R7397:7398 Gentzen.list_permut <> l1:62 var
+R7404:7407 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R7403:7403 Gentzen.list_permut <> a:64 var
+R7408:7409 Gentzen.list_permut <> l2:63 var
+R7389:7392 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R7388:7388 Gentzen.list_permut <> a:64 var
+R7393:7393 Gentzen.list_permut <> l:61 var
+R7415:7425 Gentzen.list_permut Make list_permut def
+R7432:7435 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R7430:7431 Gentzen.list_permut <> l1:62 var
+R7436:7437 Gentzen.list_permut <> l2:63 var
+R7427:7427 Gentzen.list_permut <> l:61 var
+R7473:7483 Gentzen.list_permut Make list_permut def
+R7486:7488 Coq.Sets.Multiset <> meq def
+R7538:7553 Gentzen.list_permut Make multiplicity_app thm
+R7564:7579 Gentzen.list_permut Make multiplicity_app thm
+R7629:7638 Gentzen.list_permut Make eq_elt_dec def
+R7650:7653 Coq.Init.Specif <> left constr
+R7664:7668 Coq.Init.Specif <> right constr
+R7606:7615 Coq.Arith.Plus <> plus_reg_l thm
+R7710:7719 Coq.Arith.Plus <> plus_assoc syndef
+R7729:7735 Coq.Init.Logic <> f_equal thm
+binder 7742:7742 <> n:65
+R7748:7750 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R7747:7747 Gentzen.list_permut <> n:65 var
+R7751:7762 Coq.Sets.Multiset <> multiplicity def
+R7765:7780 Gentzen.list_permut Make list_to_multiset def
+R7798:7806 Coq.Arith.Plus <> plus_comm syndef
+R7538:7553 Gentzen.list_permut Make multiplicity_app thm
+R7538:7553 Gentzen.list_permut Make multiplicity_app thm
+R7564:7579 Gentzen.list_permut Make multiplicity_app thm
+R7564:7579 Gentzen.list_permut Make multiplicity_app thm
+R7629:7638 Gentzen.list_permut Make eq_elt_dec def
+R7650:7653 Coq.Init.Specif <> left constr
+R7664:7668 Coq.Init.Specif <> right constr
+R7606:7615 Coq.Arith.Plus <> plus_reg_l thm
+R7710:7719 Coq.Arith.Plus <> plus_assoc syndef
+R7710:7719 Coq.Arith.Plus <> plus_assoc syndef
+R7710:7719 Coq.Arith.Plus <> plus_assoc syndef
+R7710:7719 Coq.Arith.Plus <> plus_assoc syndef
+R7710:7719 Coq.Arith.Plus <> plus_assoc syndef
+R7729:7735 Coq.Init.Logic <> f_equal thm
+binder 7742:7742 <> n:66
+R7748:7750 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R7747:7747 Gentzen.list_permut <> n:66 var
+R7751:7762 Coq.Sets.Multiset <> multiplicity def
+R7765:7780 Gentzen.list_permut Make list_to_multiset def
+R7798:7806 Coq.Arith.Plus <> plus_comm syndef
+prf 7867:7884 Make list_permut_length
+binder 7896:7897 <> l1:67
+binder 7899:7900 <> l2:68
+R7920:7923 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7903:7913 Gentzen.list_permut Make list_permut def
+R7918:7919 Gentzen.list_permut <> l2:68 var
+R7915:7916 Gentzen.list_permut <> l1:67 var
+R7933:7935 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R7924:7929 Coq.Init.Datatypes <> length def
+R7931:7932 Gentzen.list_permut <> l1:67 var
+R7936:7941 Coq.Init.Datatypes <> length def
+R7943:7944 Gentzen.list_permut <> l2:68 var
+R7990:8004 Gentzen.list_permut Make list_permut_nil thm
+R8007:8021 Gentzen.list_permut Make list_permut_sym thm
+R7990:8004 Gentzen.list_permut Make list_permut_nil thm
+R8007:8021 Gentzen.list_permut Make list_permut_sym thm
+R7990:8004 Gentzen.list_permut Make list_permut_nil thm
+R8007:8021 Gentzen.list_permut Make list_permut_sym thm
+R8040:8045 Coq.Lists.List <> In_dec syndef
+R8047:8056 Gentzen.list_permut Make eq_elt_dec def
+R8040:8045 Coq.Lists.List <> In_dec syndef
+R8047:8056 Gentzen.list_permut Make eq_elt_dec def
+R8090:8108 Gentzen.more_list <> split_list_app_cons thm
+R8110:8119 Gentzen.list_permut Make eq_elt_dec def
+R8144:8153 Gentzen.more_list <> split_list def
+R8155:8164 Gentzen.list_permut Make eq_elt_dec def
+R8090:8108 Gentzen.more_list <> split_list_app_cons thm
+R8110:8119 Gentzen.list_permut Make eq_elt_dec def
+R8144:8153 Gentzen.more_list <> split_list def
+R8155:8164 Gentzen.list_permut Make eq_elt_dec def
+R8198:8212 Gentzen.more_list <> list_app_length thm
+R8239:8259 Gentzen.list_permut Make list_permut_remove_hd thm
+R8279:8293 Gentzen.more_list <> list_app_length thm
+R8198:8212 Gentzen.more_list <> list_app_length thm
+R8198:8212 Gentzen.more_list <> list_app_length thm
+R8239:8259 Gentzen.list_permut Make list_permut_remove_hd thm
+R8239:8259 Gentzen.list_permut Make list_permut_remove_hd thm
+R8279:8293 Gentzen.more_list <> list_app_length thm
+R8279:8293 Gentzen.more_list <> list_app_length thm
+R8337:8338 Coq.Lists.List <> In def
+R8382:8385 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8362:8373 Gentzen.list_permut Make in_permut_in thm
+R8337:8338 Coq.Lists.List <> In def
+R8382:8385 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8362:8373 Gentzen.list_permut Make in_permut_in thm
+R8436:8441 Coq.Init.Datatypes <> length def
+R8447:8449 Gentzen.list_permut Make elt def
+R8482:8499 Gentzen.list_permut Make list_permut_length thm
+R8482:8499 Gentzen.list_permut Make list_permut_length thm
+prf 8558:8573 Make list_permut_size
+binder 8586:8589 <> size:69
+binder 8591:8592 <> l1:70
+binder 8594:8595 <> l2:71
+R8615:8618 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R8598:8608 Gentzen.list_permut Make list_permut def
+R8613:8614 Gentzen.list_permut <> l2:71 var
+R8610:8611 Gentzen.list_permut <> l1:70 var
+R8636:8638 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R8619:8627 Gentzen.more_list <> list_size def
+R8634:8635 Gentzen.list_permut <> l1:70 var
+R8629:8632 Gentzen.list_permut <> size:69 var
+R8639:8647 Gentzen.more_list <> list_size def
+R8654:8655 Gentzen.list_permut <> l2:71 var
+R8649:8652 Gentzen.list_permut <> size:69 var
+R8714:8728 Gentzen.list_permut Make list_permut_nil thm
+R8731:8745 Gentzen.list_permut Make list_permut_sym thm
+R8714:8728 Gentzen.list_permut Make list_permut_nil thm
+R8731:8745 Gentzen.list_permut Make list_permut_sym thm
+R8714:8728 Gentzen.list_permut Make list_permut_nil thm
+R8731:8745 Gentzen.list_permut Make list_permut_sym thm
+R8787:8805 Gentzen.more_list <> split_list_app_cons thm
+R8823:8836 Gentzen.list_permut Make cons_permut_in thm
+R8807:8816 Gentzen.list_permut Make eq_elt_dec def
+R8853:8862 Gentzen.more_list <> split_list def
+R8864:8873 Gentzen.list_permut Make eq_elt_dec def
+R8907:8919 Gentzen.more_list <> list_size_app thm
+R8946:8966 Gentzen.list_permut Make list_permut_remove_hd thm
+R8985:8997 Gentzen.more_list <> list_size_app thm
+R9008:9016 Coq.Arith.Plus <> plus_comm syndef
+R9030:9039 Coq.Arith.Plus <> plus_assoc syndef
+R9049:9055 Coq.Init.Logic <> f_equal thm
+binder 9062:9062 <> n:72
+R9083:9085 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R9067:9075 Gentzen.more_list <> list_size def
+R9086:9086 Gentzen.list_permut <> n:72 var
+R9097:9105 Coq.Arith.Plus <> plus_comm syndef
+R8787:8805 Gentzen.more_list <> split_list_app_cons thm
+R8823:8836 Gentzen.list_permut Make cons_permut_in thm
+R8807:8816 Gentzen.list_permut Make eq_elt_dec def
+R8853:8862 Gentzen.more_list <> split_list def
+R8864:8873 Gentzen.list_permut Make eq_elt_dec def
+R8907:8919 Gentzen.more_list <> list_size_app thm
+R8907:8919 Gentzen.more_list <> list_size_app thm
+R8946:8966 Gentzen.list_permut Make list_permut_remove_hd thm
+R8946:8966 Gentzen.list_permut Make list_permut_remove_hd thm
+R8985:8997 Gentzen.more_list <> list_size_app thm
+R8985:8997 Gentzen.more_list <> list_size_app thm
+R9008:9016 Coq.Arith.Plus <> plus_comm syndef
+R9008:9016 Coq.Arith.Plus <> plus_comm syndef
+R9030:9039 Coq.Arith.Plus <> plus_assoc syndef
+R9030:9039 Coq.Arith.Plus <> plus_assoc syndef
+R9049:9055 Coq.Init.Logic <> f_equal thm
+binder 9062:9062 <> n:73
+R9083:9085 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R9067:9075 Gentzen.more_list <> list_size def
+R9086:9086 Gentzen.list_permut <> n:73 var
+R9097:9105 Coq.Arith.Plus <> plus_comm syndef
+binder 9132:9135 <> size:74
+R9140:9148 Gentzen.more_list <> list_size def
+R9159:9162 Gentzen.list_permut <> size:74 var
+R9154:9156 Gentzen.list_permut Make elt def
+R9215:9242 Coq.Classes.Morphisms <> pointwise_relation def
+R9283:9297 Gentzen.list_permut Make list_permut_nil thm
+R9300:9314 Gentzen.list_permut Make list_permut_sym thm
+R9283:9297 Gentzen.list_permut Make list_permut_nil thm
+R9300:9314 Gentzen.list_permut Make list_permut_sym thm
+R9283:9297 Gentzen.list_permut Make list_permut_nil thm
+R9300:9314 Gentzen.list_permut Make list_permut_sym thm
+R9367:9378 Gentzen.list_permut Make in_permut_in thm
+R9383:9387 Coq.Lists.List <> in_eq thm
+R9367:9378 Gentzen.list_permut Make in_permut_in thm
+R9383:9387 Coq.Lists.List <> in_eq thm
+R9406:9413 Coq.Lists.List <> In_split syndef
+R9406:9413 Coq.Lists.List <> In_split syndef
+R9474:9494 Gentzen.list_permut Make list_permut_remove_hd thm
+R9474:9494 Gentzen.list_permut Make list_permut_remove_hd thm
+R9532:9544 Gentzen.more_list <> list_size_app thm
+R9532:9544 Gentzen.more_list <> list_size_app thm
+R9532:9544 Gentzen.more_list <> list_size_app thm
+R9555:9567 Gentzen.more_list <> list_size_app thm
+R9555:9567 Gentzen.more_list <> list_size_app thm
+R9555:9567 Gentzen.more_list <> list_size_app thm
+R9588:9596 Coq.Arith.Plus <> plus_comm syndef
+R9605:9613 Gentzen.more_list <> list_size def
+R9588:9596 Coq.Arith.Plus <> plus_comm syndef
+R9605:9613 Gentzen.more_list <> list_size def
+R9588:9596 Coq.Arith.Plus <> plus_comm syndef
+R9605:9613 Gentzen.more_list <> list_size def
+R9632:9641 Coq.Arith.Plus <> plus_assoc syndef
+R9644:9652 Gentzen.more_list <> list_size def
+R9632:9641 Coq.Arith.Plus <> plus_assoc syndef
+R9644:9652 Gentzen.more_list <> list_size def
+R9632:9641 Coq.Arith.Plus <> plus_assoc syndef
+R9644:9652 Gentzen.more_list <> list_size def
+R9670:9678 Coq.Arith.Plus <> plus_comm syndef
+R9670:9678 Coq.Arith.Plus <> plus_comm syndef
+R9670:9678 Coq.Arith.Plus <> plus_comm syndef
+prf 9742:9756 Make list_permut_map
+binder 9769:9769 <> f:75
+binder 9771:9772 <> l1:76
+binder 9774:9775 <> l2:77
+R9795:9798 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R9778:9788 Gentzen.list_permut Make list_permut def
+R9793:9794 Gentzen.list_permut <> l2:77 var
+R9790:9791 Gentzen.list_permut <> l1:76 var
+R9799:9809 Gentzen.list_permut Make list_permut def
+R9823:9825 Coq.Lists.List <> map def
+R9829:9830 Gentzen.list_permut <> l2:77 var
+R9827:9827 Gentzen.list_permut <> f:75 var
+R9812:9814 Coq.Lists.List <> map def
+R9818:9819 Gentzen.list_permut <> l1:76 var
+R9816:9816 Gentzen.list_permut <> f:75 var
+R9890:9904 Gentzen.list_permut Make list_permut_nil thm
+R9907:9921 Gentzen.list_permut Make list_permut_sym thm
+R9934:9949 Gentzen.list_permut Make list_permut_refl thm
+R9890:9904 Gentzen.list_permut Make list_permut_nil thm
+R9907:9921 Gentzen.list_permut Make list_permut_sym thm
+R9890:9904 Gentzen.list_permut Make list_permut_nil thm
+R9907:9921 Gentzen.list_permut Make list_permut_sym thm
+R9934:9949 Gentzen.list_permut Make list_permut_refl thm
+R9977:9995 Gentzen.more_list <> split_list_app_cons thm
+R10013:10026 Gentzen.list_permut Make cons_permut_in thm
+R9997:10006 Gentzen.list_permut Make eq_elt_dec def
+R10043:10052 Gentzen.more_list <> split_list def
+R10054:10063 Gentzen.list_permut Make eq_elt_dec def
+R9977:9995 Gentzen.more_list <> split_list_app_cons thm
+R10013:10026 Gentzen.list_permut Make cons_permut_in thm
+R9997:10006 Gentzen.list_permut Make eq_elt_dec def
+R10043:10052 Gentzen.more_list <> split_list def
+R10054:10063 Gentzen.list_permut Make eq_elt_dec def
+R10097:10103 Gentzen.more_list <> map_app thm
+R10119:10145 Gentzen.list_permut Make list_permut_add_cons_inside thm
+R10159:10165 Gentzen.more_list <> map_app thm
+R10184:10204 Gentzen.list_permut Make list_permut_remove_hd thm
+R10097:10103 Gentzen.more_list <> map_app thm
+R10097:10103 Gentzen.more_list <> map_app thm
+R10119:10145 Gentzen.list_permut Make list_permut_add_cons_inside thm
+R10159:10165 Gentzen.more_list <> map_app thm
+R10159:10165 Gentzen.more_list <> map_app thm
+R10184:10204 Gentzen.list_permut Make list_permut_remove_hd thm
+binder 10240:10240 <> l:78
+R10256:10259 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R10253:10255 Gentzen.list_permut Make elt def
+R10260:10262 Gentzen.list_permut Make elt def
+binder 10249:10249 <> f:79
+R10267:10269 Coq.Lists.List <> map def
+R10273:10273 Gentzen.list_permut <> l:78 var
+R10271:10271 Gentzen.list_permut <> f:79 var
+R10338:10352 Gentzen.list_permut Make list_permut_nil thm
+R10355:10369 Gentzen.list_permut Make list_permut_sym thm
+R10338:10352 Gentzen.list_permut Make list_permut_nil thm
+R10355:10369 Gentzen.list_permut Make list_permut_sym thm
+R10338:10352 Gentzen.list_permut Make list_permut_nil thm
+R10355:10369 Gentzen.list_permut Make list_permut_sym thm
+R10422:10433 Gentzen.list_permut Make in_permut_in thm
+R10438:10442 Coq.Lists.List <> in_eq thm
+R10422:10433 Gentzen.list_permut Make in_permut_in thm
+R10438:10442 Coq.Lists.List <> in_eq thm
+R10459:10466 Coq.Lists.List <> In_split syndef
+R10459:10466 Coq.Lists.List <> In_split syndef
+R10527:10547 Gentzen.list_permut Make list_permut_remove_hd thm
+R10527:10547 Gentzen.list_permut Make list_permut_remove_hd thm
+R10589:10595 Gentzen.more_list <> map_app thm
+R10589:10595 Gentzen.more_list <> map_app thm
+R10589:10595 Gentzen.more_list <> map_app thm
+R10606:10612 Gentzen.more_list <> map_app thm
+R10606:10612 Gentzen.more_list <> map_app thm
+R10606:10612 Gentzen.more_list <> map_app thm
+R10628:10654 Gentzen.list_permut Make list_permut_add_cons_inside thm
+R10628:10654 Gentzen.list_permut Make list_permut_add_cons_inside thm
+R10663:10678 Gentzen.list_permut Make list_permut_refl thm
+R10663:10678 Gentzen.list_permut Make list_permut_refl thm
+prf 10733:10752 Make list_permut_length_1
+binder 10763:10763 <> a:80
+binder 10765:10765 <> b:81
+R10801:10805 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R10768:10778 Gentzen.list_permut Make list_permut def
+R10793:10796 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R10792:10792 Gentzen.list_permut <> b:81 var
+R10797:10799 Coq.Init.Datatypes <> nil constr
+R10782:10785 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R10781:10781 Gentzen.list_permut <> a:80 var
+R10786:10788 Coq.Init.Datatypes <> nil constr
+R10807:10809 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R10806:10806 Gentzen.list_permut <> a:80 var
+R10810:10810 Gentzen.list_permut <> b:81 var
+R10839:10849 Gentzen.list_permut Make list_permut def
+R10852:10854 Coq.Sets.Multiset <> meq def
+R10906:10915 Gentzen.list_permut Make eq_elt_dec def
+R10906:10915 Gentzen.list_permut Make eq_elt_dec def
+R10939:10948 Gentzen.list_permut Make eq_elt_dec def
+R10939:10948 Gentzen.list_permut Make eq_elt_dec def
+R10979:10984 Coq.Init.Logic <> sym_eq syndef
+R10979:10984 Coq.Init.Logic <> sym_eq syndef
+R11033:11033 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R11033:11033 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R11077:11077 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R11077:11077 Coq.Init.Logic <> ::type_scope:x_'='_x not
+prf 11103:11122 Make list_permut_length_2
+binder 11134:11135 <> a1:82
+binder 11137:11138 <> b1:83
+binder 11140:11141 <> a2:84
+binder 11143:11144 <> b2:85
+R11194:11198 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R11147:11157 Gentzen.list_permut Make list_permut def
+R11180:11183 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R11178:11179 Gentzen.list_permut <> a2:84 var
+R11186:11189 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R11184:11185 Gentzen.list_permut <> b2:85 var
+R11190:11192 Coq.Init.Datatypes <> nil constr
+R11162:11165 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R11160:11161 Gentzen.list_permut <> a1:82 var
+R11168:11171 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R11166:11167 Gentzen.list_permut <> b1:83 var
+R11172:11174 Coq.Init.Datatypes <> nil constr
+R11199:11199 Coq.Init.Logic <> ::type_scope:x_'\/'_x not
+R11214:11219 Coq.Init.Logic <> ::type_scope:x_'\/'_x not
+R11234:11234 Coq.Init.Logic <> ::type_scope:x_'\/'_x not
+R11205:11208 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R11202:11202 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R11200:11201 Gentzen.list_permut <> a1:82 var
+R11203:11204 Gentzen.list_permut <> a2:84 var
+R11211:11211 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R11209:11210 Gentzen.list_permut <> b1:83 var
+R11212:11213 Gentzen.list_permut <> b2:85 var
+R11225:11228 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R11222:11222 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R11220:11221 Gentzen.list_permut <> a1:82 var
+R11223:11224 Gentzen.list_permut <> b2:85 var
+R11231:11231 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R11229:11230 Gentzen.list_permut <> a2:84 var
+R11232:11233 Gentzen.list_permut <> b1:83 var
+R11272:11285 Gentzen.list_permut Make cons_permut_in thm
+R11272:11285 Gentzen.list_permut Make cons_permut_in thm
+R11336:11355 Gentzen.list_permut Make list_permut_length_1 thm
+R11364:11394 Gentzen.list_permut Make remove_context_list_permut_cons thm
+R11336:11355 Gentzen.list_permut Make list_permut_length_1 thm
+R11364:11394 Gentzen.list_permut Make remove_context_list_permut_cons thm
+R11487:11492 Coq.Init.Logic <> sym_eq syndef
+R11501:11520 Gentzen.list_permut Make list_permut_length_1 thm
+R11530:11550 Gentzen.list_permut Make list_permut_remove_hd thm
+R11564:11566 Coq.Init.Datatypes <> nil constr
+R11555:11558 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R11559:11561 Coq.Init.Datatypes <> nil constr
+R11487:11492 Coq.Init.Logic <> sym_eq syndef
+R11501:11520 Gentzen.list_permut Make list_permut_length_1 thm
+R11530:11550 Gentzen.list_permut Make list_permut_remove_hd thm
+R11564:11566 Coq.Init.Datatypes <> nil constr
+R11555:11558 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R11559:11561 Coq.Init.Datatypes <> nil constr
+prf 11654:11669 Make ac_syntactic_aux
+R11696:11699 Coq.Init.Datatypes <> list ind
+R11701:11703 Gentzen.list_permut Make elt def
+binder 11682:11683 <> l1:86
+binder 11685:11686 <> l2:87
+binder 11688:11689 <> l3:88
+binder 11691:11692 <> l4:89
+R11741:11746 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R11908:11908 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R11708:11718 Gentzen.list_permut Make list_permut def
+R11734:11737 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R11732:11733 Gentzen.list_permut <> l3:88 var
+R11738:11739 Gentzen.list_permut <> l4:89 var
+R11723:11726 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R11721:11722 Gentzen.list_permut <> l1:86 var
+R11727:11728 Gentzen.list_permut <> l2:87 var
+R11747:11753 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R11756:11757 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+binder 11754:11755 <> u1:90
+R11758:11764 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R11767:11768 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+binder 11765:11766 <> u2:91
+R11769:11775 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R11778:11779 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+binder 11776:11777 <> u3:92
+R11780:11786 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R11789:11792 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+binder 11787:11788 <> u4:93
+R11818:11822 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R11793:11803 Gentzen.list_permut Make list_permut def
+R11811:11814 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R11809:11810 Gentzen.list_permut <> u1:90 var
+R11815:11816 Gentzen.list_permut <> u2:91 var
+R11805:11806 Gentzen.list_permut <> l1:86 var
+R11848:11852 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R11823:11833 Gentzen.list_permut Make list_permut def
+R11841:11844 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R11839:11840 Gentzen.list_permut <> u3:92 var
+R11845:11846 Gentzen.list_permut <> u4:93 var
+R11835:11836 Gentzen.list_permut <> l2:87 var
+R11878:11882 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R11853:11863 Gentzen.list_permut Make list_permut def
+R11871:11874 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R11869:11870 Gentzen.list_permut <> u1:90 var
+R11875:11876 Gentzen.list_permut <> u3:92 var
+R11865:11866 Gentzen.list_permut <> l3:88 var
+R11883:11893 Gentzen.list_permut Make list_permut def
+R11901:11904 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R11899:11900 Gentzen.list_permut <> u2:91 var
+R11905:11906 Gentzen.list_permut <> u4:93 var
+R11895:11896 Gentzen.list_permut <> l4:89 var
+R11965:11968 Coq.Init.Datatypes <> list ind
+R11970:11972 Gentzen.list_permut Make elt def
+R11959:11961 Coq.Init.Datatypes <> nil constr
+R11990:11993 Coq.Init.Datatypes <> list ind
+R11995:11997 Gentzen.list_permut Make elt def
+R11984:11986 Coq.Init.Datatypes <> nil constr
+R11965:11968 Coq.Init.Datatypes <> list ind
+R11970:11972 Gentzen.list_permut Make elt def
+R11959:11961 Coq.Init.Datatypes <> nil constr
+R11990:11993 Coq.Init.Datatypes <> list ind
+R11995:11997 Gentzen.list_permut Make elt def
+R11984:11986 Coq.Init.Datatypes <> nil constr
+R12074:12086 Coq.Lists.List <> app_comm_cons thm
+R12100:12108 Coq.Lists.List <> in_app_or thm
+R12119:12132 Gentzen.list_permut Make cons_permut_in thm
+R12163:12181 Gentzen.more_list <> split_list_app_cons thm
+R12183:12192 Gentzen.list_permut Make eq_elt_dec def
+R12074:12086 Coq.Lists.List <> app_comm_cons thm
+R12074:12086 Coq.Lists.List <> app_comm_cons thm
+R12100:12108 Coq.Lists.List <> in_app_or thm
+R12119:12132 Gentzen.list_permut Make cons_permut_in thm
+R12163:12181 Gentzen.more_list <> split_list_app_cons thm
+R12183:12192 Gentzen.list_permut Make eq_elt_dec def
+R12163:12181 Gentzen.more_list <> split_list_app_cons thm
+R12183:12192 Gentzen.list_permut Make eq_elt_dec def
+R12215:12224 Gentzen.more_list <> split_list def
+R12226:12235 Gentzen.list_permut Make eq_elt_dec def
+R12269:12275 Coq.Lists.List <> app_ass syndef
+R12294:12306 Coq.Lists.List <> app_comm_cons thm
+R12326:12346 Gentzen.list_permut Make list_permut_remove_hd thm
+R12386:12392 Coq.Lists.List <> app_ass syndef
+R12417:12420 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R12650:12653 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R12215:12224 Gentzen.more_list <> split_list def
+R12226:12235 Gentzen.list_permut Make eq_elt_dec def
+R12269:12275 Coq.Lists.List <> app_ass syndef
+R12269:12275 Coq.Lists.List <> app_ass syndef
+R12294:12306 Coq.Lists.List <> app_comm_cons thm
+R12294:12306 Coq.Lists.List <> app_comm_cons thm
+R12326:12346 Gentzen.list_permut Make list_permut_remove_hd thm
+R12386:12392 Coq.Lists.List <> app_ass syndef
+R12386:12392 Coq.Lists.List <> app_ass syndef
+R12417:12420 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R12650:12653 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R12753:12776 Gentzen.list_permut Make context_list_permut_cons thm
+R12753:12776 Gentzen.list_permut Make context_list_permut_cons thm
+R12794:12808 Gentzen.list_permut Make list_permut_sym thm
+R12817:12843 Gentzen.list_permut Make list_permut_add_cons_inside thm
+R12852:12866 Gentzen.list_permut Make list_permut_sym thm
+R12794:12808 Gentzen.list_permut Make list_permut_sym thm
+R12817:12843 Gentzen.list_permut Make list_permut_add_cons_inside thm
+R12852:12866 Gentzen.list_permut Make list_permut_sym thm
+R12889:12898 Gentzen.more_list <> split_list def
+R12900:12909 Gentzen.list_permut Make eq_elt_dec def
+R12946:12952 Coq.Lists.List <> app_ass syndef
+R12973:12993 Gentzen.list_permut Make list_permut_remove_hd thm
+R13029:13035 Coq.Lists.List <> app_ass syndef
+R13063:13066 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R13304:13307 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R12889:12898 Gentzen.more_list <> split_list def
+R12900:12909 Gentzen.list_permut Make eq_elt_dec def
+R12946:12952 Coq.Lists.List <> app_ass syndef
+R12946:12952 Coq.Lists.List <> app_ass syndef
+R12973:12993 Gentzen.list_permut Make list_permut_remove_hd thm
+R13029:13035 Coq.Lists.List <> app_ass syndef
+R13029:13035 Coq.Lists.List <> app_ass syndef
+R13063:13066 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R13304:13307 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R13368:13394 Gentzen.list_permut Make list_permut_add_cons_inside thm
+R13368:13394 Gentzen.list_permut Make list_permut_add_cons_inside thm
+R13412:13426 Gentzen.list_permut Make list_permut_sym thm
+R13435:13461 Gentzen.list_permut Make list_permut_add_cons_inside thm
+R13471:13485 Gentzen.list_permut Make list_permut_sym thm
+R13412:13426 Gentzen.list_permut Make list_permut_sym thm
+R13435:13461 Gentzen.list_permut Make list_permut_add_cons_inside thm
+R13471:13485 Gentzen.list_permut Make list_permut_sym thm
+prf 13509:13520 Make ac_syntactic
+R13547:13550 Coq.Init.Datatypes <> list ind
+R13552:13554 Gentzen.list_permut Make elt def
+binder 13533:13534 <> l1:94
+binder 13536:13537 <> l2:95
+binder 13539:13540 <> l3:96
+binder 13542:13543 <> l4:97
+R13592:13597 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R13759:13759 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R13559:13569 Gentzen.list_permut Make list_permut def
+R13585:13588 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R13583:13584 Gentzen.list_permut <> l4:97 var
+R13589:13590 Gentzen.list_permut <> l3:96 var
+R13574:13577 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R13572:13573 Gentzen.list_permut <> l2:95 var
+R13578:13579 Gentzen.list_permut <> l1:94 var
+R13598:13604 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R13607:13608 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+binder 13605:13606 <> u1:98
+R13609:13615 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R13618:13619 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+binder 13616:13617 <> u2:99
+R13620:13626 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R13629:13630 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+binder 13627:13628 <> u3:100
+R13631:13637 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R13640:13643 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+binder 13638:13639 <> u4:101
+R13669:13673 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R13644:13654 Gentzen.list_permut Make list_permut def
+R13662:13665 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R13660:13661 Gentzen.list_permut <> u1:98 var
+R13666:13667 Gentzen.list_permut <> u2:99 var
+R13656:13657 Gentzen.list_permut <> l1:94 var
+R13699:13703 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R13674:13684 Gentzen.list_permut Make list_permut def
+R13692:13695 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R13690:13691 Gentzen.list_permut <> u3:100 var
+R13696:13697 Gentzen.list_permut <> u4:101 var
+R13686:13687 Gentzen.list_permut <> l2:95 var
+R13729:13733 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R13704:13714 Gentzen.list_permut Make list_permut def
+R13722:13725 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R13720:13721 Gentzen.list_permut <> u1:98 var
+R13726:13727 Gentzen.list_permut <> u3:100 var
+R13716:13717 Gentzen.list_permut <> l3:96 var
+R13734:13744 Gentzen.list_permut Make list_permut def
+R13752:13755 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R13750:13751 Gentzen.list_permut <> u2:99 var
+R13756:13757 Gentzen.list_permut <> u4:101 var
+R13746:13747 Gentzen.list_permut <> l4:97 var
+R13797:13812 Gentzen.list_permut Make ac_syntactic_aux thm
+R13797:13812 Gentzen.list_permut Make ac_syntactic_aux thm
+R13847:13850 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R13821:13837 Gentzen.list_permut Make list_permut_trans thm
+R13847:13850 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R13821:13837 Gentzen.list_permut Make list_permut_trans thm
+R13862:13880 Gentzen.list_permut Make list_permut_app_app thm
+R13862:13880 Gentzen.list_permut Make list_permut_app_app thm
+R13915:13918 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R13889:13905 Gentzen.list_permut Make list_permut_trans thm
+R13915:13918 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R13889:13905 Gentzen.list_permut Make list_permut_trans thm
+R13939:13957 Gentzen.list_permut Make list_permut_app_app thm
+R13939:13957 Gentzen.list_permut Make list_permut_app_app thm
+prf 13972:13986 Make list_permut_dec
+binder 13997:13998 <> l1:102
+binder 14000:14001 <> l2:103
+R14004:14004 Coq.Init.Specif <> ::type_scope:'{'_x_'}'_'+'_'{'_x_'}' not
+R14022:14024 Coq.Init.Specif <> ::type_scope:'{'_x_'}'_'+'_'{'_x_'}' not
+R14043:14043 Coq.Init.Specif <> ::type_scope:'{'_x_'}'_'+'_'{'_x_'}' not
+R14005:14015 Gentzen.list_permut Make list_permut def
+R14020:14021 Gentzen.list_permut <> l2:103 var
+R14017:14018 Gentzen.list_permut <> l1:102 var
+R14025:14025 Coq.Init.Logic <> ::type_scope:'~'_x not
+R14026:14036 Gentzen.list_permut Make list_permut def
+R14041:14042 Gentzen.list_permut <> l2:103 var
+R14038:14039 Gentzen.list_permut <> l1:102 var
+R14130:14145 Gentzen.list_permut Make list_permut_refl thm
+R14130:14145 Gentzen.list_permut Make list_permut_refl thm
+R14177:14194 Gentzen.list_permut Make list_permut_length thm
+R14177:14194 Gentzen.list_permut Make list_permut_length thm
+R14234:14239 Coq.Lists.List <> In_dec syndef
+R14241:14250 Gentzen.list_permut Make eq_elt_dec def
+R14234:14239 Coq.Lists.List <> In_dec syndef
+R14241:14250 Gentzen.list_permut Make eq_elt_dec def
+R14301:14319 Gentzen.more_list <> split_list_app_cons thm
+R14321:14330 Gentzen.list_permut Make eq_elt_dec def
+R14373:14382 Gentzen.more_list <> split_list def
+R14384:14393 Gentzen.list_permut Make eq_elt_dec def
+R14301:14319 Gentzen.more_list <> split_list_app_cons thm
+R14321:14330 Gentzen.list_permut Make eq_elt_dec def
+R14373:14382 Gentzen.more_list <> split_list def
+R14384:14393 Gentzen.list_permut Make eq_elt_dec def
+R14450:14453 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R14450:14453 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R14486:14512 Gentzen.list_permut Make list_permut_add_cons_inside thm
+R14486:14512 Gentzen.list_permut Make list_permut_add_cons_inside thm
+R14556:14576 Gentzen.list_permut Make list_permut_remove_hd thm
+R14556:14576 Gentzen.list_permut Make list_permut_remove_hd thm
+R14659:14662 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R14638:14649 Gentzen.list_permut Make in_permut_in thm
+R14659:14662 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R14638:14649 Gentzen.list_permut Make in_permut_in thm
+R14702:14705 Gentzen.list_permut Make <> mod

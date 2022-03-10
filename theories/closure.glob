@@ -1,0 +1,131 @@
+DIGEST 23cc53db9bcf02672eca628b95239ba4
+FGentzen.closure
+R68:76 Coq.Relations.Relations <> <> lib
+R94:97 Coq.Lists.List <> <> lib
+ind 111:120 <> trans_clos
+constr 168:173 <> t_step
+constr 219:225 <> t_trans
+binder 123:123 <> A:1
+R137:144 Coq.Relations.Relation_Definitions <> relation def
+R146:146 Gentzen.closure <> A:1 var
+binder 133:133 <> R:2
+R151:158 Coq.Relations.Relation_Definitions <> relation def
+binder 184:184 <> x:5
+binder 186:186 <> y:6
+R194:197 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R189:189 Gentzen.closure <> R:2 var
+R191:191 Gentzen.closure <> x:5 var
+R193:193 Gentzen.closure <> y:6 var
+R198:207 Gentzen.closure <> trans_clos:3 ind
+R213:213 Gentzen.closure <> y:6 var
+R211:211 Gentzen.closure <> x:5 var
+R209:209 Gentzen.closure <> R:2 var
+binder 236:236 <> x:7
+binder 238:238 <> y:8
+binder 240:240 <> z:9
+R248:251 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R243:243 Gentzen.closure <> R:2 var
+R245:245 Gentzen.closure <> x:7 var
+R247:247 Gentzen.closure <> y:8 var
+R268:271 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R252:261 Gentzen.closure <> trans_clos:3 ind
+R267:267 Gentzen.closure <> z:9 var
+R265:265 Gentzen.closure <> y:8 var
+R263:263 Gentzen.closure <> R:2 var
+R272:281 Gentzen.closure <> trans_clos:3 ind
+R287:287 Gentzen.closure <> z:9 var
+R285:285 Gentzen.closure <> x:7 var
+R283:283 Gentzen.closure <> R:2 var
+prf 297:315 <> trans_clos_is_trans
+binder 329:329 <> A:10
+R342:349 Coq.Relations.Relation_Definitions <> relation def
+R351:351 Gentzen.closure <> A:10 var
+binder 338:338 <> R:11
+binder 354:354 <> a:12
+binder 356:356 <> b:13
+binder 358:358 <> c:14
+R380:383 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R364:373 Gentzen.closure <> trans_clos ind
+R379:379 Gentzen.closure <> b:13 var
+R377:377 Gentzen.closure <> a:12 var
+R375:375 Gentzen.closure <> R:11 var
+R400:403 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R384:393 Gentzen.closure <> trans_clos ind
+R399:399 Gentzen.closure <> c:14 var
+R397:397 Gentzen.closure <> b:13 var
+R395:395 Gentzen.closure <> R:11 var
+R404:413 Gentzen.closure <> trans_clos ind
+R419:419 Gentzen.closure <> c:14 var
+R417:417 Gentzen.closure <> a:12 var
+R415:415 Gentzen.closure <> R:11 var
+R538:544 Gentzen.closure <> t_trans constr
+R538:544 Gentzen.closure <> t_trans constr
+R583:589 Gentzen.closure <> t_trans constr
+R583:589 Gentzen.closure <> t_trans constr
+prf 642:650 <> acc_trans
+binder 663:663 <> A:15
+R677:684 Coq.Relations.Relation_Definitions <> relation def
+R686:686 Gentzen.closure <> A:15 var
+binder 673:673 <> R:16
+binder 689:689 <> a:17
+R699:702 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R692:694 Coq.Init.Wf <> Acc ind
+R698:698 Gentzen.closure <> a:17 var
+R696:696 Gentzen.closure <> R:16 var
+R703:705 Coq.Init.Wf <> Acc ind
+R722:722 Gentzen.closure <> a:17 var
+R708:717 Gentzen.closure <> trans_clos ind
+R719:719 Gentzen.closure <> R:16 var
+R797:805 Coq.Init.Wf <> Acc_intro constr
+R797:805 Coq.Init.Wf <> Acc_intro constr
+R868:874 Coq.Init.Wf <> Acc_inv thm
+R868:874 Coq.Init.Wf <> Acc_inv thm
+R915:920 Gentzen.closure <> t_step constr
+R915:920 Gentzen.closure <> t_step constr
+prf 944:951 <> wf_trans
+binder 965:965 <> A:18
+R979:986 Coq.Relations.Relation_Definitions <> relation def
+R988:988 Gentzen.closure <> A:18 var
+binder 975:975 <> R:19
+R1007:1010 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R993:1004 Coq.Init.Wf <> well_founded def
+R1006:1006 Gentzen.closure <> R:19 var
+R1011:1022 Coq.Init.Wf <> well_founded def
+R1025:1034 Gentzen.closure <> trans_clos ind
+R1036:1036 Gentzen.closure <> R:19 var
+R1054:1065 Coq.Init.Wf <> well_founded def
+R1096:1104 Gentzen.closure <> acc_trans thm
+R1096:1104 Gentzen.closure <> acc_trans thm
+prf 1138:1146 <> inv_trans
+binder 1160:1160 <> A:20
+R1174:1181 Coq.Relations.Relation_Definitions <> relation def
+R1183:1183 Gentzen.closure <> A:20 var
+binder 1170:1170 <> R:21
+R1192:1195 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1191:1191 Gentzen.closure <> A:20 var
+binder 1187:1187 <> P:22
+R1205:1205 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1237:1244 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+binder 1213:1213 <> a:23
+binder 1215:1215 <> b:24
+R1221:1224 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1218:1218 Gentzen.closure <> P:22 var
+R1220:1220 Gentzen.closure <> a:23 var
+R1230:1233 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1225:1225 Gentzen.closure <> R:21 var
+R1227:1227 Gentzen.closure <> a:23 var
+R1229:1229 Gentzen.closure <> b:24 var
+R1234:1234 Gentzen.closure <> P:22 var
+R1236:1236 Gentzen.closure <> b:24 var
+binder 1252:1252 <> a:25
+binder 1254:1254 <> b:26
+R1260:1263 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1257:1257 Gentzen.closure <> P:22 var
+R1259:1259 Gentzen.closure <> a:25 var
+R1280:1283 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1264:1273 Gentzen.closure <> trans_clos ind
+R1279:1279 Gentzen.closure <> b:26 var
+R1277:1277 Gentzen.closure <> a:25 var
+R1275:1275 Gentzen.closure <> R:21 var
+R1284:1284 Gentzen.closure <> P:22 var
+R1286:1286 Gentzen.closure <> b:26 var
