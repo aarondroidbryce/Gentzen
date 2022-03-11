@@ -2834,12 +2834,31 @@ intros. rewrite succ_distrib. destruct H,H0,H1. rewrite plus_n_1. simpl. repeat 
 - rewrite <- plus_n_Sm. simpl in *. lia.
 Qed.
 
+Lemma ord_2_exp_non_zero : forall alpha, ord_2_exp alpha <> Zero.
+Proof.
+intros. induction alpha. discriminate. destruct alpha1. simpl. unfold nat_ord. case (2^n+(2^n+0)) eqn:Y. pose (exp_succ n). lia. discriminate.
+destruct alpha1_1. destruct alpha1_2. destruct n. destruct alpha2. simpl. discriminate. simpl.
+Admitted.
+
+Lemma ord_2_exp_not_plus_nat : forall alpha n beta gamma m delta p epsilon, ord_2_exp (cons alpha n beta) = cons gamma m (cons delta p epsilon) -> ord_lt Zero delta.
+Admitted.
+
+Lemma ord_2_exp_cons_is_mult : forall beta alpha, nf (cons alpha 0 beta) -> ord_2_exp (cons alpha 0 beta) = ord_mult (ord_2_exp (cons alpha 0 Zero)) (ord_2_exp beta).
+Proof.
+intros beta. induction beta. intros. simpl. case (ord_2_exp (cons alpha 0 Zero)); auto. intros. apply ord_eq_split; auto. lia. intros. induction alpha. inversion H. inversion H3.
+Admitted. 
+
 Lemma ord_2_exp_add_is_mult : forall alpha, nf alpha -> forall beta, nf beta -> ord_2_exp (ord_add alpha beta) = ord_mult (ord_2_exp alpha) (ord_2_exp beta).
 Proof.
 apply (transfinite_induction (fun alpha => forall beta, nf beta -> ord_2_exp (ord_add alpha beta) = ord_mult (ord_2_exp alpha) (ord_2_exp beta))).
-intros. destruct beta. rewrite ord_add_zero. unfold ord_2_exp. fold ord_2_exp. rewrite <- one_right_mult_ident. auto. destruct x. rewrite ord_zero_add. rewrite <- one_left_mult_ident. auto. apply nf_2_exp. auto.
+intros. induction beta. rewrite ord_add_zero. unfold ord_2_exp. fold ord_2_exp. rewrite <- one_right_mult_ident. auto. destruct x. rewrite ord_zero_add. rewrite <- one_left_mult_ident. auto. apply nf_2_exp. auto.
 unfold ord_add. fold ord_add. destruct (ord_semiconnex_bool x1 beta1) as [X | [X | X]].
-
+- rewrite X. destruct x1.
+  + inversion H; inversion H5. symmetry in H2. destruct H2,H4,H5,H6. unfold ord_2_exp in IHbeta2. fold ord_2_exp in IHbeta2. unfold pow in IHbeta2. fold pow in IHbeta2. unfold mul in IHbeta2. simpl. unfold nat_ord in *. case (2 ^ n1 + (2 ^ n1 + 0)) eqn:Y. pose (exp_succ n1). lia. case (ord_2_exp (cons beta1 n beta2)) eqn:Y1. pose (exp_geq_1 _ H1). rewrite Y1 in o. inversion o. 
+    rewrite nf_mult_eval. rewrite ord_zero_add. 
+     admit. admit.
+  + 
+(*
 intros alpha nA IHA. apply transfinite_induction. intros. destruct x as [|beta1 m beta2]. rewrite ord_add_zero. rewrite <- one_right_mult_ident. auto. destruct alpha. rewrite ord_zero_add. rewrite <- one_left_mult_ident. auto. apply nf_2_exp. auto.
 unfold ord_add. fold ord_add. destruct (ord_semiconnex_bool alpha1 beta1) as [X | [X | X]].
 - rewrite X. unfold ord_2_exp. fold ord_2_exp. destruct beta1. apply ord_ltb_lt in X. inversion X. destruct beta1_1.
@@ -2942,7 +2961,7 @@ unfold ord_add. fold ord_add. destruct (ord_semiconnex_bool alpha1 beta1) as [X 
                   { admit. }
               **  admit.
       -- admit.
-    * admit.
+    * admit.*)
 Admitted.
 
 Lemma ord_2_exp_monot : forall alpha beta, alpha < beta -> nf alpha -> nf beta -> ord_2_exp alpha < ord_2_exp beta.
@@ -2998,7 +3017,7 @@ intros. induction alpha.
               ** simpl. admit. 
               ** simpl. admit.
       --  destruct a'. inversion H3. destruct a'1. inversion H3. inversion H4. simpl. apply (lt_trans _ (ord_mult (cons (cons (cons (cons a'1_1 n3 a'1_2) n0 a'2) n' Zero) 0 Zero) (ord_2_exp b))). 
-          ++  apply mult_left_incr. apply nf_2_exp. apply (nf_hered_third _ _ _ H0). apply head_lt. apply head_lt. auto. apply exp_geq_1. apply (nf_hered_third _ _ _ H0). apply single_nf. apply single_nf. apply (nf_hered_first _ _ _ H1).
+          ++  apply mult_left_incr. apply nf_2_exp. apply (nf_hered_third _ _ _ H0). apply head_lt. auto. apply exp_geq_1. apply (nf_hered_third _ _ _ H0). apply single_nf. apply (nf_hered_first _ _ _ H1).
           ++  apply mult_right_incr. admit. apply zero_lt. apply nf_2_exp. apply (nf_hered_third _ _ _ H1).
     * symmetry in H2. destruct H2,H4,H5,H6,H7,H8. destruct n'. inversion H3. 
     admit.
@@ -3023,7 +3042,7 @@ intros.
 pose proof (add_right_incr alpha _ _ (zero_lt beta n gamma)).
 rewrite ord_add_zero in H.
 apply ord_lt_ltb in H.
-apply ord_lt_ne.
+apply ord_ltb_neb.
 auto.
 Qed.
 
@@ -3284,7 +3303,7 @@ Fixpoint free_list (A : formula) : list nat :=
 match A with
 | atom a => free_list_a a
 | neg B => free_list B
-| lor B C => remove_dups (concat (free_list B) (free_list C))
+| lor B D => remove_dups (concat (free_list B) (free_list D))
 | univ n B => remove n (free_list B)
 end.
 
@@ -3345,7 +3364,7 @@ Fixpoint closed (A : formula) : bool :=
 match A with
 | atom a => closed_a a
 | neg B => closed B
-| lor B C => closed B && closed C
+| lor B D => closed B && closed D
 | univ n B =>
   (match closed B with
    | true => true
@@ -3594,7 +3613,7 @@ Fixpoint substitution (A : formula) (n : nat) (t : term) : formula :=
 match A with
 | atom a => atom (substitution_a a n t)
 | neg B => neg (substitution B n t)
-| lor B C => lor (substitution B n t) (substitution C n t)
+| lor B D => lor (substitution B n t) (substitution D n t)
 | univ m B => 
     (match eq_nat m n with
     | true => A
@@ -4173,13 +4192,13 @@ case_eq (closed_t (substitution_t t2 n s)); intros Ht2; auto.
 - rewrite Ht1 in H0. rewrite Ht2 in H0. inversion H0.
 Qed.
 
-Lemma closed_lor : forall (B C : formula),
-  closed (lor B C) = true -> closed B = true /\ closed C = true.
+Lemma closed_lor : forall (B D : formula),
+  closed (lor B D) = true -> closed B = true /\ closed D = true.
 Proof.
 intros. simpl in H. split.
-- case_eq (closed B); case_eq (closed C); intros; auto;
+- case_eq (closed B); case_eq (closed D); intros; auto;
   rewrite H0 in H; rewrite H1 in H; inversion H.
-- case_eq (closed B); case_eq (closed C); intros; auto;
+- case_eq (closed B); case_eq (closed D); intros; auto;
   rewrite H0 in H; rewrite H1 in H; inversion H.
 Qed.
 
@@ -5208,11 +5227,11 @@ match P with
 
 | exchange_ab A B d alpha P' => lor B A
 
-| exchange_cab C A B d alpha P' => lor (lor C B) A
+| exchange_cab E A B d alpha P' => lor (lor E B) A
 
 | exchange_abd A B D d alpha P' => lor (lor B A) D
 
-| exchange_cabd C A B D d alpha P' => lor (lor (lor C B) A) D
+| exchange_cabd E A B D d alpha P' => lor (lor (lor E B) A) D
 
 | contraction_a A d alpha P' => A
 
@@ -5238,11 +5257,11 @@ match P with
 | w_rule_ad A D n d alpha g => lor (univ n A) D
 
 
-| cut_ca C A d1 d2 alpha1 alpha2 P1 P2 => C
+| cut_ca E A d1 d2 alpha1 alpha2 P1 P2 => E
 
 | cut_ad A D d1 d2 alpha1 alpha2 P1 P2 => D
 
-| cut_cad C A D d1 d2 alpha1 alpha2 P1 P2 => lor C D
+| cut_cad E A D d1 d2 alpha1 alpha2 P1 P2 => lor E D
 
 end.
 
@@ -5258,11 +5277,11 @@ match P with
 
 | exchange_ab A B d alpha P' => d
 
-| exchange_cab C A B d alpha P' => d
+| exchange_cab E A B d alpha P' => d
 
 | exchange_abd A B D d alpha P' => d
 
-| exchange_cabd C A B D d alpha P' => d
+| exchange_cabd E A B D d alpha P' => d
 
 | contraction_a A d alpha P' => d
 
@@ -5288,11 +5307,11 @@ match P with
 | w_rule_ad A D n d alpha g => d
 
 
-| cut_ca C A d1 d2 alpha1 alpha2 P1 P2 => max (max d1 d2) (num_conn (neg A))
+| cut_ca E A d1 d2 alpha1 alpha2 P1 P2 => max (max d1 d2) (num_conn (neg A))
 
 | cut_ad A D d1 d2 alpha1 alpha2 P1 P2 => max (max d1 d2) (num_conn (neg A))
 
-| cut_cad C A D d1 d2 alpha1 alpha2 P1 P2 => max (max d1 d2) (num_conn (neg A))
+| cut_cad E A D d1 d2 alpha1 alpha2 P1 P2 => max (max d1 d2) (num_conn (neg A))
 
 end.
 
@@ -5308,11 +5327,11 @@ match P with
 
 | exchange_ab A B d alpha P' => alpha
 
-| exchange_cab C A B d alpha P' => alpha
+| exchange_cab E A B d alpha P' => alpha
 
 | exchange_abd A B D d alpha P' => alpha
 
-| exchange_cabd C A B D d alpha P' => alpha
+| exchange_cabd E A B D d alpha P' => alpha
 
 | contraction_a A d alpha P' => alpha
 
@@ -5337,11 +5356,11 @@ match P with
 
 | w_rule_ad A D n d alpha g => cons alpha 0 Zero
 
-| cut_ca C A d1 d2 alpha1 alpha2 P1 P2 => ord_succ (ord_max alpha1 alpha2)
+| cut_ca E A d1 d2 alpha1 alpha2 P1 P2 => ord_succ (ord_max alpha1 alpha2)
 
 | cut_ad A D d1 d2 alpha1 alpha2 P1 P2 => ord_succ (ord_max alpha1 alpha2)
 
-| cut_cad C A D d1 d2 alpha1 alpha2 P1 P2 => ord_succ (ord_max alpha1 alpha2)
+| cut_cad E A D d1 d2 alpha1 alpha2 P1 P2 => ord_succ (ord_max alpha1 alpha2)
 
 end.
 
@@ -5359,16 +5378,16 @@ match P with
     (ptree_formula P' = lor A B) * (valid P') *
     (d = ptree_deg P') * (alpha = ptree_ord P')
 
-| exchange_cab C A B d alpha P' =>
-    (ptree_formula P' = lor (lor C A) B) * (valid P') *
+| exchange_cab E A B d alpha P' =>
+    (ptree_formula P' = lor (lor E A) B) * (valid P') *
     (d = ptree_deg P') * (alpha = ptree_ord P')
 
 | exchange_abd A B D d alpha P' =>
     (ptree_formula P' = lor (lor A B) D) * (valid P') *
     (d = ptree_deg P') * (alpha = ptree_ord P')
 
-| exchange_cabd C A B D d alpha P' =>
-    (ptree_formula P' = lor (lor (lor C A) B) D) * (valid P') *
+| exchange_cabd E A B D d alpha P' =>
+    (ptree_formula P' = lor (lor (lor E A) B) D) * (valid P') *
     (d = ptree_deg P') * (alpha = ptree_ord P')
 
 | contraction_a A d alpha P' =>
@@ -5424,8 +5443,8 @@ match P with
     (valid (g m)) * (d >= ptree_deg (g m)) * (alpha = ptree_ord (g m)))
 
 
-| cut_ca C A d1 d2 alpha1 alpha2 P1 P2 =>
-    (ptree_formula P1 = lor C A) * (valid P1) *
+| cut_ca E A d1 d2 alpha1 alpha2 P1 P2 =>
+    (ptree_formula P1 = lor E A) * (valid P1) *
     (ptree_formula P2 = neg A) * (valid P2) *
     (d1 = ptree_deg P1) * (d2 = ptree_deg P2) *
     (alpha1 = ptree_ord P1) * (alpha2 = ptree_ord P2)
@@ -5436,8 +5455,8 @@ match P with
     (d1 = ptree_deg P1) * (d2 = ptree_deg P2) *
     (alpha1 = ptree_ord P1) * (alpha2 = ptree_ord P2)
 
-| cut_cad C A D d1 d2 alpha1 alpha2 P1 P2 =>
-    (ptree_formula P1 = lor C A) * (valid P1) *
+| cut_cad E A D d1 d2 alpha1 alpha2 P1 P2 =>
+    (ptree_formula P1 = lor E A) * (valid P1) *
     (ptree_formula P2 = lor (neg A) D) * (valid P2) *
     (d1 = ptree_deg P1) * (d2 = ptree_deg P2) *
     (alpha1 = ptree_ord P1) * (alpha2 = ptree_ord P2)
@@ -5462,9 +5481,9 @@ induction H; try destruct IHPA_omega_theorem as [P [[[HP1 HP2] HP3] HP4]].
 - exists (ord_up beta P). repeat split; auto. rewrite HP4. auto.
 - exists (node A). repeat split. apply e. auto.
 - exists (exchange_ab A B (ptree_deg P) alpha P). repeat split; auto.
-- exists (exchange_cab C A B (ptree_deg P) alpha P). repeat split; auto.
+- exists (exchange_cab C0 A B (ptree_deg P) alpha P). repeat split; auto.
 - exists (exchange_abd A B D (ptree_deg P) alpha P). repeat split; auto.
-- exists (exchange_cabd C A B D (ptree_deg P) alpha P). repeat split; auto.
+- exists (exchange_cabd C0 A B D (ptree_deg P) alpha P). repeat split; auto.
 - exists (contraction_a A (ptree_deg P) alpha P). repeat split; auto.
 - exists (contraction_ad A D (ptree_deg P) alpha P). repeat split; auto.
 - exists (weakening_ad A D (ptree_deg P) alpha P). repeat split; auto.
@@ -5496,13 +5515,13 @@ induction H; try destruct IHPA_omega_theorem as [P [[[HP1 HP2] HP3] HP4]].
     + simpl. auto.
 - destruct IHPA_omega_theorem1 as [P [[[HP1 HP2] HP3] HP4]].
   destruct IHPA_omega_theorem2 as [P' [[[HP'1 HP'2] HP'3] HP'4]].
-  exists (cut_ca C A (ptree_deg P) (ptree_deg P') alpha1 alpha2 P P'). repeat split; auto. simpl. lia.
+  exists (cut_ca C0 A (ptree_deg P) (ptree_deg P') alpha1 alpha2 P P'). repeat split; auto. simpl. lia.
 - destruct IHPA_omega_theorem1 as [P [[[HP1 HP2] HP3] HP4]].
   destruct IHPA_omega_theorem2 as [P' [[[HP'1 HP'2] HP'3] HP'4]].
   exists (cut_ad A D (ptree_deg P) (ptree_deg P') alpha1 alpha2 P P'). repeat split; auto. simpl. lia.
 - destruct IHPA_omega_theorem1 as [P [[[HP1 HP2] HP3] HP4]].
   destruct IHPA_omega_theorem2 as [P' [[[HP'1 HP'2] HP'3] HP'4]].
-  exists (cut_cad C A D (ptree_deg P) (ptree_deg P') alpha1 alpha2 P P'). repeat split; auto. simpl. lia.
+  exists (cut_cad C0 A D (ptree_deg P) (ptree_deg P') alpha1 alpha2 P P'). repeat split; auto. simpl. lia.
 Qed.
 
 
@@ -5859,13 +5878,13 @@ Notation "( x y )" := (lor_ind x y).
 
 Fixpoint non_target (A : formula) : subst_ind :=
 match A with
-| lor B C => lor_ind (non_target B) (non_target C)
+| lor B E => lor_ind (non_target B) (non_target E)
 | _ => (0)
 end.
 
 Fixpoint target (A : formula) : subst_ind :=
 match A with
-| lor B C => lor_ind (target B) (target C)
+| lor B E => lor_ind (target B) (target E)
 | _ => (1)
 end.
 
@@ -5874,8 +5893,8 @@ end.
 (* *)
 Fixpoint subst_ind_fit (A : formula) (S : subst_ind) : bool :=
 match A, S with
-| lor B C, lor_ind S_B S_C =>
-    subst_ind_fit B S_B && subst_ind_fit C S_C
+| lor B E, lor_ind S_B S_C =>
+    subst_ind_fit B S_B && subst_ind_fit E S_C
 | _, lor_ind _ _ => false
 | lor _ _, _ => false
 | _, _ => true
@@ -5883,10 +5902,10 @@ end.
 
 Fixpoint formula_sub_ind_fit (A E F : formula) (S : subst_ind) : formula :=
 match A with
-| lor B C =>
+| lor B G =>
   (match S with
   | lor_ind S1 S2 => lor (formula_sub_ind_fit B E F S1)
-                         (formula_sub_ind_fit C E F S2)
+                         (formula_sub_ind_fit G E F S2)
   | _ => A
   end)
 | _ =>
@@ -5958,11 +5977,11 @@ Lemma non_target_sub' : forall (A C D : formula),
 Proof.
 intros. induction A.
 - unfold non_target. unfold formula_sub_ind_fit.
-  destruct (eq_f (atom a) C); auto.
+  destruct (eq_f (atom a) C0); auto.
 - unfold non_target. unfold formula_sub_ind_fit.
-  destruct (eq_f (neg A) C); auto.
+  destruct (eq_f (neg A) C0); auto.
 - simpl. rewrite IHA1, IHA2. auto.
-- simpl. destruct C; auto. destruct (eq_nat n n0 && eq_f A C); auto.
+- simpl. destruct C0; auto. destruct (eq_nat n n0 && eq_f A C0); auto.
 Qed.
 
 Lemma non_target_sub : forall (A C D : formula),
@@ -6084,9 +6103,9 @@ match P, S with
       d alpha
       (dub_neg_sub_ptree_fit P' E (lor_ind S_A S_B))
 
-| exchange_cab C A B d alpha P', lor_ind (lor_ind S_C S_B) S_A =>
+| exchange_cab C0 A B d alpha P', lor_ind (lor_ind S_C S_B) S_A =>
     exchange_cab
-      (dub_neg_sub_formula C E S_C)
+      (dub_neg_sub_formula C0 E S_C)
       (dub_neg_sub_formula A E S_A)
       (dub_neg_sub_formula B E S_B)
       d alpha
@@ -6100,9 +6119,9 @@ match P, S with
       d alpha
       (dub_neg_sub_ptree_fit P' E (lor_ind (lor_ind S_A S_B) S_D))
 
-| exchange_cabd C A B D d alpha P', lor_ind (lor_ind (lor_ind S_C S_B) S_A) S_D =>
+| exchange_cabd C0 A B D d alpha P', lor_ind (lor_ind (lor_ind S_C S_B) S_A) S_D =>
     exchange_cabd
-      (dub_neg_sub_formula C E S_C)
+      (dub_neg_sub_formula C0 E S_C)
       (dub_neg_sub_formula A E S_A)
       (dub_neg_sub_formula B E S_B)
       (dub_neg_sub_formula D E S_D)
@@ -6175,9 +6194,9 @@ match P, S with
       (fun (n : nat) =>
           dub_neg_sub_ptree_fit (g n) E (lor_ind (non_target A) S_D))
 
-| cut_ca C A d1 d2 alpha1 alpha2 P1 P2, _ =>
+| cut_ca C0 A d1 d2 alpha1 alpha2 P1 P2, _ =>
     cut_ca
-      (dub_neg_sub_formula C E S)
+      (dub_neg_sub_formula C0 E S)
       A d1 d2 alpha1 alpha2
       (dub_neg_sub_ptree_fit P1 E (lor_ind S (non_target A)))
       P2
@@ -6188,9 +6207,9 @@ match P, S with
       P1
       (dub_neg_sub_ptree_fit P2 E (lor_ind (0) S))
 
-| cut_cad C A D d1 d2 alpha1 alpha2 P1 P2, lor_ind S_C S_D =>
+| cut_cad C0 A D d1 d2 alpha1 alpha2 P1 P2, lor_ind S_C S_D =>
     cut_cad
-      (dub_neg_sub_formula C E S_C)
+      (dub_neg_sub_formula C0 E S_C)
       A (dub_neg_sub_formula D E S_D) d1 d2 alpha1 alpha2
       (dub_neg_sub_ptree_fit P1 E (lor_ind S_C (non_target A)))
       (dub_neg_sub_ptree_fit P2 E (lor_ind (0) S_D))
@@ -6943,9 +6962,9 @@ match P, S with
       d alpha
       (demorgan1_sub_ptree_fit P' E F (lor_ind S_A S_B))
 
-| exchange_cab C A B d alpha P', lor_ind (lor_ind S_C S_B) S_A =>
+| exchange_cab C0 A B d alpha P', lor_ind (lor_ind S_C S_B) S_A =>
     exchange_cab
-      (demorgan1_sub_formula C E F S_C)
+      (demorgan1_sub_formula C0 E F S_C)
       (demorgan1_sub_formula A E F S_A)
       (demorgan1_sub_formula B E F S_B)
       d alpha
@@ -6959,9 +6978,9 @@ match P, S with
       d alpha
       (demorgan1_sub_ptree_fit P' E F (lor_ind (lor_ind S_A S_B) S_D))
 
-| exchange_cabd C A B D d alpha P', lor_ind (lor_ind (lor_ind S_C S_B) S_A) S_D =>
+| exchange_cabd C0 A B D d alpha P', lor_ind (lor_ind (lor_ind S_C S_B) S_A) S_D =>
     exchange_cabd
-      (demorgan1_sub_formula C E F S_C)
+      (demorgan1_sub_formula C0 E F S_C)
       (demorgan1_sub_formula A E F S_A)
       (demorgan1_sub_formula B E F S_B)
       (demorgan1_sub_formula D E F S_D)
@@ -7052,9 +7071,9 @@ match P, S with
       (fun (n : nat) =>
           demorgan1_sub_ptree_fit (g n) E F (lor_ind (non_target A) S_D))
 
-| cut_ca C A d1 d2 alpha1 alpha2 P1 P2, _ =>
+| cut_ca C0 A d1 d2 alpha1 alpha2 P1 P2, _ =>
     cut_ca
-      (demorgan1_sub_formula C E F S)
+      (demorgan1_sub_formula C0 E F S)
       A d1 d2 alpha1 alpha2
       (demorgan1_sub_ptree_fit P1 E F (lor_ind S (non_target A)))
       P2
@@ -7067,9 +7086,9 @@ match P, S with
       P1
       (demorgan1_sub_ptree_fit P2 E F (lor_ind (0) S))
 
-| cut_cad C A D d1 d2 alpha1 alpha2 P1 P2, lor_ind S_C S_D =>
+| cut_cad C0 A D d1 d2 alpha1 alpha2 P1 P2, lor_ind S_C S_D =>
     cut_cad
-      (demorgan1_sub_formula C E F S_C)
+      (demorgan1_sub_formula C0 E F S_C)
       A
       (demorgan1_sub_formula D E F S_D)
       d1 d2 alpha1 alpha2
@@ -7810,9 +7829,9 @@ match P, S with
       d alpha
       (demorgan2_sub_ptree_fit P' E F (lor_ind S_A S_B))
 
-| exchange_cab C A B d alpha P', lor_ind (lor_ind S_C S_B) S_A =>
+| exchange_cab C0 A B d alpha P', lor_ind (lor_ind S_C S_B) S_A =>
     exchange_cab
-      (demorgan2_sub_formula C E F S_C)
+      (demorgan2_sub_formula C0 E F S_C)
       (demorgan2_sub_formula A E F S_A)
       (demorgan2_sub_formula B E F S_B)
       d alpha
@@ -7826,9 +7845,9 @@ match P, S with
       d alpha
       (demorgan2_sub_ptree_fit P' E F (lor_ind (lor_ind S_A S_B) S_D))
 
-| exchange_cabd C A B D d alpha P', lor_ind (lor_ind (lor_ind S_C S_B) S_A) S_D =>
+| exchange_cabd C0 A B D d alpha P', lor_ind (lor_ind (lor_ind S_C S_B) S_A) S_D =>
     exchange_cabd
-      (demorgan2_sub_formula C E F S_C)
+      (demorgan2_sub_formula C0 E F S_C)
       (demorgan2_sub_formula A E F S_A)
       (demorgan2_sub_formula B E F S_B)
       (demorgan2_sub_formula D E F S_D)
@@ -7919,9 +7938,9 @@ match P, S with
       (fun (n : nat) =>
           demorgan2_sub_ptree_fit (g n) E F (lor_ind (non_target A) S_D))
 
-| cut_ca C A d1 d2 alpha1 alpha2 P1 P2, _ =>
+| cut_ca C0 A d1 d2 alpha1 alpha2 P1 P2, _ =>
     cut_ca
-      (demorgan2_sub_formula C E F S)
+      (demorgan2_sub_formula C0 E F S)
       A d1 d2 alpha1 alpha2
       (demorgan2_sub_ptree_fit P1 E F (lor_ind S (non_target A)))
       P2
@@ -7934,9 +7953,9 @@ match P, S with
       P1
       (demorgan2_sub_ptree_fit P2 E F (lor_ind (0) S))
 
-| cut_cad C A D d1 d2 alpha1 alpha2 P1 P2, lor_ind S_C S_D =>
+| cut_cad C0 A D d1 d2 alpha1 alpha2 P1 P2, lor_ind S_C S_D =>
     cut_cad
-      (demorgan2_sub_formula C E F S_C)
+      (demorgan2_sub_formula C0 E F S_C)
       A
       (demorgan2_sub_formula D E F S_D)
       d1 d2 alpha1 alpha2
@@ -8659,9 +8678,9 @@ match P, S with
       d alpha
       (w_rule_sub_ptree_fit P' E n m (lor_ind S_A S_B))
 
-| exchange_cab C A B d alpha P', lor_ind (lor_ind S_C S_B) S_A =>
+| exchange_cab C0 A B d alpha P', lor_ind (lor_ind S_C S_B) S_A =>
     exchange_cab
-      (w_rule_sub_formula C E n m S_C)
+      (w_rule_sub_formula C0 E n m S_C)
       (w_rule_sub_formula A E n m S_A)
       (w_rule_sub_formula B E n m S_B)
       d alpha
@@ -8675,9 +8694,9 @@ match P, S with
       d alpha
       (w_rule_sub_ptree_fit P' E n m (lor_ind (lor_ind S_A S_B) S_D))
 
-| exchange_cabd C A B D d alpha P', lor_ind (lor_ind (lor_ind S_C S_B) S_A) S_D =>
+| exchange_cabd C0 A B D d alpha P', lor_ind (lor_ind (lor_ind S_C S_B) S_A) S_D =>
     exchange_cabd
-      (w_rule_sub_formula C E n m S_C)
+      (w_rule_sub_formula C0 E n m S_C)
       (w_rule_sub_formula A E n m S_A)
       (w_rule_sub_formula B E n m S_B)
       (w_rule_sub_formula D E n m S_D)
@@ -8757,9 +8776,9 @@ match P, S with
             w_rule_sub_ptree_fit (g p) E n m (lor_ind (non_target A) S_D))
     end)
 
-| cut_ca C A d1 d2 alpha1 alpha2 P1 P2, _ =>
+| cut_ca C0 A d1 d2 alpha1 alpha2 P1 P2, _ =>
     cut_ca
-      (w_rule_sub_formula C E n m S)
+      (w_rule_sub_formula C0 E n m S)
       A d1 d2 alpha1 alpha2
       (w_rule_sub_ptree_fit P1 E n m (lor_ind S (non_target A)))
       P2
@@ -8772,9 +8791,9 @@ match P, S with
       P1
       (w_rule_sub_ptree_fit P2 E n m (lor_ind (0) S))
 
-| cut_cad C A D d1 d2 alpha1 alpha2 P1 P2, lor_ind S_C S_D =>
+| cut_cad C0 A D d1 d2 alpha1 alpha2 P1 P2, lor_ind S_C S_D =>
     cut_cad
-      (w_rule_sub_formula C E n m S_C)
+      (w_rule_sub_formula C0 E n m S_C)
       A
       (w_rule_sub_formula D E n m S_D)
       d1 d2 alpha1 alpha2
@@ -9758,9 +9777,9 @@ match P, S with
       d alpha
       (formula_sub_ptree_fit P' E F (lor_ind S_A S_B))
 
-| exchange_cab C A B d alpha P', lor_ind (lor_ind S_C S_B) S_A =>
+| exchange_cab C0 A B d alpha P', lor_ind (lor_ind S_C S_B) S_A =>
     exchange_cab
-      (formula_sub_ind_fit C E F S_C)
+      (formula_sub_ind_fit C0 E F S_C)
       (formula_sub_ind_fit A E F S_A)
       (formula_sub_ind_fit B E F S_B)
       d alpha
@@ -9774,9 +9793,9 @@ match P, S with
       d alpha
       (formula_sub_ptree_fit P' E F (lor_ind (lor_ind S_A S_B) S_D))
 
-| exchange_cabd C A B D d alpha P', lor_ind (lor_ind (lor_ind S_C S_B) S_A) S_D =>
+| exchange_cabd C0 A B D d alpha P', lor_ind (lor_ind (lor_ind S_C S_B) S_A) S_D =>
     exchange_cabd
-      (formula_sub_ind_fit C E F S_C)
+      (formula_sub_ind_fit C0 E F S_C)
       (formula_sub_ind_fit A E F S_A)
       (formula_sub_ind_fit B E F S_B)
       (formula_sub_ind_fit D E F S_D)
@@ -9841,9 +9860,9 @@ match P, S with
       (fun (n : nat) =>
           formula_sub_ptree_fit (g n) E F (lor_ind (non_target A) S_D))
 
-| cut_ca C A d1 d2 alpha1 alpha2 P1 P2, _ =>
+| cut_ca C0 A d1 d2 alpha1 alpha2 P1 P2, _ =>
     cut_ca
-      (formula_sub_ind_fit C E F S)
+      (formula_sub_ind_fit C0 E F S)
       A d1 d2 alpha1 alpha2
       (formula_sub_ptree_fit P1 E F (lor_ind S (non_target A)))
       P2
@@ -9856,9 +9875,9 @@ match P, S with
       P1
       (formula_sub_ptree_fit P2 E F (lor_ind (0) S))
 
-| cut_cad C A D d1 d2 alpha1 alpha2 P1 P2, lor_ind S_C S_D =>
+| cut_cad C0 A D d1 d2 alpha1 alpha2 P1 P2, lor_ind S_C S_D =>
     cut_cad
-      (formula_sub_ind_fit C E F S_C)
+      (formula_sub_ind_fit C0 E F S_C)
       A
       (formula_sub_ind_fit D E F S_D)
       d1 d2 alpha1 alpha2
@@ -9913,7 +9932,7 @@ Lemma formula_sub_ind_fit_closed : forall (A B C : formula),
     subst_ind_fit A S = true ->
     closed (formula_sub_ind_fit A B C S) = true.
 Proof.
-intros. destruct (closed (formula_sub_ind A B C S)) eqn:HC.
+intros. destruct (closed (formula_sub_ind A B C0 S)) eqn:HC.
 - rewrite sub_fit_true in HC; auto.
 - rewrite formula_sub_ind_closed in HC; auto. inversion HC.
 Qed.
@@ -11976,14 +11995,14 @@ end.
 (* *)
 Fixpoint cut_elimination_atom (P : ptree) : ptree :=
 match P with
-| cut_ca C (atom a) d1 d2 alpha1 alpha2 P1 P2 =>
+| cut_ca C0 (atom a) d1 d2 alpha1 alpha2 P1 P2 =>
   (match PA_omega_axiom (atom a) with
   | true =>
-      formula_sub_ptree P2 (neg (atom a)) C (1)
+      formula_sub_ptree P2 (neg (atom a)) C0 (1)
   | false =>
       contraction_a
-        C d1 alpha1
-        (formula_sub_ptree P1 (atom a) C (lor_ind (non_target C) (1)))
+        C0 d1 alpha1
+        (formula_sub_ptree P1 (atom a) C0 (lor_ind (non_target C0) (1)))
   end)
 
 | cut_ad (atom a) D d1 d2 alpha1 alpha2 P1 P2 =>
@@ -11996,21 +12015,21 @@ match P with
       formula_sub_ptree P1 (atom a) D (1)
   end)
 
-| cut_cad C (atom a) D d1 d2 alpha1 alpha2 P1 P2 =>
+| cut_cad C0 (atom a) D d1 d2 alpha1 alpha2 P1 P2 =>
   (match PA_omega_axiom (atom a) with
   | true =>
-      weakening_ad C D d2 alpha2
+      weakening_ad C0 D d2 alpha2
         (contraction_a
           D d2 alpha2
           (formula_sub_ptree P2 (neg (atom a)) D (lor_ind (1) (non_target D))))
   | false =>
       exchange_ab
-        D C d1 (ord_succ alpha1)
+        D C0 d1 (ord_succ alpha1)
         (weakening_ad
-          D C d1 alpha1
+          D C0 d1 alpha1
           (contraction_a
-            C d1 alpha1
-            (formula_sub_ptree P1 (atom a) C (lor_ind (non_target C) (1)))))
+            C0 d1 alpha1
+            (formula_sub_ptree P1 (atom a) C0 (lor_ind (non_target C0) (1)))))
   end)
 | deg_up d P' => cut_elimination_atom P'
 | ord_up alpha P' => cut_elimination_atom P'
@@ -12022,11 +12041,11 @@ end.
 (* *)
 Fixpoint cut_elimination_neg (P : ptree) : ptree :=
 match P with
-| cut_ca C (neg E) d1 d2 alpha1 alpha2 P1 P2 =>
+| cut_ca C0 (neg E) d1 d2 alpha1 alpha2 P1 P2 =>
     cut_ad
-      E C d2 d1 alpha2 alpha1
+      E C0 d2 d1 alpha2 alpha1
       (dub_neg_sub_ptree P2 E (1))
-      (exchange_ab C (neg E) d1 alpha1 P1)
+      (exchange_ab C0 (neg E) d1 alpha1 P1)
 
 | cut_ad (neg E) D d1 d2 alpha1 alpha2 P1 P2 =>
     cut_ca
@@ -12036,25 +12055,25 @@ match P with
         (dub_neg_sub_ptree P2 E (lor_ind (1) (non_target D))))
       P1
 
-| cut_cad C (neg E) D d1 d2 alpha1 alpha2 P1 P2 =>
+| cut_cad C0 (neg E) D d1 d2 alpha1 alpha2 P1 P2 =>
   (match (eq_nat (max (max d2 d1) (S (num_conn E))) (S (num_conn E))) with
     | true =>  exchange_ab
-                D C (ptree_deg P) (ptree_ord P)
+                D C0 (ptree_deg P) (ptree_ord P)
                 (deg_up (max (max d1 d2) (S (S (num_conn E))))
                   (cut_cad
-                    D E C d2 d1 alpha2 alpha1
+                    D E C0 d2 d1 alpha2 alpha1
                     (exchange_ab
                     E D d2 alpha2
                       (dub_neg_sub_ptree P2 E (lor_ind (1) (non_target D))))
-                        (exchange_ab C (neg E) d1 alpha1 P1)))
+                        (exchange_ab C0 (neg E) d1 alpha1 P1)))
     | false => exchange_ab
-                D C (ptree_deg P) (ptree_ord P)
+                D C0 (ptree_deg P) (ptree_ord P)
                 (cut_cad
-                  D E C d2 d1 alpha2 alpha1
+                  D E C0 d2 d1 alpha2 alpha1
                   (exchange_ab
                     E D d2 alpha2
                     (dub_neg_sub_ptree P2 E (lor_ind (1) (non_target D))))
-                      (exchange_ab C (neg E) d1 alpha1 P1))
+                      (exchange_ab C0 (neg E) d1 alpha1 P1))
   end)
 | deg_up d P' => cut_elimination_neg P'
 | ord_up alpha P' => cut_elimination_neg P'
@@ -12066,24 +12085,24 @@ end.
 (* *)
 Definition associativity_1' (P : ptree) : ptree :=
 match ptree_formula P, ptree_deg P, ptree_ord P with
-| lor (lor C A) B, d, alpha =>
+| lor (lor C0 A) B, d, alpha =>
     exchange_ab
-      (lor A B) C d alpha
+      (lor A B) C0 d alpha
       (exchange_cab
-        A C B d alpha
-        (exchange_abd C A B d alpha P))
+        A C0 B d alpha
+        (exchange_abd C0 A B d alpha P))
 
 | _, _, _ => P
 end.
 
 Definition associativity_2' (P : ptree) : ptree :=
 match ptree_formula P, ptree_deg P, ptree_ord P with
-| lor C (lor A B), d, alpha =>
+| lor C0 (lor A B), d, alpha =>
     exchange_abd
-      A C B d alpha
+      A C0 B d alpha
       (exchange_cab
-        A B C d alpha
-        (exchange_ab C (lor A B) d alpha P))
+        A B C0 d alpha
+        (exchange_ab C0 (lor A B) d alpha P))
 
 | _, _, _ => P
 end.
@@ -12104,16 +12123,16 @@ Qed.
 
 Definition contraction_help (P : ptree) : ptree :=
 match ptree_formula P, ptree_deg P, ptree_ord P with
-| lor (lor C D) E, d, alpha =>
+| lor (lor C0 D) E, d, alpha =>
     (match eq_f D E with
     | true =>
         exchange_ab
-          D C d alpha
+          D C0 d alpha
           (contraction_ad
-            D C d alpha
+            D C0 d alpha
             (exchange_cab
-              D C D d alpha
-              (exchange_abd C D D d alpha P)))
+              D C0 D d alpha
+              (exchange_abd C0 D D d alpha P)))
 
     | false => P
     end)
@@ -12123,14 +12142,14 @@ end.
 
 Fixpoint cut_elimination_lor (P : ptree) : ptree :=
 match P with
-| cut_ca C (lor E F) d1 d2 alpha1 alpha2 P1 P2 =>
+| cut_ca C0 (lor E F) d1 d2 alpha1 alpha2 P1 P2 =>
     cut_ca
-      C E
+      C0 E
       (max (max d1 d2) (num_conn F))
       d2
       (ord_succ (ord_max alpha1 alpha2))
       alpha2
-      (cut_ca (lor C E) F d1 d2 alpha1 alpha2
+      (cut_ca (lor C0 E) F d1 d2 alpha1 alpha2
         (associativity_2' P1)
         (demorgan2_sub_ptree P2 E F (1)))
       (demorgan1_sub_ptree P2 E F (1))
@@ -12155,19 +12174,19 @@ match P with
             (demorgan2_sub_ptree P2 E F (lor_ind (1) (non_target D)))))
         (demorgan1_sub_ptree P2 E F (lor_ind (1) (non_target D))))
 
-| cut_cad C (lor E F) D d1 d2 alpha1 alpha2 P1 P2 =>
+| cut_cad C0 (lor E F) D d1 d2 alpha1 alpha2 P1 P2 =>
     contraction_help
       (cut_cad
-        (lor C D) E D
+        (lor C0 D) E D
         (max (max d1 d2) (S (num_conn F)))
         d2
         (ord_succ (ord_max alpha1 alpha2))
         alpha2
         (exchange_cab
-          C E D
+          C0 E D
           (max (max d1 d2) (S (num_conn F)))
           (ord_succ (ord_max alpha1 alpha2))
-          (cut_cad (lor C E) F D d1 d2 alpha1 alpha2
+          (cut_cad (lor C0 E) F D d1 d2 alpha1 alpha2
             (associativity_2' P1)
             (demorgan2_sub_ptree P2 E F (lor_ind (1) (non_target D)))))
         (demorgan1_sub_ptree P2 E F (lor_ind (1) (non_target D))))
@@ -12248,7 +12267,7 @@ match ptree_ord P with
 | Zero => cut_elimination_0 P
 | cons a n b =>
   (match P with
-  | cut_cad C A D d1 d2 alpha1 alpha2 P1 P2 =>
+  | cut_cad C0 A D d1 d2 alpha1 alpha2 P1 P2 =>
     (match A with
     | atom a => cut_elimination_atom P
     | neg E => cut_elimination_neg P
@@ -12263,11 +12282,11 @@ end.
 
 Fixpoint cut_last (P : ptree) : bool := 
 match P with
-| cut_ca C A d1 d2 alpha1 alpha2 P1 P2 => true
+| cut_ca C0 A d1 d2 alpha1 alpha2 P1 P2 => true
 
 | cut_ad A D d1 d2 alpha1 alpha2 P1 P2 => true
 
-| cut_cad C A D d1 d2 alpha1 alpha2 P1 P2 => true
+| cut_cad C0 A D d1 d2 alpha1 alpha2 P1 P2 => true
 
 | _ => false
 end.
@@ -12659,11 +12678,6 @@ intros beta. induction beta.
 Qed.
 
 
-Theorem acc_dumb: forall alpha, nf alpha -> Acc true_lt alpha -> forall beta, nf beta -> ord_lt beta alpha -> Acc true_lt beta.
-Proof.
-intros. apply H0. apply true_ltb_lt. unfold true_ltb. rewrite (nf_norm_fix _ H1). rewrite (nf_norm_fix _ H). apply ord_lt_ltb in H2. rewrite H2. auto.
-Qed.
-
 (*
 Theorem acc_ord_nat: forall n, Acc true_lt (cons Zero n Zero).
 Proof.
@@ -12932,24 +12946,7 @@ Proof.
 intros. inversion H. auto. inversion H3.
 Qed.
 
-Lemma ord_lt_nat_is_nat : forall alpha n beta m, nf (cons alpha n beta) -> ord_lt (cons alpha n beta) (cons Zero m Zero) -> n < m /\ Zero = alpha /\ Zero = beta.
-Proof.
-intros. inversion H0. inversion H2. symmetry in H5,H7. destruct H1,H3,H4,H5,H6,H7. repeat split; auto. inversion H. auto. inversion H5. inversion H2.
-Qed.
-
 Definition exp_simp (alpha : ord) : Prop := ord_lt Zero alpha -> ord_2_exp (ord_succ alpha) = ord_mult (ord_2_exp alpha) (ord_2_exp alpha).
-
-
-Lemma ord_2_exp_succ_mult : forall alpha, nf alpha -> ord_lt Zero alpha -> ord_2_exp (ord_succ alpha) = ord_mult (ord_2_exp alpha) (ord_2_exp alpha).
-intros alpha H. apply (transfinite_induction exp_simp); auto.
-intros.
-unfold exp_simp in *. intros. destruct x. inversion H2. unfold ord_succ. fold ord_succ. destruct x1.
-- inversion H0. simpl. unfold nat_ord. case (2 ^ n + (2 ^ n + 0) + (2 ^ n + (2 ^ n + 0) + 0)) eqn:X. admit. case (2 ^ n + (2 ^ n + 0)) eqn:X1. admit.
-  unfold ord_mult. inversion X. apply ord_eq_split; auto. 
- admit. inversion H6.
--
-admit.
-Qed.
 
 Lemma ord_2_exp_monot_well : forall alpha, nf alpha -> forall beta, ord_lt alpha beta -> nf alpha -> nf beta -> ord_lt (ord_2_exp alpha) (ord_2_exp beta).
 Proof.
@@ -12973,18 +12970,6 @@ destruct beta. inversion H1. destruct beta1.
                       { simpl. }
                       { simpl. }
 
-                    inversion H6.
-                  { destruct H5,H11. inversion H2;inversion H13. destruct H11,H13,H14. simpl. apply nat_lt_omega. apply zero_lt. }
-                  { inversion H10. }
-                  { symmetry in H5,H12. destruct H5,H9,H11,H12. 
-                    admit. }
-                  { inversion H10. }
-              **  inversion H6.
-              **  inversion H6.
-          ++ simpl. admit.
-      -- simpl. admit.
-    * simpl. admit.
-  + simpl. admit.
 Admitted.
 
 Lemma cut_elim_aux0 : forall (alpha : ord), nf alpha -> forall (P : ptree) (A : formula) (d : nat),
@@ -12997,8 +12982,10 @@ intros alpha. apply (transfinite_induction comp').
     assert (P_proves P A (S d) (ptree_ord P)). { unfold P_proves. repeat split; simpl; auto. } destruct (X (ptree_ord P) (ptree_ord_nf _ H2) H1 P A d X0) as [P1 [[[HP1 HP2] HP3] HP4]].
     exists (ord_up (ord_2_exp o) P1). unfold P_proves. repeat split; simpl; auto. rewrite HP4. 
      admit. apply nf_2_exp. auto.
-  + admit.
-  + admit.
+  + intros. destruct X0 as [[[X1 X2] X3] X4]. simpl in X1,X3,X4. destruct X4. destruct d. exists (ord_up (ord_2_exp Zero) (node f)). unfold P_proves. repeat split; simpl; auto. apply zero_lt. apply single_nf. apply zero_nf.
+    exists (ord_up (ord_2_exp Zero) (deg_up (S d) (node f))). unfold P_proves. repeat split; simpl; auto. apply zero_lt. lia. apply single_nf. apply zero_nf.
+  + intros. destruct X0 as [[[X1 X2] X3] X4]. simpl in X1,X3,X4. destruct X4. destruct X2 as [[[H1 H2] H3] h4]. unfold comp' in X.
+    assert (P_proves P (lor f f0) (S d) o). { unfold P_proves. repeat split; simpl; auto. lia. } pose (IHP _ _ X0). destruct p as [P1 [[[HP1 HP2] HP3] HP4]]. exists (exchange_ab f f0 (ptree_deg P1) (ptree_ord P1) P1). repeat split; simpl; auto.    
   + admit.
   + admit.
   + admit.
