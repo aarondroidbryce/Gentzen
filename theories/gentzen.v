@@ -1532,11 +1532,31 @@ match alpha with
             end
         | _ => cons a n b
         end
-    | cons Zero 0 Zero => cons a n Zero
-    | cons Zero (S p) Zero => cons a n (cons Zero p Zero)
     | _ => cons a n (ord_pred b)
     end
 end.
+
+Fixpoint ord_pred_old (alpha : ord) : ord :=
+match alpha with
+| Zero => Zero
+| cons a n b => match b with
+    | Zero => match a with
+        | Zero => match n with
+            | 0 => Zero
+            | S p => cons Zero p Zero
+            end
+        | _ => cons a n b
+        end
+    | cons Zero 0 Zero => cons a n Zero
+    | cons Zero (S p) Zero => cons a n (cons Zero p Zero)
+    | _ => cons a n (ord_pred_old b)
+    end
+end.
+
+Lemma ord_pred_equiv : forall alpha, ord_pred alpha = ord_pred_old alpha.
+Proof.
+intros. induction alpha. auto. unfold ord_pred. fold ord_pred. unfold ord_pred_old. fold ord_pred_old. destruct alpha2. auto. rewrite IHalpha2. destruct alpha2_1. destruct alpha2_2. destruct n0; auto. destruct n0; auto. auto.
+Qed.
 
 Lemma ord_pred_succ : forall alpha, nf alpha -> ord_pred (ord_succ alpha) = alpha.
 Proof.
@@ -1544,15 +1564,9 @@ intros. induction alpha.
 - auto.
 - destruct alpha1.
   + inversion H. destruct H2,H3. auto. inversion H3.
-  + pose (IHalpha1 (nf_hered_first _ _ _ H)). pose (IHalpha2 (nf_hered_third _ _ _ H)). unfold ord_succ. fold ord_succ. unfold ord_pred. fold ord_pred. case (ord_succ alpha2) eqn:X.
-    * unfold ord_pred in e0. rewrite e0. auto.
-    * destruct o1.
-      { destruct n1; destruct o2.
-        { unfold ord_pred in e0. rewrite e0. auto. }
-        { rewrite e0. auto. }
-        { unfold ord_pred in e0. rewrite e0. auto. }
-        { rewrite e0. auto. } }
-      { rewrite e0. auto. }
+  + pose (IHalpha2 (nf_hered_third _ _ _ H)). unfold ord_succ. fold ord_succ. unfold ord_pred. fold ord_pred. case (ord_succ alpha2) eqn:X.
+    * unfold ord_pred in e. rewrite e. auto.
+    * rewrite e. auto.
 Qed.
 
 Lemma ord_succ_pred_if_succ : forall alpha, nf alpha -> is_succ alpha = true -> ord_succ (ord_pred alpha) = alpha.
@@ -1561,9 +1575,7 @@ intros. induction alpha. inversion H0. unfold ord_pred. fold ord_pred. destruct 
 - destruct alpha1.
   + destruct n; auto.
   + inversion H0.
-- destruct alpha2_1.
-  + inversion H. inversion H8. symmetry in H3,H9. destruct H1,H2,H3,H5,H6,H9,H11,H12. destruct n2; destruct a; inversion H4; auto. inversion H12.
-  + unfold ord_succ. fold ord_succ. destruct alpha1. inversion H. inversion H4. pose (IHalpha2 (nf_hered_third _ _ _ H)). rewrite e. auto. simpl in H0. destruct alpha2_2. inversion H0. auto.
+- unfold ord_succ. fold ord_succ. destruct alpha1. inversion H. inversion H4. pose (IHalpha2 (nf_hered_third _ _ _ H)). rewrite e. auto. simpl in H0. destruct alpha2_2. destruct alpha2_1. auto. inversion H0. auto.
 Qed.
 
 Lemma ord_mult_omega_not_succ : forall alpha, nf alpha -> is_succ (ord_mult (cons (cons Zero 0 Zero) 0 Zero) alpha) = false.
@@ -2790,84 +2802,96 @@ intros. induction alpha.
   + simpl. rewrite (IHalpha2 (nf_hered_third _ _ _ H)). auto.
 Qed.
 
-Lemma ord_not_succ_is_mul : forall alpha, nf alpha -> is_succ alpha = false -> { beta : ord & alpha = ord_mult beta (cons (cons Zero 0 Zero) 0 Zero)}.
+Lemma is_succ_mult_rule : forall alpha beta, nf alpha -> nf beta -> is_succ (ord_mult alpha beta) = is_succ alpha && is_succ beta.
+Proof.
+intros. induction beta. rewrite ord_mult_zero_right. case (is_succ alpha); auto. destruct alpha. auto. destruct beta1.
+- destruct alpha2.
+  + destruct alpha1.
+    * inversion H0. auto. inversion H4.
+    * auto.
+  +  simpl. inversion H0; inversion H4. destruct alpha2_2.
+    * destruct alpha2_1. auto. auto.
+    * case (is_succ (cons alpha2_2_1 n3 alpha2_2_2)); auto.
+- rewrite nf_mult_eval. destruct alpha1.
+  + unfold ord_add. unfold is_succ. fold is_succ. rewrite IHbeta2. destruct beta2.
+    * rewrite ord_mult_zero_right. destruct alpha2. auto. case (is_succ (cons alpha2_1 n2 alpha2_2)); auto.
+    * unfold ord_mult. fold ord_mult. destruct beta2_1.
+      --  inversion H. pose (nf_hered_third _ _ _ H0). inversion n4. auto. inversion H8. inversion H4.
+      --  destruct alpha2; auto.
+    * apply (nf_hered_third _ _ _ H0).
+  + unfold is_succ. fold is_succ. rewrite IHbeta2. destruct beta2.
+    * simpl. case (ord_ltb alpha1_1 beta1_1).
+      --  destruct alpha2. auto. case (is_succ (cons alpha2_1 n3 alpha2_2)); auto.
+      --  case (ord_eqb alpha1_1 beta1_1); destruct alpha2; try case (is_succ (cons alpha2_1 n3 alpha2_2)); auto.
+    * unfold ord_mult. fold ord_mult. destruct beta2_1.
+    --  inversion H. pose (nf_hered_third _ _ _ H0). inversion n5. auto. inversion H8. simpl. destruct b; destruct a'; auto.
+    --  destruct alpha2; auto.
+    * apply (nf_hered_third _ _ _ H0).
+  + apply zero_lt.
+Qed.
+
+Lemma exp_2_not_succ : forall alpha, nf alpha -> ord_ltb alpha (cons (cons Zero 0 Zero) 0 Zero) = false -> is_succ (ord_2_exp alpha) = false.
+Proof.
+intros. induction alpha. inversion H0. destruct alpha1. inversion H0. destruct alpha1_1.
+- inversion H0. destruct n0.
+  + rewrite lt_nat_irrefl in *. rewrite eq_nat_refl in *. destruct alpha1_2.
+    * rewrite ord_ltb_irrefl in *. rewrite ord_eqb_refl in *. destruct n.
+      --  rewrite lt_nat_irrefl in *. destruct alpha2. auto. simpl. rewrite ord_mult_omega_not_succ. auto. apply nf_2_exp. apply (nf_hered_third _ _ _ H).
+      --  simpl in *. apply is_succ_mult_rule. apply single_nf. apply single_nf. apply zero_nf. apply nf_2_exp. apply (nf_hered_third _ _ _ H).
+    * simpl in *. apply is_succ_mult_rule. apply single_nf. apply single_nf. apply zero_nf. apply nf_2_exp. apply (nf_hered_third _ _ _ H).
+  + simpl in *. apply is_succ_mult_rule. apply single_nf. apply single_nf. apply single_nf. apply zero_nf. apply nf_2_exp. apply (nf_hered_third _ _ _ H).
+- simpl in *. apply is_succ_mult_rule. apply single_nf. apply single_nf. apply (nf_hered_first _ _ _ H). apply nf_2_exp. apply (nf_hered_third _ _ _ H). 
+Qed.
+
+Lemma ord_not_succ_is_mul : forall alpha, nf alpha -> is_succ alpha = false -> { beta : ord & alpha = ord_mult (cons (cons Zero 0 Zero) 0 Zero) beta}.
 Proof.
 intros. induction alpha. exists Zero. auto. unfold is_succ in H0. fold is_succ in H0. destruct alpha2.
-- destruct alpha1. inversion H0. case (is_succ (cons alpha1_1 n0 alpha1_2)) eqn:X.
-  + exists (cons (ord_pred (cons alpha1_1 n0 alpha1_2)) n Zero). rewrite nf_mult_eval. rewrite ord_mult_zero_right. rewrite ord_add_one_succ. rewrite ord_succ_pred_if_succ. admit.
-- destruct (IHalpha2 (nf_hered_third _ _ _ H) H0) as [beta HB]. exists beta.
-
-Admitted.
-
+- destruct alpha1. inversion H0. destruct alpha1_1.
+  + exists (cons (ord_pred (cons Zero n0 alpha1_2)) n Zero). inversion H. inversion H2; inversion H7. destruct n0.
+    * simpl. rewrite plus_n_0. rewrite minus_n_0. auto.
+    * rewrite nf_mult_eval. rewrite ord_mult_zero_right. simpl. rewrite plus_n_1. auto. simpl. apply zero_lt.
+  + exists (cons (cons (cons alpha1_1_1 n1 alpha1_1_2) n0 alpha1_2) n Zero). rewrite nf_mult_eval. auto. apply zero_lt.
+- destruct (IHalpha2 (nf_hered_third _ _ _ H) H0) as [beta HB]. rewrite HB. destruct alpha1.
+  + exists Zero. inversion H. inversion H4.
+  + destruct alpha1_1.
+    * destruct n1.
+      --  exists Zero. inversion H. inversion H7; inversion H12. destruct H13. inversion H4; inversion H15. destruct H13. inversion H8. destruct H20. simpl in H0. inversion H0. inversion H20.
+      --  exists (cons (ord_pred (cons Zero (S n1) alpha1_2)) n beta). inversion H. inversion H7;inversion H12. rewrite nf_mult_eval. simpl. rewrite plus_n_1. auto. simpl. apply zero_lt.
+    * exists (cons (cons (cons alpha1_1_1 n2 alpha1_1_2) n1 alpha1_2) n beta). rewrite nf_mult_eval. auto. apply zero_lt.
+Qed.
 
 Lemma ord_2_exp_monot : forall alpha beta, alpha < beta -> nf alpha -> nf beta -> ord_2_exp alpha < ord_2_exp beta.
 Proof.
-intros. induction alpha.
-- simpl. destruct beta. inversion H. destruct beta1. 
+intros alpha. induction alpha.
+- intros. simpl. destruct beta. inversion H. destruct beta1. 
   + simpl. case (2 ^ n + (2 ^ n + 0)) eqn:X.
     * rewrite plus_n_0 in X. pose (exp_succ n). lia.
     * rewrite plus_n_0 in X. destruct n0. assert (2^n + 2^n <> 1). { induction n. simpl. lia. simpl. pose (IHn (zero_lt _ _ _)). lia. } contradiction. simpl. apply coeff_lt. lia.
   + destruct beta1_1.
     * inversion H1.
-      -- destruct H4. inversion H3. destruct n1.
+      -- destruct H4. inversion H3. destruct n0.
           ++  simpl. apply head_lt. apply zero_lt.
           ++  simpl. apply head_lt. apply zero_lt.
           ++ inversion H8.
-      -- inversion H6. destruct H10,H11. destruct n.
+      -- inversion H6. destruct H10,H11. destruct n2.
           ++  simpl. refine (ord_mult_exp_monot _ _ _ _ _). auto. apply head_lt. apply zero_lt.
           ++  simpl. refine (ord_mult_exp_monot _ _ _ _ _). auto. apply head_lt. apply zero_lt.
           ++ inversion H11.
     * simpl. refine (ord_mult_exp_monot _ _ _ _ _). apply (nf_hered_third _ _ _ H1). apply head_lt. apply zero_lt.
-- destruct beta. inversion H. destruct alpha1.
+- intros. destruct beta. inversion H. destruct alpha1.
   + inversion H0; inversion H5. destruct H4,H5,H6. inversion H.
     * destruct beta1. inversion H5. destruct beta1_1.
-      -- destruct beta1_2.
-          ++ destruct n0.
-              **  destruct beta2.
-                  { simpl. apply nat_lt_omega. apply zero_lt. }
-                  { simpl. refine (ord_mult_exp_monot _ _ _ _ _). apply (nf_hered_third _ _ _ H1). apply nat_lt_omega. apply zero_lt. }
-              ** simpl. refine (ord_mult_exp_monot _ _ _ _ _). apply (nf_hered_third _ _ _ H1). apply nat_lt_omega. apply zero_lt.
-          ++ simpl. refine (ord_mult_exp_monot _ _ _ _ _). apply (nf_hered_third _ _ _ H1). apply nat_lt_omega. apply zero_lt.
-      -- simpl. refine (ord_mult_exp_monot _ _ _ _ _). apply (nf_hered_third _ _ _ H1). apply nat_lt_omega. apply zero_lt.
-    * destruct H6,H8,H9,H10. inversion H1;inversion H10. destruct H9,H10,H11. simpl. rewrite plus_n_0. rewrite plus_n_0. apply nat_ord_lt. pose (nat_2_exp_monot _ _ H5). lia.
-    * destruct H6,H8,H9,H10. inversion H1;inversion H10. destruct H9,H10,H11. inversion H5.
-  + inversion H.
-    * symmetry in H2. destruct H2,H4,H5,H6,H7,H8. destruct alpha1_1.
-      --  inversion H0.
-          ++  symmetry in H2. destruct H2,H5,H6. inversion H4;inversion H7. symmetry in H2. destruct H2,H6,H7,H8. destruct n.
-              **  destruct a'. { inversion H. inversion H6. } destruct a'1.
-                  { inversion H1.
-                    { symmetry in H2. destruct H2,H7,H8. inversion H6; inversion H9. symmetry in H2. destruct H2,H8,H9,H10. destruct n1; simpl; apply head_lt; auto. }
-                    { symmetry in H2. destruct H2,H6,H7. inversion H9; inversion H11. symmetry in H2. destruct H2,H7,H11,H12. destruct n1.
-                      { simpl. apply (lt_trans _ (cons (cons (cons Zero n2 Zero) 0 Zero) 0 Zero)). apply head_lt. apply head_lt. auto. apply ord_mult_monot. admit. apply nf_2_exp. auto. apply zero_lt. }
-                      { simpl. apply (lt_trans _ (cons (cons (cons Zero n2 Zero) (S n1) Zero) 0 Zero)). apply head_lt. apply head_lt. auto. apply ord_mult_monot. admit. apply nf_2_exp. auto. apply zero_lt. } } }
-                  {  simpl. refine (ord_mult_exp_monot _ _ _ _ _). apply (nf_hered_third _ _ _ H1). apply head_lt. apply head_lt. apply head_lt. apply zero_lt. }
-              **  destruct a'. inversion H3. destruct a'1.
-                  { inversion H1.
-                    { symmetry in H2. destruct H2,H7,H8. inversion H6; inversion H9. symmetry in H2. destruct H2,H8,H9,H10. destruct n2; simpl; apply head_lt; auto. }
-                    { symmetry in H2. destruct H2,H6,H7. inversion H9; inversion H11. symmetry in H2. destruct H2,H7,H11,H12. destruct n2. 
-                      { simpl. apply (lt_trans _ (cons (cons (cons Zero n3 Zero) 0 Zero) 0 Zero)). apply head_lt. apply head_lt. auto. apply ord_mult_monot. admit. apply nf_2_exp. auto. apply zero_lt. }
-                      { simpl. apply (lt_trans _ (cons (cons (cons Zero n3 Zero) (S n2) Zero) 0 Zero)). apply head_lt. apply head_lt. auto. apply ord_mult_monot. admit. apply nf_2_exp. auto. apply zero_lt. } } }
-                  { simpl. refine (ord_mult_exp_monot _ _ _ _ _). apply (nf_hered_third _ _ _ H1). apply head_lt. apply head_lt. apply head_lt. apply zero_lt. }
-          ++  inversion H7;inversion H12. symmetry in H2,H9. destruct H2,H4,H5,H9,H11,H12,H13. destruct n.
-              ** simpl. admit. 
-              ** simpl. admit.
-      --  destruct a'. inversion H3. destruct a'1. inversion H3. inversion H4. simpl. apply (lt_trans _ (ord_mult (cons (cons (cons (cons a'1_1 n3 a'1_2) n0 a'2) n' Zero) 0 Zero) (ord_2_exp b))). 
-          ++  apply mult_left_incr. apply nf_2_exp. apply (nf_hered_third _ _ _ H0). apply head_lt. auto. apply exp_geq_1. apply (nf_hered_third _ _ _ H0). apply single_nf. apply (nf_hered_first _ _ _ H1).
-          ++  apply mult_right_incr. admit. apply zero_lt. apply nf_2_exp. apply (nf_hered_third _ _ _ H1).
-    * symmetry in H2. destruct H2,H4,H5,H6,H7,H8. destruct n'. inversion H3. 
-    admit.
-    * symmetry in H2. destruct H2,H4,H5,H6,H7,H8. destruct alpha1_1.
-      --  inversion H1.
-          ++  symmetry in H2. destruct H2,H5,H6. inversion H3. 
-          ++  symmetry in H2. destruct H2,H4,H5. inversion H7; inversion H9. symmetry in H2. destruct H2,H5,H9,H10. destruct b.
-              **  destruct n.
-                  { simpl. apply ord_mult_monot. admit. apply nf_2_exp. auto. apply zero_lt. }
-                  { simpl. apply ord_mult_monot. admit. apply nf_2_exp. auto. apply zero_lt. }
-              **  destruct n.
-                  { simpl. apply mult_right_incr. admit. apply zero_lt. apply nf_2_exp. auto. }
-                  { simpl. apply mult_right_incr. admit. apply zero_lt. apply nf_2_exp. auto. }
-      --  simpl. apply mult_right_incr. admit. apply zero_lt. apply nf_2_exp. apply (nf_hered_third _ _ _ H1).
+      --  destruct n2; simpl; apply ord_mult_exp_monot; try apply (nf_hered_third _ _ _ H1); case (2 ^ n1 + (2 ^ n1 + 0)) eqn:X; pose (exp_succ n1); try lia; simpl; apply head_lt; apply zero_lt.
+      --  simpl. apply ord_mult_exp_monot; try apply (nf_hered_third _ _ _ H1); case (2 ^ n1 + (2 ^ n1 + 0)) eqn:X; pose (exp_succ n1); try lia; simpl; apply head_lt; apply zero_lt.
+    * unfold ord_2_exp. apply nat_ord_lt. apply nat_2_exp_monot. lia.
+    * destruct H8. inversion H1. destruct H13. inversion H5. inversion H13.
+  + destruct alpha1_1.
+    * destruct n1.
+      -- simpl.
+  admit.
+      -- simpl. admit.
+    * simpl. admit.
+
 
 Admitted.
 
