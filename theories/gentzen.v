@@ -402,20 +402,19 @@ intros. destruct (nat_semiconnex m n) as [H0 | [H0 | H0]].
   rewrite eq_nat_refl in H. inversion H.
 Qed.
 
-Lemma max_split1 : forall (n m : nat), eq_nat n (max n m) = false -> max n m = m.
+Lemma max_split1 : forall (n m : nat), lt_nat n m = true -> max n m = m.
 Proof.
 intros n. induction n.
 - auto.
-- intros. destruct m. rewrite eq_nat_refl in H. inversion H. simpl in H. simpl. apply eq_succ. apply IHn. auto.
+- intros. destruct m. inversion H. simpl. apply eq_succ. apply IHn. auto.
 Qed.
 
-Lemma max_split2 : forall (m n : nat), eq_nat m (max n m) = false -> max n m = n.
+Lemma max_split2 : forall (m n : nat), lt_nat m n = true -> max n m = n.
 Proof.
 intros m. induction m.
 - intros. destruct n; auto.
-- intros. destruct n. rewrite eq_nat_refl in H. inversion H. simpl in H. simpl. apply eq_succ. apply IHm. auto. 
+- intros. destruct n. inversion H. simpl. apply eq_succ. apply IHm. auto. 
 Qed.
-
 
 Lemma max_0 : forall (m n : nat), max m n = 0 -> m = 0 /\ n = 0.
 Proof. intros. lia. Qed.
@@ -12412,221 +12411,16 @@ Proof.
   + auto.
 Qed.
 
-(*
-Theorem ord_acc_last: forall (beta beta' alpha : ord) (n : nat), Acc true_lt (cons alpha n beta) -> Acc true_lt (cons alpha n beta').
-Proof.
-intros beta. induction beta.
-- intros beta'. induction beta'.
-  + intros. auto.
-  + intros. constructor; intros l [Hl1 [Hl2 Hl3]]. apply H. repeat split; auto. apply ord_ltb_lt. apply (ord_ltb_trans _ _ _ (ord_lt_ltb _ _ Hl1) (ord_lt_ltb _ _ (tail_lt _ _ _  _(zero_lt _ _ _)))).
-    destruct H.  admit.
--  
-
-
-Theorem ord_acc: forall (n n' : nat) (alpha beta : ord), Acc true_lt (cons alpha n' beta) -> Acc true_lt (cons alpha n beta).
-Proof.
-intros n. induction n.
-- intros n'. induction n'.
-  + intros. auto.
-  + intros. constructor; intros l [Hl1 [Hl2 Hl3]]. apply H. repeat split; auto. apply ord_ltb_lt. apply (ord_ltb_trans _ (cons alpha 0 beta) _ (ord_lt_ltb _ _ Hl1)). apply ord_lt_ltb. apply coeff_lt. lia. apply (nf_scalar _ _ _ _ Hl3).
-- intros. constructor; intros l [Hl1 [Hl2 Hl3]]. inversion Hl1.
-    * constructor; intros l' [Hl'1 [Hl'2 Hl'3]]. inversion Hl'1.
-    * destruct H0,H1,H3,H4. apply (IHn _ _ _ H). repeat split; auto. apply head_lt. auto. apply (nf_scalar _ _ _ _ Hl3).
-    * unfold lt in H2. inversion H2.
-      { destruct H0,H1,H4,H6. apply (IHn _ _ _ H). }
-     destruct H0,H1,H3,H4. apply (IHn _ _ _ H). repeat split; auto. apply coeff_lt. admit. apply (nf_scalar _ _ _ _ Hl3).
-    * destruct H0,H1,H3,H4. apply (IHn _ _ _ H). repeat split; auto. apply coeff_lt. auto. apply (nf_scalar _ _ _ _ Hl3).
-
-induction alpha.
-- unfold true_lt. induction n.
-  + constructor; intros l [Hl1 [Hl2 Hl3]]. inversion Hl3.
-    * destruct H2,H3. inversion Hl1.
-      { destruct H2. constructor; intros l [Hl'1 [Hl'2 Hl'3]]. inversion Hl'1. }
-      { inversion H4. }
-      { inversion H4.
-        { destruct H3. rewrite H2 in Hl2. inversion Hl2. destruct H5,H7,H9,H10.
-           admit. }
-        { admit. } }
-      { inversion H4. }
-    * destruct H1,H2. inversion Hl3. inversion H7.
-  + destruct H. apply IHn. apply H. admit.
-- unfold true_lt. constructor; intros l Hl.
-
-assert (l = (cons Zero n0 Zero) \/ ord_lt l (cons Zero n0 Zero)).
-{ inversion Hl1. right. apply zero_lt. inversion H4. inversion H4. left. destruct H3. rewrite H2 in Hl2. inversion Hl2. reflexivity. inversion H10.
-  destruct H3. rewrite H2 in Hl2. inversion Hl2. right. apply coeff_lt. lia. inversion H11. inversion H4. } destruct H2.
-{ rewrite H2. constructor; intros l' [Hl'1 [Hl'2 Hl'3]]. apply IHn0.
- apply H. unfold true_lt.
-
-admit. }
-{ apply IHn0. auto. apply single_nf. auto. }
-+ inversion H3.
-
-
-Qed.
-
-Theorem ord_acc: forall (alpha beta : ord) (n n' : nat), Acc true_lt (cons alpha n beta) -> Acc true_lt (cons alpha n' beta).
-Proof.
-intros. induction alpha.
-- unfold true_lt. induction n.
-  + constructor; intros l [Hl1 [Hl2 Hl3]]. inversion Hl3.
-    * destruct H2,H3. inversion Hl1.
-      { destruct H2. constructor; intros l [Hl'1 [Hl'2 Hl'3]]. inversion Hl'1. }
-      { inversion H4. }
-      { inversion H4.
-        { destruct H3. rewrite H2 in Hl2. inversion Hl2. destruct H5,H7,H9,H10.
-           admit. }
-        { admit. } }
-      { inversion H4. }
-    * destruct H1,H2. inversion Hl3. inversion H7.
-  + destruct H. apply IHn. apply H. admit.
-- unfold true_lt. constructor; intros l Hl.
-
-assert (l = (cons Zero n0 Zero) \/ ord_lt l (cons Zero n0 Zero)).
-{ inversion Hl1. right. apply zero_lt. inversion H4. inversion H4. left. destruct H3. rewrite H2 in Hl2. inversion Hl2. reflexivity. inversion H10.
-  destruct H3. rewrite H2 in Hl2. inversion Hl2. right. apply coeff_lt. lia. inversion H11. inversion H4. } destruct H2.
-{ rewrite H2. constructor; intros l' [Hl'1 [Hl'2 Hl'3]]. apply IHn0.
- apply H. unfold true_lt.
-
-admit. }
-{ apply IHn0. auto. apply single_nf. auto. }
-+ inversion H3.
-
-
-Qed.
-
-
-Theorem ord_lt_wf: well_founded ord_lt.
-Proof.
-intros alpha. induction alpha.
-- constructor; intros l Hl. inversion Hl.
-- constructor; intros l Hl. inversion Hl.
-  + constructor; intros l' Hl'. inversion Hl'.
-  + destruct H,H2,H3,H0. admit.
-  + destruct H,H2,H3,H0. induction n'; inversion H1.
-    * destruct H0. admit.
-    * destruct H. apply IHn'. apply coeff_lt. lia. lia.
-  + destruct H,H2,H3,H0. admit.  
-Admitted.
-
-
-Theorem ord_lt_nf_wf: well_founded (fun (x y : ord) => ord_lt x y /\ nf x /\ nf y).
-Proof.
-intros alpha. induction alpha.
-- constructor; intros l [Hl1 [Hl2 Hl3]]. inversion Hl1.
-- constructor; intros l [Hl1 [Hl2 Hl3]]. inversion Hl1.
-  + constructor; intros l' [Hl'1 [Hl'2 Hl'3]]. inversion Hl'1.
-  + destruct H,H2,H3,H0. 
-    * 
-   admit.
-  + destruct H,H2,H3,H0. induction n'; inversion H1.
-    * destruct H0. admit.
-    * destruct H. apply IHn'. apply coeff_lt. lia. apply (nf_scalar _ _ _ _ Hl3). lia.
-  + destruct H,H2,H3,H0. admit.
-  
-Qed.
-*)
-
-
-
-(*
-Theorem acc_ord_nat: forall n, Acc true_lt (cons Zero n Zero).
-Proof.
-intros. induction n.
-- constructor; intros l [Hl1 [Hl2 Hl3]]. inversion Hl1. constructor; intros l' [Hl'1 [Hl'2 Hl'3]]. inversion Hl'1. inversion H1. inversion H1. inversion H1.
-- pose (acc_help' _ IHn). unfold ord_succ in a. auto.
-Qed.
-
-Theorem acc_add : forall alpha beta, Acc true_lt (cons alpha 0 Zero) -> ord_lt beta alpha -> nf alpha -> nf beta -> Acc true_lt (cons alpha 0 beta).
-Proof.
-intros alpha. induction alpha.
-- intros. inversion H0.
-- intros beta. induction beta.
-  + intros. auto.
-  + intros. 
-
-
-Admitted.
-
-
-Theorem acc_exp : forall alpha, Acc true_lt (cons alpha 0 Zero) -> nf alpha -> Acc true_lt (cons (ord_succ alpha) 0 Zero).
-Proof.
-intros alpha. induction alpha.
-- intros. simpl. constructor; intros l [Hl1 [Hl2 Hl3]]. inversion Hl1.
-  + constructor; intros l' [Hl'1 [Hl'2 Hl'3]]. inversion Hl'1. 
-  + inversion H3.
-    * destruct H2,H6. inversion Hl2. destruct H7,H11. apply acc_ord_nat. inversion H11.
-    * inversion H8.
-    * inversion H8.
-    * inversion H8.
-  + inversion H3.
-  + inversion H3.
-- intros. destruct alpha1.
-  + inversion H0.
-    * destruct H3,H4. unfold ord_succ. constructor; intros l [Hl1 [Hl2 Hl3]]. inversion Hl1.
-      { constructor; intros l' [Hl'1 [Hl'2 Hl'3]]. inversion Hl'1. }
-      { inversion H5.
-        { destruct H4,H8. inversion Hl2. apply acc_ord_nat. inversion H13. }
-        { inversion H10. }
-        { destruct H4,H9. rewrite H8 in *. 
-         admit. }
-        { inversion H10. } }
-      { inversion H5. }
-      { inversion H5. }
-    * inversion H4.
-  + admit.
-
-Qed.
-
-
-Theorem acc_help: forall (beta alpha : ord) , Acc true_lt alpha -> ord_lt beta alpha -> nf alpha -> nf beta -> Acc true_lt (ord_add alpha beta).
-Proof.
-intros beta. induction beta.
-- intros. induction alpha. inversion H0. unfold ord_add. auto.
-- intros alpha. induction alpha. intros. inversion H0. intros. pose (fun x => IHbeta1 _ H x H1 (nf_hered_first _ _ _ H2)).
-
-Theorem acc_help: forall (alpha : ord) (n : nat), Acc true_lt (cons alpha n Zero) -> Acc true_lt (cons alpha (S n) Zero).
-Proof.
-intros. induction n.
-- induction alpha.
-  + constructor; intros l [Hl1 [Hl2 Hl3]]. inversion Hl1; inversion H2. constructor; intros l' [Hl'1 [Hl'2 Hl'3]]. inversion Hl'1.
-    destruct H1. rewrite H0 in Hl2. inversion Hl2. auto. inversion H8. inversion H6.
-  + constructor; intros l [Hl1 [Hl2 Hl3]]. inversion Hl1.
-    * constructor; intros l' [Hl'1 [Hl'2 Hl'3]]. inversion Hl'1.
-    * destruct H0,H1,H3. apply H. repeat split; auto. apply head_lt. auto. apply (nf_scalar _ _ _ _ Hl3).
-    * inversion H2. destruct H1.  admit. inversion H6.
-    * inversion H2.
-- admit.
-Qed.
-
-Theorem acc_help: forall alpha, nf alpha -> Acc true_lt (cons alpha 0 Zero).
-Proof.
-intros alpha. induction alpha.
-- intros. constructor; intros l [Hl1 [Hl2 Hl3]]. inversion Hl1; inversion H2. constructor; intros l' [Hl'1 [Hl'2 Hl'3]]. inversion Hl'1.
-- intros. constructor; intros l [Hl1 [Hl2 Hl3]]. inversion Hl1.
-  + constructor; intros l' [Hl'1 [Hl'2 Hl'3]]. inversion Hl'1.
-  + destruct H1. admit.
-  + inversion H2.
-  + inversion H2.
-Admitted.
-
-Theorem strong_ind_ord: forall (P : ord -> Prop), (forall alpha, (forall beta, true_lt beta alpha -> P beta) -> P alpha) -> forall gamma, P gamma.
-Proof.
-apply well_founded_ind.
-unfold well_founded.
-intros. induction a.
-- constructor; intros l [Hl1 [Hl2 Hl3]]. inversion Hl1.
-- constructor; intros l [Hl1 [Hl2 Hl3]]. inversion Hl1.
-  + admit.
-  + destruct H0,H,H2,H3. apply (acc_help _ IHa1). repeat split; auto. apply head_lt. auto. apply single_nf. apply (nf_hered_first _ _ _ Hl3).
-  + destruct H0,H,H2,H3. apply (acc_help _ IHa1). repeat split; auto. apply head_lt. auto. apply single_nf. apply (nf_hered_first _ _ _ Hl3).
-
-Qed.
-*)
-
 
 Lemma ord_max_0 : forall alpha beta, Zero = ord_max alpha beta -> Zero = alpha /\ Zero = beta.
-Admitted.
+intros. induction alpha. induction beta. auto. inversion H. destruct beta. inversion H. inversion H. destruct (ord_semiconnex_bool alpha1 beta1) as [X | [X | X]].
+- rewrite X in H1. inversion H1.
+- rewrite (ltb_asymm _ _ X) in H1. rewrite (ord_lt_ne _ _ X) in H1. inversion H1.
+- apply ord_eqb_eq in X. destruct X. rewrite ord_ltb_irrefl in H1. rewrite ord_eqb_refl in H1. destruct (nat_semiconnex_bool n n0) as [X1 | [X1 | X1]].
+  + rewrite X1 in H1. inversion H1.
+  + rewrite (lt_nat_asymm _ _ X1) in H1. rewrite X1 in H1. inversion H1.
+  + apply nat_eq_decid in X1. destruct X1. rewrite lt_nat_irrefl in H1. case (ord_ltb alpha2 beta2) eqn:X; inversion H1.
+Qed.
 
 
 Lemma ord_max_split : forall alpha beta gamma, ord_lt (ord_max alpha beta) gamma -> ord_lt alpha gamma /\ ord_lt beta gamma.
@@ -12802,11 +12596,71 @@ Lemma is_succ_scalar : forall alpha beta n m, is_succ (cons alpha n beta) = true
 
 Lemma not_is_succ_scalar : forall alpha beta n m, is_succ (cons alpha n beta) = false -> is_succ (cons alpha m beta) = false. intros. rewrite  (is_succ_scalar' _ _ _ n). auto. Qed.
 
+Lemma ord_gt_one_succ_lt_dub : forall alpha, nf alpha -> ord_lt (cons Zero 0 Zero) alpha -> ord_lt (ord_succ alpha) (ord_mult alpha (nat_ord 2)).
+Proof.
+intros. induction alpha. inversion H0. destruct alpha1. inversion H. destruct H4. destruct n. inversion H0; inversion H5. apply coeff_lt. lia. inversion H4. simpl. apply coeff_lt. lia.
+Qed.
+
+Lemma ord_gt_zero_exp_gt_one : forall alpha, nf alpha -> ord_lt Zero alpha -> ord_lt (cons Zero 0 Zero) (ord_2_exp alpha).
+Proof.
+intros. induction alpha. inversion H0. destruct alpha1. inversion H. destruct H4. destruct n. apply coeff_lt. lia.
+unfold ord_2_exp. case (2^(S(S n))) eqn:X. pose (exp_succ (S(S n))). lia. destruct n1. pose (nat_2_exp_succ_not_one (S n)). lia. apply coeff_lt. lia. inversion H4. destruct alpha1_1.
+- inversion H.
+  + inversion H2. symmetry in H1,H5. destruct H1,H3,H4,H5,H7,H8. destruct n2; apply head_lt; apply zero_lt. inversion H8. 
+  + inversion H5. symmetry in H1,H7. destruct H1,H2,H3,H7,H9,H10. destruct n2; apply ord_mult_exp_monot; auto; apply head_lt; apply zero_lt. inversion H10.
+- simpl. apply ord_mult_exp_monot. apply (nf_hered_third _ _ _ H). apply head_lt. apply zero_lt.
+Qed.
+
+Lemma ord_succ_not_exp_fp : forall alpha, nf (ord_succ alpha) -> ord_lt (ord_succ alpha) (ord_2_exp (ord_succ alpha)).
+Proof.
+intros. destruct (ord_2_exp_fp (ord_succ alpha)); auto. destruct alpha. inversion H0. destruct alpha1; inversion H0. destruct alpha2. inversion H6. destruct alpha2_1; inversion H6.
+Qed.
+
+Lemma ord_succ_lt_exp_succ : forall alpha, nf alpha -> ord_lt Zero alpha -> ord_lt (ord_succ (ord_2_exp alpha)) (ord_2_exp (ord_succ alpha)).
+Proof.
+intros. rewrite ord_2_exp_succ_mult; auto. apply ord_gt_one_succ_lt_dub. apply nf_2_exp. auto. apply ord_gt_zero_exp_gt_one; auto. 
+Qed.
+
+Lemma ord_max_exp_equiv : forall alpha beta, nf alpha -> nf beta -> (ord_max (ord_2_exp alpha) (ord_2_exp beta)) = (ord_2_exp (ord_max alpha beta)).
+Proof.
+intros. destruct (ord_semiconnex_bool alpha beta) as [X | [X | X]].
+- pose (ord_lt_ltb _ _ (ord_2_exp_monot _ H0 _ H (ord_ltb_lt _ _ X))). rewrite ord_max_lem1; auto. rewrite ord_max_lem1; auto.
+- pose (ltb_asymm _ _ (ord_lt_ltb _ _ (ord_2_exp_monot _ H _ H0 (ord_ltb_lt _ _ X)))). pose (ltb_asymm _ _ X). rewrite ord_max_lem2; auto. rewrite ord_max_lem2; auto.
+- apply ord_eqb_eq in X. destruct X. rewrite ord_max_lem2; auto. rewrite ord_max_lem2; auto. apply ord_ltb_irrefl. apply ord_ltb_irrefl.
+Qed.
+
+Lemma succ_gt_one_gt_zero : forall alpha, ord_lt (cons Zero 0 Zero) (ord_succ alpha) -> ord_lt Zero alpha. intros. destruct alpha. inversion H; inversion H1. apply zero_lt. Qed.
+
+Lemma ord_max_exp_both : forall alpha beta, nf alpha -> nf beta -> ord_lt (cons Zero 0 Zero) (ord_succ (ord_max alpha beta)) -> ord_lt (ord_succ (ord_max (ord_2_exp alpha) (ord_2_exp beta))) (ord_2_exp (ord_succ (ord_max alpha beta))).
+intros. rewrite ord_max_exp_equiv; auto. apply ord_succ_lt_exp_succ. apply ord_max_nf; auto. apply succ_gt_one_gt_zero. auto.
+Qed.
+
+Lemma ord_max_exp_r : forall alpha beta, nf alpha -> nf beta -> ord_lt (cons Zero 0 Zero) (ord_succ (ord_max alpha beta)) -> ord_lt (ord_succ (ord_max alpha (ord_2_exp beta))) (ord_2_exp (ord_succ (ord_max alpha beta))).
+intros. destruct (ord_semiconnex_bool alpha (ord_2_exp beta)) as [X | [X | X]].
+- rewrite ord_max_lem1; auto. case (ord_eqb beta (ord_max alpha beta)) eqn:X1.
+  + apply ord_eqb_eq in X1. destruct X1. apply ord_succ_lt_exp_succ. auto. apply succ_gt_one_gt_zero. auto.
+  + destruct beta.
+    * simpl in X. apply ord_ltb_lt in X. inversion X; inversion H4. destruct H2. inversion X1.
+    * pose (ord_max_lt2 _ _ X1). apply (lt_trans _ (ord_2_exp (ord_succ (cons beta1 n beta2)))). apply ord_succ_lt_exp_succ. auto. apply zero_lt. apply ord_2_exp_monot. apply ord_succ_nf. apply ord_max_nf; auto. apply ord_succ_nf. auto. apply ord_lt_succ. auto.
+- inversion X. apply ltb_asymm in H3. rewrite ord_max_lem2; auto. assert (ord_ltb alpha beta = false). destruct (ord_2_exp_fp beta H0). apply ltb_asymm. apply ord_lt_ltb in H2. apply (ord_ltb_trans _ _ _ H2 X). symmetry in H2. destruct H2. unfold nat_ord in X. unfold ord_2_exp in X. rewrite <- one_right_mult_ident in X. apply ltb_asymm. auto. rewrite ord_max_lem2; auto. destruct (ord_2_exp_fp alpha H).
+  + apply (lt_trans _ (ord_succ (ord_2_exp alpha))). apply ord_lt_succ. auto. apply ord_succ_lt_exp_succ. auto. destruct alpha. destruct beta. inversion X. inversion H2. apply zero_lt.
+  + symmetry in H4. destruct H4. apply coeff_lt. lia.
+- apply ord_eqb_eq in X. symmetry in X. destruct X. rewrite ord_max_lem2; auto. rewrite ord_max_lem2; auto. apply ord_succ_not_exp_fp. apply ord_succ_nf. auto. destruct (ord_2_exp_fp beta H0). apply ord_lt_ltb in H2. apply ltb_asymm in H2. auto. symmetry in H2. destruct H2. auto. apply ord_ltb_irrefl.
+Qed.
+
+Lemma ord_max_exp_l : forall alpha beta, nf alpha -> nf beta -> ord_lt (cons Zero 0 Zero) (ord_succ (ord_max alpha beta)) -> ord_lt (ord_succ (ord_max (ord_2_exp alpha) beta)) (ord_2_exp (ord_succ (ord_max alpha beta))).
+intros. rewrite (ord_max_symm alpha). rewrite ord_max_symm. apply ord_max_exp_r; auto. rewrite ord_max_symm. auto.
+Qed.
+
+
 Lemma cut_elim_aux0 : forall (alpha : ord), nf alpha -> forall (P : ptree) (A : formula) (d : nat),
    P_proves P A (S d) alpha -> provable A d (ord_2_exp alpha).
 Proof.
-intros alpha. apply (transfinite_induction comp').
-- intros. unfold comp'. intros P. induction P.
+apply (transfinite_induction comp').
+- intros. unfold comp'. destruct x as [| alpha1 n alpha2]. intros. apply (cut_elim_ord_Zero P). auto. case (ord_eqb (cons Zero 0 Zero) (cons alpha1 n alpha2)) eqn:O.
+  intros. apply ord_eqb_eq in O. destruct O. apply (cut_elim_ord_one P). auto. assert (ord_lt (cons Zero 0 Zero) (cons alpha1 n alpha2)).
+  { destruct (ord_semiconnex (cons Zero 0 Zero) (cons alpha1 n alpha2)) as [O1 | [O1 | O1]]. auto. inversion O1; inversion H1. destruct O1. inversion O. }
+  intros P. induction P.
   + intros. destruct X0 as [[[X1 X2] X3] X4]. simpl in X3,X4. destruct X2 as [H1 H2]. apply IHP. unfold P_proves. repeat split; simpl; auto. lia.
   + intros. destruct X0 as [[[X1 X2] X3] X4]. simpl in X1,X3,X4. destruct X4. destruct X2 as [[H1 H2] H3]. unfold comp' in X.
     assert (P_proves P A (S d) (ptree_ord P)). { unfold P_proves. repeat split; simpl; auto. } destruct (X (ptree_ord P) (ptree_ord_nf _ H2) H1 P A d X0) as [P1 [[[HP1 HP2] HP3] HP4]].
@@ -12826,110 +12680,64 @@ intros alpha. apply (transfinite_induction comp').
   + intros. destruct X0 as [[[X1 X2] X3] X4]. simpl in X1,X3,X4. destruct X4. destruct X2 as [[[H1 H2] H3] H4]. unfold comp' in X.
     assert (P_proves P (lor (lor f f) f0) (S d) o). { unfold P_proves. repeat split; simpl; auto. lia. } pose (IHP _ _ X0). destruct p as [P1 [[[HP1 HP2] HP3] HP4]]. exists (contraction_ad f f0 (ptree_deg P1) (ptree_ord P1) P1). repeat split; simpl; auto.
   + intros. destruct X0 as [[[X1 X2] X3] X4]. simpl in X1,X3,X4. destruct X4. destruct X2 as [[[[H1 H2] H3] H4] H5]. unfold comp' in X.
-    assert (P_proves P f0 (S d) o). { unfold P_proves. repeat split; simpl; auto. lia. } destruct (X _ (ord_nf_succ _ H) (ord_succ_monot _) _ _ _ X0) as [P1 [[[HP1 HP2] HP3] HP4]]. exists (ord_up (ord_2_exp (ord_succ o)) (weakening_ad f f0 (ptree_deg P1) (ptree_ord P1) P1)). repeat split; simpl; auto. rewrite ord_2_exp_succ_mult. rewrite HP4.
-    admit. apply ord_nf_succ. auto. apply nf_2_exp. auto.
-  + intros. destruct X0 as [[[X1 X2] X3] X4]. simpl in X1,X3,X4. destruct X4. destruct X2 as [[[[[[[H1 H2] H3] H4] H5] H6] H7] H8]. unfold comp' in X.
-    assert (P_proves P4 (neg f) n o). { unfold P_proves. repeat split; simpl; auto. lia. }
-    assert (P_proves P5 (neg f0) n0 o0). { unfold P_proves. repeat split; simpl; auto. lia. } admit.
-    destruct (X _ (ord_nf_succ _ H) (ord_succ_monot _) _ _ _ X0) as [P1 [[[HP1 HP2] HP3] HP4]]. exists (ord_up (ord_2_exp (ord_succ o)) (weakening_ad f f0 (ptree_deg P1) (ptree_ord P1) P1)). repeat split; simpl; auto. rewrite ord_2_exp_succ_mult. rewrite HP4.
-    admit. apply ord_nf_succ. auto. apply nf_2_exp. auto.
-  
+    assert (P_proves P f0 (S d) o). { unfold P_proves. repeat split; simpl; auto. lia. } destruct (X _ (ord_nf_succ _ H) (ord_succ_monot _) _ _ _ X0) as [P1 [[[HP1 HP2] HP3] HP4]]. exists (ord_up (ord_2_exp (ord_succ o)) (weakening_ad f f0 (ptree_deg P1) (ptree_ord P1) P1)). repeat split; simpl; auto.
+    rewrite HP4. apply ord_succ_lt_exp_succ. apply ord_nf_succ. auto. apply succ_gt_one_gt_zero. auto. apply nf_2_exp. auto.  
+  + intros. destruct X0 as [[[X1 X2] X3] X4]. simpl in X1,X3,X4. destruct X4. destruct X2 as [[[[[[[H1 H2] H3] H4] H5] H6] H7] H8]. unfold comp' in X. case (eq_nat (max n0 n1) (S d)) eqn:E.
+    * apply nat_eq_decid in E. case (lt_nat n0 n1) eqn:Y.
+      --  rewrite (max_split1 _ _ Y) in E. symmetry in E. destruct E. assert (P_proves P5 (neg f0) (S d) o0). { unfold P_proves. repeat split; simpl; auto. lia. } assert (nf o0). rewrite H8. apply ptree_ord_nf. auto.
+          destruct (X _ H9 (ord_max_succ_r _ _) _ _ _ X0) as [P7 [[[HP1 HP2] HP3] HP4]]. exists (ord_up (ord_2_exp (ord_succ (ord_max o o0))) (demorgan_ab f f0 n0 (ptree_deg P7) o (ord_2_exp o0) P4 P7)). repeat split; simpl; auto.
+          apply ord_max_exp_r; auto. rewrite H7. apply ptree_ord_nf. auto. apply nf_2_exp. auto. apply lt_nat_decid in Y. lia.
+      --  case (lt_nat n1 n0) eqn:Y1.
+          ++  rewrite (max_split2 _ _ Y1) in E. symmetry in E. destruct E. assert (P_proves P4 (neg f) (S d) o). { unfold P_proves. repeat split; simpl; auto. lia. } assert (nf o). rewrite H7. apply ptree_ord_nf. auto.
+              destruct (X _ H9 (ord_max_succ_l _ _) _ _ _ X0) as [P6 [[[HP1 HP2] HP3] HP4]]. exists (ord_up (ord_2_exp (ord_succ (ord_max o o0))) (demorgan_ab f f0 (ptree_deg P6) n1 (ord_2_exp o) o0 P6 P5)). repeat split; simpl; auto.
+              apply ord_max_exp_l; auto. rewrite H8. apply ptree_ord_nf. auto. apply nf_2_exp. auto. apply lt_nat_decid in Y1. lia.
+          ++  assert (n0 = n1). destruct (nat_semiconnex n0 n1) as [Y2 | [Y2 | Y2]]; try apply lt_nat_decid_conv in Y2. rewrite Y2 in Y. inversion Y. rewrite Y2 in Y1. inversion Y1. auto. destruct H9. rewrite max_n_n in E. symmetry in E. destruct E.
+              assert (P_proves P4 (neg f) (S d) o). { unfold P_proves. repeat split; simpl; auto. lia. } assert (nf o). rewrite H7. apply ptree_ord_nf. auto.
+              assert (P_proves P5 (neg f0) (S d) o0). { unfold P_proves. repeat split; simpl; auto. lia. } assert (nf o0). rewrite H8. apply ptree_ord_nf. auto.
+              destruct (X _ H9 (ord_max_succ_l _ _) _ _ _ X0) as [P6 [[[HP1 Hp2] HP3] HP4]]. destruct (X _ H10 (ord_max_succ_r _ _) _ _ _ X2) as [P7 [[[HQ1 HQ2] HQ3] HQ4]].
+              exists (ord_up (ord_2_exp (ord_succ (ord_max o o0))) (demorgan_ab f f0 (ptree_deg P6) (ptree_deg P7) (ord_2_exp o) (ord_2_exp o0) P6 P7)). repeat split; simpl; auto.
+              apply ord_max_exp_both; auto. apply nf_2_exp. auto. lia.
+    * assert (d >= max n0 n1). { inversion X3. destruct H10. rewrite eq_nat_refl in E. inversion E. lia. } exists (ord_up (ord_2_exp (ord_succ (ord_max o o0))) (demorgan_ab f f0 n0 n1 o o0 P4 P5)). repeat split; simpl; auto. apply ord_succ_not_exp_fp. auto. apply nf_2_exp. auto.
+  + intros. destruct X0 as [[[X1 X2] X3] X4]. simpl in X1,X3,X4. destruct X4. destruct X2 as [[[[[[[H1 H2] H3] H4] H5] H6] H7] H8]. unfold comp' in X. case (eq_nat (max n0 n1) (S d)) eqn:E.
+    * apply nat_eq_decid in E. case (lt_nat n0 n1) eqn:Y.
+      --  rewrite (max_split1 _ _ Y) in E. symmetry in E. destruct E. assert (P_proves P5 (lor (neg f0) f1) (S d) o0). { unfold P_proves. repeat split; simpl; auto. lia. } assert (nf o0). rewrite H8. apply ptree_ord_nf. auto.
+          destruct (X _ H9 (ord_max_succ_r _ _) _ _ _ X0) as [P7 [[[HP1 HP2] HP3] HP4]]. exists (ord_up (ord_2_exp (ord_succ (ord_max o o0))) (demorgan_abd f f0 f1 n0 (ptree_deg P7) o (ord_2_exp o0) P4 P7)). repeat split; simpl; auto.
+          apply ord_max_exp_r; auto. rewrite H7. apply ptree_ord_nf. auto. apply nf_2_exp. auto. apply lt_nat_decid in Y. lia.
+      --  case (lt_nat n1 n0) eqn:Y1.
+          ++  rewrite (max_split2 _ _ Y1) in E. symmetry in E. destruct E. assert (P_proves P4 (lor (neg f) f1) (S d) o). { unfold P_proves. repeat split; simpl; auto. lia. } assert (nf o). rewrite H7. apply ptree_ord_nf. auto.
+              destruct (X _ H9 (ord_max_succ_l _ _) _ _ _ X0) as [P6 [[[HP1 HP2] HP3] HP4]]. exists (ord_up (ord_2_exp (ord_succ (ord_max o o0))) (demorgan_abd f f0 f1 (ptree_deg P6) n1 (ord_2_exp o) o0 P6 P5)). repeat split; simpl; auto.
+              apply ord_max_exp_l; auto. rewrite H8. apply ptree_ord_nf. auto. apply nf_2_exp. auto. apply lt_nat_decid in Y1. lia.
+          ++  assert (n0 = n1). destruct (nat_semiconnex n0 n1) as [Y2 | [Y2 | Y2]]; try apply lt_nat_decid_conv in Y2. rewrite Y2 in Y. inversion Y. rewrite Y2 in Y1. inversion Y1. auto. destruct H9. rewrite max_n_n in E. symmetry in E. destruct E.
+              assert (P_proves P4 (lor (neg f) f1) (S d) o). { unfold P_proves. repeat split; simpl; auto. lia. } assert (nf o). rewrite H7. apply ptree_ord_nf. auto.
+              assert (P_proves P5 (lor (neg f0) f1) (S d) o0). { unfold P_proves. repeat split; simpl; auto. lia. } assert (nf o0). rewrite H8. apply ptree_ord_nf. auto.
+              destruct (X _ H9 (ord_max_succ_l _ _) _ _ _ X0) as [P6 [[[HP1 Hp2] HP3] HP4]]. destruct (X _ H10 (ord_max_succ_r _ _) _ _ _ X2) as [P7 [[[HQ1 HQ2] HQ3] HQ4]].
+              exists (ord_up (ord_2_exp (ord_succ (ord_max o o0))) (demorgan_abd f f0 f1 (ptree_deg P6) (ptree_deg P7) (ord_2_exp o) (ord_2_exp o0) P6 P7)). repeat split; simpl; auto.
+              apply ord_max_exp_both; auto. apply nf_2_exp. auto. lia.
+    * assert (d >= max n0 n1). { inversion X3. destruct H10. rewrite eq_nat_refl in E. inversion E. lia. } exists (ord_up (ord_2_exp (ord_succ (ord_max o o0))) (demorgan_abd f f0 f1 n0 n1 o o0 P4 P5)). repeat split; simpl; auto. apply ord_succ_not_exp_fp. auto. apply nf_2_exp. auto.  
+  + intros. destruct X0 as [[[X1 X2] X3] X4]. simpl in X1,X3,X4. destruct X4. destruct X2 as [[[H1 H2] H3] H4]. unfold comp' in X.
+    assert (P_proves P f (S d) o). { unfold P_proves. repeat split; simpl; auto. lia. } destruct (X _ (ord_nf_succ _ H) (ord_succ_monot _) _ _ _ X0) as [P1 [[[HP1 HP2] HP3] HP4]]. exists (ord_up (ord_2_exp (ord_succ o)) (negation_a f (ptree_deg P1) (ptree_ord P1) P1)). repeat split; simpl; auto.
+    rewrite HP4. apply ord_succ_lt_exp_succ. apply ord_nf_succ. auto. apply succ_gt_one_gt_zero. auto. apply nf_2_exp. auto. 
+  + intros. destruct X0 as [[[X1 X2] X3] X4]. simpl in X1,X3,X4. destruct X4. destruct X2 as [[[H1 H2] H3] H4]. unfold comp' in X.
+    assert (P_proves P (lor f f0) (S d) o). { unfold P_proves. repeat split; simpl; auto. lia. } destruct (X _ (ord_nf_succ _ H) (ord_succ_monot _) _ _ _ X0) as [P1 [[[HP1 HP2] HP3] HP4]]. exists (ord_up (ord_2_exp (ord_succ o)) (negation_ad f f0 (ptree_deg P1) (ptree_ord P1) P1)). repeat split; simpl; auto.
+    rewrite HP4. apply ord_succ_lt_exp_succ. apply ord_nf_succ. auto. apply succ_gt_one_gt_zero. auto. apply nf_2_exp. auto. 
+  + intros. destruct X0 as [[[X1 X2] X3] X4]. simpl in X1,X3,X4. destruct X4. destruct X2 as [[[[H1 H2] H3] H4] H5]. unfold comp' in X.
+    assert (P_proves P (neg (substitution f n0 t)) (S d) o). { unfold P_proves. repeat split; simpl; auto. lia. } destruct (X _ (ord_nf_succ _ H) (ord_succ_monot _) _ _ _ X0) as [P1 [[[HP1 HP2] HP3] HP4]]. exists (ord_up (ord_2_exp (ord_succ o)) (quantification_a f n0 t (ptree_deg P1) (ptree_ord P1) P1)). repeat split; simpl; auto.
+    rewrite HP4. apply ord_succ_lt_exp_succ. apply ord_nf_succ. auto. apply succ_gt_one_gt_zero. auto. apply nf_2_exp. auto. 
+  + intros. destruct X0 as [[[X1 X2] X3] X4]. simpl in X1,X3,X4. destruct X4. destruct X2 as [[[[H1 H2] H3] H4] H5]. unfold comp' in X.
+    assert (P_proves P (lor (neg (substitution f n0 t)) f0) (S d) o). { unfold P_proves. repeat split; simpl; auto. lia. } destruct (X _ (ord_nf_succ _ H) (ord_succ_monot _) _ _ _ X0) as [P1 [[[HP1 HP2] HP3] HP4]]. exists (ord_up (ord_2_exp (ord_succ o)) (quantification_ad f f0 n0 t (ptree_deg P1) (ptree_ord P1) P1)). repeat split; simpl; auto.
+    rewrite HP4. apply ord_succ_lt_exp_succ. apply ord_nf_succ. auto. apply succ_gt_one_gt_zero. auto. apply nf_2_exp. auto. 
   + admit.
   + admit.
   + admit.
   + admit.
   + admit.
-  + admit.
-  + admit.
-  + admit.
-  + admit.
-  + admit.
-  + admit.
+
 Admitted.
 
 Lemma cut_elim_aux1 : forall (alpha : ord) (P : ptree) (A : formula) (d : nat), P_proves P A (S d) alpha -> provable A d (ord_2_exp alpha).
 Proof.
 intros. inversion X. destruct X0 as [[H1 H2] H3]. pose (ptree_ord_nf _ H2). destruct H. apply (cut_elim_aux0 _ n P). auto.
 Qed.
-
-(*
-Lemma cut_elim_aux1' : forall (alpha : ord), (forall (P : ptree) (A : formula) (d : nat),
-   P_proves P A (S d) alpha -> provable A d (ord_2_exp alpha)).
-Proof.
-apply (strong_ind_ord comp'). intros. destruct alpha.
-- unfold comp'. apply cut_elim_ord_Zero.
-- case (ord_eqb (cons alpha1 n alpha2) (cons Zero 0 Zero)) eqn:O.
-    + intros. apply ord_eqb_eq in O. symmetry in O. inversion O. destruct H0,H1,H2. unfold comp'. apply cut_elim_ord_one.
-    + rename X into SIH.  intros P. induction P.
-      * intros. destruct X as [[[H1 H2] H3] H4]. simpl in H1. destruct H2 as [X1 X2]. apply IHP; auto. simpl in H3. unfold P_proves. repeat split; auto. lia.
-      * intros. destruct X as [[[H1 H2] H3] H4]. simpl in H1. destruct H2 as [[X1 X2] X3]. apply IHP; auto. simpl in H3. unfold P_proves. repeat split; auto. admit.
-      * exists (ord_up (ord_2_exp (cons alpha1 n alpha2)) (node f)). destruct X as [[[H1 H2] H3] H4]. repeat split; auto. apply exp_geq_1. rewrite <- H4. apply ptree_ord_nf. auto. apply nf_2_exp. rewrite <- H4. apply ptree_ord_nf. auto. simpl. lia.
-      * intros. destruct X as [[[H1 H2] H3] H4]. repeat split; auto. admit.
-
-      (*
-      * exists (ord_up (ord_2_exp (nat_ord 1)) P). destruct H2. simpl in H1,H4. repeat split; auto. apply ord_ltb_lt. rewrite H4. 
-        assert (nf (nat_ord 1)). rewrite <- O. rewrite <- H4. apply ptree_ord_nf. apply v.
-        destruct (ord_2_exp_fp _ H). apply ord_lt_ltb. rewrite O in *. auto. inversion H0.
-        apply nf_2_exp. apply nf_nat. simpl. simpl in H3. lia. rewrite O. auto.
-      * destruct o; simpl in H4. inversion H4. destruct H2 as [[X1 X2] X3]. destruct H4. rewrite O in X1. apply ord_lt_one in X1.
-        { }
-      inversion X1. simpl in H1. simpl in H3. (*simpl in H4.*) pose proof (IHP A d (H1,X2,H3, H4)).
-      destruct H2. destruct p. simpl in H4. rewrite H4 in o0. apply ord_lt_ltb in o0. destruct (ptree_ord P) in o0; inversion o0.
-      * exists (ord_up (ord_2_exp (cons alpha1 n alpha2)) (node f)). repeat split; simpl; auto. pose ord_mult_exp_monot.
-      apply ord_ltb_lt. auto. destruct alpha1.
-        simpl. unfold nat_ord. admit. simpl. lia.
-      * destruct H2 as [[[X1 X2] X3] X4]. simpl in H3,H4. rewrite X3 in *. rewrite X4 in *. destruct (IHP (lor f f0) d (X1,X2,H3,H4)) as [T [[[Y1 Y2] Y3] Y4]].
-        exists (exchange_ab f f0 (ptree_deg T) (ptree_ord T) T). repeat split; auto.
-      * destruct H2 as [[[X1 X2] X3] X4]. simpl in H3,H4. rewrite X3 in *. rewrite X4 in *. destruct (IHP _ _ (X1,X2,H3,H4)) as [T [[[Y1 Y2] Y3] Y4]].
-        exists (exchange_cab f f0 f1 (ptree_deg T) (ptree_ord T) T). repeat split; simpl; auto.
-      * destruct H2 as [[[X1 X2] X3] X4]. simpl in H3,H4. rewrite X3 in *. rewrite X4 in *. destruct (IHP _ _ (X1,X2,H3,H4)) as [T [[[Y1 Y2] Y3] Y4]].
-        exists (exchange_abd f f0 f1 (ptree_deg T) (ptree_ord T) T). repeat split; simpl; auto.
-      * destruct H2 as [[[X1 X2] X3] X4]. simpl in H3,H4. rewrite X3 in *. rewrite X4 in *. destruct (IHP _ _ (X1,X2,H3,H4)) as [T [[[Y1 Y2] Y3] Y4]].
-        exists (exchange_cabd f f0 f1 f2 (ptree_deg T) (ptree_ord T) T). repeat split; simpl; auto.
-      * destruct H2 as [[[X1 X2] X3] X4]. simpl in H3,H4. rewrite X3 in *. rewrite X4 in *. destruct (IHP _ _ (X1,X2,H3,H4)) as [T [[[Y1 Y2] Y3] Y4]].
-        exists (contraction_a f (ptree_deg T) (ptree_ord T) T). repeat split; simpl; auto.
-      * destruct H2 as [[[X1 X2] X3] X4]. simpl in H3,H4. rewrite X3 in *. rewrite X4 in *. destruct (IHP _ _ (X1,X2,H3,H4)) as [T [[[Y1 Y2] Y3] Y4]].
-        exists (contraction_ad f f0 (ptree_deg T) (ptree_ord T) T). repeat split; simpl; auto.
-      * destruct H2 as [[[[X1 X2] X3] X4] X5]. simpl in H3,H4. rewrite X4 in *. rewrite X5 in *. destruct (IHP _ _ (X1,X3,H3,H4)) as [T [[[Y1 Y2] Y3] Y4]].
-        exists (weakening_ad f f0 (ptree_deg T) (ptree_ord T) T). repeat split; simpl; auto.
-      * destruct H2 as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. simpl in H3,H4. rewrite X5 in *. rewrite X6 in *. rewrite X7 in *. rewrite X8 in *. apply max_m_n in H3. destruct H3 as [Z1 Z2].
-        apply ord_max_0 in H4. destruct H4 as [Z3 Z4]. destruct (IHP1 _ _ (X1,X2,Z1,Z3)) as [T [[[Y1 Y2] Y3] Y4]].
-        destruct (IHP2 _ _ (X3,X4,Z2,Z4)) as [T' [[[Y1' Y2'] Y3'] Y4']].
-        exists (demorgan_ab f f0 (ptree_deg T) (ptree_deg T') (ptree_ord T) (ptree_ord T') T T'). repeat split; simpl; auto. lia. rewrite Y4,Y4'. auto.
-      * destruct H2 as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. simpl in H3,H4. rewrite X5 in *. rewrite X6 in *. rewrite X7 in *. rewrite X8 in *. apply max_m_n in H3. destruct H3 as [Z1 Z2].
-        apply ord_max_0 in H4. destruct H4 as [Z3 Z4]. destruct (IHP1 _ _ (X1,X2,Z1,Z3)) as [T [[[Y1 Y2] Y3] Y4]].
-        destruct (IHP2 _ _ (X3,X4,Z2,Z4)) as [T' [[[Y1' Y2'] Y3'] Y4']].
-        exists (demorgan_abd f f0 f1 (ptree_deg T) (ptree_deg T') (ptree_ord T) (ptree_ord T') T T'). repeat split; simpl; auto. lia. rewrite Y4,Y4'. auto.
-      * destruct H2 as [[[X1 X2] X3] X4]. simpl in H3,H4. rewrite X4 in *. rewrite X3 in *. destruct (IHP _ _ (X1,X2,H3,H4)) as [T [[[Y1 Y2] Y3] Y4]].
-        exists (negation_a f (ptree_deg T) (ptree_ord T) T). repeat split; simpl; auto.
-      * destruct H2 as [[[X1 X2] X3] X4]. simpl in H3,H4. rewrite X4 in *. rewrite X3 in *. destruct (IHP _ _ (X1,X2,H3,H4)) as [T [[[Y1 Y2] Y3] Y4]].
-        exists (negation_ad f f0 (ptree_deg T) (ptree_ord T) T). repeat split; simpl; auto.
-      * destruct H2 as [[[[X1 X2] X3] X4] X5]. simpl in H3,H4. rewrite X4 in *. rewrite X5 in *. destruct (IHP _ _ (X1,X3,H3,H4)) as [T [[[Y1 Y2] Y3] Y4]].
-        exists (quantification_a f n t (ptree_deg T) (ptree_ord T) T). repeat split; simpl; auto.
-      * destruct H2 as [[[[X1 X2] X3] X4] X5]. simpl in H3,H4. rewrite X4 in *. rewrite X5 in *. destruct (IHP _ _ (X1,X3,H3,H4)) as [T [[[Y1 Y2] Y3] Y4]].
-        exists (quantification_ad f f0 n t (ptree_deg T) (ptree_ord T) T). repeat split; simpl; auto.
-      * unfold valid in H2. fold valid in H2. simpl in H1,H3,H4. rewrite <- H1, H4 in *. 
-        assert (forall m : nat,
-         (ptree_formula (p m) = substitution f n (represent m)) * valid (p m) *
-         (S d >= ptree_deg (p m)) * (ptree_ord (p m) = Zero)).
-         { intros m. destruct (H2 m) as [[[X1 X2] X3] X4]. repeat split; simpl; auto. lia. }
-        pose proof (fun m => X m (substitution f n (represent m)) d (X0 m)).
-        exists (w_rule_a f n d (ord_2_exp Zero) (fun m => projT1 (X1 m))). repeat split;
-        try destruct (X1 m) as [T [[[Y1 Y2] Y3] Y4]]; simpl; auto.
-      * unfold valid in H2. fold valid in H2. simpl in H1,H3,H4. rewrite <- H1, H4 in *. 
-        assert (forall m : nat,
-         (ptree_formula (p m) = lor (substitution f n (represent m)) f0) * valid (p m) *
-         (S d >= ptree_deg (p m)) * (ptree_ord (p m) = Zero)).
-         { intros m. destruct (H2 m) as [[[X1 X2] X3] X4]. repeat split; simpl; auto. lia. }
-        pose proof (fun m => X m (lor (substitution f n (represent m)) f0) d (X0 m)).
-        exists (w_rule_ad f f0 n d (ord_2_exp Zero) (fun m => projT1 (X1 m))). repeat split;
-        try destruct (X1 m) as [T [[[Y1 Y2] Y3] Y4]]; simpl; auto.
-      * inversion H4. destruct (ord_max o o0) in H0. inversion H0. simpl in H0. destruct o1_1 in H0. inversion H0. inversion H0.
-      * inversion H4. destruct (ord_max o o0) in H0. inversion H0. simpl in H0. destruct o1_1 in H0. inversion H0. inversion H0.
-      * inversion H4. destruct (ord_max o o0) in H0. inversion H0. simpl in H0. destruct o1_1 in H0. inversion H0. inversion H0.
-    *)
-Admitted.
-*)
 
 Lemma cut_elim_aux2 : forall (A : formula) (d : nat),
   {alpha : ord & provable A d alpha} -> {beta : ord & provable A 0 beta}.
