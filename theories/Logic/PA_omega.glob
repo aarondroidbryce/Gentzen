@@ -1,0 +1,3182 @@
+DIGEST 2ffc0412077c8918f93047b7afaa55ba
+FSystems.PA_omega
+R150:152 Coq.micromega.Lia <> <> lib
+R170:172 Coq.Init.Nat <> <> lib
+R190:200 Coq.Wellfounded.Wellfounded <> <> lib
+R235:242 Maths_Facts.naturals <> <> lib
+R277:281 Maths_Facts.lists <> <> lib
+R316:323 Maths_Facts.ordinals <> <> lib
+R354:364 Systems.definitions <> <> lib
+R395:397 Systems.fol <> <> lib
+R424:427 Coq.Init.Datatypes <> andb def
+not 409:409 <> :::x_'&&'_x
+R461:463 Coq.Init.Datatypes <> orb def
+not 446:446 <> :::x_'||'_x
+syndef 482:487 <> eq_nat
+R492:498 Coq.Init.Nat <> eqb def
+def 514:527 <> PA_omega_axiom
+R534:540 Systems.fol <> formula ind
+binder 530:530 <> A:1
+R545:548 Coq.Init.Datatypes <> bool ind
+R559:559 Systems.PA_omega <> A:1 var
+R568:571 Systems.fol <> atom constr
+R578:586 Systems.fol <> correct_a def
+R592:594 Systems.fol <> neg constr
+R597:600 Systems.fol <> atom constr
+R608:618 Systems.fol <> incorrect_a def
+R629:633 Coq.Init.Datatypes <> false constr
+ind 775:790 <> PA_omega_theorem
+constr 829:836 <> deg_incr
+constr 972:979 <> ord_incr
+constr 1138:1142 <> axiom
+constr 1233:1241 <> exchange1
+constr 1377:1385 <> exchange2
+constr 1539:1547 <> exchange3
+constr 1701:1709 <> exchange4
+constr 1881:1892 <> contraction1
+constr 2018:2029 <> contraction2
+constr 2175:2183 <> weakening
+constr 2345:2353 <> demorgan1
+constr 2609:2617 <> demorgan2
+constr 2899:2907 <> negation1
+constr 3048:3056 <> negation2
+constr 3215:3229 <> quantification1
+constr 3471:3485 <> quantification2
+constr 3745:3751 <> w_rule1
+constr 3956:3962 <> w_rule2
+constr 4183:4186 <> cut1
+constr 4476:4479 <> cut2
+constr 4769:4772 <> cut3
+R801:804 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R794:800 Systems.fol <> formula ind
+R808:811 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R805:807 Coq.Init.Datatypes <> nat ind
+R815:818 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R812:814 Maths_Facts.ordinals <> ord ind
+R852:858 Systems.fol <> formula ind
+binder 848:848 <> A:5
+R869:871 Coq.Init.Datatypes <> nat ind
+binder 862:862 <> d:6
+binder 864:865 <> d':7
+R883:885 Maths_Facts.ordinals <> ord ind
+binder 875:879 <> alpha:8
+R919:926 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R893:908 Systems.PA_omega <> PA_omega_theorem:3 ind
+R914:918 Systems.PA_omega <> alpha:8 var
+R912:912 Systems.PA_omega <> d:6 var
+R910:910 Systems.PA_omega <> A:5 var
+R933:940 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R929:931 Coq.Init.Peano <> ::nat_scope:x_'>'_x not
+R927:928 Systems.PA_omega <> d':7 var
+R932:932 Systems.PA_omega <> d:6 var
+R941:956 Systems.PA_omega <> PA_omega_theorem:3 ind
+R963:967 Systems.PA_omega <> alpha:8 var
+R960:961 Systems.PA_omega <> d':7 var
+R958:958 Systems.PA_omega <> A:5 var
+R995:1001 Systems.fol <> formula ind
+binder 991:991 <> A:9
+R1009:1011 Coq.Init.Datatypes <> nat ind
+binder 1005:1005 <> d:10
+R1028:1030 Maths_Facts.ordinals <> ord ind
+binder 1015:1019 <> alpha:11
+binder 1021:1024 <> beta:12
+R1064:1071 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1038:1053 Systems.PA_omega <> PA_omega_theorem:3 ind
+R1059:1063 Systems.PA_omega <> alpha:11 var
+R1057:1057 Systems.PA_omega <> d:10 var
+R1055:1055 Systems.PA_omega <> A:9 var
+R1089:1092 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1072:1077 Maths_Facts.ordinals <> ord_lt ind
+R1079:1083 Systems.PA_omega <> alpha:11 var
+R1085:1088 Systems.PA_omega <> beta:12 var
+R1100:1107 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1093:1094 Maths_Facts.ordinals <> nf ind
+R1096:1099 Systems.PA_omega <> beta:12 var
+R1108:1123 Systems.PA_omega <> PA_omega_theorem:3 ind
+R1129:1132 Systems.PA_omega <> beta:12 var
+R1127:1127 Systems.PA_omega <> d:10 var
+R1125:1125 Systems.PA_omega <> A:9 var
+R1158:1164 Systems.fol <> formula ind
+binder 1154:1154 <> A:13
+R1195:1202 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1188:1190 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1172:1185 Systems.PA_omega <> PA_omega_axiom def
+R1187:1187 Systems.PA_omega <> A:13 var
+R1191:1194 Coq.Init.Datatypes <> true constr
+R1203:1218 Systems.PA_omega <> PA_omega_theorem:3 ind
+R1224:1227 Maths_Facts.ordinals <> Zero constr
+R1220:1220 Systems.PA_omega <> A:13 var
+R1259:1265 Systems.fol <> formula ind
+binder 1253:1253 <> A:14
+binder 1255:1255 <> B:15
+R1273:1275 Coq.Init.Datatypes <> nat ind
+binder 1269:1269 <> d:16
+R1287:1289 Maths_Facts.ordinals <> ord ind
+binder 1279:1283 <> alpha:17
+R1331:1338 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1297:1312 Systems.PA_omega <> PA_omega_theorem:3 ind
+R1326:1330 Systems.PA_omega <> alpha:17 var
+R1324:1324 Systems.PA_omega <> d:16 var
+R1315:1317 Systems.fol <> lor constr
+R1319:1319 Systems.PA_omega <> A:14 var
+R1321:1321 Systems.PA_omega <> B:15 var
+R1339:1354 Systems.PA_omega <> PA_omega_theorem:3 ind
+R1368:1372 Systems.PA_omega <> alpha:17 var
+R1366:1366 Systems.PA_omega <> d:16 var
+R1357:1359 Systems.fol <> lor constr
+R1361:1361 Systems.PA_omega <> B:15 var
+R1363:1363 Systems.PA_omega <> A:14 var
+R1405:1411 Systems.fol <> formula ind
+binder 1397:1397 <> C:18
+binder 1399:1399 <> A:19
+binder 1401:1401 <> B:20
+R1419:1421 Coq.Init.Datatypes <> nat ind
+binder 1415:1415 <> d:21
+R1433:1435 Maths_Facts.ordinals <> ord ind
+binder 1425:1429 <> alpha:22
+R1485:1492 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1443:1458 Systems.PA_omega <> PA_omega_theorem:3 ind
+R1480:1484 Systems.PA_omega <> alpha:22 var
+R1478:1478 Systems.PA_omega <> d:21 var
+R1461:1463 Systems.fol <> lor constr
+R1466:1468 Systems.fol <> lor constr
+R1470:1470 Systems.PA_omega <> C:18 var
+R1472:1472 Systems.PA_omega <> A:19 var
+R1475:1475 Systems.PA_omega <> B:20 var
+R1493:1508 Systems.PA_omega <> PA_omega_theorem:3 ind
+R1530:1534 Systems.PA_omega <> alpha:22 var
+R1528:1528 Systems.PA_omega <> d:21 var
+R1511:1513 Systems.fol <> lor constr
+R1516:1518 Systems.fol <> lor constr
+R1520:1520 Systems.PA_omega <> C:18 var
+R1522:1522 Systems.PA_omega <> B:20 var
+R1525:1525 Systems.PA_omega <> A:19 var
+R1567:1573 Systems.fol <> formula ind
+binder 1559:1559 <> A:23
+binder 1561:1561 <> B:24
+binder 1563:1563 <> D:25
+R1581:1583 Coq.Init.Datatypes <> nat ind
+binder 1577:1577 <> d:26
+R1595:1597 Maths_Facts.ordinals <> ord ind
+binder 1587:1591 <> alpha:27
+R1647:1654 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1605:1620 Systems.PA_omega <> PA_omega_theorem:3 ind
+R1642:1646 Systems.PA_omega <> alpha:27 var
+R1640:1640 Systems.PA_omega <> d:26 var
+R1623:1625 Systems.fol <> lor constr
+R1628:1630 Systems.fol <> lor constr
+R1632:1632 Systems.PA_omega <> A:23 var
+R1634:1634 Systems.PA_omega <> B:24 var
+R1637:1637 Systems.PA_omega <> D:25 var
+R1655:1670 Systems.PA_omega <> PA_omega_theorem:3 ind
+R1692:1696 Systems.PA_omega <> alpha:27 var
+R1690:1690 Systems.PA_omega <> d:26 var
+R1673:1675 Systems.fol <> lor constr
+R1678:1680 Systems.fol <> lor constr
+R1682:1682 Systems.PA_omega <> B:24 var
+R1684:1684 Systems.PA_omega <> A:23 var
+R1687:1687 Systems.PA_omega <> D:25 var
+R1731:1737 Systems.fol <> formula ind
+binder 1721:1721 <> C:28
+binder 1723:1723 <> A:29
+binder 1725:1725 <> B:30
+binder 1727:1727 <> D:31
+R1745:1747 Coq.Init.Datatypes <> nat ind
+binder 1741:1741 <> d:32
+R1759:1761 Maths_Facts.ordinals <> ord ind
+binder 1751:1755 <> alpha:33
+R1819:1826 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1769:1784 Systems.PA_omega <> PA_omega_theorem:3 ind
+R1814:1818 Systems.PA_omega <> alpha:33 var
+R1812:1812 Systems.PA_omega <> d:32 var
+R1787:1789 Systems.fol <> lor constr
+R1792:1794 Systems.fol <> lor constr
+R1797:1799 Systems.fol <> lor constr
+R1801:1801 Systems.PA_omega <> C:28 var
+R1803:1803 Systems.PA_omega <> A:29 var
+R1806:1806 Systems.PA_omega <> B:30 var
+R1809:1809 Systems.PA_omega <> D:31 var
+R1827:1842 Systems.PA_omega <> PA_omega_theorem:3 ind
+R1872:1876 Systems.PA_omega <> alpha:33 var
+R1870:1870 Systems.PA_omega <> d:32 var
+R1845:1847 Systems.fol <> lor constr
+R1850:1852 Systems.fol <> lor constr
+R1855:1857 Systems.fol <> lor constr
+R1859:1859 Systems.PA_omega <> C:28 var
+R1861:1861 Systems.PA_omega <> B:30 var
+R1864:1864 Systems.PA_omega <> A:29 var
+R1867:1867 Systems.PA_omega <> D:31 var
+R1908:1914 Systems.fol <> formula ind
+binder 1904:1904 <> A:34
+R1922:1924 Coq.Init.Datatypes <> nat ind
+binder 1918:1918 <> d:35
+R1936:1938 Maths_Facts.ordinals <> ord ind
+binder 1928:1932 <> alpha:36
+R1980:1987 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1946:1961 Systems.PA_omega <> PA_omega_theorem:3 ind
+R1975:1979 Systems.PA_omega <> alpha:36 var
+R1973:1973 Systems.PA_omega <> d:35 var
+R1964:1966 Systems.fol <> lor constr
+R1968:1968 Systems.PA_omega <> A:34 var
+R1970:1970 Systems.PA_omega <> A:34 var
+R1988:2003 Systems.PA_omega <> PA_omega_theorem:3 ind
+R2009:2013 Systems.PA_omega <> alpha:36 var
+R2007:2007 Systems.PA_omega <> d:35 var
+R2005:2005 Systems.PA_omega <> A:34 var
+R2047:2053 Systems.fol <> formula ind
+binder 2041:2041 <> A:37
+binder 2043:2043 <> D:38
+R2061:2063 Coq.Init.Datatypes <> nat ind
+binder 2057:2057 <> d:39
+R2075:2077 Maths_Facts.ordinals <> ord ind
+binder 2067:2071 <> alpha:40
+R2127:2134 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2085:2100 Systems.PA_omega <> PA_omega_theorem:3 ind
+R2122:2126 Systems.PA_omega <> alpha:40 var
+R2120:2120 Systems.PA_omega <> d:39 var
+R2103:2105 Systems.fol <> lor constr
+R2108:2110 Systems.fol <> lor constr
+R2112:2112 Systems.PA_omega <> A:37 var
+R2114:2114 Systems.PA_omega <> A:37 var
+R2117:2117 Systems.PA_omega <> D:38 var
+R2135:2150 Systems.PA_omega <> PA_omega_theorem:3 ind
+R2164:2168 Systems.PA_omega <> alpha:40 var
+R2162:2162 Systems.PA_omega <> d:39 var
+R2153:2155 Systems.fol <> lor constr
+R2157:2157 Systems.PA_omega <> A:37 var
+R2159:2159 Systems.PA_omega <> D:38 var
+R2201:2207 Systems.fol <> formula ind
+binder 2195:2195 <> A:41
+binder 2197:2197 <> D:42
+R2215:2217 Coq.Init.Datatypes <> nat ind
+binder 2211:2211 <> d:43
+R2229:2231 Maths_Facts.ordinals <> ord ind
+binder 2221:2225 <> alpha:44
+R2254:2261 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2247:2249 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2239:2244 Systems.fol <> closed def
+R2246:2246 Systems.PA_omega <> A:41 var
+R2250:2253 Coq.Init.Datatypes <> true constr
+R2288:2295 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2262:2277 Systems.PA_omega <> PA_omega_theorem:3 ind
+R2283:2287 Systems.PA_omega <> alpha:44 var
+R2281:2281 Systems.PA_omega <> d:43 var
+R2279:2279 Systems.PA_omega <> D:42 var
+R2296:2311 Systems.PA_omega <> PA_omega_theorem:3 ind
+R2326:2333 Maths_Facts.ordinals <> ord_succ def
+R2335:2339 Systems.PA_omega <> alpha:44 var
+R2323:2323 Systems.PA_omega <> d:43 var
+R2314:2316 Systems.fol <> lor constr
+R2318:2318 Systems.PA_omega <> A:41 var
+R2320:2320 Systems.PA_omega <> D:42 var
+R2371:2377 Systems.fol <> formula ind
+binder 2365:2365 <> A:45
+binder 2367:2367 <> B:46
+R2389:2391 Coq.Init.Datatypes <> nat ind
+binder 2381:2382 <> d1:47
+binder 2384:2385 <> d2:48
+R2432:2434 Maths_Facts.ordinals <> ord ind
+binder 2416:2421 <> alpha1:49
+binder 2423:2428 <> alpha2:50
+R2476:2483 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2442:2457 Systems.PA_omega <> PA_omega_theorem:3 ind
+R2470:2475 Systems.PA_omega <> alpha1:49 var
+R2467:2468 Systems.PA_omega <> d1:47 var
+R2460:2462 Systems.fol <> neg constr
+R2464:2464 Systems.PA_omega <> A:45 var
+R2518:2525 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2484:2499 Systems.PA_omega <> PA_omega_theorem:3 ind
+R2512:2517 Systems.PA_omega <> alpha2:50 var
+R2509:2510 Systems.PA_omega <> d2:48 var
+R2502:2504 Systems.fol <> neg constr
+R2506:2506 Systems.PA_omega <> B:46 var
+R2526:2541 Systems.PA_omega <> PA_omega_theorem:3 ind
+R2572:2579 Maths_Facts.ordinals <> ord_succ def
+R2582:2588 Maths_Facts.ordinals <> ord_max def
+R2590:2595 Systems.PA_omega <> alpha1:49 var
+R2597:2602 Systems.PA_omega <> alpha2:50 var
+R2560:2562 Coq.Init.Nat <> max def
+R2564:2565 Systems.PA_omega <> d1:47 var
+R2567:2568 Systems.PA_omega <> d2:48 var
+R2544:2546 Systems.fol <> neg constr
+R2549:2551 Systems.fol <> lor constr
+R2553:2553 Systems.PA_omega <> A:45 var
+R2555:2555 Systems.PA_omega <> B:46 var
+R2637:2643 Systems.fol <> formula ind
+binder 2629:2629 <> A:51
+binder 2631:2631 <> B:52
+binder 2633:2633 <> D:53
+R2655:2657 Coq.Init.Datatypes <> nat ind
+binder 2647:2648 <> d1:54
+binder 2650:2651 <> d2:55
+R2677:2679 Maths_Facts.ordinals <> ord ind
+binder 2661:2666 <> alpha1:56
+binder 2668:2673 <> alpha2:57
+R2729:2736 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2687:2702 Systems.PA_omega <> PA_omega_theorem:3 ind
+R2723:2728 Systems.PA_omega <> alpha1:56 var
+R2720:2721 Systems.PA_omega <> d1:54 var
+R2705:2707 Systems.fol <> lor constr
+R2710:2712 Systems.fol <> neg constr
+R2714:2714 Systems.PA_omega <> A:51 var
+R2717:2717 Systems.PA_omega <> D:53 var
+R2779:2786 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2737:2752 Systems.PA_omega <> PA_omega_theorem:3 ind
+R2773:2778 Systems.PA_omega <> alpha2:57 var
+R2770:2771 Systems.PA_omega <> d2:55 var
+R2755:2757 Systems.fol <> lor constr
+R2760:2762 Systems.fol <> neg constr
+R2764:2764 Systems.PA_omega <> B:52 var
+R2767:2767 Systems.PA_omega <> D:53 var
+R2787:2802 Systems.PA_omega <> PA_omega_theorem:3 ind
+R2862:2869 Maths_Facts.ordinals <> ord_succ def
+R2872:2878 Maths_Facts.ordinals <> ord_max def
+R2880:2885 Systems.PA_omega <> alpha1:56 var
+R2887:2892 Systems.PA_omega <> alpha2:57 var
+R2850:2852 Coq.Init.Nat <> max def
+R2854:2855 Systems.PA_omega <> d1:54 var
+R2857:2858 Systems.PA_omega <> d2:55 var
+R2805:2807 Systems.fol <> lor constr
+R2810:2812 Systems.fol <> neg constr
+R2815:2817 Systems.fol <> lor constr
+R2819:2819 Systems.PA_omega <> A:51 var
+R2821:2821 Systems.PA_omega <> B:52 var
+R2825:2825 Systems.PA_omega <> D:53 var
+R2923:2929 Systems.fol <> formula ind
+binder 2919:2919 <> A:58
+R2937:2939 Coq.Init.Datatypes <> nat ind
+binder 2933:2933 <> d:59
+R2951:2953 Maths_Facts.ordinals <> ord ind
+binder 2943:2947 <> alpha:60
+R2987:2994 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2961:2976 Systems.PA_omega <> PA_omega_theorem:3 ind
+R2982:2986 Systems.PA_omega <> alpha:60 var
+R2980:2980 Systems.PA_omega <> d:59 var
+R2978:2978 Systems.PA_omega <> A:58 var
+R2995:3010 Systems.PA_omega <> PA_omega_theorem:3 ind
+R3029:3036 Maths_Facts.ordinals <> ord_succ def
+R3038:3042 Systems.PA_omega <> alpha:60 var
+R3026:3026 Systems.PA_omega <> d:59 var
+R3013:3015 Systems.fol <> neg constr
+R3018:3020 Systems.fol <> neg constr
+R3022:3022 Systems.PA_omega <> A:58 var
+R3074:3080 Systems.fol <> formula ind
+binder 3068:3068 <> A:61
+binder 3070:3070 <> D:62
+R3088:3090 Coq.Init.Datatypes <> nat ind
+binder 3084:3084 <> d:63
+R3102:3104 Maths_Facts.ordinals <> ord ind
+binder 3094:3098 <> alpha:64
+R3146:3153 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3112:3127 Systems.PA_omega <> PA_omega_theorem:3 ind
+R3141:3145 Systems.PA_omega <> alpha:64 var
+R3139:3139 Systems.PA_omega <> d:63 var
+R3130:3132 Systems.fol <> lor constr
+R3134:3134 Systems.PA_omega <> A:61 var
+R3136:3136 Systems.PA_omega <> D:62 var
+R3154:3169 Systems.PA_omega <> PA_omega_theorem:3 ind
+R3196:3203 Maths_Facts.ordinals <> ord_succ def
+R3205:3209 Systems.PA_omega <> alpha:64 var
+R3193:3193 Systems.PA_omega <> d:63 var
+R3172:3174 Systems.fol <> lor constr
+R3177:3179 Systems.fol <> neg constr
+R3182:3184 Systems.fol <> neg constr
+R3186:3186 Systems.PA_omega <> A:61 var
+R3190:3190 Systems.PA_omega <> D:62 var
+R3245:3251 Systems.fol <> formula ind
+binder 3241:3241 <> A:65
+R3259:3261 Coq.Init.Datatypes <> nat ind
+binder 3255:3255 <> n:66
+R3269:3272 Systems.fol <> term ind
+binder 3265:3265 <> t:67
+R3307:3309 Coq.Init.Datatypes <> nat ind
+binder 3303:3303 <> d:68
+R3321:3323 Maths_Facts.ordinals <> ord ind
+binder 3313:3317 <> alpha:69
+R3348:3355 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3341:3343 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R3331:3338 Systems.fol <> closed_t def
+R3340:3340 Systems.PA_omega <> t:67 var
+R3344:3347 Coq.Init.Datatypes <> true constr
+R3407:3414 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3356:3371 Systems.PA_omega <> PA_omega_theorem:3 ind
+R3402:3406 Systems.PA_omega <> alpha:69 var
+R3400:3400 Systems.PA_omega <> d:68 var
+R3374:3376 Systems.fol <> neg constr
+R3379:3390 Systems.fol <> substitution def
+R3392:3392 Systems.PA_omega <> A:65 var
+R3394:3394 Systems.PA_omega <> n:66 var
+R3396:3396 Systems.PA_omega <> t:67 var
+R3415:3430 Systems.PA_omega <> PA_omega_theorem:3 ind
+R3452:3459 Maths_Facts.ordinals <> ord_succ def
+R3461:3465 Systems.PA_omega <> alpha:69 var
+R3449:3449 Systems.PA_omega <> d:68 var
+R3433:3435 Systems.fol <> neg constr
+R3438:3441 Systems.fol <> univ constr
+R3443:3443 Systems.PA_omega <> n:66 var
+R3445:3445 Systems.PA_omega <> A:65 var
+R3503:3509 Systems.fol <> formula ind
+binder 3497:3497 <> A:70
+binder 3499:3499 <> D:71
+R3517:3519 Coq.Init.Datatypes <> nat ind
+binder 3513:3513 <> n:72
+R3527:3530 Systems.fol <> term ind
+binder 3523:3523 <> t:73
+R3565:3567 Coq.Init.Datatypes <> nat ind
+binder 3561:3561 <> d:74
+R3579:3581 Maths_Facts.ordinals <> ord ind
+binder 3571:3575 <> alpha:75
+R3606:3613 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3599:3601 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R3589:3596 Systems.fol <> closed_t def
+R3598:3598 Systems.PA_omega <> t:73 var
+R3602:3605 Coq.Init.Datatypes <> true constr
+R3673:3680 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3614:3629 Systems.PA_omega <> PA_omega_theorem:3 ind
+R3668:3672 Systems.PA_omega <> alpha:75 var
+R3666:3666 Systems.PA_omega <> d:74 var
+R3632:3634 Systems.fol <> lor constr
+R3637:3639 Systems.fol <> neg constr
+R3642:3653 Systems.fol <> substitution def
+R3655:3655 Systems.PA_omega <> A:70 var
+R3657:3657 Systems.PA_omega <> n:72 var
+R3659:3659 Systems.PA_omega <> t:73 var
+R3663:3663 Systems.PA_omega <> D:71 var
+R3681:3696 Systems.PA_omega <> PA_omega_theorem:3 ind
+R3726:3733 Maths_Facts.ordinals <> ord_succ def
+R3735:3739 Systems.PA_omega <> alpha:75 var
+R3723:3723 Systems.PA_omega <> d:74 var
+R3699:3701 Systems.fol <> lor constr
+R3704:3706 Systems.fol <> neg constr
+R3709:3712 Systems.fol <> univ constr
+R3714:3714 Systems.PA_omega <> n:72 var
+R3716:3716 Systems.PA_omega <> A:70 var
+R3720:3720 Systems.PA_omega <> D:71 var
+R3767:3773 Systems.fol <> formula ind
+binder 3763:3763 <> A:76
+R3781:3783 Coq.Init.Datatypes <> nat ind
+binder 3777:3777 <> n:77
+R3791:3793 Coq.Init.Datatypes <> nat ind
+binder 3787:3787 <> d:78
+R3805:3807 Maths_Facts.ordinals <> ord ind
+binder 3797:3801 <> alpha:79
+R3829:3831 Coq.Init.Datatypes <> nat ind
+binder 3825:3825 <> m:80
+R3841:3856 Systems.PA_omega <> PA_omega_theorem:3 ind
+R3893:3897 Systems.PA_omega <> alpha:79 var
+R3891:3891 Systems.PA_omega <> d:78 var
+R3859:3870 Systems.fol <> substitution def
+R3872:3872 Systems.PA_omega <> A:76 var
+R3874:3874 Systems.PA_omega <> n:77 var
+R3877:3885 Systems.fol <> represent def
+R3887:3887 Systems.PA_omega <> m:80 var
+binder 3813:3813 <> g:81
+R3903:3918 Systems.PA_omega <> PA_omega_theorem:3 ind
+R3934:3937 Maths_Facts.ordinals <> cons constr
+R3939:3943 Systems.PA_omega <> alpha:79 var
+R3947:3950 Maths_Facts.ordinals <> Zero constr
+R3931:3931 Systems.PA_omega <> d:78 var
+R3921:3924 Systems.fol <> univ constr
+R3926:3926 Systems.PA_omega <> n:77 var
+R3928:3928 Systems.PA_omega <> A:76 var
+R3980:3986 Systems.fol <> formula ind
+binder 3974:3974 <> A:82
+binder 3976:3976 <> D:83
+R3994:3996 Coq.Init.Datatypes <> nat ind
+binder 3990:3990 <> n:84
+R4004:4006 Coq.Init.Datatypes <> nat ind
+binder 4000:4000 <> d:85
+R4018:4020 Maths_Facts.ordinals <> ord ind
+binder 4010:4014 <> alpha:86
+R4042:4044 Coq.Init.Datatypes <> nat ind
+binder 4038:4038 <> m:87
+R4052:4067 Systems.PA_omega <> PA_omega_theorem:3 ind
+R4112:4116 Systems.PA_omega <> alpha:86 var
+R4110:4110 Systems.PA_omega <> d:85 var
+R4070:4072 Systems.fol <> lor constr
+R4075:4086 Systems.fol <> substitution def
+R4088:4088 Systems.PA_omega <> A:82 var
+R4090:4090 Systems.PA_omega <> n:84 var
+R4093:4101 Systems.fol <> represent def
+R4103:4103 Systems.PA_omega <> m:87 var
+R4107:4107 Systems.PA_omega <> D:83 var
+binder 4026:4026 <> g:88
+R4122:4137 Systems.PA_omega <> PA_omega_theorem:3 ind
+R4161:4164 Maths_Facts.ordinals <> cons constr
+R4166:4170 Systems.PA_omega <> alpha:86 var
+R4174:4177 Maths_Facts.ordinals <> Zero constr
+R4158:4158 Systems.PA_omega <> d:85 var
+R4140:4142 Systems.fol <> lor constr
+R4145:4148 Systems.fol <> univ constr
+R4150:4150 Systems.PA_omega <> n:84 var
+R4152:4152 Systems.PA_omega <> A:82 var
+R4155:4155 Systems.PA_omega <> D:83 var
+R4204:4210 Systems.fol <> formula ind
+binder 4198:4198 <> C:89
+binder 4200:4200 <> A:90
+R4222:4224 Coq.Init.Datatypes <> nat ind
+binder 4214:4215 <> d1:91
+binder 4217:4218 <> d2:92
+R4244:4246 Maths_Facts.ordinals <> ord ind
+binder 4228:4233 <> alpha1:93
+binder 4235:4240 <> alpha2:94
+R4290:4297 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4254:4269 Systems.PA_omega <> PA_omega_theorem:3 ind
+R4284:4289 Systems.PA_omega <> alpha1:93 var
+R4281:4282 Systems.PA_omega <> d1:91 var
+R4272:4274 Systems.fol <> lor constr
+R4276:4276 Systems.PA_omega <> C:89 var
+R4278:4278 Systems.PA_omega <> A:90 var
+R4332:4339 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4298:4313 Systems.PA_omega <> PA_omega_theorem:3 ind
+R4326:4331 Systems.PA_omega <> alpha2:94 var
+R4323:4324 Systems.PA_omega <> d2:92 var
+R4316:4318 Systems.fol <> neg constr
+R4320:4320 Systems.PA_omega <> A:90 var
+R4340:4355 Systems.PA_omega <> PA_omega_theorem:3 ind
+R4439:4446 Maths_Facts.ordinals <> ord_succ def
+R4449:4455 Maths_Facts.ordinals <> ord_max def
+R4457:4462 Systems.PA_omega <> alpha1:93 var
+R4464:4469 Systems.PA_omega <> alpha2:94 var
+R4381:4383 Coq.Init.Nat <> max def
+R4386:4388 Coq.Init.Nat <> max def
+R4390:4391 Systems.PA_omega <> d1:91 var
+R4393:4394 Systems.PA_omega <> d2:92 var
+R4398:4405 Systems.fol <> num_conn def
+R4408:4410 Systems.fol <> neg constr
+R4412:4412 Systems.PA_omega <> A:90 var
+R4357:4357 Systems.PA_omega <> C:89 var
+R4497:4503 Systems.fol <> formula ind
+binder 4491:4491 <> A:95
+binder 4493:4493 <> D:96
+R4515:4517 Coq.Init.Datatypes <> nat ind
+binder 4507:4508 <> d1:97
+binder 4510:4511 <> d2:98
+R4537:4539 Maths_Facts.ordinals <> ord ind
+binder 4521:4526 <> alpha1:99
+binder 4528:4533 <> alpha2:100
+R4575:4582 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4547:4562 Systems.PA_omega <> PA_omega_theorem:3 ind
+R4569:4574 Systems.PA_omega <> alpha1:99 var
+R4566:4567 Systems.PA_omega <> d1:97 var
+R4564:4564 Systems.PA_omega <> A:95 var
+R4625:4632 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4583:4598 Systems.PA_omega <> PA_omega_theorem:3 ind
+R4619:4624 Systems.PA_omega <> alpha2:100 var
+R4616:4617 Systems.PA_omega <> d2:98 var
+R4601:4603 Systems.fol <> lor constr
+R4606:4608 Systems.fol <> neg constr
+R4610:4610 Systems.PA_omega <> A:95 var
+R4613:4613 Systems.PA_omega <> D:96 var
+R4633:4648 Systems.PA_omega <> PA_omega_theorem:3 ind
+R4732:4739 Maths_Facts.ordinals <> ord_succ def
+R4742:4748 Maths_Facts.ordinals <> ord_max def
+R4750:4755 Systems.PA_omega <> alpha1:99 var
+R4757:4762 Systems.PA_omega <> alpha2:100 var
+R4674:4676 Coq.Init.Nat <> max def
+R4679:4681 Coq.Init.Nat <> max def
+R4683:4684 Systems.PA_omega <> d1:97 var
+R4686:4687 Systems.PA_omega <> d2:98 var
+R4691:4698 Systems.fol <> num_conn def
+R4701:4703 Systems.fol <> neg constr
+R4705:4705 Systems.PA_omega <> A:95 var
+R4650:4650 Systems.PA_omega <> D:96 var
+R4792:4798 Systems.fol <> formula ind
+binder 4784:4784 <> C:101
+binder 4786:4786 <> A:102
+binder 4788:4788 <> D:103
+R4810:4812 Coq.Init.Datatypes <> nat ind
+binder 4802:4803 <> d1:104
+binder 4805:4806 <> d2:105
+R4832:4834 Maths_Facts.ordinals <> ord ind
+binder 4816:4821 <> alpha1:106
+binder 4823:4828 <> alpha2:107
+R4878:4885 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4842:4857 Systems.PA_omega <> PA_omega_theorem:3 ind
+R4872:4877 Systems.PA_omega <> alpha1:106 var
+R4869:4870 Systems.PA_omega <> d1:104 var
+R4860:4862 Systems.fol <> lor constr
+R4864:4864 Systems.PA_omega <> C:101 var
+R4866:4866 Systems.PA_omega <> A:102 var
+R4928:4935 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4886:4901 Systems.PA_omega <> PA_omega_theorem:3 ind
+R4922:4927 Systems.PA_omega <> alpha2:107 var
+R4919:4920 Systems.PA_omega <> d2:105 var
+R4904:4906 Systems.fol <> lor constr
+R4909:4911 Systems.fol <> neg constr
+R4913:4913 Systems.PA_omega <> A:102 var
+R4916:4916 Systems.PA_omega <> D:103 var
+R4936:4951 Systems.PA_omega <> PA_omega_theorem:3 ind
+R5043:5050 Maths_Facts.ordinals <> ord_succ def
+R5053:5059 Maths_Facts.ordinals <> ord_max def
+R5061:5066 Systems.PA_omega <> alpha1:106 var
+R5068:5073 Systems.PA_omega <> alpha2:107 var
+R4985:4987 Coq.Init.Nat <> max def
+R4990:4992 Coq.Init.Nat <> max def
+R4994:4995 Systems.PA_omega <> d1:104 var
+R4997:4998 Systems.PA_omega <> d2:105 var
+R5002:5009 Systems.fol <> num_conn def
+R5012:5014 Systems.fol <> neg constr
+R5016:5016 Systems.PA_omega <> A:102 var
+R4954:4956 Systems.fol <> lor constr
+R4958:4958 Systems.PA_omega <> C:101 var
+R4960:4960 Systems.PA_omega <> D:103 var
+prf 5200:5212 <> equ_refl_aux1
+R5228:5231 Systems.fol <> term ind
+binder 5224:5224 <> t:108
+R5247:5250 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R5243:5245 Coq.Init.Peano <> ::nat_scope:x_'>'_x not
+R5237:5240 Systems.fol <> eval def
+R5242:5242 Systems.PA_omega <> t:108 var
+R5272:5274 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R5251:5261 Systems.fol <> correctness def
+R5264:5266 Systems.fol <> equ constr
+R5268:5268 Systems.PA_omega <> t:108 var
+R5270:5270 Systems.PA_omega <> t:108 var
+R5275:5281 Systems.fol <> correct constr
+R5308:5311 Systems.fol <> eval def
+R5308:5311 Systems.fol <> eval def
+R5366:5376 Systems.fol <> correctness def
+R5399:5409 Maths_Facts.naturals <> eq_nat_refl thm
+R5399:5409 Maths_Facts.naturals <> eq_nat_refl thm
+R5399:5409 Maths_Facts.naturals <> eq_nat_refl thm
+prf 5430:5442 <> equ_refl_aux2
+R5458:5461 Systems.fol <> term ind
+binder 5454:5454 <> t:109
+R5477:5480 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R5473:5475 Coq.Init.Peano <> ::nat_scope:x_'>'_x not
+R5467:5470 Systems.fol <> eval def
+R5472:5472 Systems.PA_omega <> t:109 var
+R5500:5502 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R5481:5489 Systems.fol <> correct_a def
+R5492:5494 Systems.fol <> equ constr
+R5496:5496 Systems.PA_omega <> t:109 var
+R5498:5498 Systems.PA_omega <> t:109 var
+R5503:5506 Coq.Init.Datatypes <> true constr
+R5536:5548 Systems.PA_omega <> equ_refl_aux1 thm
+R5536:5548 Systems.PA_omega <> equ_refl_aux1 thm
+R5563:5571 Systems.fol <> correct_a def
+prf 5604:5617 <> eval_represent
+R5633:5635 Coq.Init.Datatypes <> nat ind
+binder 5629:5629 <> n:110
+R5659:5661 Coq.Init.Peano <> ::nat_scope:x_'>'_x not
+R5641:5644 Systems.fol <> eval def
+R5647:5655 Systems.fol <> represent def
+R5657:5657 Systems.PA_omega <> n:110 var
+R5719:5722 Systems.fol <> eval def
+R5725:5733 Systems.fol <> represent def
+R5719:5722 Systems.fol <> eval def
+R5725:5733 Systems.fol <> represent def
+prf 5806:5813 <> equ_refl
+R5829:5831 Coq.Init.Datatypes <> nat ind
+binder 5825:5825 <> m:111
+R5837:5852 Systems.PA_omega <> PA_omega_theorem ind
+R5855:5858 Systems.fol <> atom constr
+R5861:5863 Systems.fol <> equ constr
+R5866:5874 Systems.fol <> represent def
+R5876:5876 Systems.PA_omega <> m:111 var
+R5880:5888 Systems.fol <> represent def
+R5890:5890 Systems.PA_omega <> m:111 var
+R5897:5900 Maths_Facts.ordinals <> Zero constr
+R5924:5928 Systems.PA_omega <> axiom constr
+R5924:5928 Systems.PA_omega <> axiom constr
+R5944:5956 Systems.PA_omega <> equ_refl_aux2 thm
+R5944:5956 Systems.PA_omega <> equ_refl_aux2 thm
+R5965:5978 Systems.PA_omega <> eval_represent thm
+R5965:5978 Systems.PA_omega <> eval_represent thm
+prf 5993:6003 <> w_rule_exmp
+R6019:6021 Coq.Init.Datatypes <> nat ind
+binder 6015:6015 <> n:112
+R6027:6042 Systems.PA_omega <> PA_omega_theorem ind
+R6045:6048 Systems.fol <> univ constr
+R6050:6050 Systems.PA_omega <> n:112 var
+R6053:6056 Systems.fol <> atom constr
+R6059:6061 Systems.fol <> equ constr
+R6064:6066 Systems.fol <> var constr
+R6068:6068 Systems.PA_omega <> n:112 var
+R6072:6074 Systems.fol <> var constr
+R6076:6076 Systems.PA_omega <> n:112 var
+R6085:6088 Maths_Facts.ordinals <> cons constr
+R6090:6093 Maths_Facts.ordinals <> Zero constr
+R6097:6100 Maths_Facts.ordinals <> Zero constr
+R6126:6132 Systems.PA_omega <> w_rule1 constr
+R6126:6132 Systems.PA_omega <> w_rule1 constr
+R6150:6160 Maths_Facts.naturals <> eq_nat_refl thm
+R6150:6160 Maths_Facts.naturals <> eq_nat_refl thm
+R6150:6160 Maths_Facts.naturals <> eq_nat_refl thm
+R6169:6176 Systems.PA_omega <> equ_refl thm
+R6169:6176 Systems.PA_omega <> equ_refl thm
+prf 6252:6265 <> associativity1
+R6285:6291 Systems.fol <> formula ind
+binder 6277:6277 <> C:113
+binder 6279:6279 <> A:114
+binder 6281:6281 <> B:115
+R6299:6301 Coq.Init.Datatypes <> nat ind
+binder 6295:6295 <> d:116
+R6313:6315 Maths_Facts.ordinals <> ord ind
+binder 6305:6309 <> alpha:117
+R6363:6368 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R6321:6336 Systems.PA_omega <> PA_omega_theorem ind
+R6339:6341 Systems.fol <> lor constr
+R6344:6346 Systems.fol <> lor constr
+R6348:6348 Systems.PA_omega <> C:113 var
+R6350:6350 Systems.PA_omega <> A:114 var
+R6353:6353 Systems.PA_omega <> B:115 var
+R6356:6356 Systems.PA_omega <> d:116 var
+R6358:6362 Systems.PA_omega <> alpha:117 var
+R6369:6384 Systems.PA_omega <> PA_omega_theorem ind
+R6387:6389 Systems.fol <> lor constr
+R6391:6391 Systems.PA_omega <> C:113 var
+R6394:6396 Systems.fol <> lor constr
+R6398:6398 Systems.PA_omega <> A:114 var
+R6400:6400 Systems.PA_omega <> B:115 var
+R6404:6404 Systems.PA_omega <> d:116 var
+R6406:6410 Systems.PA_omega <> alpha:117 var
+R6434:6442 Systems.PA_omega <> exchange3 constr
+R6434:6442 Systems.PA_omega <> exchange3 constr
+R6456:6464 Systems.PA_omega <> exchange2 constr
+R6456:6464 Systems.PA_omega <> exchange2 constr
+R6478:6486 Systems.PA_omega <> exchange1 constr
+R6478:6486 Systems.PA_omega <> exchange1 constr
+prf 6515:6528 <> associativity2
+R6548:6554 Systems.fol <> formula ind
+binder 6540:6540 <> C:118
+binder 6542:6542 <> A:119
+binder 6544:6544 <> B:120
+R6562:6564 Coq.Init.Datatypes <> nat ind
+binder 6558:6558 <> d:121
+R6576:6578 Maths_Facts.ordinals <> ord ind
+binder 6568:6572 <> alpha:122
+R6626:6631 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R6584:6599 Systems.PA_omega <> PA_omega_theorem ind
+R6602:6604 Systems.fol <> lor constr
+R6606:6606 Systems.PA_omega <> C:118 var
+R6609:6611 Systems.fol <> lor constr
+R6613:6613 Systems.PA_omega <> A:119 var
+R6615:6615 Systems.PA_omega <> B:120 var
+R6619:6619 Systems.PA_omega <> d:121 var
+R6621:6625 Systems.PA_omega <> alpha:122 var
+R6632:6647 Systems.PA_omega <> PA_omega_theorem ind
+R6650:6652 Systems.fol <> lor constr
+R6655:6657 Systems.fol <> lor constr
+R6659:6659 Systems.PA_omega <> C:118 var
+R6661:6661 Systems.PA_omega <> A:119 var
+R6664:6664 Systems.PA_omega <> B:120 var
+R6667:6667 Systems.PA_omega <> d:121 var
+R6669:6673 Systems.PA_omega <> alpha:122 var
+R6697:6705 Systems.PA_omega <> exchange1 constr
+R6697:6705 Systems.PA_omega <> exchange1 constr
+R6719:6727 Systems.PA_omega <> exchange2 constr
+R6719:6727 Systems.PA_omega <> exchange2 constr
+R6741:6749 Systems.PA_omega <> exchange3 constr
+R6741:6749 Systems.PA_omega <> exchange3 constr
+prf 6852:6860 <> deg_monot
+R6876:6882 Systems.fol <> formula ind
+binder 6872:6872 <> A:123
+R6893:6895 Coq.Init.Datatypes <> nat ind
+binder 6886:6886 <> d:124
+binder 6888:6889 <> d':125
+R6907:6909 Maths_Facts.ordinals <> ord ind
+binder 6899:6903 <> alpha:126
+R6922:6925 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R6917:6920 Coq.Init.Peano <> ::nat_scope:x_'>='_x not
+R6915:6916 Systems.PA_omega <> d':125 var
+R6921:6921 Systems.PA_omega <> d:124 var
+R6952:6955 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R6926:6941 Systems.PA_omega <> PA_omega_theorem ind
+R6943:6943 Systems.PA_omega <> A:123 var
+R6945:6945 Systems.PA_omega <> d:124 var
+R6947:6951 Systems.PA_omega <> alpha:126 var
+R6956:6971 Systems.PA_omega <> PA_omega_theorem ind
+R6973:6973 Systems.PA_omega <> A:123 var
+R6975:6976 Systems.PA_omega <> d':125 var
+R6978:6982 Systems.PA_omega <> alpha:126 var
+R7006:7013 Maths_Facts.naturals <> leq_type thm
+R7006:7013 Maths_Facts.naturals <> leq_type thm
+R7042:7049 Systems.PA_omega <> deg_incr constr
+R7042:7049 Systems.PA_omega <> deg_incr constr
+prf 7097:7102 <> ord_nf
+R7118:7124 Systems.fol <> formula ind
+binder 7114:7114 <> A:127
+R7132:7134 Coq.Init.Datatypes <> nat ind
+binder 7128:7128 <> d:128
+R7146:7148 Maths_Facts.ordinals <> ord ind
+binder 7138:7142 <> alpha:129
+R7180:7183 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7154:7169 Systems.PA_omega <> PA_omega_theorem ind
+R7171:7171 Systems.PA_omega <> A:127 var
+R7173:7173 Systems.PA_omega <> d:128 var
+R7175:7179 Systems.PA_omega <> alpha:129 var
+R7184:7185 Maths_Facts.ordinals <> nf ind
+R7187:7191 Systems.PA_omega <> alpha:129 var
+R7232:7242 Maths_Facts.ordinals <> ord_succ_nf thm
+R7255:7264 Maths_Facts.ordinals <> ord_max_nf thm
+R7232:7242 Maths_Facts.ordinals <> ord_succ_nf thm
+R7232:7242 Maths_Facts.ordinals <> ord_succ_nf thm
+R7232:7242 Maths_Facts.ordinals <> ord_succ_nf thm
+R7232:7242 Maths_Facts.ordinals <> ord_succ_nf thm
+R7232:7242 Maths_Facts.ordinals <> ord_succ_nf thm
+R7232:7242 Maths_Facts.ordinals <> ord_succ_nf thm
+R7232:7242 Maths_Facts.ordinals <> ord_succ_nf thm
+R7232:7242 Maths_Facts.ordinals <> ord_succ_nf thm
+R7232:7242 Maths_Facts.ordinals <> ord_succ_nf thm
+R7232:7242 Maths_Facts.ordinals <> ord_succ_nf thm
+R7232:7242 Maths_Facts.ordinals <> ord_succ_nf thm
+R7232:7242 Maths_Facts.ordinals <> ord_succ_nf thm
+R7232:7242 Maths_Facts.ordinals <> ord_succ_nf thm
+R7232:7242 Maths_Facts.ordinals <> ord_succ_nf thm
+R7232:7242 Maths_Facts.ordinals <> ord_succ_nf thm
+R7232:7242 Maths_Facts.ordinals <> ord_succ_nf thm
+R7232:7242 Maths_Facts.ordinals <> ord_succ_nf thm
+R7232:7242 Maths_Facts.ordinals <> ord_succ_nf thm
+R7232:7242 Maths_Facts.ordinals <> ord_succ_nf thm
+R7232:7242 Maths_Facts.ordinals <> ord_succ_nf thm
+R7232:7242 Maths_Facts.ordinals <> ord_succ_nf thm
+R7255:7264 Maths_Facts.ordinals <> ord_max_nf thm
+R7255:7264 Maths_Facts.ordinals <> ord_max_nf thm
+R7255:7264 Maths_Facts.ordinals <> ord_max_nf thm
+R7255:7264 Maths_Facts.ordinals <> ord_max_nf thm
+R7255:7264 Maths_Facts.ordinals <> ord_max_nf thm
+R7255:7264 Maths_Facts.ordinals <> ord_max_nf thm
+R7255:7264 Maths_Facts.ordinals <> ord_max_nf thm
+R7255:7264 Maths_Facts.ordinals <> ord_max_nf thm
+R7255:7264 Maths_Facts.ordinals <> ord_max_nf thm
+R7255:7264 Maths_Facts.ordinals <> ord_max_nf thm
+R7255:7264 Maths_Facts.ordinals <> ord_max_nf thm
+R7255:7264 Maths_Facts.ordinals <> ord_max_nf thm
+R7255:7264 Maths_Facts.ordinals <> ord_max_nf thm
+R7255:7264 Maths_Facts.ordinals <> ord_max_nf thm
+R7255:7264 Maths_Facts.ordinals <> ord_max_nf thm
+R7255:7264 Maths_Facts.ordinals <> ord_max_nf thm
+R7255:7264 Maths_Facts.ordinals <> ord_max_nf thm
+R7255:7264 Maths_Facts.ordinals <> ord_max_nf thm
+R7255:7264 Maths_Facts.ordinals <> ord_max_nf thm
+R7255:7264 Maths_Facts.ordinals <> ord_max_nf thm
+R7255:7264 Maths_Facts.ordinals <> ord_max_nf thm
+R7281:7287 Maths_Facts.ordinals <> zero_nf constr
+R7281:7287 Maths_Facts.ordinals <> zero_nf constr
+R7298:7306 Maths_Facts.ordinals <> single_nf constr
+R7298:7306 Maths_Facts.ordinals <> single_nf constr
+R7330:7338 Maths_Facts.ordinals <> single_nf constr
+R7330:7338 Maths_Facts.ordinals <> single_nf constr
+prf 7366:7374 <> ord_monot
+R7390:7396 Systems.fol <> formula ind
+binder 7386:7386 <> A:130
+R7404:7406 Coq.Init.Datatypes <> nat ind
+binder 7400:7400 <> d:131
+R7423:7425 Maths_Facts.ordinals <> ord ind
+binder 7410:7414 <> alpha:132
+binder 7416:7419 <> beta:133
+R7431:7431 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7483:7489 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7432:7432 Coq.Init.Datatypes <> ::type_scope:x_'+'_x not
+R7465:7469 Coq.Init.Datatypes <> ::type_scope:x_'+'_x not
+R7482:7482 Coq.Init.Datatypes <> ::type_scope:x_'+'_x not
+R7433:7433 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R7451:7456 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R7464:7464 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R7434:7439 Maths_Facts.ordinals <> ord_lt ind
+R7441:7445 Systems.PA_omega <> alpha:132 var
+R7447:7450 Systems.PA_omega <> beta:133 var
+R7457:7458 Maths_Facts.ordinals <> nf ind
+R7460:7463 Systems.PA_omega <> beta:133 var
+R7475:7477 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R7470:7474 Systems.PA_omega <> alpha:132 var
+R7478:7481 Systems.PA_omega <> beta:133 var
+R7516:7521 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7490:7505 Systems.PA_omega <> PA_omega_theorem ind
+R7507:7507 Systems.PA_omega <> A:130 var
+R7509:7509 Systems.PA_omega <> d:131 var
+R7511:7515 Systems.PA_omega <> alpha:132 var
+R7522:7537 Systems.PA_omega <> PA_omega_theorem ind
+R7539:7539 Systems.PA_omega <> A:130 var
+R7541:7541 Systems.PA_omega <> d:131 var
+R7543:7546 Systems.PA_omega <> beta:133 var
+R7597:7604 Systems.PA_omega <> ord_incr constr
+R7597:7604 Systems.PA_omega <> ord_incr constr
+prf 7659:7677 <> correct_correctness
+R7693:7706 Systems.fol <> atomic_formula ind
+binder 7689:7689 <> a:134
+R7730:7733 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7723:7725 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R7712:7720 Systems.fol <> correct_a def
+R7722:7722 Systems.PA_omega <> a:134 var
+R7726:7729 Coq.Init.Datatypes <> true constr
+R7747:7749 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R7734:7744 Systems.fol <> correctness def
+R7746:7746 Systems.PA_omega <> a:134 var
+R7750:7756 Systems.fol <> correct constr
+R7781:7789 Systems.fol <> correct_a def
+R7806:7816 Systems.fol <> correctness def
+R7806:7816 Systems.fol <> correctness def
+prf 7878:7898 <> incorrect_correctness
+R7914:7927 Systems.fol <> atomic_formula ind
+binder 7910:7910 <> a:135
+R7953:7956 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7946:7948 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R7933:7943 Systems.fol <> incorrect_a def
+R7945:7945 Systems.PA_omega <> a:135 var
+R7949:7952 Coq.Init.Datatypes <> true constr
+R7970:7972 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R7957:7967 Systems.fol <> correctness def
+R7969:7969 Systems.PA_omega <> a:135 var
+R7973:7981 Systems.fol <> incorrect constr
+R8006:8016 Systems.fol <> incorrect_a def
+R8033:8043 Systems.fol <> correctness def
+R8033:8043 Systems.fol <> correctness def
+prf 8105:8116 <> correct_eval
+R8134:8137 Systems.fol <> term ind
+binder 8128:8128 <> s:136
+binder 8130:8130 <> t:137
+R8169:8172 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R8162:8164 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R8143:8151 Systems.fol <> correct_a def
+R8154:8156 Systems.fol <> equ constr
+R8158:8158 Systems.PA_omega <> s:136 var
+R8160:8160 Systems.PA_omega <> t:137 var
+R8165:8168 Coq.Init.Datatypes <> true constr
+R8183:8186 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R8179:8181 Coq.Init.Peano <> ::nat_scope:x_'>'_x not
+R8173:8176 Systems.fol <> eval def
+R8178:8178 Systems.PA_omega <> s:136 var
+R8193:8195 Coq.Init.Peano <> ::nat_scope:x_'>'_x not
+R8187:8190 Systems.fol <> eval def
+R8192:8192 Systems.PA_omega <> t:137 var
+R8243:8245 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R8222:8232 Systems.fol <> correctness def
+R8235:8237 Systems.fol <> equ constr
+R8246:8252 Systems.fol <> correct constr
+R8243:8245 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R8222:8232 Systems.fol <> correctness def
+R8235:8237 Systems.fol <> equ constr
+R8246:8252 Systems.fol <> correct constr
+R8264:8282 Systems.PA_omega <> correct_correctness thm
+R8264:8282 Systems.PA_omega <> correct_correctness thm
+R8303:8311 Systems.fol <> correct_a def
+R8343:8353 Systems.fol <> correctness def
+R8371:8374 Systems.fol <> eval def
+R8389:8392 Systems.fol <> eval def
+R8371:8374 Systems.fol <> eval def
+R8389:8392 Systems.fol <> eval def
+R8389:8392 Systems.fol <> eval def
+prf 8480:8493 <> incorrect_eval
+R8511:8514 Systems.fol <> term ind
+binder 8505:8505 <> s:138
+binder 8507:8507 <> t:139
+R8548:8551 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R8541:8543 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R8520:8530 Systems.fol <> incorrect_a def
+R8533:8535 Systems.fol <> equ constr
+R8537:8537 Systems.PA_omega <> s:138 var
+R8539:8539 Systems.PA_omega <> t:139 var
+R8544:8547 Coq.Init.Datatypes <> true constr
+R8562:8565 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R8558:8560 Coq.Init.Peano <> ::nat_scope:x_'>'_x not
+R8552:8555 Systems.fol <> eval def
+R8557:8557 Systems.PA_omega <> s:138 var
+R8572:8574 Coq.Init.Peano <> ::nat_scope:x_'>'_x not
+R8566:8569 Systems.fol <> eval def
+R8571:8571 Systems.PA_omega <> t:139 var
+R8622:8624 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R8601:8611 Systems.fol <> correctness def
+R8614:8616 Systems.fol <> equ constr
+R8625:8633 Systems.fol <> incorrect constr
+R8622:8624 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R8601:8611 Systems.fol <> correctness def
+R8614:8616 Systems.fol <> equ constr
+R8625:8633 Systems.fol <> incorrect constr
+R8645:8665 Systems.PA_omega <> incorrect_correctness thm
+R8645:8665 Systems.PA_omega <> incorrect_correctness thm
+R8686:8696 Systems.fol <> incorrect_a def
+R8728:8738 Systems.fol <> correctness def
+R8756:8759 Systems.fol <> eval def
+R8774:8777 Systems.fol <> eval def
+R8756:8759 Systems.fol <> eval def
+R8774:8777 Systems.fol <> eval def
+R8774:8777 Systems.fol <> eval def
+prf 8865:8878 <> correct_closed
+R8894:8907 Systems.fol <> atomic_formula ind
+binder 8890:8890 <> a:140
+R8931:8934 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R8924:8926 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R8913:8921 Systems.fol <> correct_a def
+R8923:8923 Systems.PA_omega <> a:140 var
+R8927:8930 Coq.Init.Datatypes <> true constr
+R8945:8947 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R8935:8942 Systems.fol <> closed_a def
+R8944:8944 Systems.PA_omega <> a:140 var
+R8948:8951 Coq.Init.Datatypes <> true constr
+R9041:9052 Systems.PA_omega <> correct_eval thm
+R9041:9052 Systems.PA_omega <> correct_eval thm
+R9068:9078 Systems.fol <> eval_closed thm
+R9068:9078 Systems.fol <> eval_closed thm
+R9105:9115 Systems.fol <> eval_closed thm
+R9105:9115 Systems.fol <> eval_closed thm
+prf 9154:9169 <> incorrect_closed
+R9185:9198 Systems.fol <> atomic_formula ind
+binder 9181:9181 <> a:141
+R9224:9227 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R9217:9219 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R9204:9214 Systems.fol <> incorrect_a def
+R9216:9216 Systems.PA_omega <> a:141 var
+R9220:9223 Coq.Init.Datatypes <> true constr
+R9238:9240 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R9228:9235 Systems.fol <> closed_a def
+R9237:9237 Systems.PA_omega <> a:141 var
+R9241:9244 Coq.Init.Datatypes <> true constr
+R9334:9347 Systems.PA_omega <> incorrect_eval thm
+R9334:9347 Systems.PA_omega <> incorrect_eval thm
+R9363:9373 Systems.fol <> eval_closed thm
+R9363:9373 Systems.fol <> eval_closed thm
+R9400:9410 Systems.fol <> eval_closed thm
+R9400:9410 Systems.fol <> eval_closed thm
+prf 9449:9462 <> subst_closed_t
+R9478:9480 Coq.Init.Datatypes <> nat ind
+binder 9474:9474 <> n:142
+R9492:9495 Systems.fol <> term ind
+binder 9484:9484 <> T:143
+binder 9486:9486 <> s:144
+binder 9488:9488 <> t:145
+R9518:9523 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R9511:9513 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R9501:9508 Systems.fol <> closed_t def
+R9510:9510 Systems.PA_omega <> t:145 var
+R9514:9517 Coq.Init.Datatypes <> true constr
+R9562:9567 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R9555:9557 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R9524:9531 Systems.fol <> closed_t def
+R9534:9547 Systems.fol <> substitution_t def
+R9549:9549 Systems.PA_omega <> T:143 var
+R9551:9551 Systems.PA_omega <> n:142 var
+R9553:9553 Systems.PA_omega <> s:144 var
+R9558:9561 Coq.Init.Datatypes <> true constr
+R9599:9601 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R9568:9575 Systems.fol <> closed_t def
+R9578:9591 Systems.fol <> substitution_t def
+R9593:9593 Systems.PA_omega <> T:143 var
+R9595:9595 Systems.PA_omega <> n:142 var
+R9597:9597 Systems.PA_omega <> t:145 var
+R9602:9605 Coq.Init.Datatypes <> true constr
+R9675:9682 Systems.fol <> closed_t def
+R9685:9698 Systems.fol <> substitution_t def
+R9733:9740 Systems.fol <> closed_t def
+R9743:9756 Systems.fol <> substitution_t def
+R9675:9682 Systems.fol <> closed_t def
+R9685:9698 Systems.fol <> substitution_t def
+R9733:9740 Systems.fol <> closed_t def
+R9743:9756 Systems.fol <> substitution_t def
+R9733:9740 Systems.fol <> closed_t def
+R9743:9756 Systems.fol <> substitution_t def
+R10031:10038 Systems.fol <> closed_t def
+R10041:10054 Systems.fol <> substitution_t def
+R10089:10096 Systems.fol <> closed_t def
+R10099:10112 Systems.fol <> substitution_t def
+R10031:10038 Systems.fol <> closed_t def
+R10041:10054 Systems.fol <> substitution_t def
+R10089:10096 Systems.fol <> closed_t def
+R10099:10112 Systems.fol <> substitution_t def
+R10089:10096 Systems.fol <> closed_t def
+R10099:10112 Systems.fol <> substitution_t def
+R10365:10370 Systems.PA_omega <> eq_nat syndef
+R10365:10370 Systems.PA_omega <> eq_nat syndef
+prf 10480:10501 <> incorrect_subst_closed
+R10519:10532 Systems.fol <> atomic_formula ind
+binder 10515:10515 <> a:146
+R10540:10542 Coq.Init.Datatypes <> nat ind
+binder 10536:10536 <> n:147
+R10552:10555 Systems.fol <> term ind
+binder 10546:10546 <> s:148
+binder 10548:10548 <> t:149
+R10578:10583 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R10571:10573 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R10561:10568 Systems.fol <> closed_t def
+R10570:10570 Systems.PA_omega <> t:149 var
+R10574:10577 Coq.Init.Datatypes <> true constr
+R10625:10630 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R10618:10620 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R10584:10594 Systems.fol <> incorrect_a def
+R10597:10610 Systems.fol <> substitution_a def
+R10612:10612 Systems.PA_omega <> a:146 var
+R10614:10614 Systems.PA_omega <> n:147 var
+R10616:10616 Systems.PA_omega <> s:148 var
+R10621:10624 Coq.Init.Datatypes <> true constr
+R10662:10664 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R10631:10638 Systems.fol <> closed_a def
+R10641:10654 Systems.fol <> substitution_a def
+R10656:10656 Systems.PA_omega <> a:146 var
+R10658:10658 Systems.PA_omega <> n:147 var
+R10660:10660 Systems.PA_omega <> t:149 var
+R10665:10668 Coq.Init.Datatypes <> true constr
+R10755:10770 Systems.PA_omega <> incorrect_closed thm
+R10755:10770 Systems.PA_omega <> incorrect_closed thm
+R10801:10808 Systems.fol <> closed_t def
+R10811:10824 Systems.fol <> substitution_t def
+R10857:10864 Systems.fol <> closed_t def
+R10867:10880 Systems.fol <> substitution_t def
+R10801:10808 Systems.fol <> closed_t def
+R10811:10824 Systems.fol <> substitution_t def
+R10857:10864 Systems.fol <> closed_t def
+R10867:10880 Systems.fol <> substitution_t def
+R10857:10864 Systems.fol <> closed_t def
+R10867:10880 Systems.fol <> substitution_t def
+R10921:10934 Systems.PA_omega <> subst_closed_t thm
+R10921:10934 Systems.PA_omega <> subst_closed_t thm
+R10921:10934 Systems.PA_omega <> subst_closed_t thm
+R10964:10977 Systems.PA_omega <> subst_closed_t thm
+R10964:10977 Systems.PA_omega <> subst_closed_t thm
+R10964:10977 Systems.PA_omega <> subst_closed_t thm
+prf 11176:11185 <> closed_lor
+R11203:11209 Systems.fol <> formula ind
+binder 11197:11197 <> B:150
+binder 11199:11199 <> D:151
+R11238:11241 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R11231:11233 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R11215:11220 Systems.fol <> closed def
+R11223:11225 Systems.fol <> lor constr
+R11227:11227 Systems.PA_omega <> B:150 var
+R11229:11229 Systems.PA_omega <> D:151 var
+R11234:11237 Coq.Init.Datatypes <> true constr
+R11257:11260 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R11250:11252 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R11242:11247 Systems.fol <> closed def
+R11249:11249 Systems.PA_omega <> B:150 var
+R11253:11256 Coq.Init.Datatypes <> true constr
+R11269:11271 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R11261:11266 Systems.fol <> closed def
+R11268:11268 Systems.PA_omega <> D:151 var
+R11272:11275 Coq.Init.Datatypes <> true constr
+R11323:11328 Systems.fol <> closed def
+R11343:11348 Systems.fol <> closed def
+R11323:11328 Systems.fol <> closed def
+R11343:11348 Systems.fol <> closed def
+R11343:11348 Systems.fol <> closed def
+R11428:11433 Systems.fol <> closed def
+R11448:11453 Systems.fol <> closed def
+R11428:11433 Systems.fol <> closed def
+R11448:11453 Systems.fol <> closed def
+R11448:11453 Systems.fol <> closed def
+prf 11534:11554 <> closed_subst_eq_aux_t
+R11570:11573 Systems.fol <> term ind
+binder 11566:11566 <> T:152
+R11581:11583 Coq.Init.Datatypes <> nat ind
+binder 11577:11577 <> n:153
+R11591:11594 Systems.fol <> term ind
+binder 11587:11587 <> t:154
+R11632:11635 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R11624:11626 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R11600:11605 Maths_Facts.lists <> member def
+R11607:11607 Systems.PA_omega <> n:153 var
+R11610:11620 Systems.fol <> free_list_t def
+R11622:11622 Systems.PA_omega <> T:152 var
+R11627:11631 Coq.Init.Datatypes <> false constr
+R11656:11658 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R11636:11649 Systems.fol <> substitution_t def
+R11651:11651 Systems.PA_omega <> T:152 var
+R11653:11653 Systems.PA_omega <> n:153 var
+R11655:11655 Systems.PA_omega <> t:154 var
+R11659:11659 Systems.PA_omega <> T:152 var
+R11769:11793 Maths_Facts.lists <> member_remove_dups_concat thm
+R11769:11793 Maths_Facts.lists <> member_remove_dups_concat thm
+R11896:11920 Maths_Facts.lists <> member_remove_dups_concat thm
+R11896:11920 Maths_Facts.lists <> member_remove_dups_concat thm
+R12022:12027 Systems.PA_omega <> eq_nat syndef
+R12022:12027 Systems.PA_omega <> eq_nat syndef
+prf 12100:12120 <> closed_subst_eq_aux_a
+R12136:12149 Systems.fol <> atomic_formula ind
+binder 12132:12132 <> a:155
+R12157:12159 Coq.Init.Datatypes <> nat ind
+binder 12153:12153 <> n:156
+R12167:12170 Systems.fol <> term ind
+binder 12163:12163 <> t:157
+R12208:12211 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R12200:12202 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R12176:12181 Maths_Facts.lists <> member def
+R12183:12183 Systems.PA_omega <> n:156 var
+R12186:12196 Systems.fol <> free_list_a def
+R12198:12198 Systems.PA_omega <> a:155 var
+R12203:12207 Coq.Init.Datatypes <> false constr
+R12232:12234 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R12212:12225 Systems.fol <> substitution_a def
+R12227:12227 Systems.PA_omega <> a:155 var
+R12229:12229 Systems.PA_omega <> n:156 var
+R12231:12231 Systems.PA_omega <> t:157 var
+R12235:12235 Systems.PA_omega <> a:155 var
+R12305:12329 Maths_Facts.lists <> member_remove_dups_concat thm
+R12305:12329 Maths_Facts.lists <> member_remove_dups_concat thm
+R12350:12370 Systems.PA_omega <> closed_subst_eq_aux_t thm
+R12382:12402 Systems.PA_omega <> closed_subst_eq_aux_t thm
+R12350:12370 Systems.PA_omega <> closed_subst_eq_aux_t thm
+R12350:12370 Systems.PA_omega <> closed_subst_eq_aux_t thm
+R12350:12370 Systems.PA_omega <> closed_subst_eq_aux_t thm
+R12382:12402 Systems.PA_omega <> closed_subst_eq_aux_t thm
+R12382:12402 Systems.PA_omega <> closed_subst_eq_aux_t thm
+R12382:12402 Systems.PA_omega <> closed_subst_eq_aux_t thm
+prf 12457:12475 <> closed_subst_eq_aux
+R12491:12497 Systems.fol <> formula ind
+binder 12487:12487 <> A:158
+R12505:12507 Coq.Init.Datatypes <> nat ind
+binder 12501:12501 <> n:159
+R12515:12518 Systems.fol <> term ind
+binder 12511:12511 <> t:160
+R12554:12557 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R12546:12548 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R12524:12529 Maths_Facts.lists <> member def
+R12531:12531 Systems.PA_omega <> n:159 var
+R12534:12542 Systems.fol <> free_list def
+R12544:12544 Systems.PA_omega <> A:158 var
+R12549:12553 Coq.Init.Datatypes <> false constr
+R12576:12578 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R12558:12569 Systems.fol <> substitution def
+R12571:12571 Systems.PA_omega <> A:158 var
+R12573:12573 Systems.PA_omega <> n:159 var
+R12575:12575 Systems.PA_omega <> t:160 var
+R12579:12579 Systems.PA_omega <> A:158 var
+R12627:12647 Systems.PA_omega <> closed_subst_eq_aux_a thm
+R12627:12647 Systems.PA_omega <> closed_subst_eq_aux_a thm
+R12627:12647 Systems.PA_omega <> closed_subst_eq_aux_a thm
+R12627:12647 Systems.PA_omega <> closed_subst_eq_aux_a thm
+R12731:12755 Maths_Facts.lists <> member_remove_dups_concat thm
+R12731:12755 Maths_Facts.lists <> member_remove_dups_concat thm
+R12845:12850 Systems.PA_omega <> eq_nat syndef
+R12845:12850 Systems.PA_omega <> eq_nat syndef
+R12922:12934 Maths_Facts.lists <> member_remove thm
+R12922:12934 Maths_Facts.lists <> member_remove thm
+prf 12961:12977 <> closed_subst_eq_t
+R12993:12995 Coq.Init.Datatypes <> nat ind
+binder 12989:12989 <> n:161
+R13005:13008 Systems.fol <> term ind
+binder 12999:12999 <> T:162
+binder 13001:13001 <> t:163
+R13031:13034 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R13024:13026 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R13014:13021 Systems.fol <> closed_t def
+R13023:13023 Systems.PA_omega <> T:162 var
+R13027:13030 Coq.Init.Datatypes <> true constr
+R13055:13057 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R13035:13048 Systems.fol <> substitution_t def
+R13050:13050 Systems.PA_omega <> T:162 var
+R13052:13052 Systems.PA_omega <> n:161 var
+R13054:13054 Systems.PA_omega <> t:163 var
+R13058:13058 Systems.PA_omega <> T:162 var
+R13082:13102 Systems.PA_omega <> closed_subst_eq_aux_t thm
+R13082:13102 Systems.PA_omega <> closed_subst_eq_aux_t thm
+R13111:13128 Systems.fol <> closed_free_list_t thm
+R13111:13128 Systems.fol <> closed_free_list_t thm
+prf 13165:13181 <> closed_subst_eq_a
+R13197:13210 Systems.fol <> atomic_formula ind
+binder 13193:13193 <> a:164
+R13218:13220 Coq.Init.Datatypes <> nat ind
+binder 13214:13214 <> n:165
+R13228:13231 Systems.fol <> term ind
+binder 13224:13224 <> t:166
+R13254:13257 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R13247:13249 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R13237:13244 Systems.fol <> closed_a def
+R13246:13246 Systems.PA_omega <> a:164 var
+R13250:13253 Coq.Init.Datatypes <> true constr
+R13278:13280 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R13258:13271 Systems.fol <> substitution_a def
+R13273:13273 Systems.PA_omega <> a:164 var
+R13275:13275 Systems.PA_omega <> n:165 var
+R13277:13277 Systems.PA_omega <> t:166 var
+R13281:13281 Systems.PA_omega <> a:164 var
+R13305:13325 Systems.PA_omega <> closed_subst_eq_aux_a thm
+R13305:13325 Systems.PA_omega <> closed_subst_eq_aux_a thm
+R13334:13351 Systems.fol <> closed_free_list_a thm
+R13334:13351 Systems.fol <> closed_free_list_a thm
+prf 13388:13402 <> closed_subst_eq
+R13418:13424 Systems.fol <> formula ind
+binder 13414:13414 <> A:167
+R13432:13434 Coq.Init.Datatypes <> nat ind
+binder 13428:13428 <> n:168
+R13442:13445 Systems.fol <> term ind
+binder 13438:13438 <> t:169
+R13466:13469 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R13459:13461 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R13451:13456 Systems.fol <> closed def
+R13458:13458 Systems.PA_omega <> A:167 var
+R13462:13465 Coq.Init.Datatypes <> true constr
+R13488:13490 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R13470:13481 Systems.fol <> substitution def
+R13483:13483 Systems.PA_omega <> A:167 var
+R13485:13485 Systems.PA_omega <> n:168 var
+R13487:13487 Systems.PA_omega <> t:169 var
+R13491:13491 Systems.PA_omega <> A:167 var
+R13515:13533 Systems.PA_omega <> closed_subst_eq_aux thm
+R13515:13533 Systems.PA_omega <> closed_subst_eq_aux thm
+R13542:13557 Systems.fol <> closed_free_list thm
+R13542:13557 Systems.fol <> closed_free_list thm
+prf 13594:13611 <> closed_sub_theorem
+R13629:13635 Systems.fol <> formula ind
+binder 13625:13625 <> A:170
+R13645:13647 Coq.Init.Datatypes <> nat ind
+binder 13639:13639 <> n:171
+binder 13641:13641 <> d:172
+R13655:13658 Systems.fol <> term ind
+binder 13651:13651 <> t:173
+R13670:13672 Maths_Facts.ordinals <> ord ind
+binder 13662:13666 <> alpha:174
+R13693:13698 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R13686:13688 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R13678:13683 Systems.fol <> closed def
+R13685:13685 Systems.PA_omega <> A:170 var
+R13689:13692 Coq.Init.Datatypes <> true constr
+R13725:13730 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R13699:13714 Systems.PA_omega <> PA_omega_theorem ind
+R13716:13716 Systems.PA_omega <> A:170 var
+R13718:13718 Systems.PA_omega <> d:172 var
+R13720:13724 Systems.PA_omega <> alpha:174 var
+R13731:13746 Systems.PA_omega <> PA_omega_theorem ind
+R13749:13760 Systems.fol <> substitution def
+R13762:13762 Systems.PA_omega <> A:170 var
+R13764:13764 Systems.PA_omega <> n:171 var
+R13766:13766 Systems.PA_omega <> t:173 var
+R13769:13769 Systems.PA_omega <> d:172 var
+R13771:13775 Systems.PA_omega <> alpha:174 var
+R13801:13815 Systems.PA_omega <> closed_subst_eq thm
+R13801:13815 Systems.PA_omega <> closed_subst_eq thm
+R13801:13815 Systems.PA_omega <> closed_subst_eq thm
+R13801:13815 Systems.PA_omega <> closed_subst_eq thm
+prf 13849:13863 <> closed_univ_sub
+R13879:13885 Systems.fol <> formula ind
+binder 13875:13875 <> B:175
+R13893:13895 Coq.Init.Datatypes <> nat ind
+binder 13889:13889 <> n:176
+R13925:13931 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R14006:14006 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R13918:13920 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R13901:13906 Systems.fol <> closed def
+R13909:13912 Systems.fol <> univ constr
+R13914:13914 Systems.PA_omega <> n:176 var
+R13916:13916 Systems.PA_omega <> B:175 var
+R13921:13924 Coq.Init.Datatypes <> true constr
+R13944:13947 Systems.fol <> term ind
+binder 13940:13940 <> t:177
+R13968:13971 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R13961:13963 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R13951:13958 Systems.fol <> closed_t def
+R13960:13960 Systems.PA_omega <> t:177 var
+R13964:13967 Coq.Init.Datatypes <> true constr
+R13999:14001 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R13972:13977 Systems.fol <> closed def
+R13980:13991 Systems.fol <> substitution def
+R13993:13993 Systems.PA_omega <> B:175 var
+R13995:13995 Systems.PA_omega <> n:176 var
+R13997:13997 Systems.PA_omega <> t:177 var
+R14002:14005 Coq.Init.Datatypes <> true constr
+R14034:14044 Systems.fol <> closed_univ thm
+R14034:14044 Systems.fol <> closed_univ thm
+R14065:14079 Systems.PA_omega <> closed_subst_eq thm
+R14065:14079 Systems.PA_omega <> closed_subst_eq thm
+R14065:14079 Systems.PA_omega <> closed_subst_eq thm
+R14110:14125 Systems.fol <> free_list_closed thm
+R14110:14125 Systems.fol <> free_list_closed thm
+R14137:14148 Systems.fol <> subst_remove thm
+R14137:14148 Systems.fol <> subst_remove thm
+R14137:14148 Systems.fol <> subst_remove thm
+R14190:14200 Maths_Facts.naturals <> eq_nat_refl thm
+R14190:14200 Maths_Facts.naturals <> eq_nat_refl thm
+R14190:14200 Maths_Facts.naturals <> eq_nat_refl thm
+prf 14221:14240 <> closed_univ_sub_repr
+R14256:14262 Systems.fol <> formula ind
+binder 14252:14252 <> B:178
+R14270:14272 Coq.Init.Datatypes <> nat ind
+binder 14266:14266 <> n:179
+R14302:14308 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R14373:14373 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R14295:14297 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R14278:14283 Systems.fol <> closed def
+R14286:14289 Systems.fol <> univ constr
+R14291:14291 Systems.PA_omega <> n:179 var
+R14293:14293 Systems.PA_omega <> B:178 var
+R14298:14301 Coq.Init.Datatypes <> true constr
+R14321:14323 Coq.Init.Datatypes <> nat ind
+binder 14317:14317 <> m:180
+R14366:14368 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R14327:14332 Systems.fol <> closed def
+R14335:14346 Systems.fol <> substitution def
+R14348:14348 Systems.PA_omega <> B:178 var
+R14350:14350 Systems.PA_omega <> n:179 var
+R14353:14361 Systems.fol <> represent def
+R14363:14363 Systems.PA_omega <> m:180 var
+R14369:14372 Coq.Init.Datatypes <> true constr
+R14397:14411 Systems.PA_omega <> closed_univ_sub thm
+R14397:14411 Systems.PA_omega <> closed_univ_sub thm
+R14433:14443 Systems.fol <> eval_closed thm
+R14446:14459 Systems.PA_omega <> eval_represent thm
+R14433:14443 Systems.fol <> eval_closed thm
+R14446:14459 Systems.PA_omega <> eval_represent thm
+prf 14474:14486 <> free_list_lor
+R14504:14510 Systems.fol <> formula ind
+binder 14498:14498 <> B:181
+binder 14500:14500 <> C:182
+R14518:14520 Coq.Init.Datatypes <> nat ind
+binder 14514:14514 <> n:183
+R14551:14558 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R14545:14547 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R14526:14534 Systems.fol <> free_list def
+R14537:14539 Systems.fol <> lor constr
+R14541:14541 Systems.PA_omega <> B:181 var
+R14543:14543 Systems.PA_omega <> C:182 var
+R14548:14548 Maths_Facts.lists <> :::'['_x_','_'..'_','_x_']' not
+R14550:14550 Maths_Facts.lists <> :::'['_x_','_'..'_','_x_']' not
+R14549:14549 Systems.PA_omega <> n:183 var
+R14559:14559 Coq.Init.Datatypes <> ::type_scope:x_'*'_x not
+R14599:14607 Coq.Init.Datatypes <> ::type_scope:x_'*'_x not
+R14647:14647 Coq.Init.Datatypes <> ::type_scope:x_'*'_x not
+R14560:14560 Coq.Init.Datatypes <> ::type_scope:x_'+'_x not
+R14578:14582 Coq.Init.Datatypes <> ::type_scope:x_'+'_x not
+R14598:14598 Coq.Init.Datatypes <> ::type_scope:x_'+'_x not
+R14572:14574 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R14561:14569 Systems.fol <> free_list def
+R14571:14571 Systems.PA_omega <> B:181 var
+R14575:14575 Maths_Facts.lists <> :::'['_x_','_'..'_','_x_']' not
+R14577:14577 Maths_Facts.lists <> :::'['_x_','_'..'_','_x_']' not
+R14576:14576 Systems.PA_omega <> n:183 var
+R14591:14593 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R14583:14588 Systems.fol <> closed def
+R14590:14590 Systems.PA_omega <> B:181 var
+R14594:14597 Coq.Init.Datatypes <> true constr
+R14608:14608 Coq.Init.Datatypes <> ::type_scope:x_'+'_x not
+R14626:14630 Coq.Init.Datatypes <> ::type_scope:x_'+'_x not
+R14646:14646 Coq.Init.Datatypes <> ::type_scope:x_'+'_x not
+R14620:14622 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R14609:14617 Systems.fol <> free_list def
+R14619:14619 Systems.PA_omega <> C:182 var
+R14623:14623 Maths_Facts.lists <> :::'['_x_','_'..'_','_x_']' not
+R14625:14625 Maths_Facts.lists <> :::'['_x_','_'..'_','_x_']' not
+R14624:14624 Systems.PA_omega <> n:183 var
+R14639:14641 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R14631:14636 Systems.fol <> closed def
+R14638:14638 Systems.PA_omega <> C:182 var
+R14642:14645 Coq.Init.Datatypes <> true constr
+R14683:14711 Maths_Facts.lists <> remove_dups_repeated_element' thm
+R14683:14711 Maths_Facts.lists <> remove_dups_repeated_element' thm
+R14729:14753 Maths_Facts.lists <> repeated_element_n_concat thm
+R14729:14753 Maths_Facts.lists <> repeated_element_n_concat thm
+R14795:14822 Maths_Facts.lists <> remove_dups_repeated_element thm
+R14795:14822 Maths_Facts.lists <> remove_dups_repeated_element thm
+R14866:14886 Systems.fol <> free_list_remove_dups thm
+R14866:14886 Systems.fol <> free_list_remove_dups thm
+R14866:14886 Systems.fol <> free_list_remove_dups thm
+R14917:14932 Systems.fol <> free_list_closed thm
+R14917:14932 Systems.fol <> free_list_closed thm
+R14952:14979 Maths_Facts.lists <> remove_dups_repeated_element thm
+R14952:14979 Maths_Facts.lists <> remove_dups_repeated_element thm
+R15023:15043 Systems.fol <> free_list_remove_dups thm
+R15023:15043 Systems.fol <> free_list_remove_dups thm
+R15023:15043 Systems.fol <> free_list_remove_dups thm
+R15074:15089 Systems.fol <> free_list_closed thm
+R15074:15089 Systems.fol <> free_list_closed thm
+prf 15109:15128 <> substitution_order_t
+R15144:15147 Systems.fol <> term ind
+binder 15140:15140 <> T:184
+R15157:15159 Coq.Init.Datatypes <> nat ind
+binder 15151:15151 <> m:185
+binder 15153:15153 <> n:186
+R15169:15172 Systems.fol <> term ind
+binder 15163:15163 <> s:187
+binder 15165:15165 <> t:188
+R15195:15200 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R15188:15190 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R15178:15185 Systems.fol <> closed_t def
+R15187:15187 Systems.PA_omega <> s:187 var
+R15191:15194 Coq.Init.Datatypes <> true constr
+R15218:15223 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R15211:15213 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R15201:15208 Systems.fol <> closed_t def
+R15210:15210 Systems.PA_omega <> t:188 var
+R15214:15217 Coq.Init.Datatypes <> true constr
+R15242:15247 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R15234:15236 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R15224:15229 Systems.PA_omega <> eq_nat syndef
+R15231:15231 Systems.PA_omega <> m:185 var
+R15233:15233 Systems.PA_omega <> n:186 var
+R15237:15241 Coq.Init.Datatypes <> false constr
+R15289:15293 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R15248:15261 Systems.fol <> substitution_t def
+R15264:15277 Systems.fol <> substitution_t def
+R15279:15279 Systems.PA_omega <> T:184 var
+R15281:15281 Systems.PA_omega <> n:186 var
+R15283:15283 Systems.PA_omega <> s:187 var
+R15286:15286 Systems.PA_omega <> m:185 var
+R15288:15288 Systems.PA_omega <> t:188 var
+R15294:15307 Systems.fol <> substitution_t def
+R15310:15323 Systems.fol <> substitution_t def
+R15325:15325 Systems.PA_omega <> T:184 var
+R15327:15327 Systems.PA_omega <> m:185 var
+R15329:15329 Systems.PA_omega <> t:188 var
+R15332:15332 Systems.PA_omega <> n:186 var
+R15334:15334 Systems.PA_omega <> s:187 var
+R15487:15492 Systems.PA_omega <> eq_nat syndef
+R15487:15492 Systems.PA_omega <> eq_nat syndef
+R15524:15535 Maths_Facts.naturals <> nat_eq_decid thm
+R15524:15535 Maths_Facts.naturals <> nat_eq_decid thm
+R15524:15535 Maths_Facts.naturals <> nat_eq_decid thm
+R15562:15573 Maths_Facts.naturals <> eq_nat_symm' thm
+R15562:15573 Maths_Facts.naturals <> eq_nat_symm' thm
+R15562:15573 Maths_Facts.naturals <> eq_nat_symm' thm
+R15614:15630 Systems.PA_omega <> closed_subst_eq_t thm
+R15614:15630 Systems.PA_omega <> closed_subst_eq_t thm
+R15651:15656 Systems.PA_omega <> eq_nat syndef
+R15651:15656 Systems.PA_omega <> eq_nat syndef
+R15713:15729 Systems.PA_omega <> closed_subst_eq_t thm
+R15713:15729 Systems.PA_omega <> closed_subst_eq_t thm
+prf 15772:15791 <> substitution_order_a
+R15809:15822 Systems.fol <> atomic_formula ind
+binder 15805:15805 <> a:189
+R15832:15834 Coq.Init.Datatypes <> nat ind
+binder 15826:15826 <> m:190
+binder 15828:15828 <> n:191
+R15844:15847 Systems.fol <> term ind
+binder 15838:15838 <> s:192
+binder 15840:15840 <> t:193
+R15870:15875 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R15863:15865 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R15853:15860 Systems.fol <> closed_t def
+R15862:15862 Systems.PA_omega <> s:192 var
+R15866:15869 Coq.Init.Datatypes <> true constr
+R15893:15898 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R15886:15888 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R15876:15883 Systems.fol <> closed_t def
+R15885:15885 Systems.PA_omega <> t:193 var
+R15889:15892 Coq.Init.Datatypes <> true constr
+R15917:15922 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R15909:15911 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R15899:15904 Systems.PA_omega <> eq_nat syndef
+R15906:15906 Systems.PA_omega <> m:190 var
+R15908:15908 Systems.PA_omega <> n:191 var
+R15912:15916 Coq.Init.Datatypes <> false constr
+R15964:15968 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R15923:15936 Systems.fol <> substitution_a def
+R15939:15952 Systems.fol <> substitution_a def
+R15954:15954 Systems.PA_omega <> a:189 var
+R15956:15956 Systems.PA_omega <> n:191 var
+R15958:15958 Systems.PA_omega <> s:192 var
+R15961:15961 Systems.PA_omega <> m:190 var
+R15963:15963 Systems.PA_omega <> t:193 var
+R15969:15982 Systems.fol <> substitution_a def
+R15985:15998 Systems.fol <> substitution_a def
+R16000:16000 Systems.PA_omega <> a:189 var
+R16002:16002 Systems.PA_omega <> m:190 var
+R16004:16004 Systems.PA_omega <> t:193 var
+R16007:16007 Systems.PA_omega <> n:191 var
+R16009:16009 Systems.PA_omega <> s:192 var
+R16086:16105 Systems.PA_omega <> substitution_order_t thm
+R16086:16105 Systems.PA_omega <> substitution_order_t thm
+R16086:16105 Systems.PA_omega <> substitution_order_t thm
+R16138:16157 Systems.PA_omega <> substitution_order_t thm
+R16138:16157 Systems.PA_omega <> substitution_order_t thm
+R16138:16157 Systems.PA_omega <> substitution_order_t thm
+prf 16199:16216 <> substitution_order
+R16232:16238 Systems.fol <> formula ind
+binder 16228:16228 <> B:194
+R16248:16250 Coq.Init.Datatypes <> nat ind
+binder 16242:16242 <> m:195
+binder 16244:16244 <> n:196
+R16260:16263 Systems.fol <> term ind
+binder 16254:16254 <> s:197
+binder 16256:16256 <> t:198
+R16286:16291 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R16279:16281 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R16269:16276 Systems.fol <> closed_t def
+R16278:16278 Systems.PA_omega <> s:197 var
+R16282:16285 Coq.Init.Datatypes <> true constr
+R16309:16314 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R16302:16304 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R16292:16299 Systems.fol <> closed_t def
+R16301:16301 Systems.PA_omega <> t:198 var
+R16305:16308 Coq.Init.Datatypes <> true constr
+R16333:16338 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R16325:16327 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R16315:16320 Systems.PA_omega <> eq_nat syndef
+R16322:16322 Systems.PA_omega <> m:195 var
+R16324:16324 Systems.PA_omega <> n:196 var
+R16328:16332 Coq.Init.Datatypes <> false constr
+R16376:16380 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R16339:16350 Systems.fol <> substitution def
+R16353:16364 Systems.fol <> substitution def
+R16366:16366 Systems.PA_omega <> B:194 var
+R16368:16368 Systems.PA_omega <> n:196 var
+R16370:16370 Systems.PA_omega <> s:197 var
+R16373:16373 Systems.PA_omega <> m:195 var
+R16375:16375 Systems.PA_omega <> t:198 var
+R16381:16392 Systems.fol <> substitution def
+R16395:16406 Systems.fol <> substitution def
+R16408:16408 Systems.PA_omega <> B:194 var
+R16410:16410 Systems.PA_omega <> m:195 var
+R16412:16412 Systems.PA_omega <> t:198 var
+R16415:16415 Systems.PA_omega <> n:196 var
+R16417:16417 Systems.PA_omega <> s:197 var
+R16486:16505 Systems.PA_omega <> substitution_order_a thm
+R16486:16505 Systems.PA_omega <> substitution_order_a thm
+R16486:16505 Systems.PA_omega <> substitution_order_a thm
+R16596:16601 Systems.PA_omega <> eq_nat syndef
+R16596:16601 Systems.PA_omega <> eq_nat syndef
+R16627:16638 Maths_Facts.naturals <> nat_eq_decid thm
+R16627:16638 Maths_Facts.naturals <> nat_eq_decid thm
+R16672:16683 Maths_Facts.naturals <> eq_nat_symm' thm
+R16672:16683 Maths_Facts.naturals <> eq_nat_symm' thm
+R16672:16683 Maths_Facts.naturals <> eq_nat_symm' thm
+R16715:16726 Maths_Facts.naturals <> eq_nat_symm' thm
+R16715:16726 Maths_Facts.naturals <> eq_nat_symm' thm
+R16715:16726 Maths_Facts.naturals <> eq_nat_symm' thm
+R16746:16756 Maths_Facts.naturals <> eq_nat_refl thm
+R16746:16756 Maths_Facts.naturals <> eq_nat_refl thm
+R16746:16756 Maths_Facts.naturals <> eq_nat_refl thm
+R16779:16784 Systems.PA_omega <> eq_nat syndef
+R16779:16784 Systems.PA_omega <> eq_nat syndef
+prf 16864:16876 <> univ_free_var
+R16892:16898 Systems.fol <> formula ind
+binder 16888:16888 <> B:199
+R16908:16910 Coq.Init.Datatypes <> nat ind
+binder 16902:16902 <> m:200
+binder 16904:16904 <> n:201
+R16942:16945 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R16936:16938 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R16916:16924 Systems.fol <> free_list def
+R16927:16930 Systems.fol <> univ constr
+R16932:16932 Systems.PA_omega <> m:200 var
+R16934:16934 Systems.PA_omega <> B:199 var
+R16939:16939 Maths_Facts.lists <> :::'['_x_','_'..'_','_x_']' not
+R16941:16941 Maths_Facts.lists <> :::'['_x_','_'..'_','_x_']' not
+R16940:16940 Systems.PA_omega <> n:201 var
+R16956:16958 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R16946:16951 Systems.PA_omega <> eq_nat syndef
+R16953:16953 Systems.PA_omega <> m:200 var
+R16955:16955 Systems.PA_omega <> n:201 var
+R16959:16963 Coq.Init.Datatypes <> false constr
+R17003:17008 Systems.PA_omega <> eq_nat syndef
+R17003:17008 Systems.PA_omega <> eq_nat syndef
+R17035:17046 Maths_Facts.naturals <> nat_eq_decid thm
+R17035:17046 Maths_Facts.naturals <> nat_eq_decid thm
+R17084:17095 Maths_Facts.lists <> remove_twice thm
+R17098:17106 Systems.fol <> free_list def
+R17084:17095 Maths_Facts.lists <> remove_twice thm
+R17098:17106 Systems.fol <> free_list def
+R17153:17163 Maths_Facts.naturals <> eq_nat_refl thm
+R17153:17163 Maths_Facts.naturals <> eq_nat_refl thm
+R17153:17163 Maths_Facts.naturals <> eq_nat_refl thm
+prf 17198:17215 <> free_list_univ_sub
+R17233:17239 Systems.fol <> formula ind
+binder 17229:17229 <> B:202
+R17247:17249 Coq.Init.Datatypes <> nat ind
+binder 17243:17243 <> m:203
+R17257:17260 Systems.fol <> term ind
+binder 17253:17253 <> t:204
+R17268:17271 Maths_Facts.lists <> list ind
+R17273:17275 Coq.Init.Datatypes <> nat ind
+binder 17264:17264 <> l:205
+R17298:17303 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R17291:17293 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R17281:17288 Systems.fol <> closed_t def
+R17290:17290 Systems.PA_omega <> t:204 var
+R17294:17297 Coq.Init.Datatypes <> true constr
+R17328:17333 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R17324:17326 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R17304:17312 Systems.fol <> free_list def
+R17315:17318 Systems.fol <> univ constr
+R17320:17320 Systems.PA_omega <> m:203 var
+R17322:17322 Systems.PA_omega <> B:202 var
+R17327:17327 Systems.PA_omega <> l:205 var
+R17364:17366 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R17334:17342 Systems.fol <> free_list def
+R17345:17356 Systems.fol <> substitution def
+R17358:17358 Systems.PA_omega <> B:202 var
+R17360:17360 Systems.PA_omega <> m:203 var
+R17362:17362 Systems.PA_omega <> t:204 var
+R17367:17367 Systems.PA_omega <> l:205 var
+R17394:17405 Systems.fol <> subst_remove thm
+R17394:17405 Systems.fol <> subst_remove thm
+R17394:17405 Systems.fol <> subst_remove thm
+prf 17439:17449 <> repr_closed
+R17465:17467 Coq.Init.Datatypes <> nat ind
+binder 17461:17461 <> m:206
+R17493:17495 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R17471:17478 Systems.fol <> closed_t def
+R17481:17489 Systems.fol <> represent def
+R17491:17491 Systems.PA_omega <> m:206 var
+R17496:17499 Coq.Init.Datatypes <> true constr
+R17523:17533 Systems.fol <> eval_closed thm
+R17536:17549 Systems.PA_omega <> eval_represent thm
+R17523:17533 Systems.fol <> eval_closed thm
+R17536:17549 Systems.PA_omega <> eval_represent thm
+prf 17564:17579 <> correct_closed_t
+R17597:17600 Systems.fol <> term ind
+binder 17591:17591 <> s:207
+binder 17593:17593 <> t:208
+R17632:17635 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R17625:17627 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R17606:17614 Systems.fol <> correct_a def
+R17617:17619 Systems.fol <> equ constr
+R17621:17621 Systems.PA_omega <> s:207 var
+R17623:17623 Systems.PA_omega <> t:208 var
+R17628:17631 Coq.Init.Datatypes <> true constr
+R17653:17656 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R17646:17648 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R17636:17643 Systems.fol <> closed_t def
+R17645:17645 Systems.PA_omega <> s:207 var
+R17649:17652 Coq.Init.Datatypes <> true constr
+R17667:17669 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R17657:17664 Systems.fol <> closed_t def
+R17666:17666 Systems.PA_omega <> t:208 var
+R17670:17673 Coq.Init.Datatypes <> true constr
+R17701:17712 Systems.PA_omega <> correct_eval thm
+R17701:17712 Systems.PA_omega <> correct_eval thm
+R17735:17745 Systems.fol <> eval_closed thm
+R17735:17745 Systems.fol <> eval_closed thm
+R17735:17745 Systems.fol <> eval_closed thm
+prf 17780:17791 <> num_conn_lor
+R17809:17815 Systems.fol <> formula ind
+binder 17803:17803 <> B:209
+binder 17805:17805 <> C:210
+R17823:17825 Coq.Init.Datatypes <> nat ind
+binder 17819:17819 <> n:211
+R17855:17858 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R17849:17851 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R17831:17838 Systems.fol <> num_conn def
+R17841:17843 Systems.fol <> lor constr
+R17845:17845 Systems.PA_omega <> B:209 var
+R17847:17847 Systems.PA_omega <> C:210 var
+R17852:17852 Coq.Init.Datatypes <> S constr
+R17854:17854 Systems.PA_omega <> n:211 var
+R17874:17877 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R17869:17872 Coq.Init.Peano <> ::nat_scope:x_'<='_x not
+R17859:17866 Systems.fol <> num_conn def
+R17868:17868 Systems.PA_omega <> B:209 var
+R17873:17873 Systems.PA_omega <> n:211 var
+R17888:17891 Coq.Init.Peano <> ::nat_scope:x_'<='_x not
+R17878:17885 Systems.fol <> num_conn def
+R17887:17887 Systems.PA_omega <> C:210 var
+R17892:17892 Systems.PA_omega <> n:211 var
+R17916:17926 Maths_Facts.naturals <> addends_leq thm
+R17916:17926 Maths_Facts.naturals <> addends_leq thm
+prf 17960:17967 <> LEM_univ
+R17983:17989 Systems.fol <> formula ind
+binder 17979:17979 <> B:212
+R18001:18003 Coq.Init.Datatypes <> nat ind
+binder 17993:17993 <> n:213
+binder 17995:17995 <> m:214
+binder 17997:17997 <> d:215
+R18015:18017 Maths_Facts.ordinals <> ord ind
+binder 18007:18011 <> alpha:216
+R18069:18074 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R18062:18064 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R18023:18028 Systems.fol <> closed def
+R18031:18042 Systems.fol <> substitution def
+R18044:18044 Systems.PA_omega <> B:212 var
+R18046:18046 Systems.PA_omega <> n:213 var
+R18049:18057 Systems.fol <> represent def
+R18059:18059 Systems.PA_omega <> m:214 var
+R18065:18068 Coq.Init.Datatypes <> true constr
+R18194:18199 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R18075:18090 Systems.PA_omega <> PA_omega_theorem ind
+R18097:18099 Systems.fol <> lor constr
+R18102:18104 Systems.fol <> neg constr
+R18107:18118 Systems.fol <> substitution def
+R18120:18120 Systems.PA_omega <> B:212 var
+R18122:18122 Systems.PA_omega <> n:213 var
+R18125:18133 Systems.fol <> represent def
+R18135:18135 Systems.PA_omega <> m:214 var
+R18150:18161 Systems.fol <> substitution def
+R18163:18163 Systems.PA_omega <> B:212 var
+R18165:18165 Systems.PA_omega <> n:213 var
+R18168:18176 Systems.fol <> represent def
+R18178:18178 Systems.PA_omega <> m:214 var
+R18187:18187 Systems.PA_omega <> d:215 var
+R18189:18193 Systems.PA_omega <> alpha:216 var
+R18200:18215 Systems.PA_omega <> PA_omega_theorem ind
+R18222:18224 Systems.fol <> lor constr
+R18227:18238 Systems.fol <> substitution def
+R18240:18240 Systems.PA_omega <> B:212 var
+R18242:18242 Systems.PA_omega <> n:213 var
+R18245:18253 Systems.fol <> represent def
+R18255:18255 Systems.PA_omega <> m:214 var
+R18260:18262 Systems.fol <> neg constr
+R18265:18268 Systems.fol <> univ constr
+R18270:18270 Systems.PA_omega <> n:213 var
+R18272:18272 Systems.PA_omega <> B:212 var
+R18281:18281 Systems.PA_omega <> d:215 var
+R18284:18291 Maths_Facts.ordinals <> ord_succ def
+R18293:18297 Systems.PA_omega <> alpha:216 var
+R18322:18330 Systems.PA_omega <> exchange1 constr
+R18322:18330 Systems.PA_omega <> exchange1 constr
+R18340:18354 Systems.PA_omega <> quantification2 constr
+R18363:18371 Systems.fol <> represent def
+R18340:18354 Systems.PA_omega <> quantification2 constr
+R18363:18371 Systems.fol <> represent def
+R18390:18400 Systems.fol <> eval_closed thm
+R18390:18400 Systems.fol <> eval_closed thm
+R18409:18422 Systems.PA_omega <> eval_represent thm
+R18409:18422 Systems.PA_omega <> eval_represent thm
+prf 18437:18448 <> num_conn_sub
+R18464:18470 Systems.fol <> formula ind
+binder 18460:18460 <> B:217
+R18478:18480 Coq.Init.Datatypes <> nat ind
+binder 18474:18474 <> m:218
+R18488:18491 Systems.fol <> term ind
+binder 18484:18484 <> t:219
+R18526:18528 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R18497:18504 Systems.fol <> num_conn def
+R18507:18518 Systems.fol <> substitution def
+R18520:18520 Systems.PA_omega <> B:217 var
+R18522:18522 Systems.PA_omega <> m:218 var
+R18524:18524 Systems.PA_omega <> t:219 var
+R18529:18536 Systems.fol <> num_conn def
+R18538:18538 Systems.PA_omega <> B:217 var
+R18643:18648 Systems.PA_omega <> eq_nat syndef
+R18643:18648 Systems.PA_omega <> eq_nat syndef
+prf 19186:19195 <> LEM_atomic
+R19211:19224 Systems.fol <> atomic_formula ind
+binder 19207:19207 <> a:220
+R19247:19252 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R19240:19242 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R19230:19237 Systems.fol <> closed_a def
+R19239:19239 Systems.PA_omega <> a:220 var
+R19243:19246 Coq.Init.Datatypes <> true constr
+R19253:19268 Systems.PA_omega <> PA_omega_theorem ind
+R19271:19273 Systems.fol <> lor constr
+R19276:19278 Systems.fol <> neg constr
+R19281:19284 Systems.fol <> atom constr
+R19286:19286 Systems.PA_omega <> a:220 var
+R19291:19294 Systems.fol <> atom constr
+R19296:19296 Systems.PA_omega <> a:220 var
+R19303:19310 Maths_Facts.ordinals <> ord_succ def
+R19312:19315 Maths_Facts.ordinals <> Zero constr
+R19344:19360 Systems.fol <> correctness_decid thm
+R19344:19360 Systems.fol <> correctness_decid thm
+R19389:19397 Systems.PA_omega <> weakening constr
+R19389:19397 Systems.PA_omega <> weakening constr
+R19412:19416 Systems.PA_omega <> axiom constr
+R19412:19416 Systems.PA_omega <> axiom constr
+R19437:19445 Systems.PA_omega <> exchange1 constr
+R19437:19445 Systems.PA_omega <> exchange1 constr
+R19454:19462 Systems.PA_omega <> weakening constr
+R19454:19462 Systems.PA_omega <> weakening constr
+R19477:19481 Systems.PA_omega <> axiom constr
+R19477:19481 Systems.PA_omega <> axiom constr
+def 19988:19989 <> P1
+R19996:20002 Systems.fol <> formula ind
+binder 19992:19992 <> A:221
+R20032:20035 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R20025:20027 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R20017:20022 Systems.fol <> closed def
+R20024:20024 Systems.PA_omega <> A:221 var
+R20028:20031 Coq.Init.Datatypes <> true constr
+R20036:20051 Systems.PA_omega <> PA_omega_theorem ind
+R20054:20056 Systems.fol <> lor constr
+R20059:20061 Systems.fol <> neg constr
+R20063:20063 Systems.PA_omega <> A:221 var
+R20066:20066 Systems.PA_omega <> A:221 var
+R20072:20079 Maths_Facts.ordinals <> ord_succ def
+R20082:20088 Maths_Facts.ordinals <> w_tower def
+R20091:20091 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R20102:20106 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R20117:20117 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R20092:20099 Systems.fol <> num_conn def
+R20101:20101 Systems.PA_omega <> A:221 var
+R20107:20114 Systems.fol <> num_conn def
+R20116:20116 Systems.PA_omega <> A:221 var
+def 20135:20136 <> P2
+R20143:20149 Systems.fol <> formula ind
+binder 20139:20139 <> A:222
+R20157:20159 Coq.Init.Datatypes <> nat ind
+binder 20153:20153 <> n:223
+R20188:20191 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R20184:20186 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R20174:20181 Systems.fol <> num_conn def
+R20183:20183 Systems.PA_omega <> A:222 var
+R20187:20187 Systems.PA_omega <> n:223 var
+R20192:20193 Systems.PA_omega <> P1 def
+R20195:20195 Systems.PA_omega <> A:222 var
+def 20210:20211 <> P3
+R20218:20220 Coq.Init.Datatypes <> nat ind
+binder 20214:20214 <> n:224
+R20247:20253 Systems.fol <> formula ind
+binder 20243:20243 <> A:225
+R20257:20258 Systems.PA_omega <> P2 def
+R20260:20260 Systems.PA_omega <> A:225 var
+R20262:20262 Systems.PA_omega <> n:224 var
+prf 20272:20275 <> P3_0
+R20279:20280 Systems.PA_omega <> P3 def
+R20299:20300 Systems.PA_omega <> P3 def
+R20303:20304 Systems.PA_omega <> P2 def
+R20350:20351 Systems.PA_omega <> P1 def
+R20369:20376 Systems.PA_omega <> ord_incr constr
+R20383:20386 Maths_Facts.ordinals <> cons constr
+R20388:20391 Maths_Facts.ordinals <> Zero constr
+R20395:20398 Maths_Facts.ordinals <> Zero constr
+R20369:20376 Systems.PA_omega <> ord_incr constr
+R20383:20386 Maths_Facts.ordinals <> cons constr
+R20388:20391 Maths_Facts.ordinals <> Zero constr
+R20395:20398 Maths_Facts.ordinals <> Zero constr
+R20414:20423 Systems.PA_omega <> LEM_atomic thm
+R20414:20423 Systems.PA_omega <> LEM_atomic thm
+R20449:20458 Maths_Facts.ordinals <> ord_ltb_lt thm
+R20449:20458 Maths_Facts.ordinals <> ord_ltb_lt thm
+R20477:20487 Maths_Facts.ordinals <> ord_succ_nf thm
+R20477:20487 Maths_Facts.ordinals <> ord_succ_nf thm
+R20503:20511 Maths_Facts.ordinals <> single_nf constr
+R20503:20511 Maths_Facts.ordinals <> single_nf constr
+R20520:20526 Maths_Facts.ordinals <> Zero_nf thm
+R20520:20526 Maths_Facts.ordinals <> Zero_nf thm
+prf 20714:20729 <> P3_strongind_aux
+R20739:20744 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R20735:20736 Systems.PA_omega <> P3 def
+R20745:20745 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R20800:20807 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R20834:20834 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+binder 20753:20753 <> n:226
+R20761:20761 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R20786:20790 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+binder 20769:20769 <> m:227
+R20778:20781 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R20773:20776 Coq.Init.Peano <> ::nat_scope:x_'<='_x not
+R20772:20772 Systems.PA_omega <> m:227 var
+R20777:20777 Systems.PA_omega <> n:226 var
+R20782:20783 Systems.PA_omega <> P3 def
+R20785:20785 Systems.PA_omega <> m:227 var
+R20791:20792 Systems.PA_omega <> P3 def
+R20795:20795 Coq.Init.Datatypes <> S constr
+R20797:20797 Systems.PA_omega <> n:226 var
+binder 20815:20815 <> n:228
+binder 20817:20817 <> m:229
+R20826:20829 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R20821:20824 Coq.Init.Peano <> ::nat_scope:x_'<='_x not
+R20820:20820 Systems.PA_omega <> m:229 var
+R20825:20825 Systems.PA_omega <> n:228 var
+R20830:20831 Systems.PA_omega <> P3 def
+R20833:20833 Systems.PA_omega <> m:229 var
+R20897:20899 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R20897:20899 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R20966:20966 Coq.Init.Datatypes <> ::type_scope:x_'+'_x not
+R20975:20979 Coq.Init.Datatypes <> ::type_scope:x_'+'_x not
+R20987:20987 Coq.Init.Datatypes <> ::type_scope:x_'+'_x not
+R20968:20970 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R20971:20971 Coq.Init.Datatypes <> S constr
+R20981:20984 Coq.Init.Peano <> ::nat_scope:x_'<='_x not
+R20966:20966 Coq.Init.Datatypes <> ::type_scope:x_'+'_x not
+R20975:20979 Coq.Init.Datatypes <> ::type_scope:x_'+'_x not
+R20987:20987 Coq.Init.Datatypes <> ::type_scope:x_'+'_x not
+R20968:20970 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R20971:20971 Coq.Init.Datatypes <> S constr
+R20981:20984 Coq.Init.Peano <> ::nat_scope:x_'<='_x not
+R20999:21010 Maths_Facts.naturals <> leq_prop_sum thm
+R20999:21010 Maths_Facts.naturals <> leq_prop_sum thm
+prf 21124:21135 <> P3_strongind
+R21145:21150 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R21141:21142 Systems.PA_omega <> P3 def
+R21151:21151 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R21206:21213 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R21228:21228 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+binder 21159:21159 <> n:230
+R21167:21167 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R21192:21196 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+binder 21175:21175 <> m:231
+R21184:21187 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R21179:21182 Coq.Init.Peano <> ::nat_scope:x_'<='_x not
+R21178:21178 Systems.PA_omega <> m:231 var
+R21183:21183 Systems.PA_omega <> n:230 var
+R21188:21189 Systems.PA_omega <> P3 def
+R21191:21191 Systems.PA_omega <> m:231 var
+R21197:21198 Systems.PA_omega <> P3 def
+R21201:21201 Coq.Init.Datatypes <> S constr
+R21203:21203 Systems.PA_omega <> n:230 var
+binder 21221:21221 <> n:232
+R21224:21225 Systems.PA_omega <> P3 def
+R21227:21227 Systems.PA_omega <> n:232 var
+R21253:21268 Systems.PA_omega <> P3_strongind_aux thm
+R21253:21268 Systems.PA_omega <> P3_strongind_aux thm
+prf 21347:21358 <> P3_inductive
+binder 21369:21369 <> n:233
+R21372:21372 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R21397:21401 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+binder 21380:21380 <> m:234
+R21389:21392 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R21384:21387 Coq.Init.Peano <> ::nat_scope:x_'<='_x not
+R21383:21383 Systems.PA_omega <> m:234 var
+R21388:21388 Systems.PA_omega <> n:233 var
+R21393:21394 Systems.PA_omega <> P3 def
+R21396:21396 Systems.PA_omega <> m:234 var
+R21402:21403 Systems.PA_omega <> P3 def
+R21406:21406 Coq.Init.Datatypes <> S constr
+R21408:21408 Systems.PA_omega <> n:233 var
+R21426:21427 Systems.PA_omega <> P3 def
+R21429:21430 Systems.PA_omega <> P2 def
+R21432:21433 Systems.PA_omega <> P1 def
+R21528:21535 Maths_Facts.naturals <> leq_refl thm
+R21528:21535 Maths_Facts.naturals <> leq_refl thm
+R21559:21566 Systems.PA_omega <> ord_incr constr
+R21573:21580 Maths_Facts.ordinals <> ord_succ def
+R21583:21590 Maths_Facts.ordinals <> ord_succ def
+R21593:21599 Maths_Facts.ordinals <> w_tower def
+R21602:21602 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R21613:21617 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R21628:21628 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R21603:21610 Systems.fol <> num_conn def
+R21618:21625 Systems.fol <> num_conn def
+R21559:21566 Systems.PA_omega <> ord_incr constr
+R21573:21580 Maths_Facts.ordinals <> ord_succ def
+R21583:21590 Maths_Facts.ordinals <> ord_succ def
+R21593:21599 Maths_Facts.ordinals <> w_tower def
+R21602:21602 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R21613:21617 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R21628:21628 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R21603:21610 Systems.fol <> num_conn def
+R21618:21625 Systems.fol <> num_conn def
+R21646:21654 Systems.PA_omega <> negation2 constr
+R21646:21654 Systems.PA_omega <> negation2 constr
+R21663:21671 Systems.PA_omega <> exchange1 constr
+R21663:21671 Systems.PA_omega <> exchange1 constr
+R21694:21704 Maths_Facts.ordinals <> ord_lt_succ thm
+R21694:21704 Maths_Facts.ordinals <> ord_lt_succ thm
+R21714:21721 Systems.fol <> num_conn def
+R21729:21736 Systems.fol <> num_conn def
+R21729:21736 Systems.fol <> num_conn def
+R21749:21756 Systems.fol <> num_conn def
+R21749:21756 Systems.fol <> num_conn def
+R21781:21790 Maths_Facts.ordinals <> ord_ltb_lt thm
+R21781:21790 Maths_Facts.ordinals <> ord_ltb_lt thm
+R21811:21820 Maths_Facts.ordinals <> ord_ltb_lt thm
+R21811:21820 Maths_Facts.ordinals <> ord_ltb_lt thm
+R21830:21842 Maths_Facts.ordinals <> ord_ltb_trans thm
+R21851:21860 Maths_Facts.ordinals <> ord_lt_ltb thm
+R21867:21878 Maths_Facts.ordinals <> w_tower_succ thm
+R21830:21842 Maths_Facts.ordinals <> ord_ltb_trans thm
+R21851:21860 Maths_Facts.ordinals <> ord_lt_ltb thm
+R21867:21878 Maths_Facts.ordinals <> w_tower_succ thm
+R21892:21901 Maths_Facts.ordinals <> ord_lt_ltb thm
+R21892:21901 Maths_Facts.ordinals <> ord_lt_ltb thm
+R21910:21919 Maths_Facts.ordinals <> w_tower_lt thm
+R21910:21919 Maths_Facts.ordinals <> w_tower_lt thm
+R21937:21947 Maths_Facts.ordinals <> ord_succ_nf thm
+R21937:21947 Maths_Facts.ordinals <> ord_succ_nf thm
+R21956:21965 Maths_Facts.ordinals <> w_tower_nf thm
+R21956:21965 Maths_Facts.ordinals <> w_tower_nf thm
+R21981:21990 Systems.PA_omega <> closed_lor thm
+R21981:21990 Systems.PA_omega <> closed_lor thm
+R22024:22035 Systems.PA_omega <> num_conn_lor thm
+R22024:22035 Systems.PA_omega <> num_conn_lor thm
+R22078:22085 Systems.fol <> num_conn def
+R22097:22103 Maths_Facts.naturals <> eq_refl thm
+R22106:22113 Systems.fol <> num_conn def
+R22078:22085 Systems.fol <> num_conn def
+R22097:22103 Maths_Facts.naturals <> eq_refl thm
+R22106:22113 Systems.fol <> num_conn def
+R22133:22141 Systems.PA_omega <> weakening constr
+R22133:22141 Systems.PA_omega <> weakening constr
+R22168:22176 Systems.PA_omega <> exchange1 constr
+R22168:22176 Systems.PA_omega <> exchange1 constr
+R22191:22204 Systems.PA_omega <> associativity1 thm
+R22191:22204 Systems.PA_omega <> associativity1 thm
+R22230:22237 Systems.fol <> num_conn def
+R22249:22255 Maths_Facts.naturals <> eq_refl thm
+R22258:22265 Systems.fol <> num_conn def
+R22230:22237 Systems.fol <> num_conn def
+R22249:22255 Maths_Facts.naturals <> eq_refl thm
+R22258:22265 Systems.fol <> num_conn def
+R22285:22293 Systems.PA_omega <> weakening constr
+R22285:22293 Systems.PA_omega <> weakening constr
+R22320:22328 Systems.PA_omega <> exchange1 constr
+R22320:22328 Systems.PA_omega <> exchange1 constr
+R22343:22351 Systems.PA_omega <> exchange2 constr
+R22343:22351 Systems.PA_omega <> exchange2 constr
+R22366:22379 Systems.PA_omega <> associativity1 thm
+R22366:22379 Systems.PA_omega <> associativity1 thm
+R22402:22410 Systems.PA_omega <> demorgan2 constr
+R22417:22419 Systems.fol <> lor constr
+R22402:22410 Systems.PA_omega <> demorgan2 constr
+R22417:22419 Systems.fol <> lor constr
+R22451:22458 Systems.PA_omega <> ord_incr constr
+R22465:22472 Maths_Facts.ordinals <> ord_succ def
+R22475:22481 Maths_Facts.ordinals <> ord_max def
+R22484:22491 Maths_Facts.ordinals <> ord_succ def
+R22494:22501 Maths_Facts.ordinals <> ord_succ def
+R22504:22510 Maths_Facts.ordinals <> w_tower def
+R22513:22513 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R22524:22527 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R22538:22538 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R22514:22521 Systems.fol <> num_conn def
+R22528:22535 Systems.fol <> num_conn def
+R22545:22552 Maths_Facts.ordinals <> ord_succ def
+R22555:22562 Maths_Facts.ordinals <> ord_succ def
+R22565:22571 Maths_Facts.ordinals <> w_tower def
+R22574:22574 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R22585:22589 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R22600:22600 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R22575:22582 Systems.fol <> num_conn def
+R22590:22597 Systems.fol <> num_conn def
+R22451:22458 Systems.PA_omega <> ord_incr constr
+R22465:22472 Maths_Facts.ordinals <> ord_succ def
+R22475:22481 Maths_Facts.ordinals <> ord_max def
+R22484:22491 Maths_Facts.ordinals <> ord_succ def
+R22494:22501 Maths_Facts.ordinals <> ord_succ def
+R22504:22510 Maths_Facts.ordinals <> w_tower def
+R22513:22513 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R22524:22527 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R22538:22538 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R22514:22521 Systems.fol <> num_conn def
+R22528:22535 Systems.fol <> num_conn def
+R22545:22552 Maths_Facts.ordinals <> ord_succ def
+R22555:22562 Maths_Facts.ordinals <> ord_succ def
+R22565:22571 Maths_Facts.ordinals <> w_tower def
+R22574:22574 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R22585:22589 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R22600:22600 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R22575:22582 Systems.fol <> num_conn def
+R22590:22597 Systems.fol <> num_conn def
+R22635:22642 Systems.fol <> num_conn def
+R22650:22657 Systems.fol <> num_conn def
+R22650:22657 Systems.fol <> num_conn def
+R22666:22676 Maths_Facts.ordinals <> ord_lt_succ thm
+R22666:22676 Maths_Facts.ordinals <> ord_lt_succ thm
+R22685:22694 Maths_Facts.ordinals <> ord_ltb_lt thm
+R22685:22694 Maths_Facts.ordinals <> ord_ltb_lt thm
+R22704:22716 Maths_Facts.ordinals <> ord_ltb_trans thm
+R22725:22734 Maths_Facts.ordinals <> ord_lt_ltb thm
+R22741:22751 Maths_Facts.ordinals <> w_tower_max thm
+R22704:22716 Maths_Facts.ordinals <> ord_ltb_trans thm
+R22725:22734 Maths_Facts.ordinals <> ord_lt_ltb thm
+R22741:22751 Maths_Facts.ordinals <> w_tower_max thm
+R22767:22776 Maths_Facts.ordinals <> ord_lt_ltb thm
+R22767:22776 Maths_Facts.ordinals <> ord_lt_ltb thm
+R22785:22794 Maths_Facts.ordinals <> w_tower_lt thm
+R22785:22794 Maths_Facts.ordinals <> w_tower_lt thm
+R22812:22822 Maths_Facts.ordinals <> ord_succ_nf thm
+R22812:22822 Maths_Facts.ordinals <> ord_succ_nf thm
+R22831:22840 Maths_Facts.ordinals <> w_tower_nf thm
+R22831:22840 Maths_Facts.ordinals <> w_tower_nf thm
+R22866:22874 Systems.PA_omega <> exchange1 constr
+R22866:22874 Systems.PA_omega <> exchange1 constr
+R22886:22893 Systems.PA_omega <> ord_incr constr
+R22900:22906 Maths_Facts.ordinals <> w_tower def
+R22909:22909 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R22929:22931 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R22951:22951 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R22910:22917 Systems.fol <> num_conn def
+R22920:22923 Systems.fol <> univ constr
+R22932:22939 Systems.fol <> num_conn def
+R22942:22945 Systems.fol <> univ constr
+R22886:22893 Systems.PA_omega <> ord_incr constr
+R22900:22906 Maths_Facts.ordinals <> w_tower def
+R22909:22909 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R22929:22931 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R22951:22951 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R22910:22917 Systems.fol <> num_conn def
+R22920:22923 Systems.fol <> univ constr
+R22932:22939 Systems.fol <> num_conn def
+R22942:22945 Systems.fol <> univ constr
+R22968:22975 Systems.fol <> num_conn def
+R22983:22990 Systems.fol <> num_conn def
+R22983:22990 Systems.fol <> num_conn def
+R23004:23012 Maths_Facts.naturals <> plus_n_Sm thm
+R23004:23012 Maths_Facts.naturals <> plus_n_Sm thm
+R23004:23012 Maths_Facts.naturals <> plus_n_Sm thm
+R23021:23027 Systems.PA_omega <> w_rule2 constr
+R23021:23027 Systems.PA_omega <> w_rule2 constr
+R23035:23041 Maths_Facts.ordinals <> w_tower def
+R23035:23041 Maths_Facts.ordinals <> w_tower def
+R23088:23095 Maths_Facts.naturals <> leq_refl thm
+R23103:23114 Systems.PA_omega <> num_conn_sub thm
+R23124:23138 Systems.PA_omega <> closed_univ_sub thm
+R23150:23160 Systems.fol <> eval_closed thm
+R23165:23178 Systems.PA_omega <> eval_represent thm
+R23088:23095 Maths_Facts.naturals <> leq_refl thm
+R23103:23114 Systems.PA_omega <> num_conn_sub thm
+R23124:23138 Systems.PA_omega <> closed_univ_sub thm
+R23150:23160 Systems.fol <> eval_closed thm
+R23165:23178 Systems.PA_omega <> eval_represent thm
+R23199:23210 Systems.PA_omega <> num_conn_sub thm
+R23199:23210 Systems.PA_omega <> num_conn_sub thm
+R23199:23210 Systems.PA_omega <> num_conn_sub thm
+R23226:23233 Systems.PA_omega <> ord_incr constr
+R23240:23247 Maths_Facts.ordinals <> ord_succ def
+R23250:23257 Maths_Facts.ordinals <> ord_succ def
+R23260:23266 Maths_Facts.ordinals <> w_tower def
+R23269:23269 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R23280:23284 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R23295:23295 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R23270:23277 Systems.fol <> num_conn def
+R23285:23292 Systems.fol <> num_conn def
+R23226:23233 Systems.PA_omega <> ord_incr constr
+R23240:23247 Maths_Facts.ordinals <> ord_succ def
+R23250:23257 Maths_Facts.ordinals <> ord_succ def
+R23260:23266 Maths_Facts.ordinals <> w_tower def
+R23269:23269 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R23280:23284 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R23295:23295 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R23270:23277 Systems.fol <> num_conn def
+R23285:23292 Systems.fol <> num_conn def
+R23315:23323 Systems.PA_omega <> exchange1 constr
+R23315:23323 Systems.PA_omega <> exchange1 constr
+R23333:23347 Systems.PA_omega <> quantification2 constr
+R23356:23364 Systems.fol <> represent def
+R23333:23347 Systems.PA_omega <> quantification2 constr
+R23356:23364 Systems.fol <> represent def
+R23377:23387 Systems.PA_omega <> repr_closed thm
+R23377:23387 Systems.PA_omega <> repr_closed thm
+R23412:23424 Maths_Facts.ordinals <> w_tower_succ2 thm
+R23412:23424 Maths_Facts.ordinals <> w_tower_succ2 thm
+R23439:23448 Maths_Facts.ordinals <> w_tower_nf thm
+R23439:23448 Maths_Facts.ordinals <> w_tower_nf thm
+R23461:23474 Maths_Facts.ordinals <> ord_succ_monot thm
+R23461:23474 Maths_Facts.ordinals <> ord_succ_monot thm
+R23487:23497 Maths_Facts.ordinals <> ord_succ_nf thm
+R23487:23497 Maths_Facts.ordinals <> ord_succ_nf thm
+R23506:23515 Maths_Facts.ordinals <> w_tower_nf thm
+R23506:23515 Maths_Facts.ordinals <> w_tower_nf thm
+prf 23530:23537 <> P3_lemma
+binder 23548:23548 <> n:235
+R23551:23552 Systems.PA_omega <> P3 def
+R23554:23554 Systems.PA_omega <> n:235 var
+R23570:23581 Systems.PA_omega <> P3_strongind thm
+R23570:23581 Systems.PA_omega <> P3_strongind thm
+R23590:23593 Systems.PA_omega <> P3_0 thm
+R23590:23593 Systems.PA_omega <> P3_0 thm
+R23602:23613 Systems.PA_omega <> P3_inductive thm
+R23602:23613 Systems.PA_omega <> P3_inductive thm
+prf 23628:23635 <> P2_lemma
+R23651:23653 Coq.Init.Datatypes <> nat ind
+binder 23647:23647 <> n:236
+R23661:23667 Systems.fol <> formula ind
+binder 23657:23657 <> A:237
+R23671:23672 Systems.PA_omega <> P2 def
+R23674:23674 Systems.PA_omega <> A:237 var
+R23676:23676 Systems.PA_omega <> n:236 var
+R23692:23699 Systems.PA_omega <> P3_lemma thm
+R23692:23699 Systems.PA_omega <> P3_lemma thm
+prf 23714:23721 <> P1_lemma
+R23737:23743 Systems.fol <> formula ind
+binder 23733:23733 <> A:238
+R23747:23748 Systems.PA_omega <> P1 def
+R23750:23750 Systems.PA_omega <> A:238 var
+R23779:23786 Systems.PA_omega <> P2_lemma thm
+R23779:23786 Systems.PA_omega <> P2_lemma thm
+R23796:23797 Systems.PA_omega <> P2 def
+R23815:23822 Systems.fol <> num_conn def
+R23815:23822 Systems.fol <> num_conn def
+prf 23849:23851 <> LEM
+R23867:23873 Systems.fol <> formula ind
+binder 23863:23863 <> A:239
+R23894:23899 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R23887:23889 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R23879:23884 Systems.fol <> closed def
+R23886:23886 Systems.PA_omega <> A:239 var
+R23890:23893 Coq.Init.Datatypes <> true constr
+R23900:23915 Systems.PA_omega <> PA_omega_theorem ind
+R23918:23920 Systems.fol <> lor constr
+R23923:23925 Systems.fol <> neg constr
+R23927:23927 Systems.PA_omega <> A:239 var
+R23930:23930 Systems.PA_omega <> A:239 var
+R23936:23943 Maths_Facts.ordinals <> ord_succ def
+R23946:23952 Maths_Facts.ordinals <> w_tower def
+R23955:23955 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R23966:23968 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R23979:23979 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R23956:23963 Systems.fol <> num_conn def
+R23965:23965 Systems.PA_omega <> A:239 var
+R23969:23976 Systems.fol <> num_conn def
+R23978:23978 Systems.PA_omega <> A:239 var
+R24007:24014 Systems.PA_omega <> P1_lemma thm
+R24007:24014 Systems.PA_omega <> P1_lemma thm
+prf 24272:24291 <> LEM_term_atomic_aux1
+R24311:24314 Systems.fol <> term ind
+binder 24303:24303 <> T:240
+binder 24305:24305 <> s:241
+binder 24307:24307 <> t:242
+R24322:24324 Coq.Init.Datatypes <> nat ind
+binder 24318:24318 <> n:243
+R24345:24348 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R24336:24338 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R24330:24333 Systems.fol <> eval def
+R24335:24335 Systems.PA_omega <> s:241 var
+R24339:24342 Systems.fol <> eval def
+R24344:24344 Systems.PA_omega <> t:242 var
+R24376:24378 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R24349:24352 Systems.fol <> eval def
+R24355:24368 Systems.fol <> substitution_t def
+R24370:24370 Systems.PA_omega <> T:240 var
+R24372:24372 Systems.PA_omega <> n:243 var
+R24374:24374 Systems.PA_omega <> s:241 var
+R24379:24382 Systems.fol <> eval def
+R24385:24398 Systems.fol <> substitution_t def
+R24400:24400 Systems.PA_omega <> T:240 var
+R24402:24402 Systems.PA_omega <> n:243 var
+R24404:24404 Systems.PA_omega <> t:242 var
+R24481:24483 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R24454:24467 Systems.fol <> substitution_t def
+R24470:24473 Systems.fol <> succ constr
+R24484:24487 Systems.fol <> succ constr
+R24490:24503 Systems.fol <> substitution_t def
+R24481:24483 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R24454:24467 Systems.fol <> substitution_t def
+R24470:24473 Systems.fol <> succ constr
+R24484:24487 Systems.fol <> succ constr
+R24490:24503 Systems.fol <> substitution_t def
+R24561:24563 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R24534:24547 Systems.fol <> substitution_t def
+R24550:24553 Systems.fol <> succ constr
+R24564:24567 Systems.fol <> succ constr
+R24570:24583 Systems.fol <> substitution_t def
+R24561:24563 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R24534:24547 Systems.fol <> substitution_t def
+R24550:24553 Systems.fol <> succ constr
+R24564:24567 Systems.fol <> succ constr
+R24570:24583 Systems.fol <> substitution_t def
+R24639:24642 Systems.fol <> eval def
+R24645:24658 Systems.fol <> substitution_t def
+R24639:24642 Systems.fol <> eval def
+R24645:24658 Systems.fol <> substitution_t def
+R24768:24780 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R24730:24733 Systems.fol <> eval def
+R24736:24749 Systems.fol <> substitution_t def
+R24752:24755 Systems.fol <> plus constr
+R24781:24784 Systems.fol <> eval def
+R24787:24790 Systems.fol <> plus constr
+R24793:24806 Systems.fol <> substitution_t def
+R24817:24830 Systems.fol <> substitution_t def
+R24768:24780 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R24730:24733 Systems.fol <> eval def
+R24736:24749 Systems.fol <> substitution_t def
+R24752:24755 Systems.fol <> plus constr
+R24781:24784 Systems.fol <> eval def
+R24787:24790 Systems.fol <> plus constr
+R24793:24806 Systems.fol <> substitution_t def
+R24817:24830 Systems.fol <> substitution_t def
+R24901:24913 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R24863:24866 Systems.fol <> eval def
+R24869:24882 Systems.fol <> substitution_t def
+R24885:24888 Systems.fol <> plus constr
+R24914:24917 Systems.fol <> eval def
+R24920:24923 Systems.fol <> plus constr
+R24926:24939 Systems.fol <> substitution_t def
+R24950:24963 Systems.fol <> substitution_t def
+R24901:24913 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R24863:24866 Systems.fol <> eval def
+R24869:24882 Systems.fol <> substitution_t def
+R24885:24888 Systems.fol <> plus constr
+R24914:24917 Systems.fol <> eval def
+R24920:24923 Systems.fol <> plus constr
+R24926:24939 Systems.fol <> substitution_t def
+R24950:24963 Systems.fol <> substitution_t def
+R25021:25024 Systems.fol <> eval def
+R25027:25040 Systems.fol <> substitution_t def
+R25021:25024 Systems.fol <> eval def
+R25027:25040 Systems.fol <> substitution_t def
+R25170:25182 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R25131:25134 Systems.fol <> eval def
+R25137:25150 Systems.fol <> substitution_t def
+R25153:25157 Systems.fol <> times constr
+R25183:25186 Systems.fol <> eval def
+R25189:25193 Systems.fol <> times constr
+R25196:25209 Systems.fol <> substitution_t def
+R25220:25233 Systems.fol <> substitution_t def
+R25170:25182 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R25131:25134 Systems.fol <> eval def
+R25137:25150 Systems.fol <> substitution_t def
+R25153:25157 Systems.fol <> times constr
+R25183:25186 Systems.fol <> eval def
+R25189:25193 Systems.fol <> times constr
+R25196:25209 Systems.fol <> substitution_t def
+R25220:25233 Systems.fol <> substitution_t def
+R25305:25317 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R25266:25269 Systems.fol <> eval def
+R25272:25285 Systems.fol <> substitution_t def
+R25288:25292 Systems.fol <> times constr
+R25318:25321 Systems.fol <> eval def
+R25324:25328 Systems.fol <> times constr
+R25331:25344 Systems.fol <> substitution_t def
+R25355:25368 Systems.fol <> substitution_t def
+R25305:25317 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R25266:25269 Systems.fol <> eval def
+R25272:25285 Systems.fol <> substitution_t def
+R25288:25292 Systems.fol <> times constr
+R25318:25321 Systems.fol <> eval def
+R25324:25328 Systems.fol <> times constr
+R25331:25344 Systems.fol <> substitution_t def
+R25355:25368 Systems.fol <> substitution_t def
+R25426:25429 Systems.fol <> eval def
+R25432:25445 Systems.fol <> substitution_t def
+R25426:25429 Systems.fol <> eval def
+R25432:25445 Systems.fol <> substitution_t def
+R25541:25546 Systems.PA_omega <> eq_nat syndef
+R25541:25546 Systems.PA_omega <> eq_nat syndef
+prf 25582:25601 <> LEM_term_atomic_aux2
+R25617:25630 Systems.fol <> atomic_formula ind
+binder 25613:25613 <> a:244
+R25640:25643 Systems.fol <> term ind
+binder 25634:25634 <> s:245
+binder 25636:25636 <> t:246
+R25651:25653 Coq.Init.Datatypes <> nat ind
+binder 25647:25647 <> n:247
+R25674:25679 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R25665:25667 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R25659:25662 Systems.fol <> eval def
+R25664:25664 Systems.PA_omega <> s:245 var
+R25668:25671 Systems.fol <> eval def
+R25673:25673 Systems.PA_omega <> t:246 var
+R25724:25729 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R25714:25716 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R25680:25690 Systems.fol <> correctness def
+R25693:25706 Systems.fol <> substitution_a def
+R25708:25708 Systems.PA_omega <> a:244 var
+R25710:25710 Systems.PA_omega <> n:247 var
+R25712:25712 Systems.PA_omega <> s:245 var
+R25717:25723 Systems.fol <> correct constr
+R25764:25766 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R25730:25740 Systems.fol <> correctness def
+R25743:25756 Systems.fol <> substitution_a def
+R25758:25758 Systems.PA_omega <> a:244 var
+R25760:25760 Systems.PA_omega <> n:247 var
+R25762:25762 Systems.PA_omega <> t:246 var
+R25767:25773 Systems.fol <> correct constr
+R25844:25857 Systems.fol <> substitution_a def
+R25873:25886 Systems.fol <> substitution_a def
+R25901:25920 Systems.PA_omega <> LEM_term_atomic_aux1 thm
+R25901:25920 Systems.PA_omega <> LEM_term_atomic_aux1 thm
+R25954:25973 Systems.PA_omega <> LEM_term_atomic_aux1 thm
+R25954:25973 Systems.PA_omega <> LEM_term_atomic_aux1 thm
+R26004:26007 Systems.fol <> eval def
+R26010:26023 Systems.fol <> substitution_t def
+R26044:26047 Systems.fol <> eval def
+R26050:26063 Systems.fol <> substitution_t def
+R26090:26100 Systems.fol <> correctness def
+R26004:26007 Systems.fol <> eval def
+R26010:26023 Systems.fol <> substitution_t def
+R26044:26047 Systems.fol <> eval def
+R26050:26063 Systems.fol <> substitution_t def
+R26044:26047 Systems.fol <> eval def
+R26050:26063 Systems.fol <> substitution_t def
+prf 26246:26265 <> LEM_term_atomic_aux3
+R26283:26286 Systems.fol <> term ind
+binder 26277:26277 <> s:248
+binder 26279:26279 <> t:249
+R26318:26321 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R26311:26313 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R26292:26300 Systems.fol <> correct_a def
+R26303:26305 Systems.fol <> equ constr
+R26307:26307 Systems.PA_omega <> s:248 var
+R26309:26309 Systems.PA_omega <> t:249 var
+R26314:26317 Coq.Init.Datatypes <> true constr
+R26328:26330 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R26322:26325 Systems.fol <> eval def
+R26327:26327 Systems.PA_omega <> s:248 var
+R26331:26334 Systems.fol <> eval def
+R26336:26336 Systems.PA_omega <> t:249 var
+R26365:26373 Systems.fol <> correct_a def
+R26383:26393 Systems.fol <> correctness def
+R26405:26408 Systems.fol <> eval def
+R26423:26426 Systems.fol <> eval def
+R26405:26408 Systems.fol <> eval def
+R26423:26426 Systems.fol <> eval def
+R26423:26426 Systems.fol <> eval def
+R26491:26496 Systems.PA_omega <> eq_nat syndef
+R26499:26499 Coq.Init.Datatypes <> S constr
+R26506:26506 Coq.Init.Datatypes <> S constr
+R26491:26496 Systems.PA_omega <> eq_nat syndef
+R26499:26499 Coq.Init.Datatypes <> S constr
+R26506:26506 Coq.Init.Datatypes <> S constr
+R26523:26534 Maths_Facts.naturals <> nat_eq_decid thm
+R26523:26534 Maths_Facts.naturals <> nat_eq_decid thm
+prf 26593:26600 <> equ_symm
+R26618:26621 Systems.fol <> term ind
+binder 26612:26612 <> s:250
+binder 26614:26614 <> t:251
+R26653:26656 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R26646:26648 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R26627:26635 Systems.fol <> correct_a def
+R26638:26640 Systems.fol <> equ constr
+R26642:26642 Systems.PA_omega <> s:250 var
+R26644:26644 Systems.PA_omega <> t:251 var
+R26649:26652 Coq.Init.Datatypes <> true constr
+R26676:26678 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R26657:26665 Systems.fol <> correct_a def
+R26668:26670 Systems.fol <> equ constr
+R26672:26672 Systems.PA_omega <> t:251 var
+R26674:26674 Systems.PA_omega <> s:250 var
+R26679:26682 Coq.Init.Datatypes <> true constr
+R26712:26731 Systems.PA_omega <> LEM_term_atomic_aux3 thm
+R26712:26731 Systems.PA_omega <> LEM_term_atomic_aux3 thm
+R26758:26769 Systems.PA_omega <> correct_eval thm
+R26758:26769 Systems.PA_omega <> correct_eval thm
+R26786:26794 Systems.fol <> correct_a def
+R26797:26807 Systems.fol <> correctness def
+R26819:26822 Systems.fol <> eval def
+R26837:26840 Systems.fol <> eval def
+R26819:26822 Systems.fol <> eval def
+R26837:26840 Systems.fol <> eval def
+R26837:26840 Systems.fol <> eval def
+R27009:27019 Maths_Facts.naturals <> eq_nat_refl thm
+R27009:27019 Maths_Facts.naturals <> eq_nat_refl thm
+R27009:27019 Maths_Facts.naturals <> eq_nat_refl thm
+prf 27040:27055 <> LEM_term_atomic'
+R27073:27076 Systems.fol <> term ind
+binder 27067:27067 <> s:252
+binder 27069:27069 <> t:253
+R27084:27097 Systems.fol <> atomic_formula ind
+binder 27080:27080 <> a:254
+R27105:27107 Coq.Init.Datatypes <> nat ind
+binder 27101:27101 <> n:255
+R27139:27144 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R27132:27134 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R27113:27121 Systems.fol <> correct_a def
+R27124:27126 Systems.fol <> equ constr
+R27128:27128 Systems.PA_omega <> s:252 var
+R27130:27130 Systems.PA_omega <> t:253 var
+R27135:27138 Coq.Init.Datatypes <> true constr
+R27194:27199 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R27187:27189 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R27145:27158 Systems.PA_omega <> PA_omega_axiom def
+R27161:27172 Systems.fol <> substitution def
+R27175:27178 Systems.fol <> atom constr
+R27180:27180 Systems.PA_omega <> a:254 var
+R27183:27183 Systems.PA_omega <> n:255 var
+R27185:27185 Systems.PA_omega <> s:252 var
+R27190:27193 Coq.Init.Datatypes <> true constr
+R27242:27244 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R27200:27213 Systems.PA_omega <> PA_omega_axiom def
+R27216:27227 Systems.fol <> substitution def
+R27230:27233 Systems.fol <> atom constr
+R27235:27235 Systems.PA_omega <> a:254 var
+R27238:27238 Systems.PA_omega <> n:255 var
+R27240:27240 Systems.PA_omega <> t:253 var
+R27245:27248 Coq.Init.Datatypes <> true constr
+R27287:27289 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R27281:27284 Systems.fol <> eval def
+R27290:27293 Systems.fol <> eval def
+R27287:27289 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R27281:27284 Systems.fol <> eval def
+R27290:27293 Systems.fol <> eval def
+R27307:27326 Systems.PA_omega <> LEM_term_atomic_aux3 thm
+R27307:27326 Systems.PA_omega <> LEM_term_atomic_aux3 thm
+R27382:27384 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R27348:27358 Systems.fol <> correctness def
+R27361:27374 Systems.fol <> substitution_a def
+R27385:27391 Systems.fol <> correct constr
+R27382:27384 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R27348:27358 Systems.fol <> correctness def
+R27361:27374 Systems.fol <> substitution_a def
+R27385:27391 Systems.fol <> correct constr
+R27404:27412 Systems.fol <> correct_a def
+R27432:27442 Systems.fol <> correctness def
+R27445:27458 Systems.fol <> substitution_a def
+R27432:27442 Systems.fol <> correctness def
+R27445:27458 Systems.fol <> substitution_a def
+R27531:27550 Systems.PA_omega <> LEM_term_atomic_aux2 thm
+R27531:27550 Systems.PA_omega <> LEM_term_atomic_aux2 thm
+R27575:27583 Systems.fol <> correct_a def
+prf 27616:27630 <> LEM_term_atomic
+R27648:27661 Systems.fol <> atomic_formula ind
+binder 27644:27644 <> a:256
+R27669:27671 Coq.Init.Datatypes <> nat ind
+binder 27665:27665 <> n:257
+R27681:27684 Systems.fol <> term ind
+binder 27675:27675 <> s:258
+binder 27677:27677 <> t:259
+R27718:27725 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R27711:27713 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R27692:27700 Systems.fol <> correct_a def
+R27703:27705 Systems.fol <> equ constr
+R27707:27707 Systems.PA_omega <> s:258 var
+R27709:27709 Systems.PA_omega <> t:259 var
+R27714:27717 Coq.Init.Datatypes <> true constr
+R27745:27752 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R27739:27741 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R27726:27736 Systems.fol <> free_list_a def
+R27738:27738 Systems.PA_omega <> a:256 var
+R27742:27742 Maths_Facts.lists <> :::'['_x_','_'..'_','_x_']' not
+R27744:27744 Maths_Facts.lists <> :::'['_x_','_'..'_','_x_']' not
+R27743:27743 Systems.PA_omega <> n:257 var
+R27753:27768 Systems.PA_omega <> PA_omega_theorem ind
+R27771:27773 Systems.fol <> lor constr
+R27776:27778 Systems.fol <> neg constr
+R27781:27784 Systems.fol <> atom constr
+R27787:27800 Systems.fol <> substitution_a def
+R27802:27802 Systems.PA_omega <> a:256 var
+R27804:27804 Systems.PA_omega <> n:257 var
+R27806:27806 Systems.PA_omega <> s:258 var
+R27838:27841 Systems.fol <> atom constr
+R27844:27857 Systems.fol <> substitution_a def
+R27859:27859 Systems.PA_omega <> a:256 var
+R27861:27861 Systems.PA_omega <> n:257 var
+R27863:27863 Systems.PA_omega <> t:259 var
+R27893:27900 Maths_Facts.ordinals <> ord_succ def
+R27902:27905 Maths_Facts.ordinals <> Zero constr
+R27947:27963 Systems.fol <> correctness_decid thm
+R27966:27979 Systems.fol <> substitution_a def
+R27947:27963 Systems.fol <> correctness_decid thm
+R27966:27979 Systems.fol <> substitution_a def
+R28011:28030 Systems.fol <> one_var_free_lemma_a thm
+R28011:28030 Systems.fol <> one_var_free_lemma_a thm
+R28055:28065 Systems.fol <> eval_closed thm
+R28055:28065 Systems.fol <> eval_closed thm
+R28078:28089 Systems.PA_omega <> correct_eval thm
+R28078:28089 Systems.PA_omega <> correct_eval thm
+R28137:28150 Systems.PA_omega <> correct_closed thm
+R28137:28150 Systems.PA_omega <> correct_closed thm
+R28179:28194 Systems.PA_omega <> LEM_term_atomic' thm
+R28179:28194 Systems.PA_omega <> LEM_term_atomic' thm
+R28232:28236 Systems.PA_omega <> axiom constr
+R28232:28236 Systems.PA_omega <> axiom constr
+R28252:28263 Systems.fol <> substitution def
+R28280:28288 Systems.PA_omega <> weakening constr
+R28280:28288 Systems.PA_omega <> weakening constr
+R28305:28313 Systems.PA_omega <> exchange1 constr
+R28305:28313 Systems.PA_omega <> exchange1 constr
+R28322:28330 Systems.PA_omega <> weakening constr
+R28322:28330 Systems.PA_omega <> weakening constr
+R28357:28378 Systems.PA_omega <> incorrect_subst_closed thm
+R28357:28378 Systems.PA_omega <> incorrect_subst_closed thm
+R28406:28416 Systems.fol <> eval_closed thm
+R28406:28416 Systems.fol <> eval_closed thm
+R28429:28440 Systems.PA_omega <> correct_eval thm
+R28429:28440 Systems.PA_omega <> correct_eval thm
+R28470:28474 Systems.PA_omega <> axiom constr
+R28470:28474 Systems.PA_omega <> axiom constr
+def 28611:28612 <> Q1
+R28619:28625 Systems.fol <> formula ind
+binder 28615:28615 <> A:260
+R28650:28652 Coq.Init.Datatypes <> nat ind
+binder 28646:28646 <> n:261
+R28662:28665 Systems.fol <> term ind
+binder 28656:28656 <> s:262
+binder 28658:28658 <> t:263
+R28697:28702 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R28690:28692 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R28671:28679 Systems.fol <> correct_a def
+R28682:28684 Systems.fol <> equ constr
+R28686:28686 Systems.PA_omega <> s:262 var
+R28688:28688 Systems.PA_omega <> t:263 var
+R28693:28696 Coq.Init.Datatypes <> true constr
+R28720:28725 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R28714:28716 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R28703:28711 Systems.fol <> free_list def
+R28713:28713 Systems.PA_omega <> A:260 var
+R28717:28717 Maths_Facts.lists <> :::'['_x_','_'..'_','_x_']' not
+R28719:28719 Maths_Facts.lists <> :::'['_x_','_'..'_','_x_']' not
+R28718:28718 Systems.PA_omega <> n:261 var
+R28726:28741 Systems.PA_omega <> PA_omega_theorem ind
+R28744:28746 Systems.fol <> lor constr
+R28749:28751 Systems.fol <> neg constr
+R28754:28765 Systems.fol <> substitution def
+R28767:28767 Systems.PA_omega <> A:260 var
+R28769:28769 Systems.PA_omega <> n:261 var
+R28771:28771 Systems.PA_omega <> s:262 var
+R28776:28787 Systems.fol <> substitution def
+R28789:28789 Systems.PA_omega <> A:260 var
+R28791:28791 Systems.PA_omega <> n:261 var
+R28793:28793 Systems.PA_omega <> t:263 var
+R28819:28826 Maths_Facts.ordinals <> ord_succ def
+R28829:28835 Maths_Facts.ordinals <> w_tower def
+R28838:28838 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R28849:28851 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R28862:28862 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R28839:28846 Systems.fol <> num_conn def
+R28848:28848 Systems.PA_omega <> A:260 var
+R28852:28859 Systems.fol <> num_conn def
+R28861:28861 Systems.PA_omega <> A:260 var
+def 28880:28881 <> Q2
+R28888:28894 Systems.fol <> formula ind
+binder 28884:28884 <> A:264
+R28902:28904 Coq.Init.Datatypes <> nat ind
+binder 28898:28898 <> n:265
+R28931:28934 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R28927:28929 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R28917:28924 Systems.fol <> num_conn def
+R28926:28926 Systems.PA_omega <> A:264 var
+R28930:28930 Systems.PA_omega <> n:265 var
+R28935:28936 Systems.PA_omega <> Q1 def
+R28938:28938 Systems.PA_omega <> A:264 var
+def 28953:28954 <> Q3
+R28961:28963 Coq.Init.Datatypes <> nat ind
+binder 28957:28957 <> m:266
+R28988:28994 Systems.fol <> formula ind
+binder 28984:28984 <> A:267
+R28998:28999 Systems.PA_omega <> Q2 def
+R29001:29001 Systems.PA_omega <> A:267 var
+R29003:29003 Systems.PA_omega <> m:266 var
+prf 29013:29028 <> Q3_strongind_aux
+R29038:29043 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R29034:29035 Systems.PA_omega <> Q3 def
+R29044:29044 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R29099:29106 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R29133:29133 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+binder 29052:29052 <> n:268
+R29060:29060 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R29085:29089 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+binder 29068:29068 <> m:269
+R29077:29080 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R29072:29075 Coq.Init.Peano <> ::nat_scope:x_'<='_x not
+R29071:29071 Systems.PA_omega <> m:269 var
+R29076:29076 Systems.PA_omega <> n:268 var
+R29081:29082 Systems.PA_omega <> Q3 def
+R29084:29084 Systems.PA_omega <> m:269 var
+R29090:29091 Systems.PA_omega <> Q3 def
+R29094:29094 Coq.Init.Datatypes <> S constr
+R29096:29096 Systems.PA_omega <> n:268 var
+binder 29114:29114 <> n:270
+binder 29116:29116 <> m:271
+R29125:29128 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R29120:29123 Coq.Init.Peano <> ::nat_scope:x_'<='_x not
+R29119:29119 Systems.PA_omega <> m:271 var
+R29124:29124 Systems.PA_omega <> n:270 var
+R29129:29130 Systems.PA_omega <> Q3 def
+R29132:29132 Systems.PA_omega <> m:271 var
+R29196:29198 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R29196:29198 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R29265:29265 Coq.Init.Datatypes <> ::type_scope:x_'+'_x not
+R29274:29278 Coq.Init.Datatypes <> ::type_scope:x_'+'_x not
+R29286:29286 Coq.Init.Datatypes <> ::type_scope:x_'+'_x not
+R29267:29269 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R29270:29270 Coq.Init.Datatypes <> S constr
+R29280:29283 Coq.Init.Peano <> ::nat_scope:x_'<='_x not
+R29265:29265 Coq.Init.Datatypes <> ::type_scope:x_'+'_x not
+R29274:29278 Coq.Init.Datatypes <> ::type_scope:x_'+'_x not
+R29286:29286 Coq.Init.Datatypes <> ::type_scope:x_'+'_x not
+R29267:29269 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R29270:29270 Coq.Init.Datatypes <> S constr
+R29280:29283 Coq.Init.Peano <> ::nat_scope:x_'<='_x not
+R29298:29309 Maths_Facts.naturals <> leq_prop_sum thm
+R29298:29309 Maths_Facts.naturals <> leq_prop_sum thm
+prf 29423:29434 <> Q3_strongind
+R29444:29449 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R29440:29441 Systems.PA_omega <> Q3 def
+R29450:29450 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R29505:29512 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R29527:29527 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+binder 29458:29458 <> n:272
+R29466:29466 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R29491:29495 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+binder 29474:29474 <> m:273
+R29483:29486 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R29478:29481 Coq.Init.Peano <> ::nat_scope:x_'<='_x not
+R29477:29477 Systems.PA_omega <> m:273 var
+R29482:29482 Systems.PA_omega <> n:272 var
+R29487:29488 Systems.PA_omega <> Q3 def
+R29490:29490 Systems.PA_omega <> m:273 var
+R29496:29497 Systems.PA_omega <> Q3 def
+R29500:29500 Coq.Init.Datatypes <> S constr
+R29502:29502 Systems.PA_omega <> n:272 var
+binder 29520:29520 <> n:274
+R29523:29524 Systems.PA_omega <> Q3 def
+R29526:29526 Systems.PA_omega <> n:274 var
+R29552:29567 Systems.PA_omega <> Q3_strongind_aux thm
+R29552:29567 Systems.PA_omega <> Q3_strongind_aux thm
+prf 29598:29601 <> Q3_0
+R29605:29606 Systems.PA_omega <> Q3 def
+R29625:29626 Systems.PA_omega <> Q3 def
+R29629:29630 Systems.PA_omega <> Q2 def
+R29676:29677 Systems.PA_omega <> Q1 def
+R29695:29702 Systems.PA_omega <> ord_incr constr
+R29709:29716 Maths_Facts.ordinals <> ord_succ def
+R29718:29721 Maths_Facts.ordinals <> Zero constr
+R29695:29702 Systems.PA_omega <> ord_incr constr
+R29709:29716 Maths_Facts.ordinals <> ord_succ def
+R29718:29721 Maths_Facts.ordinals <> Zero constr
+R29732:29746 Systems.PA_omega <> LEM_term_atomic thm
+R29732:29746 Systems.PA_omega <> LEM_term_atomic thm
+R29763:29773 Maths_Facts.ordinals <> ord_lt_succ thm
+R29763:29773 Maths_Facts.ordinals <> ord_lt_succ thm
+R29782:29788 Maths_Facts.ordinals <> zero_lt constr
+R29782:29788 Maths_Facts.ordinals <> zero_lt constr
+R29797:29807 Maths_Facts.ordinals <> ord_succ_nf thm
+R29797:29807 Maths_Facts.ordinals <> ord_succ_nf thm
+R29816:29825 Maths_Facts.ordinals <> w_tower_nf thm
+R29816:29825 Maths_Facts.ordinals <> w_tower_nf thm
+prf 29886:29897 <> Q3_inductive
+binder 29908:29908 <> n:275
+R29911:29911 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R29936:29940 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+binder 29919:29919 <> m:276
+R29928:29931 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R29923:29926 Coq.Init.Peano <> ::nat_scope:x_'<='_x not
+R29922:29922 Systems.PA_omega <> m:276 var
+R29927:29927 Systems.PA_omega <> n:275 var
+R29932:29933 Systems.PA_omega <> Q3 def
+R29935:29935 Systems.PA_omega <> m:276 var
+R29941:29942 Systems.PA_omega <> Q3 def
+R29945:29945 Coq.Init.Datatypes <> S constr
+R29947:29947 Systems.PA_omega <> n:275 var
+R29965:29966 Systems.PA_omega <> Q3 def
+R29968:29969 Systems.PA_omega <> Q2 def
+R29971:29972 Systems.PA_omega <> Q1 def
+R30054:30062 Systems.PA_omega <> negation2 constr
+R30054:30062 Systems.PA_omega <> negation2 constr
+R30070:30081 Systems.fol <> substitution def
+R30070:30081 Systems.fol <> substitution def
+R30090:30098 Systems.PA_omega <> exchange1 constr
+R30090:30098 Systems.PA_omega <> exchange1 constr
+R30108:30115 Systems.fol <> num_conn def
+R30123:30130 Systems.fol <> num_conn def
+R30123:30130 Systems.fol <> num_conn def
+R30142:30149 Systems.PA_omega <> ord_incr constr
+R30156:30163 Maths_Facts.ordinals <> ord_succ def
+R30166:30172 Maths_Facts.ordinals <> w_tower def
+R30175:30175 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R30186:30188 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R30199:30199 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R30176:30183 Systems.fol <> num_conn def
+R30189:30196 Systems.fol <> num_conn def
+R30142:30149 Systems.PA_omega <> ord_incr constr
+R30156:30163 Maths_Facts.ordinals <> ord_succ def
+R30166:30172 Maths_Facts.ordinals <> w_tower def
+R30175:30175 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R30186:30188 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R30199:30199 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R30176:30183 Systems.fol <> num_conn def
+R30189:30196 Systems.fol <> num_conn def
+R30220:30227 Maths_Facts.naturals <> leq_refl thm
+R30220:30227 Maths_Facts.naturals <> leq_refl thm
+R30258:30265 Systems.PA_omega <> equ_symm thm
+R30258:30265 Systems.PA_omega <> equ_symm thm
+R30279:30288 Maths_Facts.ordinals <> ord_ltb_lt thm
+R30279:30288 Maths_Facts.ordinals <> ord_ltb_lt thm
+R30298:30310 Maths_Facts.ordinals <> ord_ltb_trans thm
+R30319:30328 Maths_Facts.ordinals <> ord_lt_ltb thm
+R30335:30346 Maths_Facts.ordinals <> w_tower_succ thm
+R30298:30310 Maths_Facts.ordinals <> ord_ltb_trans thm
+R30319:30328 Maths_Facts.ordinals <> ord_lt_ltb thm
+R30335:30346 Maths_Facts.ordinals <> w_tower_succ thm
+R30360:30369 Maths_Facts.ordinals <> ord_lt_ltb thm
+R30360:30369 Maths_Facts.ordinals <> ord_lt_ltb thm
+R30378:30387 Maths_Facts.ordinals <> w_tower_lt thm
+R30378:30387 Maths_Facts.ordinals <> w_tower_lt thm
+R30403:30411 Maths_Facts.ordinals <> single_nf constr
+R30403:30411 Maths_Facts.ordinals <> single_nf constr
+R30420:30429 Maths_Facts.ordinals <> w_tower_nf thm
+R30420:30429 Maths_Facts.ordinals <> w_tower_nf thm
+R30444:30456 Systems.PA_omega <> free_list_lor thm
+R30444:30456 Systems.PA_omega <> free_list_lor thm
+R30493:30504 Systems.PA_omega <> num_conn_lor thm
+R30493:30504 Systems.PA_omega <> num_conn_lor thm
+R30542:30557 Systems.PA_omega <> correct_closed_t thm
+R30542:30557 Systems.PA_omega <> correct_closed_t thm
+R30588:30595 Systems.PA_omega <> ord_incr constr
+R30602:30609 Maths_Facts.ordinals <> ord_succ def
+R30612:30618 Maths_Facts.ordinals <> ord_max def
+R30621:30628 Maths_Facts.ordinals <> ord_succ def
+R30631:30638 Maths_Facts.ordinals <> ord_succ def
+R30641:30647 Maths_Facts.ordinals <> w_tower def
+R30650:30650 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R30661:30665 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R30676:30676 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R30651:30658 Systems.fol <> num_conn def
+R30666:30673 Systems.fol <> num_conn def
+R30683:30690 Maths_Facts.ordinals <> ord_succ def
+R30693:30700 Maths_Facts.ordinals <> ord_succ def
+R30703:30709 Maths_Facts.ordinals <> w_tower def
+R30712:30712 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R30723:30725 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R30736:30736 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R30713:30720 Systems.fol <> num_conn def
+R30726:30733 Systems.fol <> num_conn def
+R30588:30595 Systems.PA_omega <> ord_incr constr
+R30602:30609 Maths_Facts.ordinals <> ord_succ def
+R30612:30618 Maths_Facts.ordinals <> ord_max def
+R30621:30628 Maths_Facts.ordinals <> ord_succ def
+R30631:30638 Maths_Facts.ordinals <> ord_succ def
+R30641:30647 Maths_Facts.ordinals <> w_tower def
+R30650:30650 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R30661:30665 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R30676:30676 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R30651:30658 Systems.fol <> num_conn def
+R30666:30673 Systems.fol <> num_conn def
+R30683:30690 Maths_Facts.ordinals <> ord_succ def
+R30693:30700 Maths_Facts.ordinals <> ord_succ def
+R30703:30709 Maths_Facts.ordinals <> w_tower def
+R30712:30712 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R30723:30725 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R30736:30736 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R30713:30720 Systems.fol <> num_conn def
+R30726:30733 Systems.fol <> num_conn def
+R30757:30765 Systems.PA_omega <> demorgan2 constr
+R30778:30785 Maths_Facts.ordinals <> ord_succ def
+R30788:30795 Maths_Facts.ordinals <> ord_succ def
+R30798:30804 Maths_Facts.ordinals <> w_tower def
+R30807:30807 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R30818:30822 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R30833:30833 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R30808:30815 Systems.fol <> num_conn def
+R30823:30830 Systems.fol <> num_conn def
+R30840:30847 Maths_Facts.ordinals <> ord_succ def
+R30850:30857 Maths_Facts.ordinals <> ord_succ def
+R30860:30866 Maths_Facts.ordinals <> w_tower def
+R30869:30869 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R30880:30882 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R30893:30893 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R30870:30877 Systems.fol <> num_conn def
+R30883:30890 Systems.fol <> num_conn def
+R30757:30765 Systems.PA_omega <> demorgan2 constr
+R30778:30785 Maths_Facts.ordinals <> ord_succ def
+R30788:30795 Maths_Facts.ordinals <> ord_succ def
+R30798:30804 Maths_Facts.ordinals <> w_tower def
+R30807:30807 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R30818:30822 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R30833:30833 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R30808:30815 Systems.fol <> num_conn def
+R30823:30830 Systems.fol <> num_conn def
+R30840:30847 Maths_Facts.ordinals <> ord_succ def
+R30850:30857 Maths_Facts.ordinals <> ord_succ def
+R30860:30866 Maths_Facts.ordinals <> w_tower def
+R30869:30869 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R30880:30882 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R30893:30893 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R30870:30877 Systems.fol <> num_conn def
+R30883:30890 Systems.fol <> num_conn def
+R30913:30926 Systems.PA_omega <> associativity1 thm
+R30913:30926 Systems.PA_omega <> associativity1 thm
+R30935:30943 Systems.PA_omega <> exchange1 constr
+R30935:30943 Systems.PA_omega <> exchange1 constr
+R30952:30960 Systems.PA_omega <> weakening constr
+R30952:30960 Systems.PA_omega <> weakening constr
+R31014:31031 Systems.fol <> one_var_free_lemma thm
+R31014:31031 Systems.fol <> one_var_free_lemma thm
+R31067:31081 Systems.PA_omega <> closed_subst_eq thm
+R31067:31081 Systems.PA_omega <> closed_subst_eq thm
+R31067:31081 Systems.PA_omega <> closed_subst_eq thm
+R31067:31081 Systems.PA_omega <> closed_subst_eq thm
+R31160:31167 Systems.fol <> num_conn def
+R31179:31185 Maths_Facts.naturals <> eq_refl thm
+R31188:31195 Systems.fol <> num_conn def
+R31160:31167 Systems.fol <> num_conn def
+R31179:31185 Maths_Facts.naturals <> eq_refl thm
+R31188:31195 Systems.fol <> num_conn def
+R31236:31250 Systems.PA_omega <> closed_subst_eq thm
+R31253:31267 Systems.PA_omega <> closed_subst_eq thm
+R31236:31250 Systems.PA_omega <> closed_subst_eq thm
+R31236:31250 Systems.PA_omega <> closed_subst_eq thm
+R31236:31250 Systems.PA_omega <> closed_subst_eq thm
+R31253:31267 Systems.PA_omega <> closed_subst_eq thm
+R31253:31267 Systems.PA_omega <> closed_subst_eq thm
+R31253:31267 Systems.PA_omega <> closed_subst_eq thm
+R31283:31285 Systems.PA_omega <> LEM thm
+R31283:31285 Systems.PA_omega <> LEM thm
+R31320:31333 Systems.PA_omega <> associativity1 thm
+R31320:31333 Systems.PA_omega <> associativity1 thm
+R31342:31350 Systems.PA_omega <> exchange2 constr
+R31342:31350 Systems.PA_omega <> exchange2 constr
+R31359:31367 Systems.PA_omega <> exchange1 constr
+R31359:31367 Systems.PA_omega <> exchange1 constr
+R31376:31384 Systems.PA_omega <> weakening constr
+R31376:31384 Systems.PA_omega <> weakening constr
+R31438:31455 Systems.fol <> one_var_free_lemma thm
+R31438:31455 Systems.fol <> one_var_free_lemma thm
+R31491:31505 Systems.PA_omega <> closed_subst_eq thm
+R31491:31505 Systems.PA_omega <> closed_subst_eq thm
+R31491:31505 Systems.PA_omega <> closed_subst_eq thm
+R31491:31505 Systems.PA_omega <> closed_subst_eq thm
+R31584:31591 Systems.fol <> num_conn def
+R31603:31609 Maths_Facts.naturals <> eq_refl thm
+R31612:31619 Systems.fol <> num_conn def
+R31584:31591 Systems.fol <> num_conn def
+R31603:31609 Maths_Facts.naturals <> eq_refl thm
+R31612:31619 Systems.fol <> num_conn def
+R31660:31674 Systems.PA_omega <> closed_subst_eq thm
+R31677:31691 Systems.PA_omega <> closed_subst_eq thm
+R31660:31674 Systems.PA_omega <> closed_subst_eq thm
+R31660:31674 Systems.PA_omega <> closed_subst_eq thm
+R31660:31674 Systems.PA_omega <> closed_subst_eq thm
+R31677:31691 Systems.PA_omega <> closed_subst_eq thm
+R31677:31691 Systems.PA_omega <> closed_subst_eq thm
+R31677:31691 Systems.PA_omega <> closed_subst_eq thm
+R31707:31709 Systems.PA_omega <> LEM thm
+R31707:31709 Systems.PA_omega <> LEM thm
+R31741:31748 Systems.fol <> num_conn def
+R31756:31763 Systems.fol <> num_conn def
+R31756:31763 Systems.fol <> num_conn def
+R31772:31782 Maths_Facts.ordinals <> ord_lt_succ thm
+R31772:31782 Maths_Facts.ordinals <> ord_lt_succ thm
+R31791:31800 Maths_Facts.ordinals <> ord_ltb_lt thm
+R31791:31800 Maths_Facts.ordinals <> ord_ltb_lt thm
+R31810:31822 Maths_Facts.ordinals <> ord_ltb_trans thm
+R31831:31840 Maths_Facts.ordinals <> ord_lt_ltb thm
+R31847:31857 Maths_Facts.ordinals <> w_tower_max thm
+R31810:31822 Maths_Facts.ordinals <> ord_ltb_trans thm
+R31831:31840 Maths_Facts.ordinals <> ord_lt_ltb thm
+R31847:31857 Maths_Facts.ordinals <> w_tower_max thm
+R31873:31882 Maths_Facts.ordinals <> ord_lt_ltb thm
+R31873:31882 Maths_Facts.ordinals <> ord_lt_ltb thm
+R31891:31900 Maths_Facts.ordinals <> w_tower_lt thm
+R31891:31900 Maths_Facts.ordinals <> w_tower_lt thm
+R31918:31928 Maths_Facts.ordinals <> ord_succ_nf thm
+R31918:31928 Maths_Facts.ordinals <> ord_succ_nf thm
+R31937:31946 Maths_Facts.ordinals <> w_tower_nf thm
+R31937:31946 Maths_Facts.ordinals <> w_tower_nf thm
+R31957:31965 Systems.PA_omega <> exchange1 constr
+R31957:31965 Systems.PA_omega <> exchange1 constr
+R31991:32002 Systems.fol <> substitution def
+R32010:32021 Systems.fol <> substitution def
+R32010:32021 Systems.fol <> substitution def
+R32036:32048 Systems.PA_omega <> univ_free_var thm
+R32036:32048 Systems.PA_omega <> univ_free_var thm
+R32090:32097 Systems.PA_omega <> ord_incr constr
+R32104:32110 Maths_Facts.ordinals <> w_tower def
+R32113:32113 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R32133:32135 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R32155:32155 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R32114:32121 Systems.fol <> num_conn def
+R32124:32127 Systems.fol <> univ constr
+R32136:32143 Systems.fol <> num_conn def
+R32146:32149 Systems.fol <> univ constr
+R32090:32097 Systems.PA_omega <> ord_incr constr
+R32104:32110 Maths_Facts.ordinals <> w_tower def
+R32113:32113 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R32133:32135 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R32155:32155 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R32114:32121 Systems.fol <> num_conn def
+R32124:32127 Systems.fol <> univ constr
+R32136:32143 Systems.fol <> num_conn def
+R32146:32149 Systems.fol <> univ constr
+R32171:32177 Systems.PA_omega <> w_rule2 constr
+R32171:32177 Systems.PA_omega <> w_rule2 constr
+R32196:32204 Systems.PA_omega <> exchange1 constr
+R32196:32204 Systems.PA_omega <> exchange1 constr
+R32214:32221 Systems.PA_omega <> ord_incr constr
+R32228:32235 Maths_Facts.ordinals <> ord_succ def
+R32239:32246 Maths_Facts.ordinals <> ord_succ def
+R32249:32255 Maths_Facts.ordinals <> w_tower def
+R32258:32258 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R32269:32271 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R32282:32282 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R32259:32266 Systems.fol <> num_conn def
+R32272:32279 Systems.fol <> num_conn def
+R32214:32221 Systems.PA_omega <> ord_incr constr
+R32228:32235 Maths_Facts.ordinals <> ord_succ def
+R32239:32246 Maths_Facts.ordinals <> ord_succ def
+R32249:32255 Maths_Facts.ordinals <> w_tower def
+R32258:32258 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R32269:32271 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R32282:32282 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R32259:32266 Systems.fol <> num_conn def
+R32272:32279 Systems.fol <> num_conn def
+R32303:32317 Systems.PA_omega <> quantification2 constr
+R32326:32334 Systems.fol <> represent def
+R32303:32317 Systems.PA_omega <> quantification2 constr
+R32326:32334 Systems.fol <> represent def
+R32355:32365 Systems.PA_omega <> repr_closed thm
+R32355:32365 Systems.PA_omega <> repr_closed thm
+R32388:32403 Systems.PA_omega <> correct_closed_t thm
+R32388:32403 Systems.PA_omega <> correct_closed_t thm
+R32442:32459 Systems.PA_omega <> substitution_order thm
+R32476:32486 Systems.PA_omega <> repr_closed thm
+R32442:32459 Systems.PA_omega <> substitution_order thm
+R32476:32486 Systems.PA_omega <> repr_closed thm
+R32442:32459 Systems.PA_omega <> substitution_order thm
+R32476:32486 Systems.PA_omega <> repr_closed thm
+R32514:32531 Systems.PA_omega <> substitution_order thm
+R32548:32558 Systems.PA_omega <> repr_closed thm
+R32514:32531 Systems.PA_omega <> substitution_order thm
+R32548:32558 Systems.PA_omega <> repr_closed thm
+R32514:32531 Systems.PA_omega <> substitution_order thm
+R32548:32558 Systems.PA_omega <> repr_closed thm
+R32589:32600 Systems.PA_omega <> num_conn_sub thm
+R32607:32615 Systems.fol <> represent def
+R32589:32600 Systems.PA_omega <> num_conn_sub thm
+R32607:32615 Systems.fol <> represent def
+R32589:32600 Systems.PA_omega <> num_conn_sub thm
+R32607:32615 Systems.fol <> represent def
+R32642:32649 Maths_Facts.naturals <> leq_refl thm
+R32655:32666 Systems.fol <> substitution def
+R32673:32681 Systems.fol <> represent def
+R32642:32649 Maths_Facts.naturals <> leq_refl thm
+R32655:32666 Systems.fol <> substitution def
+R32673:32681 Systems.fol <> represent def
+R32713:32724 Systems.PA_omega <> num_conn_sub thm
+R32713:32724 Systems.PA_omega <> num_conn_sub thm
+R32713:32724 Systems.PA_omega <> num_conn_sub thm
+R32751:32768 Systems.PA_omega <> free_list_univ_sub thm
+R32751:32768 Systems.PA_omega <> free_list_univ_sub thm
+R32783:32793 Systems.PA_omega <> repr_closed thm
+R32783:32793 Systems.PA_omega <> repr_closed thm
+R32821:32828 Systems.fol <> num_conn def
+R32836:32843 Systems.fol <> num_conn def
+R32836:32843 Systems.fol <> num_conn def
+R32851:32857 Maths_Facts.ordinals <> w_tower def
+R32851:32857 Maths_Facts.ordinals <> w_tower def
+R32871:32879 Maths_Facts.naturals <> plus_n_Sm thm
+R32871:32879 Maths_Facts.naturals <> plus_n_Sm thm
+R32871:32879 Maths_Facts.naturals <> plus_n_Sm thm
+R32888:32900 Maths_Facts.ordinals <> w_tower_succ2 thm
+R32888:32900 Maths_Facts.ordinals <> w_tower_succ2 thm
+R32915:32924 Maths_Facts.ordinals <> w_tower_nf thm
+R32915:32924 Maths_Facts.ordinals <> w_tower_nf thm
+R32937:32950 Maths_Facts.ordinals <> ord_succ_monot thm
+R32937:32950 Maths_Facts.ordinals <> ord_succ_monot thm
+R32963:32973 Maths_Facts.ordinals <> ord_succ_nf thm
+R32963:32973 Maths_Facts.ordinals <> ord_succ_nf thm
+R32982:32991 Maths_Facts.ordinals <> w_tower_nf thm
+R32982:32991 Maths_Facts.ordinals <> w_tower_nf thm
+prf 33006:33013 <> Q3_lemma
+binder 33024:33024 <> n:277
+R33027:33028 Systems.PA_omega <> Q3 def
+R33030:33030 Systems.PA_omega <> n:277 var
+R33046:33057 Systems.PA_omega <> Q3_strongind thm
+R33046:33057 Systems.PA_omega <> Q3_strongind thm
+R33066:33069 Systems.PA_omega <> Q3_0 thm
+R33066:33069 Systems.PA_omega <> Q3_0 thm
+R33078:33089 Systems.PA_omega <> Q3_inductive thm
+R33078:33089 Systems.PA_omega <> Q3_inductive thm
+prf 33104:33111 <> Q2_lemma
+R33127:33129 Coq.Init.Datatypes <> nat ind
+binder 33123:33123 <> n:278
+R33137:33143 Systems.fol <> formula ind
+binder 33133:33133 <> A:279
+R33147:33148 Systems.PA_omega <> Q2 def
+R33150:33150 Systems.PA_omega <> A:279 var
+R33152:33152 Systems.PA_omega <> n:278 var
+R33168:33175 Systems.PA_omega <> Q3_lemma thm
+R33168:33175 Systems.PA_omega <> Q3_lemma thm
+prf 33190:33197 <> Q1_lemma
+R33213:33219 Systems.fol <> formula ind
+binder 33209:33209 <> A:280
+R33223:33224 Systems.PA_omega <> Q1 def
+R33226:33226 Systems.PA_omega <> A:280 var
+R33256:33263 Systems.PA_omega <> Q2_lemma thm
+R33256:33263 Systems.PA_omega <> Q2_lemma thm
+R33279:33280 Systems.PA_omega <> Q2 def
+R33298:33305 Systems.fol <> num_conn def
+R33298:33305 Systems.fol <> num_conn def
+prf 33332:33339 <> LEM_term
+R33355:33361 Systems.fol <> formula ind
+binder 33351:33351 <> A:281
+R33369:33371 Coq.Init.Datatypes <> nat ind
+binder 33365:33365 <> n:282
+R33381:33384 Systems.fol <> term ind
+binder 33375:33375 <> s:283
+binder 33377:33377 <> t:284
+R33416:33421 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R33409:33411 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R33390:33398 Systems.fol <> correct_a def
+R33401:33403 Systems.fol <> equ constr
+R33405:33405 Systems.PA_omega <> s:283 var
+R33407:33407 Systems.PA_omega <> t:284 var
+R33412:33415 Coq.Init.Datatypes <> true constr
+R33439:33444 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R33433:33435 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R33422:33430 Systems.fol <> free_list def
+R33432:33432 Systems.PA_omega <> A:281 var
+R33436:33436 Maths_Facts.lists <> :::'['_x_','_'..'_','_x_']' not
+R33438:33438 Maths_Facts.lists <> :::'['_x_','_'..'_','_x_']' not
+R33437:33437 Systems.PA_omega <> n:282 var
+R33445:33460 Systems.PA_omega <> PA_omega_theorem ind
+R33463:33465 Systems.fol <> lor constr
+R33468:33470 Systems.fol <> neg constr
+R33473:33484 Systems.fol <> substitution def
+R33486:33486 Systems.PA_omega <> A:281 var
+R33488:33488 Systems.PA_omega <> n:282 var
+R33490:33490 Systems.PA_omega <> s:283 var
+R33495:33506 Systems.fol <> substitution def
+R33508:33508 Systems.PA_omega <> A:281 var
+R33510:33510 Systems.PA_omega <> n:282 var
+R33512:33512 Systems.PA_omega <> t:284 var
+R33538:33545 Maths_Facts.ordinals <> ord_succ def
+R33548:33554 Maths_Facts.ordinals <> w_tower def
+R33557:33557 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R33568:33570 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R33581:33581 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R33558:33565 Systems.fol <> num_conn def
+R33567:33567 Systems.PA_omega <> A:281 var
+R33571:33578 Systems.fol <> num_conn def
+R33580:33580 Systems.PA_omega <> A:281 var
+R33600:33607 Systems.PA_omega <> Q1_lemma thm
+R33600:33607 Systems.PA_omega <> Q1_lemma thm

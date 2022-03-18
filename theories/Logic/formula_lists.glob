@@ -1,0 +1,176 @@
+DIGEST 3a1a285c0543c4acac6b117cdfe1fb33
+FSystems.formula_lists
+R167:174 Maths_Facts.naturals <> <> lib
+R209:216 Maths_Facts.ordinals <> <> lib
+R251:255 Maths_Facts.lists <> <> lib
+R287:297 Systems.definitions <> <> lib
+R328:330 Systems.fol <> <> lib
+R361:368 Systems.PA_omega <> <> lib
+R399:409 Systems.proof_trees <> <> lib
+R440:449 Systems.substitute <> <> lib
+def 526:539 <> eq_length_list
+binder 542:542 <> X:1
+binder 544:544 <> Y:2
+R560:563 Maths_Facts.lists <> list ind
+R565:565 Systems.formula_lists <> X:1 var
+binder 555:556 <> lX:3
+R574:577 Maths_Facts.lists <> list ind
+R579:579 Systems.formula_lists <> Y:2 var
+binder 569:570 <> lY:4
+R584:587 Coq.Init.Datatypes <> bool ind
+R602:603 Systems.formula_lists <> lY:4 var
+R598:599 Systems.formula_lists <> lX:3 var
+R612:613 Maths_Facts.lists <> :::'['_']' not
+R616:617 Maths_Facts.lists <> :::'['_']' not
+R622:625 Coq.Init.Datatypes <> true constr
+R630:633 Maths_Facts.lists <> :::x_'::'_x not
+R640:643 Maths_Facts.lists <> :::x_'::'_x not
+R651:664 Systems.formula_lists <> eq_length_list:5 def
+R684:688 Coq.Init.Datatypes <> false constr
+def 705:728 <> formula_sub_ind_list_len
+R737:743 Systems.fol <> formula ind
+binder 733:733 <> A:8
+R755:758 Maths_Facts.lists <> list ind
+R760:766 Systems.fol <> formula ind
+binder 747:748 <> l1:9
+binder 750:751 <> l2:10
+R775:778 Maths_Facts.lists <> list ind
+R780:788 Systems.substitute <> subst_ind ind
+binder 770:771 <> ls:11
+R793:799 Systems.fol <> formula ind
+R818:819 Systems.formula_lists <> ls:11 var
+R814:815 Systems.formula_lists <> l2:10 var
+R810:811 Systems.formula_lists <> l1:9 var
+R829:832 Maths_Facts.lists <> :::x_'::'_x not
+R839:842 Maths_Facts.lists <> :::x_'::'_x not
+R849:852 Maths_Facts.lists <> :::x_'::'_x not
+R864:887 Systems.formula_lists <> formula_sub_ind_list_len:12 def
+R890:904 Systems.substitute <> formula_sub_ind def
+R906:906 Systems.formula_lists <> A:8 var
+R940:940 Systems.formula_lists <> A:8 var
+def 959:978 <> formula_sub_ind_list
+R987:993 Systems.fol <> formula ind
+binder 983:983 <> A:16
+R1005:1008 Maths_Facts.lists <> list ind
+R1010:1016 Systems.fol <> formula ind
+binder 997:998 <> l1:17
+binder 1000:1001 <> l2:18
+R1025:1028 Maths_Facts.lists <> list ind
+R1030:1038 Systems.substitute <> subst_ind ind
+binder 1020:1021 <> ls:19
+R1043:1049 Systems.fol <> formula ind
+R1082:1095 Systems.formula_lists <> eq_length_list def
+R1100:1101 Systems.formula_lists <> ls:19 var
+R1097:1098 Systems.formula_lists <> l1:17 var
+R1060:1073 Systems.formula_lists <> eq_length_list def
+R1078:1079 Systems.formula_lists <> l2:18 var
+R1075:1076 Systems.formula_lists <> l1:17 var
+R1110:1113 Coq.Init.Datatypes <> true constr
+R1116:1119 Coq.Init.Datatypes <> true constr
+R1124:1147 Systems.formula_lists <> formula_sub_ind_list_len def
+R1149:1149 Systems.formula_lists <> A:16 var
+R1151:1152 Systems.formula_lists <> l1:17 var
+R1154:1155 Systems.formula_lists <> l2:18 var
+R1157:1158 Systems.formula_lists <> ls:19 var
+R1170:1170 Systems.formula_lists <> A:16 var
+def 1248:1255 <> sub_list
+R1262:1265 Maths_Facts.lists <> list ind
+R1267:1273 Systems.fol <> formula ind
+binder 1258:1258 <> l:20
+R1281:1283 Coq.Init.Datatypes <> nat ind
+binder 1277:1277 <> n:21
+R1291:1294 Systems.fol <> term ind
+binder 1287:1287 <> t:22
+R1299:1302 Maths_Facts.lists <> list ind
+R1304:1310 Systems.fol <> formula ind
+R1321:1321 Systems.formula_lists <> l:20 var
+R1330:1331 Maths_Facts.lists <> :::'['_']' not
+R1336:1337 Maths_Facts.lists <> :::'['_']' not
+R1342:1345 Maths_Facts.lists <> :::x_'::'_x not
+R1352:1352 Maths_Facts.lists <> :::x_'::'_x not
+R1371:1375 Maths_Facts.lists <> :::x_'::'_x not
+R1353:1364 Systems.fol <> substitution def
+R1368:1368 Systems.formula_lists <> n:21 var
+R1370:1370 Systems.formula_lists <> t:22 var
+R1376:1383 Systems.formula_lists <> sub_list:23 def
+R1390:1390 Systems.formula_lists <> t:22 var
+R1388:1388 Systems.formula_lists <> n:21 var
+def 1409:1429 <> term_sub_ind_list_len
+R1438:1444 Systems.fol <> formula ind
+binder 1434:1434 <> A:25
+R1452:1455 Maths_Facts.lists <> list ind
+R1457:1463 Systems.fol <> formula ind
+binder 1448:1448 <> l:26
+R1472:1475 Maths_Facts.lists <> list ind
+R1477:1485 Systems.substitute <> subst_ind ind
+binder 1467:1468 <> ls:27
+R1495:1497 Coq.Init.Datatypes <> nat ind
+binder 1491:1491 <> n:28
+R1507:1510 Systems.fol <> term ind
+binder 1501:1501 <> s:29
+binder 1503:1503 <> t:30
+R1515:1521 Systems.fol <> formula ind
+R1526:1549 Systems.formula_lists <> formula_sub_ind_list_len def
+R1551:1551 Systems.formula_lists <> A:25 var
+R1554:1561 Systems.formula_lists <> sub_list def
+R1563:1563 Systems.formula_lists <> l:26 var
+R1565:1565 Systems.formula_lists <> n:28 var
+R1567:1567 Systems.formula_lists <> s:29 var
+R1571:1578 Systems.formula_lists <> sub_list def
+R1580:1580 Systems.formula_lists <> l:26 var
+R1582:1582 Systems.formula_lists <> n:28 var
+R1584:1584 Systems.formula_lists <> t:30 var
+R1587:1588 Systems.formula_lists <> ls:27 var
+def 1603:1619 <> term_sub_ind_list
+R1628:1634 Systems.fol <> formula ind
+binder 1624:1624 <> A:31
+R1642:1645 Maths_Facts.lists <> list ind
+R1647:1653 Systems.fol <> formula ind
+binder 1638:1638 <> l:32
+R1662:1665 Maths_Facts.lists <> list ind
+R1667:1675 Systems.substitute <> subst_ind ind
+binder 1657:1658 <> ls:33
+R1685:1687 Coq.Init.Datatypes <> nat ind
+binder 1681:1681 <> n:34
+R1697:1700 Systems.fol <> term ind
+binder 1691:1691 <> s:35
+binder 1693:1693 <> t:36
+R1705:1711 Systems.fol <> formula ind
+R1722:1735 Systems.formula_lists <> eq_length_list def
+R1739:1740 Systems.formula_lists <> ls:33 var
+R1737:1737 Systems.formula_lists <> l:32 var
+R1749:1752 Coq.Init.Datatypes <> true constr
+R1757:1777 Systems.formula_lists <> term_sub_ind_list_len def
+R1779:1779 Systems.formula_lists <> A:31 var
+R1781:1781 Systems.formula_lists <> l:32 var
+R1783:1784 Systems.formula_lists <> ls:33 var
+R1786:1786 Systems.formula_lists <> n:34 var
+R1788:1788 Systems.formula_lists <> s:35 var
+R1790:1790 Systems.formula_lists <> t:36 var
+R1799:1799 Systems.formula_lists <> A:31 var
+prf 1813:1839 <> formula_sub_ind_list_single
+R1857:1863 Systems.fol <> formula ind
+binder 1853:1853 <> A:37
+R1873:1879 Systems.fol <> formula ind
+binder 1867:1867 <> E:38
+binder 1869:1869 <> F:39
+R1887:1895 Systems.substitute <> subst_ind ind
+binder 1883:1883 <> S:40
+R1935:1937 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1901:1920 Systems.formula_lists <> formula_sub_ind_list def
+R1922:1922 Systems.formula_lists <> A:37 var
+R1924:1924 Maths_Facts.lists <> :::'['_x_','_'..'_','_x_']' not
+R1926:1926 Maths_Facts.lists <> :::'['_x_','_'..'_','_x_']' not
+R1925:1925 Systems.formula_lists <> E:38 var
+R1928:1928 Maths_Facts.lists <> :::'['_x_','_'..'_','_x_']' not
+R1930:1930 Maths_Facts.lists <> :::'['_x_','_'..'_','_x_']' not
+R1929:1929 Systems.formula_lists <> F:39 var
+R1932:1932 Maths_Facts.lists <> :::'['_x_','_'..'_','_x_']' not
+R1934:1934 Maths_Facts.lists <> :::'['_x_','_'..'_','_x_']' not
+R1933:1933 Systems.formula_lists <> S:40 var
+R1938:1952 Systems.substitute <> formula_sub_ind def
+R1954:1954 Systems.formula_lists <> A:37 var
+R1956:1956 Systems.formula_lists <> E:38 var
+R1958:1958 Systems.formula_lists <> F:39 var
+R1960:1960 Systems.formula_lists <> S:40 var
+R1985:2004 Systems.formula_lists <> formula_sub_ind_list def

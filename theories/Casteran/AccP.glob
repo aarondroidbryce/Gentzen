@@ -1,0 +1,280 @@
+DIGEST b958672e19bdea3268892e8e3bcf2e39
+FOrdering.AccP
+sec 131:150 <> restricted_recursion
+var 166:166 restricted_recursion A
+var 174:174 restricted_recursion P
+var 185:185 restricted_recursion R
+R177:178 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R176:176 Ordering.AccP <> A:1 var
+R188:189 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R187:187 Ordering.AccP <> A:1 var
+R191:192 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R190:190 Ordering.AccP <> A:1 var
+def 213:220 <> restrict
+R227:227 Ordering.AccP <> restricted_recursion.A var
+binder 223:223 <> a:4
+binder 225:225 <> b:5
+R244:247 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R241:241 Ordering.AccP <> restricted_recursion.P var
+R243:243 Ordering.AccP <> a:4 var
+R253:256 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R248:248 Ordering.AccP <> restricted_recursion.R var
+R250:250 Ordering.AccP <> a:4 var
+R252:252 Ordering.AccP <> b:5 var
+R257:257 Ordering.AccP <> restricted_recursion.P var
+R259:259 Ordering.AccP <> b:5 var
+def 275:288 <> well_founded_P
+R303:303 Ordering.AccP <> restricted_recursion.A var
+binder 301:301 <> a:6
+R310:313 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R307:307 Ordering.AccP <> restricted_recursion.P var
+R309:309 Ordering.AccP <> a:6 var
+R314:316 Coq.Init.Wf <> Acc ind
+R327:327 Ordering.AccP <> a:6 var
+R318:325 Ordering.AccP <> restrict def
+def 343:371 <> P_well_founded_induction_type
+R396:407 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R382:395 Ordering.AccP <> well_founded_P def
+R420:423 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R419:419 Ordering.AccP <> restricted_recursion.A var
+binder 415:415 <> X:7
+R437:437 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R499:510 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R449:449 Ordering.AccP <> restricted_recursion.A var
+binder 445:445 <> x:8
+R455:458 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R452:452 Ordering.AccP <> restricted_recursion.P var
+R454:454 Ordering.AccP <> x:8 var
+R459:459 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R491:495 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R471:471 Ordering.AccP <> restricted_recursion.A var
+binder 467:467 <> y:9
+R476:478 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R473:473 Ordering.AccP <> restricted_recursion.P var
+R475:475 Ordering.AccP <> y:9 var
+R484:487 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R479:479 Ordering.AccP <> restricted_recursion.R var
+R481:481 Ordering.AccP <> y:9 var
+R483:483 Ordering.AccP <> x:8 var
+R488:488 Ordering.AccP <> X:7 var
+R490:490 Ordering.AccP <> y:9 var
+R496:496 Ordering.AccP <> X:7 var
+R498:498 Ordering.AccP <> x:8 var
+R522:522 Ordering.AccP <> restricted_recursion.A var
+binder 518:518 <> a:10
+R528:531 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R525:525 Ordering.AccP <> restricted_recursion.P var
+R527:527 Ordering.AccP <> a:10 var
+R532:532 Ordering.AccP <> X:7 var
+R534:534 Ordering.AccP <> a:10 var
+R612:619 Ordering.AccP <> restrict def
+R575:601 Coq.Init.Wf <> well_founded_induction_type thm
+R612:619 Ordering.AccP <> restrict def
+R575:601 Coq.Init.Wf <> well_founded_induction_type thm
+R632:643 Coq.Init.Wf <> well_founded def
+R664:677 Ordering.AccP <> well_founded_P def
+R773:780 Ordering.AccP <> restrict def
+R811:830 Ordering.AccP restricted_recursion <> sec
+prf 843:850 <> AccElim3
+binder 861:861 <> A:11
+binder 863:863 <> B:12
+binder 865:865 <> C:13
+R886:887 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R885:885 Ordering.AccP <> A:11 var
+R889:890 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R888:888 Ordering.AccP <> A:11 var
+binder 882:883 <> RA:14
+R910:911 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R909:909 Ordering.AccP <> B:12 var
+R913:914 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R912:912 Ordering.AccP <> B:12 var
+binder 906:907 <> RB:15
+R934:935 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R933:933 Ordering.AccP <> C:13 var
+R937:938 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R936:936 Ordering.AccP <> C:13 var
+binder 930:931 <> RC:16
+R960:963 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R959:959 Ordering.AccP <> A:11 var
+R965:968 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R964:964 Ordering.AccP <> B:12 var
+R970:974 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R969:969 Ordering.AccP <> C:13 var
+binder 955:955 <> P:17
+R983:983 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1285:1291 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+binder 991:991 <> x:18
+binder 993:993 <> y:19
+binder 995:995 <> z:20
+R1002:1002 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1135:1143 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1015:1015 Ordering.AccP <> A:11 var
+binder 1011:1011 <> t:21
+R1025:1050 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1019:1020 Ordering.AccP <> RA:14 var
+R1024:1024 Ordering.AccP <> x:18 var
+R1022:1022 Ordering.AccP <> t:21 var
+binder 1058:1059 <> y':22
+binder 1061:1062 <> z':23
+R1074:1077 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1065:1067 Coq.Init.Wf <> Acc ind
+R1072:1073 Ordering.AccP <> y':22 var
+R1069:1070 Ordering.AccP <> RB:15 var
+R1087:1125 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1078:1080 Coq.Init.Wf <> Acc ind
+R1085:1086 Ordering.AccP <> z':23 var
+R1082:1083 Ordering.AccP <> RC:16 var
+R1126:1126 Ordering.AccP <> P:17 var
+R1133:1134 Ordering.AccP <> z':23 var
+R1130:1131 Ordering.AccP <> y':22 var
+R1128:1128 Ordering.AccP <> t:21 var
+R1144:1144 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1225:1233 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1157:1157 Ordering.AccP <> B:12 var
+binder 1153:1153 <> t:24
+R1167:1192 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1161:1162 Ordering.AccP <> RB:15 var
+R1166:1166 Ordering.AccP <> y:19 var
+R1164:1164 Ordering.AccP <> t:24 var
+binder 1200:1201 <> z':25
+R1213:1216 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1204:1206 Coq.Init.Wf <> Acc ind
+R1211:1212 Ordering.AccP <> z':25 var
+R1208:1209 Ordering.AccP <> RC:16 var
+R1217:1217 Ordering.AccP <> P:17 var
+R1223:1224 Ordering.AccP <> z':25 var
+R1221:1221 Ordering.AccP <> t:24 var
+R1219:1219 Ordering.AccP <> x:18 var
+R1234:1234 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1268:1277 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1247:1247 Ordering.AccP <> C:13 var
+binder 1243:1243 <> t:26
+R1257:1260 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1251:1252 Ordering.AccP <> RC:16 var
+R1256:1256 Ordering.AccP <> z:20 var
+R1254:1254 Ordering.AccP <> t:26 var
+R1261:1261 Ordering.AccP <> P:17 var
+R1267:1267 Ordering.AccP <> t:26 var
+R1265:1265 Ordering.AccP <> y:19 var
+R1263:1263 Ordering.AccP <> x:18 var
+R1278:1278 Ordering.AccP <> P:17 var
+R1284:1284 Ordering.AccP <> z:20 var
+R1282:1282 Ordering.AccP <> y:19 var
+R1280:1280 Ordering.AccP <> x:18 var
+binder 1299:1299 <> x:27
+binder 1301:1301 <> y:28
+binder 1303:1303 <> z:29
+R1314:1317 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1306:1308 Coq.Init.Wf <> Acc ind
+R1313:1313 Ordering.AccP <> x:27 var
+R1310:1311 Ordering.AccP <> RA:14 var
+R1326:1329 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1318:1320 Coq.Init.Wf <> Acc ind
+R1325:1325 Ordering.AccP <> y:28 var
+R1322:1323 Ordering.AccP <> RB:15 var
+R1338:1341 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1330:1332 Coq.Init.Wf <> Acc ind
+R1337:1337 Ordering.AccP <> z:29 var
+R1334:1335 Ordering.AccP <> RC:16 var
+R1342:1342 Ordering.AccP <> P:17 var
+R1348:1348 Ordering.AccP <> z:29 var
+R1346:1346 Ordering.AccP <> y:28 var
+R1344:1344 Ordering.AccP <> x:27 var
+prf 1581:1588 <> accElim3
+binder 1600:1600 <> A:30
+binder 1602:1602 <> B:31
+binder 1604:1604 <> C:32
+R1617:1620 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1616:1616 Ordering.AccP <> A:30 var
+R1622:1624 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1621:1621 Ordering.AccP <> A:30 var
+binder 1611:1612 <> RA:33
+R1638:1640 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1637:1637 Ordering.AccP <> B:31 var
+R1642:1644 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1641:1641 Ordering.AccP <> B:31 var
+binder 1632:1633 <> RB:34
+R1677:1680 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1676:1676 Ordering.AccP <> C:32 var
+R1682:1685 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1681:1681 Ordering.AccP <> C:32 var
+binder 1671:1672 <> RC:35
+R1697:1700 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1696:1696 Ordering.AccP <> A:30 var
+R1702:1705 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1701:1701 Ordering.AccP <> B:31 var
+R1707:1711 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1706:1706 Ordering.AccP <> C:32 var
+binder 1692:1692 <> P:36
+R1720:1720 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1870:1875 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+binder 1728:1728 <> x:37
+binder 1730:1730 <> y:38
+binder 1732:1732 <> z:39
+R1738:1738 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1773:1779 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1751:1751 Ordering.AccP <> A:30 var
+binder 1747:1747 <> t:40
+R1761:1765 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1755:1756 Ordering.AccP <> RA:33 var
+R1760:1760 Ordering.AccP <> x:37 var
+R1758:1758 Ordering.AccP <> t:40 var
+R1766:1766 Ordering.AccP <> P:36 var
+R1772:1772 Ordering.AccP <> z:39 var
+R1770:1770 Ordering.AccP <> y:38 var
+R1768:1768 Ordering.AccP <> t:40 var
+R1780:1780 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1815:1821 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1793:1793 Ordering.AccP <> B:31 var
+binder 1789:1789 <> t:41
+R1803:1807 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1797:1798 Ordering.AccP <> RB:34 var
+R1802:1802 Ordering.AccP <> y:38 var
+R1800:1800 Ordering.AccP <> t:41 var
+R1808:1808 Ordering.AccP <> P:36 var
+R1814:1814 Ordering.AccP <> z:39 var
+R1812:1812 Ordering.AccP <> t:41 var
+R1810:1810 Ordering.AccP <> x:37 var
+R1822:1822 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1857:1862 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1835:1835 Ordering.AccP <> C:32 var
+binder 1831:1831 <> t:42
+R1845:1849 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1839:1840 Ordering.AccP <> RC:35 var
+R1844:1844 Ordering.AccP <> z:39 var
+R1842:1842 Ordering.AccP <> t:42 var
+R1850:1850 Ordering.AccP <> P:36 var
+R1856:1856 Ordering.AccP <> t:42 var
+R1854:1854 Ordering.AccP <> y:38 var
+R1852:1852 Ordering.AccP <> x:37 var
+R1863:1863 Ordering.AccP <> P:36 var
+R1869:1869 Ordering.AccP <> z:39 var
+R1867:1867 Ordering.AccP <> y:38 var
+R1865:1865 Ordering.AccP <> x:37 var
+binder 1883:1883 <> x:43
+binder 1885:1885 <> y:44
+binder 1887:1887 <> z:45
+R1898:1901 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1890:1892 Coq.Init.Wf <> Acc ind
+R1897:1897 Ordering.AccP <> x:43 var
+R1894:1895 Ordering.AccP <> RA:33 var
+R1910:1913 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1902:1904 Coq.Init.Wf <> Acc ind
+R1909:1909 Ordering.AccP <> y:44 var
+R1906:1907 Ordering.AccP <> RB:34 var
+R1922:1926 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1914:1916 Coq.Init.Wf <> Acc ind
+R1921:1921 Ordering.AccP <> z:45 var
+R1918:1919 Ordering.AccP <> RC:35 var
+R1927:1927 Ordering.AccP <> P:36 var
+R1933:1933 Ordering.AccP <> z:45 var
+R1931:1931 Ordering.AccP <> y:44 var
+R1929:1929 Ordering.AccP <> x:43 var
+R2027:2034 Ordering.AccP <> AccElim3 thm
+R2027:2034 Ordering.AccP <> AccElim3 thm
+R2125:2131 Coq.Init.Wf <> Acc_inv thm
+R2125:2131 Coq.Init.Wf <> Acc_inv thm
+R2172:2178 Coq.Init.Wf <> Acc_inv thm
+R2172:2178 Coq.Init.Wf <> Acc_inv thm
+R2220:2226 Coq.Init.Wf <> Acc_inv thm
+R2220:2226 Coq.Init.Wf <> Acc_inv thm

@@ -1,5 +1,0 @@
-DIGEST 206246cf658733259d1f4e5f1a1650ca
-FGentzen.More_nat
-R101:105 Coq.Arith.Arith <> <> lib
-R123:131 Coq.setoid_ring.ArithRing <> <> lib
-R149:159 Coq.Arith.Compare_dec <> <> lib

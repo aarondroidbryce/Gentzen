@@ -1,0 +1,2263 @@
+DIGEST fb6d9a8cde0034980dd6e57e6c98c006
+FOrdering.list_set
+R74:77 Coq.Lists.List <> <> lib
+R95:103 Ordering.more_list <> <> lib
+R121:131 Ordering.list_permut <> <> lib
+R149:153 Coq.Arith.Arith <> <> lib
+modtype 169:169 <> S
+R193:207 Ordering.decidable_set S <> mod
+mod 188:189 <> S.DS
+def 222:224 S elt
+R229:232 Ordering.list_set S A defax
+def 246:255 S eq_elt_dec
+R260:270 Ordering.list_set S eq_A_dec prfax
+def 283:293 S without_red
+R300:303 Coq.Init.Datatypes <> list ind
+R305:307 Ordering.list_set S elt def
+binder 296:296 <> l:1
+R339:339 Ordering.list_set <> l:1 var
+R350:352 Coq.Init.Datatypes <> nil constr
+R357:360 Coq.Init.Logic <> True ind
+R367:370 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R371:372 Coq.Init.Peano <> le ind
+R381:386 Coq.Lists.List <> In_dec syndef
+R388:397 Ordering.list_set S eq_elt_dec def
+R421:431 Ordering.list_set <> without_red:2 def
+R410:414 Coq.Init.Logic <> False ind
+constr 464:469 S mk_set
+rec 451:451 S t
+proj 481:487 S support
+proj 506:513 S is_a_set
+R491:494 Coq.Init.Datatypes <> list ind
+R496:498 Ordering.list_set S elt def
+R517:527 Ordering.list_set S without_red def
+R529:535 Ordering.list_set <> support:5 meth
+def 554:561 S cardinal
+binder 563:563 <> s:7
+R568:578 Coq.Lists.List <> length syndef
+R583:589 Ordering.list_set S support proj
+R580:580 Ordering.list_set <> s:7 var
+def 605:610 S subset
+binder 612:613 <> s1:8
+binder 615:616 <> s2:9
+binder 637:637 <> e:10
+R657:660 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R640:641 Coq.Lists.List <> In def
+R649:655 Ordering.list_set S support proj
+R645:646 Ordering.list_set <> s1:8 var
+R643:643 Ordering.list_set <> e:10 var
+R661:662 Coq.Lists.List <> In def
+R670:676 Ordering.list_set S support proj
+R666:667 Ordering.list_set <> s2:9 var
+R664:664 Ordering.list_set <> e:10 var
+ax 687:701 S cardinal_subset
+binder 714:715 <> s1:11
+binder 717:718 <> s2:12
+R733:736 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R721:726 Ordering.list_set S subset def
+R731:732 Ordering.list_set <> s2:12 var
+R728:729 Ordering.list_set <> s1:11 var
+R748:751 Coq.Init.Peano <> ::nat_scope:x_'<='_x not
+R737:744 Ordering.list_set S cardinal def
+R746:747 Ordering.list_set <> s1:11 var
+R752:759 Ordering.list_set S cardinal def
+R761:762 Ordering.list_set <> s2:12 var
+R770:770 Ordering.list_set S <> modtype
+R835:849 Ordering.decidable_set S <> mod
+R855:855 Ordering.list_set S <> mod
+R874:876 Ordering.list_set DS1 <> modtype
+mod 823:826 <> Make
+R893:895 Ordering.list_set DS1 <> modtype
+mod 887:888 <> Make.DS
+R905:907 Ordering.list_set DS1 <> mod
+R923:938 Ordering.list_permut Make <> modtype
+R941:943 Ordering.list_set DS1 <> modtype
+mod 917:918 <> Make.LP
+def 959:961 Make elt
+R966:969 Ordering.list_set Make A defax
+def 983:992 Make eq_elt_dec
+R1011:1013 Ordering.list_set Make elt def
+binder 1003:1004 <> t1:14
+binder 1006:1007 <> t2:15
+R1016:1016 Coq.Init.Specif <> ::type_scope:'{'_x_'}'_'+'_'{'_x_'}' not
+R1024:1028 Coq.Init.Specif <> ::type_scope:'{'_x_'}'_'+'_'{'_x_'}' not
+R1037:1037 Coq.Init.Specif <> ::type_scope:'{'_x_'}'_'+'_'{'_x_'}' not
+R1019:1021 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1017:1018 Ordering.list_set <> t1:14 var
+R1022:1023 Ordering.list_set <> t2:15 var
+R1031:1034 Coq.Init.Logic <> ::type_scope:x_'<>'_x not
+R1029:1030 Ordering.list_set <> t1:14 var
+R1035:1036 Ordering.list_set <> t2:15 var
+R1042:1052 Ordering.list_set Make eq_A_dec prfax
+def 1151:1161 Make without_red
+R1168:1171 Coq.Init.Datatypes <> list ind
+R1173:1175 Ordering.list_set Make elt def
+binder 1164:1164 <> l:16
+R1207:1207 Ordering.list_set <> l:16 var
+R1218:1220 Coq.Init.Datatypes <> nil constr
+R1225:1228 Coq.Init.Logic <> True ind
+R1235:1238 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R1239:1240 Coq.Init.Peano <> le ind
+R1249:1254 Coq.Lists.List <> In_dec syndef
+R1256:1265 Ordering.list_set Make eq_elt_dec def
+R1289:1299 Ordering.list_set <> without_red:17 def
+R1278:1282 Coq.Init.Logic <> False ind
+constr 1413:1418 Make mk_set
+rec 1400:1400 Make t
+proj 1430:1436 Make support
+proj 1455:1462 Make is_a_set
+R1440:1443 Coq.Init.Datatypes <> list ind
+R1445:1447 Ordering.list_set Make elt def
+R1466:1476 Ordering.list_set Make without_red def
+R1478:1484 Ordering.list_set <> support:20 meth
+def 1503:1505 Make mem
+binder 1507:1507 <> e:22
+binder 1509:1509 <> s:23
+R1514:1515 Coq.Lists.List <> In def
+R1522:1528 Ordering.list_set Make support proj
+R1519:1519 Ordering.list_set <> s:23 var
+R1517:1517 Ordering.list_set <> e:22 var
+prf 1539:1545 Make mem_dec
+binder 1556:1556 <> e:24
+binder 1558:1558 <> s:25
+R1561:1561 Coq.Init.Specif <> ::type_scope:'{'_x_'}'_'+'_'{'_x_'}' not
+R1569:1571 Coq.Init.Specif <> ::type_scope:'{'_x_'}'_'+'_'{'_x_'}' not
+R1580:1580 Coq.Init.Specif <> ::type_scope:'{'_x_'}'_'+'_'{'_x_'}' not
+R1562:1564 Ordering.list_set Make mem def
+R1568:1568 Ordering.list_set <> s:25 var
+R1566:1566 Ordering.list_set <> e:24 var
+R1572:1572 Coq.Init.Logic <> ::type_scope:'~'_x not
+R1573:1575 Ordering.list_set Make mem def
+R1579:1579 Ordering.list_set <> s:25 var
+R1577:1577 Ordering.list_set <> e:24 var
+R1609:1611 Ordering.list_set Make mem def
+R1621:1626 Coq.Lists.List <> In_dec syndef
+R1628:1637 Ordering.list_set Make eq_elt_dec def
+R1621:1626 Coq.Lists.List <> In_dec syndef
+R1628:1637 Ordering.list_set Make eq_elt_dec def
+prf 1653:1659 Make add_prf
+binder 1672:1672 <> e:26
+binder 1674:1674 <> l:27
+R1690:1693 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1677:1687 Ordering.list_set Make without_red def
+R1689:1689 Ordering.list_set <> l:27 var
+R1701:1704 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1694:1694 Coq.Init.Logic <> ::type_scope:'~'_x not
+R1695:1696 Coq.Lists.List <> In def
+R1700:1700 Ordering.list_set <> l:27 var
+R1698:1698 Ordering.list_set <> e:26 var
+R1705:1715 Ordering.list_set Make without_red def
+R1719:1722 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R1718:1718 Ordering.list_set <> e:26 var
+R1723:1723 Ordering.list_set <> l:27 var
+R1778:1783 Coq.Lists.List <> In_dec syndef
+R1785:1794 Ordering.list_set Make eq_elt_dec def
+R1778:1783 Coq.Lists.List <> In_dec syndef
+R1785:1794 Ordering.list_set Make eq_elt_dec def
+def 1871:1873 Make add
+binder 1875:1875 <> e:28
+binder 1877:1877 <> s:29
+R1890:1895 Coq.Lists.List <> In_dec syndef
+R1913:1919 Ordering.list_set Make support proj
+R1910:1910 Ordering.list_set <> s:29 var
+R1908:1908 Ordering.list_set <> e:28 var
+R1897:1906 Ordering.list_set Make eq_elt_dec def
+R1931:1934 Coq.Init.Specif <> left constr
+R1941:1941 Ordering.list_set <> s:29 var
+R1947:1951 Coq.Init.Specif <> right constr
+R1958:1963 Ordering.list_set Make mk_set constr
+R1985:1991 Ordering.list_set Make add_prf thm
+R2010:2017 Ordering.list_set Make is_a_set proj
+R2007:2007 Ordering.list_set <> s:29 var
+R1998:2004 Ordering.list_set Make support proj
+R1995:1995 Ordering.list_set <> s:29 var
+R1993:1993 Ordering.list_set <> e:28 var
+R1967:1970 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R1966:1966 Ordering.list_set <> e:28 var
+R1974:1980 Ordering.list_set Make support proj
+R1971:1971 Ordering.list_set <> s:29 var
+prf 2037:2041 Make add_1
+binder 2052:2052 <> e:30
+binder 2054:2054 <> s:31
+R2057:2059 Ordering.list_set Make mem def
+R2064:2066 Ordering.list_set Make add def
+R2070:2070 Ordering.list_set <> s:31 var
+R2068:2068 Ordering.list_set <> e:30 var
+R2061:2061 Ordering.list_set <> e:30 var
+R2100:2102 Ordering.list_set Make mem def
+R2105:2107 Ordering.list_set Make add def
+R2127:2132 Coq.Lists.List <> In_dec syndef
+R2148:2154 Ordering.list_set Make support proj
+R2134:2143 Ordering.list_set Make eq_elt_dec def
+R2127:2132 Coq.Lists.List <> In_dec syndef
+R2148:2154 Ordering.list_set Make support proj
+R2134:2143 Ordering.list_set Make eq_elt_dec def
+prf 2222:2226 Make add_2
+binder 2237:2237 <> e:32
+binder 2239:2240 <> e':33
+binder 2242:2242 <> s:34
+R2252:2255 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2245:2247 Ordering.list_set Make mem def
+R2251:2251 Ordering.list_set <> s:34 var
+R2249:2249 Ordering.list_set <> e:32 var
+R2256:2258 Ordering.list_set Make mem def
+R2263:2265 Ordering.list_set Make add def
+R2270:2270 Ordering.list_set <> s:34 var
+R2267:2268 Ordering.list_set <> e':33 var
+R2260:2260 Ordering.list_set <> e:32 var
+R2303:2305 Ordering.list_set Make mem def
+R2308:2310 Ordering.list_set Make add def
+R2331:2336 Coq.Lists.List <> In_dec syndef
+R2353:2359 Ordering.list_set Make support proj
+R2338:2347 Ordering.list_set Make eq_elt_dec def
+R2331:2336 Coq.Lists.List <> In_dec syndef
+R2353:2359 Ordering.list_set Make support proj
+R2338:2347 Ordering.list_set Make eq_elt_dec def
+prf 2430:2435 Make add_12
+binder 2446:2446 <> e:35
+binder 2448:2449 <> e':36
+binder 2451:2451 <> s:37
+R2470:2473 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2454:2456 Ordering.list_set Make mem def
+R2461:2463 Ordering.list_set Make add def
+R2468:2468 Ordering.list_set <> s:37 var
+R2465:2466 Ordering.list_set <> e':36 var
+R2458:2458 Ordering.list_set <> e:35 var
+R2480:2483 Coq.Init.Logic <> ::type_scope:x_'\/'_x not
+R2475:2477 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2474:2474 Ordering.list_set <> e:35 var
+R2478:2479 Ordering.list_set <> e':36 var
+R2484:2486 Ordering.list_set Make mem def
+R2490:2490 Ordering.list_set <> s:37 var
+R2488:2488 Ordering.list_set <> e:35 var
+R2522:2524 Ordering.list_set Make mem def
+R2527:2529 Ordering.list_set Make add def
+R2549:2554 Coq.Lists.List <> In_dec syndef
+R2571:2577 Ordering.list_set Make support proj
+R2556:2565 Ordering.list_set Make eq_elt_dec def
+R2549:2554 Coq.Lists.List <> In_dec syndef
+R2571:2577 Ordering.list_set Make support proj
+R2556:2565 Ordering.list_set Make eq_elt_dec def
+def 2701:2710 Make filter_aux
+R2720:2723 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2717:2719 Ordering.list_set Make elt def
+binder 2713:2713 <> P:38
+binder 2746:2746 <> e:39
+R2749:2749 Coq.Init.Specif <> ::type_scope:'{'_x_'}'_'+'_'{'_x_'}' not
+R2753:2755 Coq.Init.Specif <> ::type_scope:'{'_x_'}'_'+'_'{'_x_'}' not
+R2761:2761 Coq.Init.Specif <> ::type_scope:'{'_x_'}'_'+'_'{'_x_'}' not
+R2750:2750 Ordering.list_set <> P:38 var
+R2752:2752 Ordering.list_set <> e:39 var
+R2756:2757 Coq.Init.Logic <> ::type_scope:'~'_x not
+R2758:2758 Ordering.list_set <> P:38 var
+R2760:2760 Ordering.list_set <> e:39 var
+binder 2731:2735 <> P_dec:40
+R2772:2775 Coq.Init.Datatypes <> list ind
+R2777:2779 Ordering.list_set Make elt def
+binder 2768:2768 <> l:41
+R2795:2798 Coq.Init.Datatypes <> list ind
+R2800:2802 Ordering.list_set Make elt def
+R2815:2815 Ordering.list_set <> l:41 var
+R2826:2828 Coq.Init.Datatypes <> nil constr
+R2833:2835 Coq.Init.Datatypes <> nil constr
+R2842:2845 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R2846:2847 Coq.Init.Peano <> le ind
+R2868:2872 Ordering.list_set <> P_dec:40 var
+R2939:2948 Ordering.list_set <> filter_aux:42 def
+R2952:2956 Ordering.list_set <> P_dec:40 var
+R2950:2950 Ordering.list_set <> P:38 var
+R2894:2898 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R2920:2920 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R2899:2908 Ordering.list_set <> filter_aux:42 def
+R2912:2916 Ordering.list_set <> P_dec:40 var
+R2910:2910 Ordering.list_set <> P:38 var
+prf 3006:3024 Make included_filter_aux
+binder 3036:3036 <> P:44
+binder 3038:3042 <> P_dec:45
+binder 3044:3044 <> e:46
+binder 3046:3046 <> l:47
+R3076:3079 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3049:3050 Coq.Lists.List <> In def
+R3055:3064 Ordering.list_set Make filter_aux def
+R3074:3074 Ordering.list_set <> l:47 var
+R3068:3072 Ordering.list_set <> P_dec:45 var
+R3066:3066 Ordering.list_set <> P:44 var
+R3052:3052 Ordering.list_set <> e:46 var
+R3080:3081 Coq.Lists.List <> In def
+R3085:3085 Ordering.list_set <> l:47 var
+R3083:3083 Ordering.list_set <> e:46 var
+prf 3322:3343 Make without_red_filter_aux
+binder 3358:3358 <> P:48
+binder 3360:3364 <> P_dec:49
+binder 3366:3366 <> l:50
+R3382:3385 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3369:3379 Ordering.list_set Make without_red def
+R3381:3381 Ordering.list_set <> l:50 var
+R3386:3396 Ordering.list_set Make without_red def
+R3399:3408 Ordering.list_set Make filter_aux def
+R3418:3418 Ordering.list_set <> l:50 var
+R3412:3416 Ordering.list_set <> P_dec:49 var
+R3410:3410 Ordering.list_set <> P:48 var
+R3532:3537 Coq.Lists.List <> In_dec syndef
+R3539:3548 Ordering.list_set Make eq_elt_dec def
+R3532:3537 Coq.Lists.List <> In_dec syndef
+R3539:3548 Ordering.list_set Make eq_elt_dec def
+R3532:3537 Coq.Lists.List <> In_dec syndef
+R3539:3548 Ordering.list_set Make eq_elt_dec def
+R3631:3636 Coq.Lists.List <> In_dec syndef
+R3652:3661 Ordering.list_set Make filter_aux def
+R3638:3647 Ordering.list_set Make eq_elt_dec def
+R3715:3716 Coq.Lists.List <> In def
+R3631:3636 Coq.Lists.List <> In_dec syndef
+R3652:3661 Ordering.list_set Make filter_aux def
+R3638:3647 Ordering.list_set Make eq_elt_dec def
+R3715:3716 Coq.Lists.List <> In def
+R3740:3758 Ordering.list_set Make included_filter_aux thm
+R3740:3758 Ordering.list_set Make included_filter_aux thm
+def 3800:3805 Make filter
+binder 3807:3807 <> P:51
+binder 3809:3813 <> P_dec:52
+binder 3815:3815 <> s:53
+R3824:3829 Ordering.list_set Make mk_set constr
+R3880:3901 Ordering.list_set Make without_red_filter_aux thm
+R3916:3923 Ordering.list_set Make is_a_set proj
+R3913:3913 Ordering.list_set <> s:53 var
+R3905:3909 Ordering.list_set <> P_dec:52 var
+R3903:3903 Ordering.list_set <> P:51 var
+R3832:3841 Ordering.list_set Make filter_aux def
+R3854:3860 Ordering.list_set Make support proj
+R3851:3851 Ordering.list_set <> s:53 var
+R3845:3849 Ordering.list_set <> P_dec:52 var
+R3843:3843 Ordering.list_set <> P:51 var
+prf 3935:3947 Make filter_1_list
+R3968:3971 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3965:3967 Ordering.list_set Make elt def
+binder 3961:3961 <> P:54
+binder 3978:3982 <> P_dec:55
+binder 3984:3984 <> l:56
+binder 3986:3986 <> e:57
+R3995:3998 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3989:3990 Coq.Lists.List <> In def
+R3994:3994 Ordering.list_set <> l:56 var
+R3992:3992 Ordering.list_set <> e:57 var
+R4002:4005 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3999:3999 Ordering.list_set <> P:54 var
+R4001:4001 Ordering.list_set <> e:57 var
+R4006:4007 Coq.Lists.List <> In def
+R4012:4021 Ordering.list_set Make filter_aux def
+R4031:4031 Ordering.list_set <> l:56 var
+R4025:4029 Ordering.list_set <> P_dec:55 var
+R4023:4023 Ordering.list_set <> P:54 var
+R4009:4009 Ordering.list_set <> e:57 var
+prf 4318:4325 Make filter_1
+R4346:4349 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4343:4345 Ordering.list_set Make elt def
+binder 4339:4339 <> P:58
+binder 4356:4360 <> P_dec:59
+binder 4362:4362 <> s:60
+binder 4364:4364 <> e:61
+R4374:4377 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4367:4369 Ordering.list_set Make mem def
+R4373:4373 Ordering.list_set <> s:60 var
+R4371:4371 Ordering.list_set <> e:61 var
+R4381:4384 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4378:4378 Ordering.list_set <> P:58 var
+R4380:4380 Ordering.list_set <> e:61 var
+R4385:4387 Ordering.list_set Make mem def
+R4392:4397 Ordering.list_set Make filter def
+R4407:4407 Ordering.list_set <> s:60 var
+R4401:4405 Ordering.list_set <> P_dec:59 var
+R4399:4399 Ordering.list_set <> P:58 var
+R4389:4389 Ordering.list_set <> e:61 var
+R4425:4427 Ordering.list_set Make mem def
+R4430:4436 Ordering.list_set Make support proj
+R4490:4502 Ordering.list_set Make filter_1_list thm
+R4490:4502 Ordering.list_set Make filter_1_list thm
+prf 4526:4538 Make filter_2_list
+R4558:4561 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4555:4557 Ordering.list_set Make elt def
+binder 4551:4551 <> P:62
+binder 4568:4572 <> P_dec:63
+binder 4574:4574 <> l:64
+binder 4576:4576 <> e:65
+R4606:4625 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4579:4580 Coq.Lists.List <> In def
+R4585:4594 Ordering.list_set Make filter_aux def
+R4604:4604 Ordering.list_set <> l:64 var
+R4598:4602 Ordering.list_set <> P_dec:63 var
+R4596:4596 Ordering.list_set <> P:62 var
+R4582:4582 Ordering.list_set <> e:65 var
+R4632:4635 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R4626:4627 Coq.Lists.List <> In def
+R4631:4631 Ordering.list_set <> l:64 var
+R4629:4629 Ordering.list_set <> e:65 var
+R4636:4636 Ordering.list_set <> P:62 var
+R4638:4638 Ordering.list_set <> e:65 var
+prf 5027:5034 Make filter_2
+R5054:5057 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R5051:5053 Ordering.list_set Make elt def
+binder 5047:5047 <> P:66
+binder 5064:5068 <> P_dec:67
+binder 5070:5070 <> s:68
+binder 5072:5072 <> e:69
+R5099:5118 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R5075:5077 Ordering.list_set Make mem def
+R5082:5087 Ordering.list_set Make filter def
+R5097:5097 Ordering.list_set <> s:68 var
+R5091:5095 Ordering.list_set <> P_dec:67 var
+R5089:5089 Ordering.list_set <> P:66 var
+R5079:5079 Ordering.list_set <> e:69 var
+R5126:5129 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R5119:5121 Ordering.list_set Make mem def
+R5125:5125 Ordering.list_set <> s:68 var
+R5123:5123 Ordering.list_set <> e:69 var
+R5130:5130 Ordering.list_set <> P:66 var
+R5132:5132 Ordering.list_set <> e:69 var
+R5149:5151 Ordering.list_set Make mem def
+R5154:5160 Ordering.list_set Make support proj
+R5210:5222 Ordering.list_set Make filter_2_list thm
+R5210:5222 Ordering.list_set Make filter_2_list thm
+def 5324:5333 Make remove_red
+R5340:5343 Coq.Init.Datatypes <> list ind
+R5345:5347 Ordering.list_set Make elt def
+binder 5336:5336 <> l:70
+R5352:5355 Coq.Init.Datatypes <> list ind
+R5357:5359 Ordering.list_set Make elt def
+R5372:5372 Ordering.list_set <> l:70 var
+R5383:5385 Coq.Init.Datatypes <> nil constr
+R5390:5392 Coq.Init.Datatypes <> nil constr
+R5399:5402 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R5403:5404 Coq.Init.Peano <> le ind
+R5425:5430 Coq.Lists.List <> In_dec syndef
+R5432:5441 Ordering.list_set Make eq_elt_dec def
+R5498:5502 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R5516:5516 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R5503:5512 Ordering.list_set <> remove_red:71 def
+R5466:5475 Ordering.list_set <> remove_red:71 def
+prf 5533:5551 Make included_remove_red
+binder 5563:5563 <> e:73
+binder 5565:5565 <> l:74
+R5587:5590 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R5568:5569 Coq.Lists.List <> In def
+R5574:5583 Ordering.list_set Make remove_red def
+R5585:5585 Ordering.list_set <> l:74 var
+R5571:5571 Ordering.list_set <> e:73 var
+R5591:5592 Coq.Lists.List <> In def
+R5596:5596 Ordering.list_set <> l:74 var
+R5594:5594 Ordering.list_set <> e:73 var
+R5677:5682 Coq.Lists.List <> In_dec syndef
+R5684:5693 Ordering.list_set Make eq_elt_dec def
+R5677:5682 Coq.Lists.List <> In_dec syndef
+R5684:5693 Ordering.list_set Make eq_elt_dec def
+prf 5840:5858 Make remove_red_included
+binder 5869:5869 <> e:75
+binder 5871:5871 <> l:76
+R5880:5883 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R5874:5875 Coq.Lists.List <> In def
+R5879:5879 Ordering.list_set <> l:76 var
+R5877:5877 Ordering.list_set <> e:75 var
+R5884:5885 Coq.Lists.List <> In def
+R5890:5899 Ordering.list_set Make remove_red def
+R5901:5901 Ordering.list_set <> l:76 var
+R5887:5887 Ordering.list_set <> e:75 var
+R6019:6024 Coq.Lists.List <> In_dec syndef
+R6026:6035 Ordering.list_set Make eq_elt_dec def
+R6019:6024 Coq.Lists.List <> In_dec syndef
+R6026:6035 Ordering.list_set Make eq_elt_dec def
+R6114:6119 Coq.Lists.List <> In_dec syndef
+R6121:6130 Ordering.list_set Make eq_elt_dec def
+R6114:6119 Coq.Lists.List <> In_dec syndef
+R6121:6130 Ordering.list_set Make eq_elt_dec def
+prf 6218:6239 Make without_red_remove_red
+binder 6251:6251 <> l:77
+R6254:6264 Ordering.list_set Make without_red def
+R6267:6276 Ordering.list_set Make remove_red def
+R6278:6278 Ordering.list_set <> l:77 var
+R6350:6355 Coq.Lists.List <> In_dec syndef
+R6357:6366 Ordering.list_set Make eq_elt_dec def
+R6350:6355 Coq.Lists.List <> In_dec syndef
+R6357:6366 Ordering.list_set Make eq_elt_dec def
+R6430:6435 Coq.Lists.List <> In_dec syndef
+R6451:6460 Ordering.list_set Make remove_red def
+R6437:6446 Ordering.list_set Make eq_elt_dec def
+R6506:6507 Coq.Lists.List <> In def
+R6531:6549 Ordering.list_set Make included_remove_red thm
+R6430:6435 Coq.Lists.List <> In_dec syndef
+R6451:6460 Ordering.list_set Make remove_red def
+R6437:6446 Ordering.list_set Make eq_elt_dec def
+R6506:6507 Coq.Lists.List <> In def
+R6531:6549 Ordering.list_set Make included_remove_red thm
+prf 6573:6590 Make without_red_remove
+binder 6603:6603 <> e:78
+binder 6605:6606 <> l1:79
+binder 6608:6609 <> l2:80
+R6639:6642 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R6612:6622 Ordering.list_set Make without_red def
+R6627:6630 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R6625:6626 Ordering.list_set <> l1:79 var
+R6632:6635 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R6631:6631 Ordering.list_set <> e:78 var
+R6636:6637 Ordering.list_set <> l2:80 var
+R6643:6653 Ordering.list_set Make without_red def
+R6658:6661 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R6656:6657 Ordering.list_set <> l1:79 var
+R6662:6663 Ordering.list_set <> l2:80 var
+R6768:6773 Coq.Lists.List <> In_dec syndef
+R6775:6784 Ordering.list_set Make eq_elt_dec def
+R6768:6773 Coq.Lists.List <> In_dec syndef
+R6775:6784 Ordering.list_set Make eq_elt_dec def
+R6827:6832 Coq.Lists.List <> In_dec syndef
+R6851:6854 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R6856:6859 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R6834:6843 Ordering.list_set Make eq_elt_dec def
+R6827:6832 Coq.Lists.List <> In_dec syndef
+R6851:6854 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R6856:6859 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R6834:6843 Ordering.list_set Make eq_elt_dec def
+R6909:6914 Coq.Lists.List <> In_dec syndef
+R6933:6936 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R6916:6925 Ordering.list_set Make eq_elt_dec def
+R6909:6914 Coq.Lists.List <> In_dec syndef
+R6933:6936 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R6916:6925 Ordering.list_set Make eq_elt_dec def
+R6999:7007 Coq.Lists.List <> in_app_or thm
+R7069:7077 Coq.Lists.List <> in_or_app thm
+R6999:7007 Coq.Lists.List <> in_app_or thm
+R7069:7077 Coq.Lists.List <> in_or_app thm
+R7069:7077 Coq.Lists.List <> in_or_app thm
+prf 7159:7173 Make without_red_add
+binder 7186:7186 <> e:81
+binder 7188:7189 <> l1:82
+binder 7191:7192 <> l2:83
+R7217:7220 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7195:7205 Ordering.list_set Make without_red def
+R7210:7213 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R7208:7209 Ordering.list_set <> l1:82 var
+R7214:7215 Ordering.list_set <> l2:83 var
+R7237:7242 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7221:7221 Coq.Init.Logic <> ::type_scope:'~'_x not
+R7222:7223 Coq.Lists.List <> In def
+R7230:7233 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R7228:7229 Ordering.list_set <> l1:82 var
+R7234:7235 Ordering.list_set <> l2:83 var
+R7225:7225 Ordering.list_set <> e:81 var
+R7243:7253 Ordering.list_set Make without_red def
+R7258:7261 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R7256:7257 Ordering.list_set <> l1:82 var
+R7263:7266 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R7262:7262 Ordering.list_set <> e:81 var
+R7267:7268 Ordering.list_set <> l2:83 var
+R7393:7398 Coq.Lists.List <> In_dec syndef
+R7400:7409 Ordering.list_set Make eq_elt_dec def
+R7393:7398 Coq.Lists.List <> In_dec syndef
+R7400:7409 Ordering.list_set Make eq_elt_dec def
+R7452:7453 Coq.Lists.List <> In def
+R7452:7453 Coq.Lists.List <> In def
+R7488:7493 Coq.Lists.List <> In_dec syndef
+R7512:7515 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R7517:7520 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R7495:7504 Ordering.list_set Make eq_elt_dec def
+R7488:7493 Coq.Lists.List <> In_dec syndef
+R7512:7515 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R7517:7520 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R7495:7504 Ordering.list_set Make eq_elt_dec def
+R7580:7588 Coq.Lists.List <> in_app_or thm
+R7580:7588 Coq.Lists.List <> in_app_or thm
+R7675:7680 Coq.Lists.List <> In_dec syndef
+R7699:7702 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R7682:7691 Ordering.list_set Make eq_elt_dec def
+R7675:7680 Coq.Lists.List <> In_dec syndef
+R7699:7702 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R7682:7691 Ordering.list_set Make eq_elt_dec def
+R7761:7762 Coq.Lists.List <> In def
+R7770:7773 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R7795:7803 Coq.Lists.List <> in_or_app thm
+R7761:7762 Coq.Lists.List <> In def
+R7770:7773 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R7795:7803 Coq.Lists.List <> in_or_app thm
+R7838:7839 Coq.Lists.List <> In def
+R7845:7845 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R7854:7858 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R7848:7851 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R7838:7839 Coq.Lists.List <> In def
+R7845:7845 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R7854:7858 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R7848:7851 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R7915:7920 Coq.Lists.List <> In_dec syndef
+R7939:7942 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R7922:7931 Ordering.list_set Make eq_elt_dec def
+R7915:7920 Coq.Lists.List <> In_dec syndef
+R7939:7942 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R7922:7931 Ordering.list_set Make eq_elt_dec def
+R8001:8002 Coq.Lists.List <> In def
+R8010:8013 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R8035:8043 Coq.Lists.List <> in_or_app thm
+R8001:8002 Coq.Lists.List <> In def
+R8010:8013 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R8035:8043 Coq.Lists.List <> in_or_app thm
+R8082:8099 Ordering.list_set Make without_red_remove thm
+R8111:8114 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R8104:8106 Coq.Init.Datatypes <> nil constr
+R8082:8099 Ordering.list_set Make without_red_remove thm
+R8111:8114 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R8104:8106 Coq.Init.Datatypes <> nil constr
+prf 8217:8231 Make without_red_nil
+R8235:8245 Ordering.list_set Make without_red def
+R8247:8249 Coq.Init.Datatypes <> nil constr
+def 8292:8296 Make empty
+R8300:8300 Ordering.list_set Make t rec
+R8307:8312 Ordering.list_set Make mk_set constr
+R8318:8332 Ordering.list_set Make without_red_nil thm
+R8314:8316 Coq.Init.Datatypes <> nil constr
+prf 8360:8380 Make without_red_singleton
+R8395:8397 Ordering.list_set Make elt def
+binder 8391:8391 <> e:84
+R8400:8410 Ordering.list_set Make without_red def
+R8414:8417 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8413:8413 Ordering.list_set <> e:84 var
+R8418:8420 Coq.Init.Datatypes <> nil constr
+R8457:8462 Coq.Lists.List <> In_dec syndef
+R8477:8479 Coq.Init.Datatypes <> nil constr
+R8464:8473 Ordering.list_set Make eq_elt_dec def
+R8457:8462 Coq.Lists.List <> In_dec syndef
+R8477:8479 Coq.Init.Datatypes <> nil constr
+R8464:8473 Ordering.list_set Make eq_elt_dec def
+def 8509:8517 Make singleton
+R8524:8526 Ordering.list_set Make elt def
+binder 8520:8520 <> e:85
+R8531:8531 Ordering.list_set Make t rec
+R8538:8543 Ordering.list_set Make mk_set constr
+R8557:8577 Ordering.list_set Make without_red_singleton thm
+R8579:8579 Ordering.list_set <> e:85 var
+R8547:8550 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8546:8546 Ordering.list_set <> e:85 var
+R8551:8553 Coq.Init.Datatypes <> nil constr
+def 8647:8654 Make make_set
+R8661:8664 Coq.Init.Datatypes <> list ind
+R8666:8668 Ordering.list_set Make elt def
+binder 8657:8657 <> l:86
+R8673:8673 Ordering.list_set Make t rec
+R8680:8685 Ordering.list_set Make mk_set constr
+R8703:8724 Ordering.list_set Make without_red_remove_red thm
+R8726:8726 Ordering.list_set <> l:86 var
+R8688:8697 Ordering.list_set Make remove_red def
+R8699:8699 Ordering.list_set <> l:86 var
+def 8763:8777 Make add_without_red
+R8788:8791 Coq.Init.Datatypes <> list ind
+R8793:8795 Ordering.list_set Make elt def
+binder 8780:8782 <> acc:87
+R8788:8791 Coq.Init.Datatypes <> list ind
+R8793:8795 Ordering.list_set Make elt def
+binder 8784:8784 <> l:88
+R8811:8814 Coq.Init.Datatypes <> list ind
+R8816:8818 Ordering.list_set Make elt def
+R8831:8831 Ordering.list_set <> l:88 var
+R8842:8844 Coq.Init.Datatypes <> nil constr
+R8849:8851 Ordering.list_set <> acc:87 var
+R8858:8861 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8862:8863 Coq.Init.Peano <> le ind
+R8877:8882 Coq.Lists.List <> In_dec syndef
+R8897:8899 Ordering.list_set <> acc:87 var
+R8884:8893 Ordering.list_set Make eq_elt_dec def
+R8945:8959 Ordering.list_set <> add_without_red:89 def
+R8963:8966 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8967:8969 Ordering.list_set <> acc:87 var
+R8912:8926 Ordering.list_set <> add_without_red:89 def
+R8928:8930 Ordering.list_set <> acc:87 var
+prf 8989:9015 Make without_red_add_without_red
+binder 9028:9029 <> l1:91
+binder 9031:9032 <> l2:92
+R9049:9052 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R9035:9045 Ordering.list_set Make without_red def
+R9047:9048 Ordering.list_set <> l1:91 var
+R9053:9063 Ordering.list_set Make without_red def
+R9066:9080 Ordering.list_set Make add_without_red def
+R9085:9086 Ordering.list_set <> l2:92 var
+R9082:9083 Ordering.list_set <> l1:91 var
+R9205:9210 Coq.Lists.List <> In_dec syndef
+R9212:9221 Ordering.list_set Make eq_elt_dec def
+R9205:9210 Coq.Lists.List <> In_dec syndef
+R9212:9221 Ordering.list_set Make eq_elt_dec def
+R9290:9295 Coq.Lists.List <> In_dec syndef
+R9297:9306 Ordering.list_set Make eq_elt_dec def
+R9350:9351 Coq.Lists.List <> In def
+R9290:9295 Coq.Lists.List <> In_dec syndef
+R9297:9306 Ordering.list_set Make eq_elt_dec def
+R9350:9351 Coq.Lists.List <> In def
+def 9390:9394 Make union
+binder 9396:9397 <> s1:93
+binder 9399:9400 <> s2:94
+R9407:9412 Ordering.list_set Make mk_set constr
+R9474:9500 Ordering.list_set Make without_red_add_without_red thm
+R9532:9539 Ordering.list_set Make is_a_set proj
+R9528:9529 Ordering.list_set <> s1:93 var
+R9519:9525 Ordering.list_set Make support proj
+R9515:9516 Ordering.list_set <> s2:94 var
+R9506:9512 Ordering.list_set Make support proj
+R9502:9503 Ordering.list_set <> s1:93 var
+R9415:9429 Ordering.list_set Make add_without_red def
+R9448:9454 Ordering.list_set Make support proj
+R9444:9445 Ordering.list_set <> s2:94 var
+R9435:9441 Ordering.list_set Make support proj
+R9431:9432 Ordering.list_set <> s1:93 var
+prf 9551:9561 Make union_1_aux
+R9581:9584 Coq.Init.Datatypes <> list ind
+R9586:9588 Ordering.list_set Make elt def
+binder 9573:9574 <> l1:95
+binder 9576:9577 <> l2:96
+R9596:9598 Ordering.list_set Make elt def
+binder 9592:9592 <> e:97
+R9609:9612 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R9602:9603 Coq.Lists.List <> In def
+R9607:9608 Ordering.list_set <> l1:95 var
+R9605:9605 Ordering.list_set <> e:97 var
+R9613:9614 Coq.Lists.List <> In def
+R9619:9633 Ordering.list_set Make add_without_red def
+R9638:9639 Ordering.list_set <> l2:96 var
+R9635:9636 Ordering.list_set <> l1:95 var
+R9616:9616 Ordering.list_set <> e:97 var
+R9769:9774 Coq.Lists.List <> In_dec syndef
+R9776:9785 Ordering.list_set Make eq_elt_dec def
+R9769:9774 Coq.Lists.List <> In_dec syndef
+R9776:9785 Ordering.list_set Make eq_elt_dec def
+prf 9851:9857 Make union_1
+binder 9868:9869 <> s1:98
+binder 9871:9872 <> s2:99
+binder 9874:9874 <> e:100
+R9885:9888 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R9877:9879 Ordering.list_set Make mem def
+R9883:9884 Ordering.list_set <> s1:98 var
+R9881:9881 Ordering.list_set <> e:100 var
+R9889:9891 Ordering.list_set Make mem def
+R9896:9900 Ordering.list_set Make union def
+R9905:9906 Ordering.list_set <> s2:99 var
+R9902:9903 Ordering.list_set <> s1:98 var
+R9893:9893 Ordering.list_set <> e:100 var
+R9924:9926 Ordering.list_set Make mem def
+R9970:9980 Ordering.list_set Make union_1_aux thm
+R9970:9980 Ordering.list_set Make union_1_aux thm
+prf 9996:10006 Make union_2_aux
+R10026:10029 Coq.Init.Datatypes <> list ind
+R10031:10033 Ordering.list_set Make elt def
+binder 10018:10019 <> l1:101
+binder 10021:10022 <> l2:102
+R10041:10043 Ordering.list_set Make elt def
+binder 10037:10037 <> e:103
+R10054:10057 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R10047:10048 Coq.Lists.List <> In def
+R10052:10053 Ordering.list_set <> l2:102 var
+R10050:10050 Ordering.list_set <> e:103 var
+R10058:10059 Coq.Lists.List <> In def
+R10064:10078 Ordering.list_set Make add_without_red def
+R10083:10084 Ordering.list_set <> l2:102 var
+R10080:10081 Ordering.list_set <> l1:101 var
+R10061:10061 Ordering.list_set <> e:103 var
+R10217:10222 Coq.Lists.List <> In_dec syndef
+R10224:10233 Ordering.list_set Make eq_elt_dec def
+R10217:10222 Coq.Lists.List <> In_dec syndef
+R10224:10233 Ordering.list_set Make eq_elt_dec def
+R10329:10339 Ordering.list_set Make union_1_aux thm
+R10329:10339 Ordering.list_set Make union_1_aux thm
+R10385:10395 Ordering.list_set Make union_1_aux thm
+R10385:10395 Ordering.list_set Make union_1_aux thm
+prf 10446:10452 Make union_2
+binder 10463:10464 <> s1:104
+binder 10466:10467 <> s2:105
+binder 10469:10469 <> e:106
+R10480:10483 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R10472:10474 Ordering.list_set Make mem def
+R10478:10479 Ordering.list_set <> s2:105 var
+R10476:10476 Ordering.list_set <> e:106 var
+R10484:10486 Ordering.list_set Make mem def
+R10491:10495 Ordering.list_set Make union def
+R10500:10501 Ordering.list_set <> s2:105 var
+R10497:10498 Ordering.list_set <> s1:104 var
+R10488:10488 Ordering.list_set <> e:106 var
+R10519:10521 Ordering.list_set Make mem def
+R10565:10575 Ordering.list_set Make union_2_aux thm
+R10565:10575 Ordering.list_set Make union_2_aux thm
+prf 10590:10601 Make union_12_aux
+R10621:10624 Coq.Init.Datatypes <> list ind
+R10626:10628 Ordering.list_set Make elt def
+binder 10613:10614 <> l1:107
+binder 10616:10617 <> l2:108
+R10636:10638 Ordering.list_set Make elt def
+binder 10632:10632 <> e:109
+R10670:10673 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R10642:10643 Coq.Lists.List <> In def
+R10648:10662 Ordering.list_set Make add_without_red def
+R10667:10668 Ordering.list_set <> l2:108 var
+R10664:10665 Ordering.list_set <> l1:107 var
+R10645:10645 Ordering.list_set <> e:109 var
+R10681:10684 Coq.Init.Logic <> ::type_scope:x_'\/'_x not
+R10674:10675 Coq.Lists.List <> In def
+R10679:10680 Ordering.list_set <> l1:107 var
+R10677:10677 Ordering.list_set <> e:109 var
+R10685:10686 Coq.Lists.List <> In def
+R10690:10691 Ordering.list_set <> l2:108 var
+R10688:10688 Ordering.list_set <> e:109 var
+R10821:10826 Coq.Lists.List <> In_dec syndef
+R10828:10837 Ordering.list_set Make eq_elt_dec def
+R10821:10826 Coq.Lists.List <> In_dec syndef
+R10828:10837 Ordering.list_set Make eq_elt_dec def
+prf 10987:10994 Make union_12
+binder 11008:11009 <> s1:110
+binder 11011:11012 <> s2:111
+binder 11014:11014 <> e:112
+R11036:11039 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R11017:11019 Ordering.list_set Make mem def
+R11024:11028 Ordering.list_set Make union def
+R11033:11034 Ordering.list_set <> s2:111 var
+R11030:11031 Ordering.list_set <> s1:110 var
+R11021:11021 Ordering.list_set <> e:112 var
+R11048:11051 Coq.Init.Logic <> ::type_scope:x_'\/'_x not
+R11040:11042 Ordering.list_set Make mem def
+R11046:11047 Ordering.list_set <> s1:110 var
+R11044:11044 Ordering.list_set <> e:112 var
+R11052:11054 Ordering.list_set Make mem def
+R11058:11059 Ordering.list_set <> s2:111 var
+R11056:11056 Ordering.list_set <> e:112 var
+R11076:11078 Ordering.list_set Make mem def
+R11122:11133 Ordering.list_set Make union_12_aux thm
+R11122:11133 Ordering.list_set Make union_12_aux thm
+def 11151:11167 Make remove_not_common
+R11182:11185 Coq.Init.Datatypes <> list ind
+R11187:11189 Ordering.list_set Make elt def
+binder 11170:11172 <> acc:113
+binder 11174:11175 <> l1:114
+R11182:11185 Coq.Init.Datatypes <> list ind
+R11187:11189 Ordering.list_set Make elt def
+binder 11177:11178 <> l2:115
+R11206:11209 Coq.Init.Datatypes <> list ind
+R11211:11213 Ordering.list_set Make elt def
+R11226:11227 Ordering.list_set <> l2:115 var
+R11238:11240 Coq.Init.Datatypes <> nil constr
+R11245:11247 Ordering.list_set <> acc:113 var
+R11254:11257 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R11273:11278 Coq.Lists.List <> In_dec syndef
+R11293:11294 Ordering.list_set <> l1:114 var
+R11280:11289 Ordering.list_set Make eq_elt_dec def
+R11353:11369 Ordering.list_set <> remove_not_common:116 def
+R11375:11376 Ordering.list_set <> l1:114 var
+R11371:11373 Ordering.list_set <> acc:113 var
+R11308:11324 Ordering.list_set <> remove_not_common:116 def
+R11337:11338 Ordering.list_set <> l1:114 var
+R11328:11331 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R11332:11334 Ordering.list_set <> acc:113 var
+prf 11394:11426 Make without_red_remove_not_common_aux
+binder 11439:11441 <> acc:118
+binder 11443:11444 <> l1:119
+binder 11446:11447 <> l2:120
+R11450:11450 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R11489:11520 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+binder 11458:11458 <> e:121
+R11480:11483 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R11469:11472 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R11461:11462 Coq.Lists.List <> In def
+R11466:11468 Ordering.list_set <> acc:118 var
+R11464:11464 Ordering.list_set <> e:121 var
+R11473:11474 Coq.Lists.List <> In def
+R11478:11479 Ordering.list_set <> l2:120 var
+R11476:11476 Ordering.list_set <> e:121 var
+R11484:11488 Coq.Init.Logic <> False ind
+R11536:11539 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R11521:11531 Ordering.list_set Make without_red def
+R11533:11535 Ordering.list_set <> acc:118 var
+R11554:11557 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R11540:11550 Ordering.list_set Make without_red def
+R11552:11553 Ordering.list_set <> l1:119 var
+R11572:11603 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R11558:11568 Ordering.list_set Make without_red def
+R11570:11571 Ordering.list_set <> l2:120 var
+R11604:11614 Ordering.list_set Make without_red def
+R11617:11633 Ordering.list_set Make remove_not_common def
+R11642:11643 Ordering.list_set <> l2:120 var
+R11639:11640 Ordering.list_set <> l1:119 var
+R11635:11637 Ordering.list_set <> acc:118 var
+R11796:11801 Coq.Lists.List <> In_dec syndef
+R11803:11812 Ordering.list_set Make eq_elt_dec def
+R11796:11801 Coq.Lists.List <> In_dec syndef
+R11803:11812 Ordering.list_set Make eq_elt_dec def
+R11948:11953 Coq.Lists.List <> In_dec syndef
+R11955:11964 Ordering.list_set Make eq_elt_dec def
+R12014:12015 Coq.Lists.List <> In def
+R11948:11953 Coq.Lists.List <> In_dec syndef
+R11955:11964 Ordering.list_set Make eq_elt_dec def
+R12014:12015 Coq.Lists.List <> In def
+R12096:12101 Coq.Lists.List <> In_dec syndef
+R12103:12112 Ordering.list_set Make eq_elt_dec def
+R12096:12101 Coq.Lists.List <> In_dec syndef
+R12103:12112 Ordering.list_set Make eq_elt_dec def
+R12204:12221 Ordering.list_set Make without_red_remove thm
+R12226:12228 Coq.Init.Datatypes <> nil constr
+R12204:12221 Ordering.list_set Make without_red_remove thm
+R12226:12228 Coq.Init.Datatypes <> nil constr
+R12325:12342 Ordering.list_set Make without_red_remove thm
+R12347:12349 Coq.Init.Datatypes <> nil constr
+R12325:12342 Ordering.list_set Make without_red_remove thm
+R12347:12349 Coq.Init.Datatypes <> nil constr
+prf 12377:12405 Make without_red_remove_not_common
+binder 12418:12419 <> l1:122
+binder 12421:12422 <> l2:123
+R12439:12442 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R12425:12435 Ordering.list_set Make without_red def
+R12437:12438 Ordering.list_set <> l1:122 var
+R12457:12480 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R12443:12453 Ordering.list_set Make without_red def
+R12455:12456 Ordering.list_set <> l2:123 var
+R12481:12491 Ordering.list_set Make without_red def
+R12494:12510 Ordering.list_set Make remove_not_common def
+R12519:12520 Ordering.list_set <> l2:123 var
+R12516:12517 Ordering.list_set <> l1:122 var
+R12512:12514 Coq.Init.Datatypes <> nil constr
+R12560:12592 Ordering.list_set Make without_red_remove_not_common_aux thm
+R12560:12592 Ordering.list_set Make without_red_remove_not_common_aux thm
+def 12670:12674 Make inter
+binder 12676:12677 <> s1:124
+binder 12679:12680 <> s2:125
+R12687:12692 Ordering.list_set Make mk_set constr
+R12761:12789 Ordering.list_set Make without_red_remove_not_common thm
+R12813:12820 Ordering.list_set Make is_a_set proj
+R12809:12810 Ordering.list_set <> s2:125 var
+R12799:12806 Ordering.list_set Make is_a_set proj
+R12795:12796 Ordering.list_set <> s1:124 var
+R12695:12711 Ordering.list_set Make remove_not_common def
+R12734:12740 Ordering.list_set Make support proj
+R12730:12731 Ordering.list_set <> s2:125 var
+R12721:12727 Ordering.list_set Make support proj
+R12717:12718 Ordering.list_set <> s1:124 var
+R12713:12715 Coq.Init.Datatypes <> nil constr
+prf 12832:12842 Make inter_1_aux
+binder 12856:12858 <> acc:126
+binder 12860:12861 <> l1:127
+binder 12863:12864 <> l2:128
+binder 12866:12866 <> e:129
+R12903:12906 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R12869:12870 Coq.Lists.List <> In def
+R12875:12891 Ordering.list_set Make remove_not_common def
+R12900:12901 Ordering.list_set <> l2:128 var
+R12897:12898 Ordering.list_set <> l1:127 var
+R12893:12895 Ordering.list_set <> acc:126 var
+R12872:12872 Ordering.list_set <> e:129 var
+R12915:12918 Coq.Init.Logic <> ::type_scope:x_'\/'_x not
+R12907:12908 Coq.Lists.List <> In def
+R12912:12914 Ordering.list_set <> acc:126 var
+R12910:12910 Ordering.list_set <> e:129 var
+R12919:12920 Coq.Lists.List <> In def
+R12924:12925 Ordering.list_set <> l1:127 var
+R12922:12922 Ordering.list_set <> e:129 var
+R13093:13098 Coq.Lists.List <> In_dec syndef
+R13100:13109 Ordering.list_set Make eq_elt_dec def
+R13093:13098 Coq.Lists.List <> In_dec syndef
+R13100:13109 Ordering.list_set Make eq_elt_dec def
+prf 13330:13336 Make inter_1
+binder 13347:13348 <> s1:130
+binder 13350:13351 <> s2:131
+binder 13353:13353 <> e:132
+R13375:13378 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R13356:13358 Ordering.list_set Make mem def
+R13363:13367 Ordering.list_set Make inter def
+R13372:13373 Ordering.list_set <> s2:131 var
+R13369:13370 Ordering.list_set <> s1:130 var
+R13360:13360 Ordering.list_set <> e:132 var
+R13379:13381 Ordering.list_set Make mem def
+R13385:13386 Ordering.list_set <> s1:130 var
+R13383:13383 Ordering.list_set <> e:132 var
+R13446:13456 Ordering.list_set Make inter_1_aux thm
+R13458:13460 Coq.Init.Datatypes <> nil constr
+R13446:13456 Ordering.list_set Make inter_1_aux thm
+R13458:13460 Coq.Init.Datatypes <> nil constr
+prf 13529:13539 Make inter_2_aux
+binder 13553:13555 <> acc:133
+binder 13557:13558 <> l1:134
+binder 13560:13561 <> l2:135
+binder 13563:13563 <> e:136
+R13600:13603 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R13566:13567 Coq.Lists.List <> In def
+R13572:13588 Ordering.list_set Make remove_not_common def
+R13597:13598 Ordering.list_set <> l2:135 var
+R13594:13595 Ordering.list_set <> l1:134 var
+R13590:13592 Ordering.list_set <> acc:133 var
+R13569:13569 Ordering.list_set <> e:136 var
+R13612:13615 Coq.Init.Logic <> ::type_scope:x_'\/'_x not
+R13604:13605 Coq.Lists.List <> In def
+R13609:13611 Ordering.list_set <> acc:133 var
+R13607:13607 Ordering.list_set <> e:136 var
+R13616:13617 Coq.Lists.List <> In def
+R13621:13622 Ordering.list_set <> l2:135 var
+R13619:13619 Ordering.list_set <> e:136 var
+R13790:13795 Coq.Lists.List <> In_dec syndef
+R13797:13806 Ordering.list_set Make eq_elt_dec def
+R13790:13795 Coq.Lists.List <> In_dec syndef
+R13797:13806 Ordering.list_set Make eq_elt_dec def
+prf 14111:14117 Make inter_2
+binder 14128:14129 <> s1:137
+binder 14131:14132 <> s2:138
+binder 14134:14134 <> e:139
+R14156:14159 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R14137:14139 Ordering.list_set Make mem def
+R14144:14148 Ordering.list_set Make inter def
+R14153:14154 Ordering.list_set <> s2:138 var
+R14150:14151 Ordering.list_set <> s1:137 var
+R14141:14141 Ordering.list_set <> e:139 var
+R14160:14162 Ordering.list_set Make mem def
+R14166:14167 Ordering.list_set <> s2:138 var
+R14164:14164 Ordering.list_set <> e:139 var
+R14226:14236 Ordering.list_set Make inter_2_aux thm
+R14238:14240 Coq.Init.Datatypes <> nil constr
+R14226:14236 Ordering.list_set Make inter_2_aux thm
+R14238:14240 Coq.Init.Datatypes <> nil constr
+prf 14309:14320 Make inter_12_aux
+binder 14333:14335 <> acc:140
+binder 14337:14338 <> l1:141
+binder 14340:14341 <> l2:142
+binder 14343:14343 <> e:143
+R14354:14357 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R14347:14348 Coq.Lists.List <> In def
+R14352:14353 Ordering.list_set <> l1:141 var
+R14350:14350 Ordering.list_set <> e:143 var
+R14365:14368 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R14358:14359 Coq.Lists.List <> In def
+R14363:14364 Ordering.list_set <> l2:142 var
+R14361:14361 Ordering.list_set <> e:143 var
+R14369:14370 Coq.Lists.List <> In def
+R14375:14391 Ordering.list_set Make remove_not_common def
+R14400:14401 Ordering.list_set <> l2:142 var
+R14397:14398 Ordering.list_set <> l1:141 var
+R14393:14395 Ordering.list_set <> acc:140 var
+R14372:14372 Ordering.list_set <> e:143 var
+binder 14431:14433 <> acc:144
+binder 14435:14436 <> l1:145
+binder 14438:14439 <> l2:146
+binder 14441:14441 <> e:147
+R14452:14455 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R14444:14445 Coq.Lists.List <> In def
+R14449:14451 Ordering.list_set <> acc:144 var
+R14447:14447 Ordering.list_set <> e:147 var
+R14456:14457 Coq.Lists.List <> In def
+R14462:14478 Ordering.list_set Make remove_not_common def
+R14487:14488 Ordering.list_set <> l2:146 var
+R14484:14485 Ordering.list_set <> l1:145 var
+R14480:14482 Ordering.list_set <> acc:144 var
+R14459:14459 Ordering.list_set <> e:147 var
+binder 14431:14433 <> acc:148
+binder 14435:14436 <> l1:149
+binder 14438:14439 <> l2:150
+binder 14441:14441 <> e:151
+R14452:14455 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R14444:14445 Coq.Lists.List <> In def
+R14449:14451 Ordering.list_set <> acc:148 var
+R14447:14447 Ordering.list_set <> e:151 var
+R14456:14457 Coq.Lists.List <> In def
+R14462:14478 Ordering.list_set Make remove_not_common def
+R14487:14488 Ordering.list_set <> l2:150 var
+R14484:14485 Ordering.list_set <> l1:149 var
+R14480:14482 Ordering.list_set <> acc:148 var
+R14459:14459 Ordering.list_set <> e:151 var
+R14639:14644 Coq.Lists.List <> In_dec syndef
+R14646:14655 Ordering.list_set Make eq_elt_dec def
+R14639:14644 Coq.Lists.List <> In_dec syndef
+R14646:14655 Ordering.list_set Make eq_elt_dec def
+R14905:14910 Coq.Lists.List <> In_dec syndef
+R14912:14921 Ordering.list_set Make eq_elt_dec def
+R14905:14910 Coq.Lists.List <> In_dec syndef
+R14912:14921 Ordering.list_set Make eq_elt_dec def
+R14905:14910 Coq.Lists.List <> In_dec syndef
+R14912:14921 Ordering.list_set Make eq_elt_dec def
+R15005:15006 Coq.Lists.List <> In def
+R15005:15006 Coq.Lists.List <> In def
+prf 15079:15086 Make inter_12
+binder 15100:15101 <> s1:152
+binder 15103:15104 <> s2:153
+binder 15106:15106 <> e:154
+R15117:15120 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R15109:15111 Ordering.list_set Make mem def
+R15115:15116 Ordering.list_set <> s1:152 var
+R15113:15113 Ordering.list_set <> e:154 var
+R15129:15132 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R15121:15123 Ordering.list_set Make mem def
+R15127:15128 Ordering.list_set <> s2:153 var
+R15125:15125 Ordering.list_set <> e:154 var
+R15133:15135 Ordering.list_set Make mem def
+R15140:15144 Ordering.list_set Make inter def
+R15149:15150 Ordering.list_set <> s2:153 var
+R15146:15147 Ordering.list_set <> s1:152 var
+R15137:15137 Ordering.list_set <> e:154 var
+R15214:15225 Ordering.list_set Make inter_12_aux thm
+R15227:15229 Coq.Init.Datatypes <> nil constr
+R15214:15225 Ordering.list_set Make inter_12_aux thm
+R15227:15229 Coq.Init.Datatypes <> nil constr
+def 15287:15292 Make subset
+binder 15294:15295 <> s1:155
+binder 15297:15298 <> s2:156
+binder 15319:15319 <> e:157
+R15330:15333 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R15322:15324 Ordering.list_set Make mem def
+R15328:15329 Ordering.list_set <> s1:155 var
+R15326:15326 Ordering.list_set <> e:157 var
+R15334:15336 Ordering.list_set Make mem def
+R15340:15341 Ordering.list_set <> s2:156 var
+R15338:15338 Ordering.list_set <> e:157 var
+prf 15351:15360 Make subset_dec
+binder 15371:15372 <> s1:158
+binder 15374:15375 <> s2:159
+R15378:15378 Coq.Init.Specif <> ::type_scope:'{'_x_'}'_'+'_'{'_x_'}' not
+R15391:15395 Coq.Init.Specif <> ::type_scope:'{'_x_'}'_'+'_'{'_x_'}' not
+R15410:15410 Coq.Init.Specif <> ::type_scope:'{'_x_'}'_'+'_'{'_x_'}' not
+R15379:15384 Ordering.list_set Make subset def
+R15389:15390 Ordering.list_set <> s2:159 var
+R15386:15387 Ordering.list_set <> s1:158 var
+R15396:15397 Coq.Init.Logic <> ::type_scope:'~'_x not
+R15398:15403 Ordering.list_set Make subset def
+R15408:15409 Ordering.list_set <> s2:159 var
+R15405:15406 Ordering.list_set <> s1:158 var
+R15522:15527 Coq.Lists.List <> In_dec syndef
+R15529:15538 Ordering.list_set Make eq_elt_dec def
+R15522:15527 Coq.Lists.List <> In_dec syndef
+R15529:15538 Ordering.list_set Make eq_elt_dec def
+R15595:15612 Ordering.list_set Make without_red_remove thm
+R15617:15619 Coq.Init.Datatypes <> nil constr
+R15595:15612 Ordering.list_set Make without_red_remove thm
+R15617:15619 Coq.Init.Datatypes <> nil constr
+R15666:15671 Ordering.list_set Make mk_set constr
+R15666:15671 Ordering.list_set Make mk_set constr
+prf 15944:15957 Make subset_union_1
+binder 15970:15971 <> s1:160
+binder 15973:15974 <> s2:161
+R15977:15982 Ordering.list_set Make subset def
+R15988:15992 Ordering.list_set Make union def
+R15997:15998 Ordering.list_set <> s2:161 var
+R15994:15995 Ordering.list_set <> s1:160 var
+R15984:15985 Ordering.list_set <> s1:160 var
+R16031:16037 Ordering.list_set Make union_1 thm
+R16031:16037 Ordering.list_set Make union_1 thm
+prf 16052:16065 Make subset_union_2
+binder 16078:16079 <> s1:162
+binder 16081:16082 <> s2:163
+R16085:16090 Ordering.list_set Make subset def
+R16096:16100 Ordering.list_set Make union def
+R16105:16106 Ordering.list_set <> s2:163 var
+R16102:16103 Ordering.list_set <> s1:162 var
+R16092:16093 Ordering.list_set <> s2:163 var
+R16139:16145 Ordering.list_set Make union_2 thm
+R16139:16145 Ordering.list_set Make union_2 thm
+prf 16160:16173 Make subset_inter_1
+binder 16186:16187 <> s1:164
+binder 16189:16190 <> s2:165
+R16193:16198 Ordering.list_set Make subset def
+R16214:16215 Ordering.list_set <> s1:164 var
+R16201:16205 Ordering.list_set Make inter def
+R16210:16211 Ordering.list_set <> s2:165 var
+R16207:16208 Ordering.list_set <> s1:164 var
+R16247:16253 Ordering.list_set Make inter_1 thm
+R16247:16253 Ordering.list_set Make inter_1 thm
+prf 16268:16281 Make subset_inter_2
+binder 16294:16295 <> s1:166
+binder 16297:16298 <> s2:167
+R16301:16306 Ordering.list_set Make subset def
+R16322:16323 Ordering.list_set <> s2:167 var
+R16309:16313 Ordering.list_set Make inter def
+R16318:16319 Ordering.list_set <> s2:167 var
+R16315:16316 Ordering.list_set <> s1:166 var
+R16355:16361 Ordering.list_set Make inter_2 thm
+R16355:16361 Ordering.list_set Make inter_2 thm
+def 16407:16412 Make eq_set
+binder 16414:16415 <> s1:168
+binder 16417:16418 <> s2:169
+binder 16432:16432 <> e:170
+R16443:16447 Coq.Init.Logic <> ::type_scope:x_'<->'_x not
+R16435:16437 Ordering.list_set Make mem def
+R16441:16442 Ordering.list_set <> s1:168 var
+R16439:16439 Ordering.list_set <> e:170 var
+R16448:16450 Ordering.list_set Make mem def
+R16454:16455 Ordering.list_set <> s2:169 var
+R16452:16452 Ordering.list_set <> e:170 var
+prf 16465:16474 Make eq_set_dec
+binder 16485:16486 <> s1:171
+binder 16488:16489 <> s2:172
+R16492:16492 Coq.Init.Specif <> ::type_scope:'{'_x_'}'_'+'_'{'_x_'}' not
+R16505:16509 Coq.Init.Specif <> ::type_scope:'{'_x_'}'_'+'_'{'_x_'}' not
+R16523:16523 Coq.Init.Specif <> ::type_scope:'{'_x_'}'_'+'_'{'_x_'}' not
+R16493:16498 Ordering.list_set Make eq_set def
+R16503:16504 Ordering.list_set <> s2:172 var
+R16500:16501 Ordering.list_set <> s1:171 var
+R16510:16510 Coq.Init.Logic <> ::type_scope:'~'_x not
+R16511:16516 Ordering.list_set Make eq_set def
+R16521:16522 Ordering.list_set <> s2:172 var
+R16518:16519 Ordering.list_set <> s1:171 var
+R16557:16566 Ordering.list_set Make subset_dec thm
+R16557:16566 Ordering.list_set Make subset_dec thm
+R16621:16630 Ordering.list_set Make subset_dec thm
+R16621:16630 Ordering.list_set Make subset_dec thm
+prf 16912:16922 Make eq_set_refl
+binder 16933:16933 <> s:173
+R16936:16941 Ordering.list_set Make eq_set def
+R16945:16945 Ordering.list_set <> s:173 var
+R16943:16943 Ordering.list_set <> s:173 var
+prf 16995:17004 Make eq_set_sym
+binder 17017:17018 <> s1:174
+binder 17020:17021 <> s2:175
+R17036:17039 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R17024:17029 Ordering.list_set Make eq_set def
+R17034:17035 Ordering.list_set <> s2:175 var
+R17031:17032 Ordering.list_set <> s1:174 var
+R17040:17045 Ordering.list_set Make eq_set def
+R17050:17051 Ordering.list_set <> s1:174 var
+R17047:17048 Ordering.list_set <> s2:175 var
+prf 17120:17131 Make eq_set_trans
+binder 17144:17145 <> s1:176
+binder 17147:17148 <> s2:177
+binder 17150:17151 <> s3:178
+R17166:17169 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R17154:17159 Ordering.list_set Make eq_set def
+R17164:17165 Ordering.list_set <> s2:177 var
+R17161:17162 Ordering.list_set <> s1:176 var
+R17182:17185 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R17170:17175 Ordering.list_set Make eq_set def
+R17180:17181 Ordering.list_set <> s3:178 var
+R17177:17178 Ordering.list_set <> s2:177 var
+R17186:17191 Ordering.list_set Make eq_set def
+R17196:17197 Ordering.list_set <> s3:178 var
+R17193:17194 Ordering.list_set <> s1:176 var
+prf 17306:17313 Make add_comm
+binder 17326:17327 <> e1:179
+binder 17329:17330 <> e2:180
+binder 17332:17332 <> s:181
+R17335:17340 Ordering.list_set Make eq_set def
+R17363:17365 Ordering.list_set Make add def
+R17371:17373 Ordering.list_set Make add def
+R17378:17378 Ordering.list_set <> s:181 var
+R17375:17376 Ordering.list_set <> e1:179 var
+R17367:17368 Ordering.list_set <> e2:180 var
+R17343:17345 Ordering.list_set Make add def
+R17351:17353 Ordering.list_set Make add def
+R17358:17358 Ordering.list_set <> s:181 var
+R17355:17356 Ordering.list_set <> e2:180 var
+R17347:17348 Ordering.list_set <> e1:179 var
+R17434:17439 Ordering.list_set Make add_12 thm
+R17434:17439 Ordering.list_set Make add_12 thm
+R17482:17486 Ordering.list_set Make add_2 thm
+R17502:17506 Ordering.list_set Make add_1 thm
+R17482:17486 Ordering.list_set Make add_2 thm
+R17502:17506 Ordering.list_set Make add_1 thm
+R17519:17524 Ordering.list_set Make add_12 thm
+R17519:17524 Ordering.list_set Make add_12 thm
+R17579:17583 Ordering.list_set Make add_1 thm
+R17579:17583 Ordering.list_set Make add_1 thm
+R17597:17601 Ordering.list_set Make add_2 thm
+R17597:17601 Ordering.list_set Make add_2 thm
+R17597:17601 Ordering.list_set Make add_2 thm
+R17623:17628 Ordering.list_set Make add_12 thm
+R17623:17628 Ordering.list_set Make add_12 thm
+R17671:17675 Ordering.list_set Make add_2 thm
+R17691:17695 Ordering.list_set Make add_1 thm
+R17671:17675 Ordering.list_set Make add_2 thm
+R17691:17695 Ordering.list_set Make add_1 thm
+R17708:17713 Ordering.list_set Make add_12 thm
+R17708:17713 Ordering.list_set Make add_12 thm
+R17768:17772 Ordering.list_set Make add_1 thm
+R17768:17772 Ordering.list_set Make add_1 thm
+R17786:17790 Ordering.list_set Make add_2 thm
+R17786:17790 Ordering.list_set Make add_2 thm
+R17786:17790 Ordering.list_set Make add_2 thm
+prf 17814:17826 Make union_empty_1
+binder 17839:17839 <> s:182
+R17842:17847 Ordering.list_set Make eq_set def
+R17852:17856 Ordering.list_set Make union def
+R17864:17864 Ordering.list_set <> s:182 var
+R17858:17862 Ordering.list_set Make empty def
+R17849:17849 Ordering.list_set <> s:182 var
+R17899:17910 Ordering.list_set Make union_12_aux thm
+R17917:17923 Ordering.list_set Make support proj
+R17912:17914 Coq.Init.Datatypes <> nil constr
+R17899:17910 Ordering.list_set Make union_12_aux thm
+R17917:17923 Ordering.list_set Make support proj
+R17912:17914 Coq.Init.Datatypes <> nil constr
+R17956:17962 Ordering.list_set Make union_2 thm
+R17956:17962 Ordering.list_set Make union_2 thm
+prf 17986:17998 Make union_empty_2
+binder 18011:18011 <> s:183
+R18014:18019 Ordering.list_set Make eq_set def
+R18024:18028 Ordering.list_set Make union def
+R18032:18036 Ordering.list_set Make empty def
+R18030:18030 Ordering.list_set <> s:183 var
+R18021:18021 Ordering.list_set <> s:183 var
+prf 18089:18098 Make union_comm
+binder 18111:18112 <> s1:184
+binder 18114:18115 <> s2:185
+R18118:18123 Ordering.list_set Make eq_set def
+R18140:18144 Ordering.list_set Make union def
+R18149:18150 Ordering.list_set <> s1:184 var
+R18146:18147 Ordering.list_set <> s2:185 var
+R18126:18130 Ordering.list_set Make union def
+R18135:18136 Ordering.list_set <> s2:185 var
+R18132:18133 Ordering.list_set <> s1:184 var
+R18190:18197 Ordering.list_set Make union_12 thm
+R18209:18215 Ordering.list_set Make union_1 thm
+R18227:18233 Ordering.list_set Make union_2 thm
+R18245:18252 Ordering.list_set Make union_12 thm
+R18265:18271 Ordering.list_set Make union_1 thm
+R18283:18289 Ordering.list_set Make union_2 thm
+R18190:18197 Ordering.list_set Make union_12 thm
+R18209:18215 Ordering.list_set Make union_1 thm
+R18227:18233 Ordering.list_set Make union_2 thm
+R18245:18252 Ordering.list_set Make union_12 thm
+R18265:18271 Ordering.list_set Make union_1 thm
+R18283:18289 Ordering.list_set Make union_2 thm
+prf 18324:18334 Make union_assoc
+binder 18347:18348 <> s1:186
+binder 18350:18351 <> s2:187
+binder 18353:18354 <> s3:188
+R18357:18362 Ordering.list_set Make eq_set def
+R18390:18394 Ordering.list_set Make union def
+R18410:18411 Ordering.list_set <> s3:188 var
+R18397:18401 Ordering.list_set Make union def
+R18406:18407 Ordering.list_set <> s2:187 var
+R18403:18404 Ordering.list_set <> s1:186 var
+R18365:18369 Ordering.list_set Make union def
+R18375:18379 Ordering.list_set Make union def
+R18384:18385 Ordering.list_set <> s3:188 var
+R18381:18382 Ordering.list_set <> s2:187 var
+R18371:18372 Ordering.list_set <> s1:186 var
+R18454:18461 Ordering.list_set Make union_12 thm
+R18467:18471 Ordering.list_set Make union def
+R18484:18490 Ordering.list_set Make union_1 thm
+R18496:18500 Ordering.list_set Make union def
+R18515:18521 Ordering.list_set Make union_2 thm
+R18527:18531 Ordering.list_set Make union def
+R18544:18551 Ordering.list_set Make union_12 thm
+R18563:18569 Ordering.list_set Make union_1 thm
+R18581:18587 Ordering.list_set Make union_2 thm
+R18599:18606 Ordering.list_set Make union_12 thm
+R18609:18613 Ordering.list_set Make union def
+R18629:18635 Ordering.list_set Make union_1 thm
+R18638:18642 Ordering.list_set Make union def
+R18661:18667 Ordering.list_set Make union_2 thm
+R18670:18674 Ordering.list_set Make union def
+R18690:18697 Ordering.list_set Make union_12 thm
+R18710:18716 Ordering.list_set Make union_1 thm
+R18728:18734 Ordering.list_set Make union_2 thm
+R18454:18461 Ordering.list_set Make union_12 thm
+R18467:18471 Ordering.list_set Make union def
+R18484:18490 Ordering.list_set Make union_1 thm
+R18496:18500 Ordering.list_set Make union def
+R18515:18521 Ordering.list_set Make union_2 thm
+R18527:18531 Ordering.list_set Make union def
+R18544:18551 Ordering.list_set Make union_12 thm
+R18563:18569 Ordering.list_set Make union_1 thm
+R18581:18587 Ordering.list_set Make union_2 thm
+R18599:18606 Ordering.list_set Make union_12 thm
+R18609:18613 Ordering.list_set Make union def
+R18629:18635 Ordering.list_set Make union_1 thm
+R18638:18642 Ordering.list_set Make union def
+R18661:18667 Ordering.list_set Make union_2 thm
+R18670:18674 Ordering.list_set Make union def
+R18690:18697 Ordering.list_set Make union_12 thm
+R18710:18716 Ordering.list_set Make union_1 thm
+R18728:18734 Ordering.list_set Make union_2 thm
+prf 18769:18780 Make filter_union
+binder 18793:18793 <> P:189
+binder 18795:18799 <> P_dec:190
+binder 18801:18802 <> s1:191
+binder 18804:18805 <> s2:192
+R18811:18816 Ordering.list_set Make eq_set def
+R18851:18855 Ordering.list_set Make union def
+R18878:18883 Ordering.list_set Make filter def
+R18893:18894 Ordering.list_set <> s2:192 var
+R18887:18891 Ordering.list_set <> P_dec:190 var
+R18885:18885 Ordering.list_set <> P:189 var
+R18858:18863 Ordering.list_set Make filter def
+R18873:18874 Ordering.list_set <> s1:191 var
+R18867:18871 Ordering.list_set <> P_dec:190 var
+R18865:18865 Ordering.list_set <> P:189 var
+R18819:18824 Ordering.list_set Make filter def
+R18835:18839 Ordering.list_set Make union def
+R18844:18845 Ordering.list_set <> s2:192 var
+R18841:18842 Ordering.list_set <> s1:191 var
+R18828:18832 Ordering.list_set <> P_dec:190 var
+R18826:18826 Ordering.list_set <> P:189 var
+R18956:18958 Ordering.list_set Make mem def
+R18961:18965 Ordering.list_set Make union def
+R18968:18974 Ordering.list_set Make support proj
+R19102:19107 Coq.Lists.List <> In_dec syndef
+R19109:19118 Ordering.list_set Make eq_elt_dec def
+R19102:19107 Coq.Lists.List <> In_dec syndef
+R19109:19118 Ordering.list_set Make eq_elt_dec def
+R19223:19228 Coq.Lists.List <> In_dec syndef
+R19245:19254 Ordering.list_set Make filter_aux def
+R19230:19239 Ordering.list_set Make eq_elt_dec def
+R19223:19228 Coq.Lists.List <> In_dec syndef
+R19245:19254 Ordering.list_set Make filter_aux def
+R19230:19239 Ordering.list_set Make eq_elt_dec def
+R19356:19357 Coq.Lists.List <> In def
+R19363:19372 Ordering.list_set Make filter_aux def
+R19405:19417 Ordering.list_set Make filter_1_list thm
+R19356:19357 Coq.Lists.List <> In def
+R19363:19372 Ordering.list_set Make filter_aux def
+R19405:19417 Ordering.list_set Make filter_1_list thm
+R19562:19567 Coq.Lists.List <> In_dec syndef
+R19584:19593 Ordering.list_set Make filter_aux def
+R19569:19578 Ordering.list_set Make eq_elt_dec def
+R19562:19567 Coq.Lists.List <> In_dec syndef
+R19584:19593 Ordering.list_set Make filter_aux def
+R19569:19578 Ordering.list_set Make eq_elt_dec def
+R19685:19686 Coq.Lists.List <> In def
+R19717:19729 Ordering.list_set Make filter_2_list thm
+R19685:19686 Coq.Lists.List <> In def
+R19717:19729 Ordering.list_set Make filter_2_list thm
+R19839:19844 Coq.Lists.List <> In_dec syndef
+R19846:19855 Ordering.list_set Make eq_elt_dec def
+R19839:19844 Coq.Lists.List <> In_dec syndef
+R19846:19855 Ordering.list_set Make eq_elt_dec def
+R19911:19916 Coq.Lists.List <> In_dec syndef
+R19933:19942 Ordering.list_set Make filter_aux def
+R19918:19927 Ordering.list_set Make eq_elt_dec def
+R19911:19916 Coq.Lists.List <> In_dec syndef
+R19933:19942 Ordering.list_set Make filter_aux def
+R19918:19927 Ordering.list_set Make eq_elt_dec def
+R20044:20045 Coq.Lists.List <> In def
+R20051:20060 Ordering.list_set Make filter_aux def
+R20093:20105 Ordering.list_set Make filter_1_list thm
+R20044:20045 Coq.Lists.List <> In def
+R20051:20060 Ordering.list_set Make filter_aux def
+R20093:20105 Ordering.list_set Make filter_1_list thm
+R20150:20153 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R20150:20153 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R20218:20223 Coq.Lists.List <> In_dec syndef
+R20240:20249 Ordering.list_set Make filter_aux def
+R20225:20234 Ordering.list_set Make eq_elt_dec def
+R20218:20223 Coq.Lists.List <> In_dec syndef
+R20240:20249 Ordering.list_set Make filter_aux def
+R20225:20234 Ordering.list_set Make eq_elt_dec def
+R20341:20342 Coq.Lists.List <> In def
+R20373:20385 Ordering.list_set Make filter_2_list thm
+R20341:20342 Coq.Lists.List <> In def
+R20373:20385 Ordering.list_set Make filter_2_list thm
+R20460:20465 Coq.Lists.List <> In_dec syndef
+R20467:20476 Ordering.list_set Make eq_elt_dec def
+R20460:20465 Coq.Lists.List <> In_dec syndef
+R20467:20476 Ordering.list_set Make eq_elt_dec def
+R20570:20573 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R20594:20605 Ordering.list_set Make union_12_aux thm
+R20570:20573 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R20594:20605 Ordering.list_set Make union_12_aux thm
+R20638:20648 Ordering.list_set Make union_1_aux thm
+R20638:20648 Ordering.list_set Make union_1_aux thm
+R20733:20743 Ordering.list_set Make union_2_aux thm
+R20733:20743 Ordering.list_set Make union_2_aux thm
+prf 20767:20779 Make subset_filter
+R20804:20807 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R20801:20803 Ordering.list_set Make elt def
+binder 20793:20794 <> P1:193
+binder 20796:20797 <> P2:194
+binder 20814:20819 <> P1_dec:195
+binder 20821:20826 <> P2_dec:196
+binder 20828:20829 <> s1:197
+binder 20831:20832 <> s2:198
+R20847:20852 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R20835:20840 Ordering.list_set Make subset def
+R20845:20846 Ordering.list_set <> s2:198 var
+R20842:20843 Ordering.list_set <> s1:197 var
+R20853:20853 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R20876:20880 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+binder 20861:20861 <> e:199
+R20868:20871 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R20864:20865 Ordering.list_set <> P1:193 var
+R20867:20867 Ordering.list_set <> e:199 var
+R20872:20873 Ordering.list_set <> P2:194 var
+R20875:20875 Ordering.list_set <> e:199 var
+R20881:20886 Ordering.list_set Make subset def
+R20911:20916 Ordering.list_set Make filter def
+R20928:20929 Ordering.list_set <> s2:198 var
+R20921:20926 Ordering.list_set <> P2_dec:196 var
+R20918:20919 Ordering.list_set <> P2:194 var
+R20889:20894 Ordering.list_set Make filter def
+R20906:20907 Ordering.list_set <> s1:197 var
+R20899:20904 Ordering.list_set <> P1_dec:195 var
+R20896:20897 Ordering.list_set <> P1:193 var
+R20996:21003 Ordering.list_set Make filter_2 thm
+R20996:21003 Ordering.list_set Make filter_2 thm
+R21046:21053 Ordering.list_set Make filter_1 thm
+R21046:21053 Ordering.list_set Make filter_1 thm
+prf 21106:21120 Make subset_compat_1
+binder 21133:21134 <> s1:200
+binder 21136:21138 <> s1':201
+binder 21140:21141 <> s2:202
+R21157:21160 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R21144:21149 Ordering.list_set Make eq_set def
+R21154:21156 Ordering.list_set <> s1':201 var
+R21151:21152 Ordering.list_set <> s1:200 var
+R21173:21176 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R21161:21166 Ordering.list_set Make subset def
+R21171:21172 Ordering.list_set <> s2:202 var
+R21168:21169 Ordering.list_set <> s1:200 var
+R21177:21182 Ordering.list_set Make subset def
+R21188:21189 Ordering.list_set <> s2:202 var
+R21184:21186 Ordering.list_set <> s1':201 var
+prf 21298:21312 Make subset_compat_2
+binder 21325:21326 <> s1:203
+binder 21328:21329 <> s2:204
+binder 21331:21333 <> s2':205
+R21349:21352 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R21336:21341 Ordering.list_set Make eq_set def
+R21346:21348 Ordering.list_set <> s2':205 var
+R21343:21344 Ordering.list_set <> s2:204 var
+R21365:21368 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R21353:21358 Ordering.list_set Make subset def
+R21363:21364 Ordering.list_set <> s2:204 var
+R21360:21361 Ordering.list_set <> s1:203 var
+R21369:21374 Ordering.list_set Make subset def
+R21379:21381 Ordering.list_set <> s2':205 var
+R21376:21377 Ordering.list_set <> s1:203 var
+prf 21494:21506 Make subset_compat
+binder 21520:21521 <> s1:206
+binder 21523:21525 <> s1':207
+binder 21527:21528 <> s2:208
+binder 21530:21532 <> s2':209
+R21548:21551 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R21535:21540 Ordering.list_set Make eq_set def
+R21545:21547 Ordering.list_set <> s1':207 var
+R21542:21543 Ordering.list_set <> s1:206 var
+R21565:21605 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R21552:21557 Ordering.list_set Make eq_set def
+R21562:21564 Ordering.list_set <> s2':209 var
+R21559:21560 Ordering.list_set <> s2:208 var
+R21618:21621 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R21606:21611 Ordering.list_set Make subset def
+R21616:21617 Ordering.list_set <> s2:208 var
+R21613:21614 Ordering.list_set <> s1:206 var
+R21622:21627 Ordering.list_set Make subset def
+R21633:21635 Ordering.list_set <> s2':209 var
+R21629:21631 Ordering.list_set <> s1':207 var
+prf 21769:21789 Make union_compat_subset_1
+binder 21802:21803 <> s1:210
+binder 21805:21806 <> s2:211
+binder 21808:21808 <> s:212
+R21823:21826 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R21811:21816 Ordering.list_set Make subset def
+R21821:21822 Ordering.list_set <> s2:211 var
+R21818:21819 Ordering.list_set <> s1:210 var
+R21827:21832 Ordering.list_set Make subset def
+R21849:21853 Ordering.list_set Make union def
+R21858:21858 Ordering.list_set <> s:212 var
+R21855:21856 Ordering.list_set <> s2:211 var
+R21835:21839 Ordering.list_set Make union def
+R21844:21844 Ordering.list_set <> s:212 var
+R21841:21842 Ordering.list_set <> s1:210 var
+R21909:21914 Ordering.list_set Make subset def
+R21957:21968 Ordering.list_set Make union_12_aux thm
+R21957:21968 Ordering.list_set Make union_12_aux thm
+R22030:22036 Ordering.list_set Make union_1 thm
+R22030:22036 Ordering.list_set Make union_1 thm
+R22063:22069 Ordering.list_set Make union_2 thm
+R22063:22069 Ordering.list_set Make union_2 thm
+prf 22093:22113 Make union_compat_subset_2
+binder 22126:22127 <> s1:213
+binder 22129:22130 <> s2:214
+binder 22132:22132 <> s:215
+R22147:22150 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R22135:22140 Ordering.list_set Make subset def
+R22145:22146 Ordering.list_set <> s2:214 var
+R22142:22143 Ordering.list_set <> s1:213 var
+R22151:22156 Ordering.list_set Make subset def
+R22173:22177 Ordering.list_set Make union def
+R22181:22182 Ordering.list_set <> s2:214 var
+R22179:22179 Ordering.list_set <> s:215 var
+R22159:22163 Ordering.list_set Make union def
+R22167:22168 Ordering.list_set <> s1:213 var
+R22165:22165 Ordering.list_set <> s:215 var
+R22233:22238 Ordering.list_set Make subset def
+R22281:22292 Ordering.list_set Make union_12_aux thm
+R22281:22292 Ordering.list_set Make union_12_aux thm
+R22354:22360 Ordering.list_set Make union_1 thm
+R22354:22360 Ordering.list_set Make union_1 thm
+R22378:22384 Ordering.list_set Make union_2 thm
+R22378:22384 Ordering.list_set Make union_2 thm
+prf 22417:22435 Make union_compat_eq_set
+binder 22448:22449 <> s1:216
+binder 22451:22453 <> s1':217
+binder 22455:22456 <> s2:218
+binder 22458:22460 <> s2':219
+R22476:22479 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R22463:22468 Ordering.list_set Make eq_set def
+R22473:22475 Ordering.list_set <> s1':217 var
+R22470:22471 Ordering.list_set <> s1:216 var
+R22493:22501 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R22480:22485 Ordering.list_set Make eq_set def
+R22490:22492 Ordering.list_set <> s2':219 var
+R22487:22488 Ordering.list_set <> s2:218 var
+R22502:22507 Ordering.list_set Make eq_set def
+R22524:22528 Ordering.list_set Make union def
+R22534:22536 Ordering.list_set <> s2':219 var
+R22530:22532 Ordering.list_set <> s1':217 var
+R22510:22514 Ordering.list_set Make union def
+R22519:22520 Ordering.list_set <> s2:218 var
+R22516:22517 Ordering.list_set <> s1:216 var
+R22619:22626 Ordering.list_set Make union_12 thm
+R22619:22626 Ordering.list_set Make union_12 thm
+R22674:22680 Ordering.list_set Make union_1 thm
+R22674:22680 Ordering.list_set Make union_1 thm
+R22726:22732 Ordering.list_set Make union_2 thm
+R22726:22732 Ordering.list_set Make union_2 thm
+R22784:22791 Ordering.list_set Make union_12 thm
+R22784:22791 Ordering.list_set Make union_12 thm
+R22843:22849 Ordering.list_set Make union_1 thm
+R22843:22849 Ordering.list_set Make union_1 thm
+R22895:22901 Ordering.list_set Make union_2 thm
+R22895:22901 Ordering.list_set Make union_2 thm
+prf 22954:22972 Make subset_subset_union
+binder 22985:22986 <> s1:220
+binder 22988:22989 <> s2:221
+binder 22991:22991 <> s:222
+R23005:23008 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R22994:22999 Ordering.list_set Make subset def
+R23004:23004 Ordering.list_set <> s:222 var
+R23001:23002 Ordering.list_set <> s1:220 var
+R23020:23023 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R23009:23014 Ordering.list_set Make subset def
+R23019:23019 Ordering.list_set <> s:222 var
+R23016:23017 Ordering.list_set <> s2:221 var
+R23024:23029 Ordering.list_set Make subset def
+R23045:23045 Ordering.list_set <> s:222 var
+R23032:23036 Ordering.list_set Make union def
+R23041:23042 Ordering.list_set <> s2:221 var
+R23038:23039 Ordering.list_set <> s1:220 var
+R23091:23098 Ordering.list_set Make union_12 thm
+R23091:23098 Ordering.list_set Make union_12 thm
+def 23178:23185 Make cardinal
+binder 23187:23187 <> s:223
+R23192:23202 Coq.Lists.List <> length syndef
+R23207:23213 Ordering.list_set Make support proj
+R23204:23204 Ordering.list_set <> s:223 var
+prf 23224:23238 Make cardinal_subset
+binder 23251:23252 <> s1:224
+binder 23254:23255 <> s2:225
+R23270:23273 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R23258:23263 Ordering.list_set Make subset def
+R23268:23269 Ordering.list_set <> s2:225 var
+R23265:23266 Ordering.list_set <> s1:224 var
+R23285:23288 Coq.Init.Peano <> ::nat_scope:x_'<='_x not
+R23274:23281 Ordering.list_set Make cardinal def
+R23283:23284 Ordering.list_set <> s1:224 var
+R23289:23296 Ordering.list_set Make cardinal def
+R23298:23299 Ordering.list_set <> s2:225 var
+R23373:23380 Ordering.list_set Make cardinal def
+R23396:23401 Coq.Arith.Le <> le_O_n syndef
+R23396:23401 Coq.Arith.Le <> le_O_n syndef
+R23422:23423 Coq.Lists.List <> In def
+R23431:23437 Ordering.list_set Make support proj
+R23422:23423 Coq.Lists.List <> In def
+R23431:23437 Ordering.list_set Make support proj
+R23478:23496 Ordering.more_list <> split_list_app_cons thm
+R23498:23507 Ordering.list_set Make eq_elt_dec def
+R23478:23496 Ordering.more_list <> split_list_app_cons thm
+R23498:23507 Ordering.list_set Make eq_elt_dec def
+R23533:23542 Ordering.more_list <> split_list def
+R23556:23562 Ordering.list_set Make support proj
+R23544:23553 Ordering.list_set Make eq_elt_dec def
+R23533:23542 Ordering.more_list <> split_list def
+R23556:23562 Ordering.list_set Make support proj
+R23544:23553 Ordering.list_set Make eq_elt_dec def
+R23659:23673 Ordering.more_list <> list_app_length thm
+R23684:23692 Coq.Arith.Plus <> plus_comm syndef
+R23710:23718 Coq.Arith.Plus <> plus_comm syndef
+R23732:23746 Ordering.more_list <> list_app_length thm
+R23755:23760 Coq.Arith.Le <> le_n_S thm
+R23659:23673 Ordering.more_list <> list_app_length thm
+R23659:23673 Ordering.more_list <> list_app_length thm
+R23684:23692 Coq.Arith.Plus <> plus_comm syndef
+R23684:23692 Coq.Arith.Plus <> plus_comm syndef
+R23710:23718 Coq.Arith.Plus <> plus_comm syndef
+R23710:23718 Coq.Arith.Plus <> plus_comm syndef
+R23732:23746 Ordering.more_list <> list_app_length thm
+R23732:23746 Ordering.more_list <> list_app_length thm
+R23755:23760 Coq.Arith.Le <> le_n_S thm
+R23779:23796 Ordering.list_set Make without_red_remove thm
+R23800:23802 Coq.Init.Datatypes <> nil constr
+R23779:23796 Ordering.list_set Make without_red_remove thm
+R23800:23802 Coq.Init.Datatypes <> nil constr
+R23844:23861 Ordering.list_set Make without_red_remove thm
+R23844:23861 Ordering.list_set Make without_red_remove thm
+R23893:23898 Ordering.list_set Make subset def
+R23918:23923 Ordering.list_set Make mk_set constr
+R23929:23932 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R23901:23906 Ordering.list_set Make mk_set constr
+R23893:23898 Ordering.list_set Make subset def
+R23918:23923 Ordering.list_set Make mk_set constr
+R23929:23932 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R23901:23906 Ordering.list_set Make mk_set constr
+R23954:23959 Ordering.list_set Make subset def
+R24004:24007 Coq.Init.Logic <> ::type_scope:x_'<>'_x not
+R24004:24007 Coq.Init.Logic <> ::type_scope:x_'<>'_x not
+R24139:24144 Coq.Lists.List <> In_dec syndef
+R24146:24155 Ordering.list_set Make eq_elt_dec def
+R24139:24144 Coq.Lists.List <> In_dec syndef
+R24146:24155 Ordering.list_set Make eq_elt_dec def
+R24238:24246 Coq.Init.Logic <> or_intror constr
+R24290:24298 Coq.Lists.List <> in_app_or thm
+R24358:24360 Ordering.list_set Make mem def
+R24376:24384 Coq.Lists.List <> in_or_app thm
+R24238:24246 Coq.Init.Logic <> or_intror constr
+R24290:24298 Coq.Lists.List <> in_app_or thm
+R24376:24384 Coq.Lists.List <> in_or_app thm
+R24376:24384 Coq.Lists.List <> in_or_app thm
+R24376:24384 Coq.Lists.List <> in_or_app thm
+R24411:24413 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R24433:24438 Coq.Init.Logic <> sym_eq syndef
+R24411:24413 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R24433:24438 Coq.Init.Logic <> sym_eq syndef
+R24502:24509 Ordering.list_set Make cardinal def
+prf 24540:24555 Make cardinal_union_1
+binder 24568:24569 <> s1:226
+binder 24571:24572 <> s2:227
+R24586:24589 Coq.Init.Peano <> ::nat_scope:x_'<='_x not
+R24575:24582 Ordering.list_set Make cardinal def
+R24584:24585 Ordering.list_set <> s1:226 var
+R24590:24597 Ordering.list_set Make cardinal def
+R24600:24604 Ordering.list_set Make union def
+R24609:24610 Ordering.list_set <> s2:227 var
+R24606:24607 Ordering.list_set <> s1:226 var
+R24641:24655 Ordering.list_set Make cardinal_subset thm
+R24664:24677 Ordering.list_set Make subset_union_1 thm
+R24641:24655 Ordering.list_set Make cardinal_subset thm
+R24664:24677 Ordering.list_set Make subset_union_1 thm
+prf 24692:24707 Make cardinal_union_2
+binder 24720:24721 <> s1:228
+binder 24723:24724 <> s2:229
+R24738:24741 Coq.Init.Peano <> ::nat_scope:x_'<='_x not
+R24727:24734 Ordering.list_set Make cardinal def
+R24736:24737 Ordering.list_set <> s2:229 var
+R24742:24749 Ordering.list_set Make cardinal def
+R24752:24756 Ordering.list_set Make union def
+R24761:24762 Ordering.list_set <> s2:229 var
+R24758:24759 Ordering.list_set <> s1:228 var
+R24793:24807 Ordering.list_set Make cardinal_subset thm
+R24816:24829 Ordering.list_set Make subset_union_2 thm
+R24793:24807 Ordering.list_set Make cardinal_subset thm
+R24816:24829 Ordering.list_set Make subset_union_2 thm
+prf 24845:24867 Make cardinal_union_inter_12
+binder 24880:24881 <> s1:230
+binder 24883:24884 <> s2:231
+R24934:24936 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R24909:24911 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R24887:24894 Ordering.list_set Make cardinal def
+R24897:24901 Ordering.list_set Make union def
+R24906:24907 Ordering.list_set <> s2:231 var
+R24903:24904 Ordering.list_set <> s1:230 var
+R24912:24919 Ordering.list_set Make cardinal def
+R24922:24926 Ordering.list_set Make inter def
+R24931:24932 Ordering.list_set <> s2:231 var
+R24928:24929 Ordering.list_set <> s1:230 var
+R24948:24950 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R24937:24944 Ordering.list_set Make cardinal def
+R24946:24947 Ordering.list_set <> s1:230 var
+R24951:24958 Ordering.list_set Make cardinal def
+R24960:24961 Ordering.list_set <> s2:231 var
+binder 24990:24992 <> acc:232
+binder 24994:24995 <> l1:233
+binder 24997:24998 <> l2:234
+R25037:25062 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R25001:25006 Coq.Init.Datatypes <> length def
+R25009:25025 Ordering.list_set Make remove_not_common def
+R25034:25035 Ordering.list_set <> l2:234 var
+R25031:25032 Ordering.list_set <> l1:233 var
+R25027:25029 Ordering.list_set <> acc:232 var
+R25073:25075 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R25063:25068 Coq.Init.Datatypes <> length def
+R25070:25072 Ordering.list_set <> acc:232 var
+R25076:25081 Coq.Init.Datatypes <> length def
+R25084:25100 Ordering.list_set Make remove_not_common def
+R25109:25110 Ordering.list_set <> l2:234 var
+R25106:25107 Ordering.list_set <> l1:233 var
+R25102:25104 Coq.Init.Datatypes <> nil constr
+binder 24990:24992 <> acc:235
+binder 24994:24995 <> l1:236
+binder 24997:24998 <> l2:237
+R25037:25062 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R25001:25006 Coq.Init.Datatypes <> length def
+R25009:25025 Ordering.list_set Make remove_not_common def
+R25034:25035 Ordering.list_set <> l2:237 var
+R25031:25032 Ordering.list_set <> l1:236 var
+R25027:25029 Ordering.list_set <> acc:235 var
+R25073:25075 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R25063:25068 Coq.Init.Datatypes <> length def
+R25070:25072 Ordering.list_set <> acc:235 var
+R25076:25081 Coq.Init.Datatypes <> length def
+R25084:25100 Ordering.list_set Make remove_not_common def
+R25109:25110 Ordering.list_set <> l2:237 var
+R25106:25107 Ordering.list_set <> l1:236 var
+R25102:25104 Coq.Init.Datatypes <> nil constr
+R25236:25241 Coq.Lists.List <> In_dec syndef
+R25243:25252 Ordering.list_set Make eq_elt_dec def
+R25236:25241 Coq.Lists.List <> In_dec syndef
+R25243:25252 Ordering.list_set Make eq_elt_dec def
+R25310:25313 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R25341:25344 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R25345:25347 Coq.Init.Datatypes <> nil constr
+R25368:25373 Coq.Init.Logic <> sym_eq syndef
+R25384:25392 Coq.Arith.Plus <> plus_comm syndef
+R25410:25418 Coq.Arith.Plus <> plus_comm syndef
+R25310:25313 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R25310:25313 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R25341:25344 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R25345:25347 Coq.Init.Datatypes <> nil constr
+R25341:25344 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R25345:25347 Coq.Init.Datatypes <> nil constr
+R25368:25373 Coq.Init.Logic <> sym_eq syndef
+R25384:25392 Coq.Arith.Plus <> plus_comm syndef
+R25384:25392 Coq.Arith.Plus <> plus_comm syndef
+R25410:25418 Coq.Arith.Plus <> plus_comm syndef
+R25410:25418 Coq.Arith.Plus <> plus_comm syndef
+binder 25463:25465 <> acc:238
+binder 25467:25468 <> l1:239
+binder 25470:25471 <> l2:240
+binder 25473:25473 <> e:241
+R25484:25487 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R25476:25476 Coq.Init.Logic <> ::type_scope:'~'_x not
+R25477:25478 Coq.Lists.List <> In def
+R25482:25483 Ordering.list_set <> l1:239 var
+R25480:25480 Ordering.list_set <> e:241 var
+R25497:25523 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R25488:25489 Coq.Init.Logic <> ::type_scope:'~'_x not
+R25490:25491 Coq.Lists.List <> In def
+R25495:25496 Ordering.list_set <> l2:240 var
+R25493:25493 Ordering.list_set <> e:241 var
+R25558:25583 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R25524:25540 Ordering.list_set Make remove_not_common def
+R25556:25557 Ordering.list_set <> l2:240 var
+R25548:25551 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R25547:25547 Ordering.list_set <> e:241 var
+R25552:25553 Ordering.list_set <> l1:239 var
+R25542:25544 Ordering.list_set <> acc:238 var
+R25584:25600 Ordering.list_set Make remove_not_common def
+R25609:25610 Ordering.list_set <> l2:240 var
+R25606:25607 Ordering.list_set <> l1:239 var
+R25602:25604 Ordering.list_set <> acc:238 var
+binder 25463:25465 <> acc:242
+binder 25467:25468 <> l1:243
+binder 25470:25471 <> l2:244
+binder 25473:25473 <> e:245
+R25484:25487 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R25476:25476 Coq.Init.Logic <> ::type_scope:'~'_x not
+R25477:25478 Coq.Lists.List <> In def
+R25482:25483 Ordering.list_set <> l1:243 var
+R25480:25480 Ordering.list_set <> e:245 var
+R25497:25523 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R25488:25489 Coq.Init.Logic <> ::type_scope:'~'_x not
+R25490:25491 Coq.Lists.List <> In def
+R25495:25496 Ordering.list_set <> l2:244 var
+R25493:25493 Ordering.list_set <> e:245 var
+R25558:25583 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R25524:25540 Ordering.list_set Make remove_not_common def
+R25556:25557 Ordering.list_set <> l2:244 var
+R25548:25551 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R25547:25547 Ordering.list_set <> e:245 var
+R25552:25553 Ordering.list_set <> l1:243 var
+R25542:25544 Ordering.list_set <> acc:242 var
+R25584:25600 Ordering.list_set Make remove_not_common def
+R25609:25610 Ordering.list_set <> l2:244 var
+R25606:25607 Ordering.list_set <> l1:243 var
+R25602:25604 Ordering.list_set <> acc:242 var
+R25741:25746 Coq.Lists.List <> In_dec syndef
+R25748:25757 Ordering.list_set Make eq_elt_dec def
+R25741:25746 Coq.Lists.List <> In_dec syndef
+R25748:25757 Ordering.list_set Make eq_elt_dec def
+R25854:25863 Ordering.list_set Make eq_elt_dec def
+R25907:25912 Coq.Lists.List <> In_dec syndef
+R25914:25923 Ordering.list_set Make eq_elt_dec def
+R25854:25863 Ordering.list_set Make eq_elt_dec def
+R25907:25912 Coq.Lists.List <> In_dec syndef
+R25914:25923 Ordering.list_set Make eq_elt_dec def
+R25907:25912 Coq.Lists.List <> In_dec syndef
+R25914:25923 Ordering.list_set Make eq_elt_dec def
+R26046:26047 Coq.Lists.List <> In def
+R26055:26058 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R26046:26047 Coq.Lists.List <> In def
+R26055:26058 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R26253:26260 Ordering.list_set Make cardinal def
+R26374:26379 Coq.Lists.List <> In_dec syndef
+R26381:26390 Ordering.list_set Make eq_elt_dec def
+R26374:26379 Coq.Lists.List <> In_dec syndef
+R26381:26390 Ordering.list_set Make eq_elt_dec def
+R26457:26465 Coq.Arith.Plus <> plus_comm syndef
+R26483:26491 Coq.Arith.Plus <> plus_comm syndef
+R26457:26465 Coq.Arith.Plus <> plus_comm syndef
+R26457:26465 Coq.Arith.Plus <> plus_comm syndef
+R26483:26491 Coq.Arith.Plus <> plus_comm syndef
+R26483:26491 Coq.Arith.Plus <> plus_comm syndef
+R26524:26541 Ordering.list_set Make without_red_remove thm
+R26546:26548 Coq.Init.Datatypes <> nil constr
+R26524:26541 Ordering.list_set Make without_red_remove thm
+R26546:26548 Coq.Init.Datatypes <> nil constr
+R26579:26589 Ordering.list_set Make without_red def
+R26594:26597 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R26579:26589 Ordering.list_set Make without_red def
+R26594:26597 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R26621:26626 Coq.Lists.List <> In_dec syndef
+R26628:26637 Ordering.list_set Make eq_elt_dec def
+R26621:26626 Coq.Lists.List <> In_dec syndef
+R26628:26637 Ordering.list_set Make eq_elt_dec def
+R26684:26685 Coq.Lists.List <> In def
+R26684:26685 Coq.Lists.List <> In def
+R26720:26737 Ordering.list_set Make without_red_remove thm
+R26742:26744 Coq.Init.Datatypes <> nil constr
+R26720:26737 Ordering.list_set Make without_red_remove thm
+R26742:26744 Coq.Init.Datatypes <> nil constr
+R26851:26856 Coq.Init.Logic <> sym_eq syndef
+R26867:26875 Coq.Arith.Plus <> plus_comm syndef
+R26893:26901 Coq.Arith.Plus <> plus_comm syndef
+R26851:26856 Coq.Init.Logic <> sym_eq syndef
+R26867:26875 Coq.Arith.Plus <> plus_comm syndef
+R26867:26875 Coq.Arith.Plus <> plus_comm syndef
+R26893:26901 Coq.Arith.Plus <> plus_comm syndef
+R26893:26901 Coq.Arith.Plus <> plus_comm syndef
+R26937:26942 Coq.Lists.List <> In_dec syndef
+R26944:26953 Ordering.list_set Make eq_elt_dec def
+R26937:26942 Coq.Lists.List <> In_dec syndef
+R26944:26953 Ordering.list_set Make eq_elt_dec def
+prf 26999:27012 Make cardinal_union
+binder 27024:27025 <> s1:246
+binder 27027:27028 <> s2:247
+R27053:27055 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R27031:27038 Ordering.list_set Make cardinal def
+R27041:27045 Ordering.list_set Make union def
+R27050:27051 Ordering.list_set <> s2:247 var
+R27047:27048 Ordering.list_set <> s1:246 var
+R27081:27082 Coq.Init.Peano <> ::nat_scope:x_'-'_x not
+R27067:27069 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R27056:27063 Ordering.list_set Make cardinal def
+R27065:27066 Ordering.list_set <> s1:246 var
+R27070:27077 Ordering.list_set Make cardinal def
+R27079:27080 Ordering.list_set <> s2:247 var
+R27083:27090 Ordering.list_set Make cardinal def
+R27093:27097 Ordering.list_set Make inter def
+R27102:27103 Ordering.list_set <> s2:247 var
+R27099:27100 Ordering.list_set <> s1:246 var
+R27141:27163 Ordering.list_set Make cardinal_union_inter_12 thm
+R27141:27163 Ordering.list_set Make cardinal_union_inter_12 thm
+R27179:27188 Coq.Arith.Minus <> plus_minus thm
+R27197:27202 Coq.Init.Logic <> sym_eq syndef
+R27213:27221 Coq.Arith.Plus <> plus_comm syndef
+R27179:27188 Coq.Arith.Minus <> plus_minus thm
+R27197:27202 Coq.Init.Logic <> sym_eq syndef
+R27213:27221 Coq.Arith.Plus <> plus_comm syndef
+R27213:27221 Coq.Arith.Plus <> plus_comm syndef
+prf 27245:27259 Make cardinal_eq_set
+binder 27270:27271 <> s1:248
+binder 27273:27274 <> s2:249
+R27289:27292 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R27277:27282 Ordering.list_set Make eq_set def
+R27287:27288 Ordering.list_set <> s2:249 var
+R27284:27285 Ordering.list_set <> s1:248 var
+R27304:27306 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R27293:27300 Ordering.list_set Make cardinal def
+R27302:27303 Ordering.list_set <> s1:248 var
+R27307:27314 Ordering.list_set Make cardinal def
+R27316:27317 Ordering.list_set <> s2:249 var
+R27356:27365 Coq.Arith.Le <> le_antisym syndef
+R27374:27388 Ordering.list_set Make cardinal_subset thm
+R27356:27365 Coq.Arith.Le <> le_antisym syndef
+R27374:27388 Ordering.list_set Make cardinal_subset thm
+R27374:27388 Ordering.list_set Make cardinal_subset thm
+prf 27457:27489 Make subset_cardinal_not_eq_not_eq_set
+binder 27502:27503 <> s1:250
+binder 27505:27506 <> s2:251
+binder 27508:27508 <> e:252
+R27523:27526 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R27511:27516 Ordering.list_set Make subset def
+R27521:27522 Ordering.list_set <> s2:251 var
+R27518:27519 Ordering.list_set <> s1:250 var
+R27536:27539 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R27527:27527 Coq.Init.Logic <> ::type_scope:'~'_x not
+R27528:27530 Ordering.list_set Make mem def
+R27534:27535 Ordering.list_set <> s1:250 var
+R27532:27532 Ordering.list_set <> e:252 var
+R27548:27555 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R27540:27542 Ordering.list_set Make mem def
+R27546:27547 Ordering.list_set <> s2:251 var
+R27544:27544 Ordering.list_set <> e:252 var
+R27567:27569 Coq.Init.Peano <> ::nat_scope:x_'<'_x not
+R27556:27563 Ordering.list_set Make cardinal def
+R27565:27566 Ordering.list_set <> s1:250 var
+R27570:27577 Ordering.list_set Make cardinal def
+R27579:27580 Ordering.list_set <> s2:251 var
+binder 27650:27652 <> l2':253
+R27663:27666 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R27658:27660 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R27655:27657 Ordering.list_set <> l2':253 var
+R27677:27679 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R27667:27672 Coq.Init.Datatypes <> length def
+R27674:27676 Ordering.list_set <> l2':253 var
+R27680:27685 Coq.Init.Datatypes <> length def
+binder 27650:27652 <> l2':254
+R27663:27666 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R27658:27660 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R27655:27657 Ordering.list_set <> l2':254 var
+R27677:27679 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R27667:27672 Coq.Init.Datatypes <> length def
+R27674:27676 Ordering.list_set <> l2':254 var
+R27680:27685 Coq.Init.Datatypes <> length def
+R27728:27733 Coq.Init.Datatypes <> length def
+R27780:27789 Coq.Init.Logic <> refl_equal syndef
+R27728:27733 Coq.Init.Datatypes <> length def
+R27780:27789 Coq.Init.Logic <> refl_equal syndef
+R28008:28025 Ordering.list_set Make without_red_remove thm
+R28030:28032 Coq.Init.Datatypes <> nil constr
+R28008:28025 Ordering.list_set Make without_red_remove thm
+R28030:28032 Coq.Init.Datatypes <> nil constr
+R28155:28160 Ordering.list_set Make subset def
+R28166:28171 Ordering.list_set Make mk_set constr
+R28155:28160 Ordering.list_set Make subset def
+R28166:28171 Ordering.list_set Make mk_set constr
+R28276:28278 Ordering.list_set Make mem def
+R28276:28278 Ordering.list_set Make mem def
+R28328:28335 Ordering.list_set Make cardinal def
+R28338:28343 Ordering.list_set Make mk_set constr
+R28310:28320 Coq.Arith.Lt <> le_lt_trans syndef
+R28328:28335 Ordering.list_set Make cardinal def
+R28338:28343 Ordering.list_set Make mk_set constr
+R28310:28320 Coq.Arith.Lt <> le_lt_trans syndef
+R28362:28376 Ordering.list_set Make cardinal_subset thm
+R28362:28376 Ordering.list_set Make cardinal_subset thm
+R28395:28402 Ordering.list_set Make cardinal def
+R28418:28424 Coq.Arith.Lt <> lt_n_Sn syndef
+R28418:28424 Coq.Arith.Lt <> lt_n_Sn syndef
+R28439:28457 Ordering.more_list <> split_list_app_cons thm
+R28459:28468 Ordering.list_set Make eq_elt_dec def
+R28439:28457 Ordering.more_list <> split_list_app_cons thm
+R28459:28468 Ordering.list_set Make eq_elt_dec def
+R28494:28503 Ordering.more_list <> split_list def
+R28505:28514 Ordering.list_set Make eq_elt_dec def
+R28494:28503 Ordering.more_list <> split_list def
+R28505:28514 Ordering.list_set Make eq_elt_dec def
+R28585:28602 Ordering.list_set Make without_red_remove thm
+R28609:28612 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R28585:28602 Ordering.list_set Make without_red_remove thm
+R28609:28612 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R28669:28671 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R28643:28648 Coq.Init.Datatypes <> length def
+R28653:28656 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R28660:28663 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R28669:28671 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R28643:28648 Coq.Init.Datatypes <> length def
+R28653:28656 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R28660:28663 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R28718:28732 Ordering.more_list <> list_app_length thm
+R28743:28751 Coq.Arith.Plus <> plus_comm syndef
+R28769:28777 Coq.Arith.Plus <> plus_comm syndef
+R28791:28805 Ordering.more_list <> list_app_length thm
+R28718:28732 Ordering.more_list <> list_app_length thm
+R28718:28732 Ordering.more_list <> list_app_length thm
+R28743:28751 Coq.Arith.Plus <> plus_comm syndef
+R28743:28751 Coq.Arith.Plus <> plus_comm syndef
+R28769:28777 Coq.Arith.Plus <> plus_comm syndef
+R28769:28777 Coq.Arith.Plus <> plus_comm syndef
+R28791:28805 Ordering.more_list <> list_app_length thm
+R28791:28805 Ordering.more_list <> list_app_length thm
+R28875:28880 Ordering.list_set Make subset def
+R28886:28891 Ordering.list_set Make mk_set constr
+R28875:28880 Ordering.list_set Make subset def
+R28886:28891 Ordering.list_set Make mk_set constr
+R29016:29024 Coq.Lists.List <> in_app_or thm
+R29016:29024 Coq.Lists.List <> in_app_or thm
+R29093:29101 Coq.Lists.List <> in_or_app thm
+R29093:29101 Coq.Lists.List <> in_or_app thm
+R29186:29188 Ordering.list_set Make mem def
+R29186:29188 Ordering.list_set Make mem def
+R29226:29234 Coq.Lists.List <> in_or_app thm
+R29226:29234 Coq.Lists.List <> in_or_app thm
+R29277:29284 Ordering.list_set Make cardinal def
+R29287:29292 Ordering.list_set Make mk_set constr
+R29259:29269 Coq.Arith.Lt <> le_lt_trans syndef
+R29277:29284 Ordering.list_set Make cardinal def
+R29287:29292 Ordering.list_set Make mk_set constr
+R29259:29269 Coq.Arith.Lt <> le_lt_trans syndef
+R29310:29324 Ordering.list_set Make cardinal_subset thm
+R29310:29324 Ordering.list_set Make cardinal_subset thm
+R29343:29350 Ordering.list_set Make cardinal def
+R29366:29371 Coq.Arith.Lt <> lt_n_S thm
+R29366:29371 Coq.Arith.Lt <> lt_n_S thm
+R29387:29401 Ordering.more_list <> list_app_length thm
+R29410:29425 Coq.Arith.Plus <> plus_lt_compat_l thm
+R29441:29447 Coq.Arith.Lt <> lt_n_Sn syndef
+R29387:29401 Ordering.more_list <> list_app_length thm
+R29387:29401 Ordering.more_list <> list_app_length thm
+R29387:29401 Ordering.more_list <> list_app_length thm
+R29387:29401 Ordering.more_list <> list_app_length thm
+R29410:29425 Coq.Arith.Plus <> plus_lt_compat_l thm
+R29441:29447 Coq.Arith.Lt <> lt_n_Sn syndef
+prf 29462:29487 Make eq_set_list_permut_support
+binder 29500:29501 <> s1:255
+binder 29503:29504 <> s2:256
+R29520:29523 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R29508:29513 Ordering.list_set Make eq_set def
+R29518:29519 Ordering.list_set <> s2:256 var
+R29515:29516 Ordering.list_set <> s1:255 var
+R29524:29537 Ordering.list_set Make list_permut def
+R29556:29562 Ordering.list_set Make support proj
+R29552:29553 Ordering.list_set <> s2:256 var
+R29543:29549 Ordering.list_set Make support proj
+R29539:29540 Ordering.list_set <> s1:255 var
+R29666:29684 Ordering.list_set Make list_permut_refl thm
+R29666:29684 Ordering.list_set Make list_permut_refl thm
+R29710:29724 Ordering.list_set Make cardinal_eq_set thm
+R29710:29724 Ordering.list_set Make cardinal_eq_set thm
+R29783:29787 Coq.Init.Logic <> proj1 thm
+R29797:29805 Coq.Init.Logic <> or_introl constr
+R29810:29819 Coq.Init.Logic <> refl_equal syndef
+R29783:29787 Coq.Init.Logic <> proj1 thm
+R29797:29805 Coq.Init.Logic <> or_introl constr
+R29810:29819 Coq.Init.Logic <> refl_equal syndef
+R29839:29857 Ordering.more_list <> split_list_app_cons thm
+R29859:29868 Ordering.list_set Make eq_elt_dec def
+R29839:29857 Ordering.more_list <> split_list_app_cons thm
+R29859:29868 Ordering.list_set Make eq_elt_dec def
+R29902:29911 Ordering.more_list <> split_list def
+R29913:29922 Ordering.list_set Make eq_elt_dec def
+R29902:29911 Ordering.more_list <> split_list def
+R29913:29922 Ordering.list_set Make eq_elt_dec def
+R29995:30012 Ordering.list_set Make without_red_remove thm
+R29995:30012 Ordering.list_set Make without_red_remove thm
+R30038:30067 Ordering.list_set Make list_permut_add_cons_inside thm
+R30038:30067 Ordering.list_set Make list_permut_add_cons_inside thm
+R30086:30103 Ordering.list_set Make without_red_remove thm
+R30108:30110 Coq.Init.Datatypes <> nil constr
+R30086:30103 Ordering.list_set Make without_red_remove thm
+R30108:30110 Coq.Init.Datatypes <> nil constr
+R30154:30159 Ordering.list_set Make mk_set constr
+R30154:30159 Ordering.list_set Make mk_set constr
+R30255:30259 Coq.Init.Logic <> proj1 thm
+R30269:30277 Coq.Init.Logic <> or_intror constr
+R30255:30259 Coq.Init.Logic <> proj1 thm
+R30269:30277 Coq.Init.Logic <> or_intror constr
+R30302:30310 Coq.Lists.List <> in_app_or thm
+R30302:30310 Coq.Lists.List <> in_app_or thm
+R30382:30384 Ordering.list_set Make mem def
+R30400:30408 Coq.Lists.List <> in_or_app thm
+R30400:30408 Coq.Lists.List <> in_or_app thm
+R30468:30477 Ordering.list_set Make eq_elt_dec def
+R30527:30529 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R30468:30477 Ordering.list_set Make eq_elt_dec def
+R30527:30529 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R30555:30560 Coq.Lists.List <> In_dec syndef
+R30562:30571 Ordering.list_set Make eq_elt_dec def
+R30555:30560 Coq.Lists.List <> In_dec syndef
+R30562:30571 Ordering.list_set Make eq_elt_dec def
+R30627:30628 Coq.Lists.List <> In def
+R30627:30628 Coq.Lists.List <> In def
+R30654:30656 Ordering.list_set Make mem def
+R30672:30680 Coq.Lists.List <> in_or_app thm
+R30672:30680 Coq.Lists.List <> in_or_app thm
+R30727:30728 Coq.Lists.List <> In def
+R30736:30739 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R30742:30745 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R30727:30728 Coq.Lists.List <> In def
+R30736:30739 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R30742:30745 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R30764:30772 Coq.Lists.List <> in_app_or thm
+R30764:30772 Coq.Lists.List <> in_app_or thm
+R30828:30836 Coq.Lists.List <> in_or_app thm
+R30828:30836 Coq.Lists.List <> in_or_app thm
+R30860:30868 Coq.Lists.List <> in_or_app thm
+R30860:30868 Coq.Lists.List <> in_or_app thm
+R30907:30911 Coq.Init.Logic <> proj2 thm
+R30907:30911 Coq.Init.Logic <> proj2 thm
+R30993:30997 Coq.Init.Logic <> False ind
+R30993:30997 Coq.Init.Logic <> False ind
+R31014:31016 Ordering.list_set Make mem def
+R31232:31237 Coq.Lists.List <> In_dec syndef
+R31239:31248 Ordering.list_set Make eq_elt_dec def
+R31315:31316 Coq.Lists.List <> In def
+R31232:31237 Coq.Lists.List <> In_dec syndef
+R31239:31248 Ordering.list_set Make eq_elt_dec def
+R31387:31395 Coq.Lists.List <> in_app_or thm
+R31387:31395 Coq.Lists.List <> in_app_or thm
+R31500:31505 Coq.Lists.List <> In_dec syndef
+R31524:31527 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R31529:31532 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R31507:31516 Ordering.list_set Make eq_elt_dec def
+R31500:31505 Coq.Lists.List <> In_dec syndef
+R31524:31527 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R31529:31532 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R31507:31516 Ordering.list_set Make eq_elt_dec def
+R31588:31589 Coq.Lists.List <> In def
+R31597:31600 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R31602:31605 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R31629:31637 Coq.Lists.List <> in_or_app thm
+R31588:31589 Coq.Lists.List <> In def
+R31597:31600 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R31602:31605 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R31629:31637 Coq.Lists.List <> in_or_app thm
+R31689:31706 Ordering.list_set Make without_red_remove thm
+R31719:31722 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R31724:31727 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R31711:31713 Coq.Init.Datatypes <> nil constr
+R31689:31706 Ordering.list_set Make without_red_remove thm
+R31719:31722 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R31724:31727 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R31711:31713 Coq.Init.Datatypes <> nil constr
+R31746:31754 Coq.Lists.List <> in_or_app thm
+R31746:31754 Coq.Lists.List <> in_or_app thm
+R31799:31816 Ordering.list_set Make without_red_remove thm
+R31829:31832 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R31834:31837 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R31821:31823 Coq.Init.Datatypes <> nil constr
+R31799:31816 Ordering.list_set Make without_red_remove thm
+R31829:31832 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R31834:31837 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R31821:31823 Coq.Init.Datatypes <> nil constr
+R31856:31864 Coq.Lists.List <> in_or_app thm
+R31856:31864 Coq.Lists.List <> in_or_app thm
+prf 31910:31927 Make without_red_permut
+binder 31939:31940 <> l1:257
+binder 31942:31943 <> l2:258
+R31960:31963 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R31946:31956 Ordering.list_set Make without_red def
+R31958:31959 Ordering.list_set <> l1:257 var
+R31984:31987 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R31964:31977 Ordering.list_set Make list_permut def
+R31982:31983 Ordering.list_set <> l2:258 var
+R31979:31980 Ordering.list_set <> l1:257 var
+R31988:31998 Ordering.list_set Make without_red def
+R32000:32001 Ordering.list_set <> l2:258 var
+R32073:32090 Ordering.list_set Make list_permut_nil thm
+R32093:32110 Ordering.list_set Make list_permut_sym thm
+R32073:32090 Ordering.list_set Make list_permut_nil thm
+R32093:32110 Ordering.list_set Make list_permut_sym thm
+R32073:32090 Ordering.list_set Make list_permut_nil thm
+R32093:32110 Ordering.list_set Make list_permut_sym thm
+R32169:32170 Coq.Lists.List <> In def
+R32169:32170 Coq.Lists.List <> In def
+R32210:32213 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R32186:32200 Ordering.list_set Make in_permut_in thm
+R32210:32213 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R32186:32200 Ordering.list_set Make in_permut_in thm
+R32255:32273 Ordering.more_list <> split_list_app_cons thm
+R32275:32284 Ordering.list_set Make eq_elt_dec def
+R32255:32273 Ordering.more_list <> split_list_app_cons thm
+R32275:32284 Ordering.list_set Make eq_elt_dec def
+R32318:32327 Ordering.more_list <> split_list def
+R32329:32338 Ordering.list_set Make eq_elt_dec def
+R32318:32327 Ordering.more_list <> split_list def
+R32329:32338 Ordering.list_set Make eq_elt_dec def
+R32398:32412 Ordering.list_set Make without_red_add thm
+R32398:32412 Ordering.list_set Make without_red_add thm
+R32434:32451 Ordering.list_set Make without_red_remove thm
+R32456:32458 Coq.Init.Datatypes <> nil constr
+R32434:32451 Ordering.list_set Make without_red_remove thm
+R32456:32458 Coq.Init.Datatypes <> nil constr
+R32480:32503 Ordering.list_set Make list_permut_remove_hd thm
+R32480:32503 Ordering.list_set Make list_permut_remove_hd thm
+R32556:32561 Coq.Lists.List <> In_dec syndef
+R32563:32572 Ordering.list_set Make eq_elt_dec def
+R32556:32561 Coq.Lists.List <> In_dec syndef
+R32563:32572 Ordering.list_set Make eq_elt_dec def
+R32680:32683 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R32655:32669 Ordering.list_set Make in_permut_in thm
+R32680:32683 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R32655:32669 Ordering.list_set Make in_permut_in thm
+R32706:32723 Ordering.list_set Make list_permut_sym thm
+R32732:32755 Ordering.list_set Make list_permut_remove_hd thm
+R32706:32723 Ordering.list_set Make list_permut_sym thm
+R32732:32755 Ordering.list_set Make list_permut_remove_hd thm
+R33349:33352 Ordering.list_set Make <> mod

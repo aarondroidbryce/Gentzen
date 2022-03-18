@@ -1,0 +1,589 @@
+DIGEST 4791629951135a9e5ba61592b20b66c6
+FSystems.substitute
+R167:174 Maths_Facts.naturals <> <> lib
+R209:213 Maths_Facts.lists <> <> lib
+R244:254 Systems.definitions <> <> lib
+R285:287 Systems.fol <> <> lib
+ind 804:812 <> subst_ind
+constr 826:830 <> ind_0
+constr 846:850 <> ind_1
+constr 866:872 <> lor_ind
+R834:842 Systems.substitute <> subst_ind:1 ind
+R854:862 Systems.substitute <> subst_ind:1 ind
+R885:888 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R876:884 Systems.substitute <> subst_ind:1 ind
+R898:901 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R889:897 Systems.substitute <> subst_ind:1 ind
+R902:910 Systems.substitute <> subst_ind:1 ind
+R932:936 Systems.substitute <> ind_0 constr
+not 923:923 <> :::'(0)'
+R957:961 Systems.substitute <> ind_1 constr
+not 948:948 <> :::'(1)'
+R987:993 Systems.substitute <> lor_ind constr
+not 973:973 <> :::'('_x_x_')'
+def 1011:1020 <> non_target
+R1027:1033 Systems.fol <> formula ind
+binder 1023:1023 <> A:3
+R1038:1046 Systems.substitute <> subst_ind ind
+R1057:1057 Systems.substitute <> A:3 var
+R1066:1068 Systems.fol <> lor constr
+R1077:1083 Systems.substitute <> lor_ind constr
+R1086:1095 Systems.substitute <> non_target:4 def
+R1101:1110 Systems.substitute <> non_target:4 def
+R1122:1124 Systems.substitute <> :::'(0)' not
+def 1141:1146 <> target
+R1153:1159 Systems.fol <> formula ind
+binder 1149:1149 <> A:6
+R1164:1172 Systems.substitute <> subst_ind ind
+R1183:1183 Systems.substitute <> A:6 var
+R1192:1194 Systems.fol <> lor constr
+R1203:1209 Systems.substitute <> lor_ind constr
+R1212:1217 Systems.substitute <> target:7 def
+R1223:1228 Systems.substitute <> target:7 def
+R1240:1242 Systems.substitute <> :::'(1)' not
+def 1338:1350 <> subst_ind_fit
+R1357:1363 Systems.fol <> formula ind
+binder 1353:1353 <> A:9
+R1371:1379 Systems.substitute <> subst_ind ind
+binder 1367:1367 <> S:10
+R1384:1387 Coq.Init.Datatypes <> bool ind
+R1401:1401 Systems.substitute <> S:10 var
+R1398:1398 Systems.substitute <> A:9 var
+R1410:1412 Systems.fol <> lor constr
+R1419:1425 Systems.substitute <> lor_ind constr
+R1461:1464 Coq.Init.Datatypes <> ::bool_scope:x_'&&'_x not
+R1442:1454 Systems.substitute <> subst_ind_fit:11 def
+R1465:1477 Systems.substitute <> subst_ind_fit:11 def
+R1490:1496 Systems.substitute <> lor_ind constr
+R1505:1509 Coq.Init.Datatypes <> false constr
+R1513:1515 Systems.fol <> lor constr
+R1527:1531 Coq.Init.Datatypes <> false constr
+R1543:1546 Coq.Init.Datatypes <> true constr
+def 1563:1581 <> formula_sub_ind_fit
+R1592:1598 Systems.fol <> formula ind
+binder 1584:1584 <> A:14
+binder 1586:1586 <> E:15
+binder 1588:1588 <> F:16
+R1606:1614 Systems.substitute <> subst_ind ind
+binder 1602:1602 <> S:17
+R1619:1625 Systems.fol <> formula ind
+R1636:1636 Systems.substitute <> A:14 var
+R1645:1647 Systems.fol <> lor constr
+R1665:1665 Systems.substitute <> S:17 var
+R1676:1682 Systems.substitute <> lor_ind constr
+R1693:1695 Systems.fol <> lor constr
+R1698:1716 Systems.substitute <> formula_sub_ind_fit:18 def
+R1722:1722 Systems.substitute <> F:16 var
+R1720:1720 Systems.substitute <> E:15 var
+R1754:1772 Systems.substitute <> formula_sub_ind_fit:18 def
+R1778:1778 Systems.substitute <> F:16 var
+R1776:1776 Systems.substitute <> E:15 var
+R1793:1793 Systems.substitute <> A:14 var
+R1828:1828 Systems.substitute <> S:17 var
+R1818:1821 Systems.fol <> eq_f def
+R1823:1823 Systems.substitute <> A:14 var
+R1825:1825 Systems.substitute <> E:15 var
+R1839:1842 Coq.Init.Datatypes <> true constr
+R1845:1847 Systems.substitute <> :::'(1)' not
+R1852:1852 Systems.substitute <> F:16 var
+R1866:1866 Systems.substitute <> A:14 var
+def 1890:1904 <> formula_sub_ind
+R1915:1921 Systems.fol <> formula ind
+binder 1907:1907 <> A:22
+binder 1909:1909 <> E:23
+binder 1911:1911 <> F:24
+R1929:1937 Systems.substitute <> subst_ind ind
+binder 1925:1925 <> S:25
+R1942:1948 Systems.fol <> formula ind
+R1959:1971 Systems.substitute <> subst_ind_fit def
+R1973:1973 Systems.substitute <> A:22 var
+R1975:1975 Systems.substitute <> S:25 var
+R1984:1988 Coq.Init.Datatypes <> false constr
+R1993:1993 Systems.substitute <> A:22 var
+R1997:2000 Coq.Init.Datatypes <> true constr
+R2005:2023 Systems.substitute <> formula_sub_ind_fit def
+R2025:2025 Systems.substitute <> A:22 var
+R2027:2027 Systems.substitute <> E:23 var
+R2029:2029 Systems.substitute <> F:24 var
+R2031:2031 Systems.substitute <> S:25 var
+prf 2123:2134 <> sub_fit_true
+R2154:2160 Systems.fol <> formula ind
+binder 2146:2146 <> A:27
+binder 2148:2148 <> E:28
+binder 2150:2150 <> F:29
+R2168:2176 Systems.substitute <> subst_ind ind
+binder 2164:2164 <> S:30
+R2206:2211 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2199:2201 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2182:2194 Systems.substitute <> subst_ind_fit def
+R2196:2196 Systems.substitute <> A:27 var
+R2198:2198 Systems.substitute <> S:30 var
+R2202:2205 Coq.Init.Datatypes <> true constr
+R2235:2237 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2212:2226 Systems.substitute <> formula_sub_ind def
+R2228:2228 Systems.substitute <> A:27 var
+R2230:2230 Systems.substitute <> E:28 var
+R2232:2232 Systems.substitute <> F:29 var
+R2234:2234 Systems.substitute <> S:30 var
+R2238:2256 Systems.substitute <> formula_sub_ind_fit def
+R2258:2258 Systems.substitute <> A:27 var
+R2260:2260 Systems.substitute <> E:28 var
+R2262:2262 Systems.substitute <> F:29 var
+R2264:2264 Systems.substitute <> S:30 var
+R2289:2303 Systems.substitute <> formula_sub_ind def
+prf 2347:2359 <> sub_fit_false
+R2379:2385 Systems.fol <> formula ind
+binder 2371:2371 <> A:31
+binder 2373:2373 <> E:32
+binder 2375:2375 <> F:33
+R2393:2401 Systems.substitute <> subst_ind ind
+binder 2389:2389 <> S:34
+R2432:2437 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2424:2426 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2407:2419 Systems.substitute <> subst_ind_fit def
+R2421:2421 Systems.substitute <> A:31 var
+R2423:2423 Systems.substitute <> S:34 var
+R2427:2431 Coq.Init.Datatypes <> false constr
+R2461:2463 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2438:2452 Systems.substitute <> formula_sub_ind def
+R2454:2454 Systems.substitute <> A:31 var
+R2456:2456 Systems.substitute <> E:32 var
+R2458:2458 Systems.substitute <> F:33 var
+R2460:2460 Systems.substitute <> S:34 var
+R2464:2464 Systems.substitute <> A:31 var
+R2489:2503 Systems.substitute <> formula_sub_ind def
+prf 2547:2567 <> formula_sub_ind_fit_0
+R2587:2593 Systems.fol <> formula ind
+binder 2579:2579 <> A:35
+binder 2581:2581 <> B:36
+binder 2583:2583 <> C:37
+R2628:2630 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2599:2617 Systems.substitute <> formula_sub_ind_fit def
+R2619:2619 Systems.substitute <> A:35 var
+R2621:2621 Systems.substitute <> B:36 var
+R2623:2623 Systems.substitute <> C:37 var
+R2625:2627 Systems.substitute <> :::'(0)' not
+R2631:2631 Systems.substitute <> A:35 var
+R2698:2704 Systems.fol <> eq_atom def
+R2698:2704 Systems.fol <> eq_atom def
+R2756:2759 Systems.fol <> eq_f def
+R2756:2759 Systems.fol <> eq_f def
+R2829:2832 Systems.fol <> :::x_'&&'_x not
+R2818:2823 Systems.fol <> eq_nat syndef
+R2833:2836 Systems.fol <> eq_f def
+R2829:2832 Systems.fol <> :::x_'&&'_x not
+R2818:2823 Systems.fol <> eq_nat syndef
+R2833:2836 Systems.fol <> eq_f def
+prf 2862:2878 <> formula_sub_ind_0
+R2898:2904 Systems.fol <> formula ind
+binder 2890:2890 <> A:38
+binder 2892:2892 <> B:39
+binder 2894:2894 <> C:40
+R2935:2937 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2910:2924 Systems.substitute <> formula_sub_ind def
+R2926:2926 Systems.substitute <> A:38 var
+R2928:2928 Systems.substitute <> B:39 var
+R2930:2930 Systems.substitute <> C:40 var
+R2932:2934 Systems.substitute <> :::'(0)' not
+R2938:2938 Systems.substitute <> A:38 var
+R2962:2974 Systems.substitute <> subst_ind_fit def
+R2978:2980 Systems.substitute <> :::'(0)' not
+R2962:2974 Systems.substitute <> subst_ind_fit def
+R2978:2980 Systems.substitute <> :::'(0)' not
+R3000:3014 Systems.substitute <> formula_sub_ind def
+R3051:3071 Systems.substitute <> formula_sub_ind_fit_0 thm
+R3051:3071 Systems.substitute <> formula_sub_ind_fit_0 thm
+R3051:3071 Systems.substitute <> formula_sub_ind_fit_0 thm
+R3051:3071 Systems.substitute <> formula_sub_ind_fit_0 thm
+R3051:3071 Systems.substitute <> formula_sub_ind_fit_0 thm
+R3051:3071 Systems.substitute <> formula_sub_ind_fit_0 thm
+R3051:3071 Systems.substitute <> formula_sub_ind_fit_0 thm
+R3051:3071 Systems.substitute <> formula_sub_ind_fit_0 thm
+R3051:3071 Systems.substitute <> formula_sub_ind_fit_0 thm
+R3088:3100 Systems.substitute <> sub_fit_false thm
+R3088:3100 Systems.substitute <> sub_fit_false thm
+prf 3125:3143 <> formula_sub_ind_lor
+R3165:3171 Systems.fol <> formula ind
+binder 3155:3155 <> A:41
+binder 3157:3157 <> B:42
+binder 3159:3159 <> C:43
+binder 3161:3161 <> D:44
+R3185:3193 Systems.substitute <> subst_ind ind
+binder 3175:3177 <> S_A:45
+binder 3179:3181 <> S_B:46
+R3248:3253 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3241:3243 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R3218:3221 Systems.fol <> :::x_'&&'_x not
+R3199:3211 Systems.substitute <> subst_ind_fit def
+R3213:3213 Systems.substitute <> A:41 var
+R3215:3217 Systems.substitute <> S_A:45 var
+R3222:3234 Systems.substitute <> subst_ind_fit def
+R3236:3236 Systems.substitute <> B:42 var
+R3238:3240 Systems.substitute <> S_B:46 var
+R3244:3247 Coq.Init.Datatypes <> true constr
+R3301:3306 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R3254:3268 Systems.substitute <> formula_sub_ind def
+R3271:3273 Systems.fol <> lor constr
+R3275:3275 Systems.substitute <> A:41 var
+R3277:3277 Systems.substitute <> B:42 var
+R3280:3280 Systems.substitute <> C:43 var
+R3282:3282 Systems.substitute <> D:44 var
+R3285:3291 Systems.substitute <> lor_ind constr
+R3293:3295 Systems.substitute <> S_A:45 var
+R3297:3299 Systems.substitute <> S_B:46 var
+R3307:3309 Systems.fol <> lor constr
+R3312:3326 Systems.substitute <> formula_sub_ind def
+R3328:3328 Systems.substitute <> A:41 var
+R3330:3330 Systems.substitute <> C:43 var
+R3332:3332 Systems.substitute <> D:44 var
+R3334:3336 Systems.substitute <> S_A:45 var
+R3340:3354 Systems.substitute <> formula_sub_ind def
+R3356:3356 Systems.substitute <> B:42 var
+R3358:3358 Systems.substitute <> C:43 var
+R3360:3360 Systems.substitute <> D:44 var
+R3362:3364 Systems.substitute <> S_B:46 var
+R3408:3422 Systems.substitute <> formula_sub_ind def
+R3435:3447 Systems.definitions <> and_bool_prop thm
+R3435:3447 Systems.definitions <> and_bool_prop thm
+prf 3526:3542 <> subst_ind_fit_lor
+R3560:3566 Systems.fol <> formula ind
+binder 3554:3554 <> B:47
+binder 3556:3556 <> C:48
+R3580:3588 Systems.substitute <> subst_ind ind
+binder 3570:3572 <> S_B:49
+binder 3574:3576 <> S_C:50
+R3642:3647 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3635:3637 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R3594:3606 Systems.substitute <> subst_ind_fit def
+R3609:3611 Systems.fol <> lor constr
+R3613:3613 Systems.substitute <> B:47 var
+R3615:3615 Systems.substitute <> C:48 var
+R3619:3625 Systems.substitute <> lor_ind constr
+R3627:3629 Systems.substitute <> S_B:49 var
+R3631:3633 Systems.substitute <> S_C:50 var
+R3638:3641 Coq.Init.Datatypes <> true constr
+R3690:3692 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R3667:3670 Systems.fol <> :::x_'&&'_x not
+R3648:3660 Systems.substitute <> subst_ind_fit def
+R3662:3662 Systems.substitute <> B:47 var
+R3664:3666 Systems.substitute <> S_B:49 var
+R3671:3683 Systems.substitute <> subst_ind_fit def
+R3685:3685 Systems.substitute <> C:48 var
+R3687:3689 Systems.substitute <> S_C:50 var
+R3693:3696 Coq.Init.Datatypes <> true constr
+prf 3735:3748 <> non_target_fit
+R3764:3770 Systems.fol <> formula ind
+binder 3760:3760 <> A:51
+R3806:3808 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R3776:3788 Systems.substitute <> subst_ind_fit def
+R3790:3790 Systems.substitute <> A:51 var
+R3793:3802 Systems.substitute <> non_target def
+R3804:3804 Systems.substitute <> A:51 var
+R3809:3812 Coq.Init.Datatypes <> true constr
+prf 3894:3908 <> non_target_sub'
+R3928:3934 Systems.fol <> formula ind
+binder 3920:3920 <> A:52
+binder 3922:3922 <> C:53
+binder 3924:3924 <> D:54
+R3980:3982 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R3940:3958 Systems.substitute <> formula_sub_ind_fit def
+R3960:3960 Systems.substitute <> A:52 var
+R3962:3962 Systems.substitute <> C:53 var
+R3964:3964 Systems.substitute <> D:54 var
+R3967:3976 Systems.substitute <> non_target def
+R3978:3978 Systems.substitute <> A:52 var
+R3983:3983 Systems.substitute <> A:52 var
+R4023:4032 Systems.substitute <> non_target def
+R4042:4060 Systems.substitute <> formula_sub_ind_fit def
+R4075:4078 Systems.fol <> eq_f def
+R4081:4084 Systems.fol <> atom constr
+R4075:4078 Systems.fol <> eq_f def
+R4081:4084 Systems.fol <> atom constr
+R4108:4117 Systems.substitute <> non_target def
+R4127:4145 Systems.substitute <> formula_sub_ind_fit def
+R4160:4163 Systems.fol <> eq_f def
+R4166:4168 Systems.fol <> neg constr
+R4160:4163 Systems.fol <> eq_f def
+R4166:4168 Systems.fol <> neg constr
+R4266:4269 Systems.fol <> :::x_'&&'_x not
+R4255:4260 Systems.fol <> eq_nat syndef
+R4270:4273 Systems.fol <> eq_f def
+R4266:4269 Systems.fol <> :::x_'&&'_x not
+R4255:4260 Systems.fol <> eq_nat syndef
+R4270:4273 Systems.fol <> eq_f def
+prf 4299:4312 <> non_target_sub
+R4332:4338 Systems.fol <> formula ind
+binder 4324:4324 <> A:55
+binder 4326:4326 <> C:56
+binder 4328:4328 <> D:57
+R4380:4382 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R4344:4358 Systems.substitute <> formula_sub_ind def
+R4360:4360 Systems.substitute <> A:55 var
+R4362:4362 Systems.substitute <> C:56 var
+R4364:4364 Systems.substitute <> D:57 var
+R4367:4376 Systems.substitute <> non_target def
+R4378:4378 Systems.substitute <> A:55 var
+R4383:4383 Systems.substitute <> A:55 var
+R4423:4432 Systems.substitute <> non_target def
+R4441:4457 Systems.substitute <> formula_sub_ind_0 thm
+R4441:4457 Systems.substitute <> formula_sub_ind_0 thm
+R4469:4478 Systems.substitute <> non_target def
+R4487:4503 Systems.substitute <> formula_sub_ind_0 thm
+R4487:4503 Systems.substitute <> formula_sub_ind_0 thm
+R4523:4536 Systems.substitute <> non_target_fit thm
+R4539:4552 Systems.substitute <> non_target_fit thm
+R4523:4536 Systems.substitute <> non_target_fit thm
+R4523:4536 Systems.substitute <> non_target_fit thm
+R4539:4552 Systems.substitute <> non_target_fit thm
+R4539:4552 Systems.substitute <> non_target_fit thm
+R4579:4593 Systems.substitute <> non_target_sub' thm
+R4579:4593 Systems.substitute <> non_target_sub' thm
+R4579:4593 Systems.substitute <> non_target_sub' thm
+R4579:4593 Systems.substitute <> non_target_sub' thm
+R4579:4593 Systems.substitute <> non_target_sub' thm
+R4579:4593 Systems.substitute <> non_target_sub' thm
+R4611:4620 Systems.substitute <> non_target def
+R4629:4645 Systems.substitute <> formula_sub_ind_0 thm
+R4629:4645 Systems.substitute <> formula_sub_ind_0 thm
+prf 4660:4677 <> non_target_sub_lor
+R4699:4705 Systems.fol <> formula ind
+binder 4689:4689 <> A:58
+binder 4691:4691 <> B:59
+binder 4693:4693 <> C:60
+binder 4695:4695 <> D:61
+R4713:4721 Systems.substitute <> subst_ind ind
+binder 4709:4709 <> S:62
+R4783:4787 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R4727:4741 Systems.substitute <> formula_sub_ind def
+R4744:4746 Systems.fol <> lor constr
+R4748:4748 Systems.substitute <> A:58 var
+R4750:4750 Systems.substitute <> B:59 var
+R4753:4753 Systems.substitute <> C:60 var
+R4755:4755 Systems.substitute <> D:61 var
+R4758:4764 Systems.substitute <> lor_ind constr
+R4767:4776 Systems.substitute <> non_target def
+R4778:4778 Systems.substitute <> A:58 var
+R4781:4781 Systems.substitute <> S:62 var
+R4788:4790 Systems.fol <> lor constr
+R4792:4792 Systems.substitute <> A:58 var
+R4795:4809 Systems.substitute <> formula_sub_ind def
+R4811:4811 Systems.substitute <> B:59 var
+R4813:4813 Systems.substitute <> C:60 var
+R4815:4815 Systems.substitute <> D:61 var
+R4817:4817 Systems.substitute <> S:62 var
+R4853:4865 Systems.substitute <> subst_ind_fit def
+R4888:4901 Systems.substitute <> non_target_fit thm
+R4853:4865 Systems.substitute <> subst_ind_fit def
+R4888:4901 Systems.substitute <> non_target_fit thm
+R4888:4901 Systems.substitute <> non_target_fit thm
+R4888:4901 Systems.substitute <> non_target_fit thm
+R4888:4901 Systems.substitute <> non_target_fit thm
+R4921:4935 Systems.substitute <> non_target_sub' thm
+R4938:4949 Systems.substitute <> sub_fit_true thm
+R4921:4935 Systems.substitute <> non_target_sub' thm
+R4921:4935 Systems.substitute <> non_target_sub' thm
+R4938:4949 Systems.substitute <> sub_fit_true thm
+R4938:4949 Systems.substitute <> sub_fit_true thm
+R4938:4949 Systems.substitute <> sub_fit_true thm
+R4978:4990 Systems.substitute <> sub_fit_false thm
+R4978:4990 Systems.substitute <> sub_fit_false thm
+R4978:4990 Systems.substitute <> sub_fit_false thm
+R4978:4990 Systems.substitute <> sub_fit_false thm
+prf 5021:5039 <> non_target_term_sub
+R5055:5061 Systems.fol <> formula ind
+binder 5051:5051 <> A:63
+R5069:5071 Coq.Init.Datatypes <> nat ind
+binder 5065:5065 <> n:64
+R5079:5082 Systems.fol <> term ind
+binder 5075:5075 <> t:65
+R5100:5102 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R5088:5097 Systems.substitute <> non_target def
+R5099:5099 Systems.substitute <> A:63 var
+R5103:5112 Systems.substitute <> non_target def
+R5115:5126 Systems.fol <> substitution def
+R5128:5128 Systems.substitute <> A:63 var
+R5130:5130 Systems.substitute <> n:64 var
+R5132:5132 Systems.substitute <> t:65 var
+R5217:5222 Systems.fol <> eq_nat syndef
+R5217:5222 Systems.fol <> eq_nat syndef
+prf 5249:5270 <> formula_sub_ind_closed
+R5290:5296 Systems.fol <> formula ind
+binder 5282:5282 <> A:66
+binder 5284:5284 <> B:67
+binder 5286:5286 <> C:68
+R5317:5320 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R5310:5312 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R5302:5307 Systems.fol <> closed def
+R5309:5309 Systems.substitute <> A:66 var
+R5313:5316 Coq.Init.Datatypes <> true constr
+R5321:5321 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R5356:5362 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R5337:5340 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R5330:5332 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R5322:5327 Systems.fol <> closed def
+R5329:5329 Systems.substitute <> B:67 var
+R5333:5336 Coq.Init.Datatypes <> true constr
+R5349:5351 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R5341:5346 Systems.fol <> closed def
+R5348:5348 Systems.substitute <> C:68 var
+R5352:5355 Coq.Init.Datatypes <> true constr
+R5375:5383 Systems.substitute <> subst_ind ind
+binder 5371:5371 <> S:69
+R5419:5421 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R5387:5392 Systems.fol <> closed def
+R5395:5409 Systems.substitute <> formula_sub_ind def
+R5411:5411 Systems.substitute <> A:66 var
+R5413:5413 Systems.substitute <> B:67 var
+R5415:5415 Systems.substitute <> C:68 var
+R5417:5417 Systems.substitute <> S:69 var
+R5422:5425 Coq.Init.Datatypes <> true constr
+R5477:5491 Systems.substitute <> formula_sub_ind def
+R5506:5518 Systems.substitute <> subst_ind_fit def
+R5521:5524 Systems.fol <> atom constr
+R5506:5518 Systems.substitute <> subst_ind_fit def
+R5521:5524 Systems.fol <> atom constr
+R5592:5598 Systems.fol <> eq_atom def
+R5592:5598 Systems.fol <> eq_atom def
+R5672:5682 Systems.fol <> atom_beq_eq thm
+R5672:5682 Systems.fol <> atom_beq_eq thm
+R5724:5736 Systems.substitute <> subst_ind_fit def
+R5739:5741 Systems.fol <> neg constr
+R5724:5736 Systems.substitute <> subst_ind_fit def
+R5739:5741 Systems.fol <> neg constr
+R5809:5812 Systems.fol <> eq_f def
+R5809:5812 Systems.fol <> eq_f def
+R5885:5894 Systems.fol <> f_eq_decid thm
+R5885:5894 Systems.fol <> f_eq_decid thm
+R5936:5948 Systems.substitute <> subst_ind_fit def
+R5951:5953 Systems.fol <> lor constr
+R5936:5948 Systems.substitute <> subst_ind_fit def
+R5951:5953 Systems.fol <> lor constr
+R6052:6064 Systems.definitions <> and_bool_prop thm
+R6052:6064 Systems.definitions <> and_bool_prop thm
+R6101:6113 Systems.definitions <> and_bool_prop thm
+R6101:6113 Systems.definitions <> and_bool_prop thm
+R6179:6190 Systems.substitute <> sub_fit_true thm
+R6179:6190 Systems.substitute <> sub_fit_true thm
+R6179:6190 Systems.substitute <> sub_fit_true thm
+R6219:6230 Systems.substitute <> sub_fit_true thm
+R6219:6230 Systems.substitute <> sub_fit_true thm
+R6219:6230 Systems.substitute <> sub_fit_true thm
+R6333:6345 Systems.substitute <> subst_ind_fit def
+R6348:6351 Systems.fol <> univ constr
+R6333:6345 Systems.substitute <> subst_ind_fit def
+R6348:6351 Systems.fol <> univ constr
+R6421:6426 Systems.fol <> eq_nat syndef
+R6452:6455 Systems.fol <> eq_f def
+R6421:6426 Systems.fol <> eq_nat syndef
+R6452:6455 Systems.fol <> eq_f def
+R6452:6455 Systems.fol <> eq_f def
+R6528:6537 Systems.fol <> f_eq_decid thm
+R6528:6537 Systems.fol <> f_eq_decid thm
+R6569:6580 Maths_Facts.naturals <> nat_eq_decid thm
+R6569:6580 Maths_Facts.naturals <> nat_eq_decid thm
+prf 6622:6638 <> formula_sub_ind_1
+R6656:6662 Systems.fol <> formula ind
+binder 6650:6650 <> A:70
+binder 6652:6652 <> B:71
+R6666:6666 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R6693:6697 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R6686:6688 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R6667:6679 Systems.substitute <> subst_ind_fit def
+R6681:6681 Systems.substitute <> A:70 var
+R6683:6685 Systems.substitute <> :::'(1)' not
+R6689:6692 Coq.Init.Datatypes <> true constr
+R6723:6725 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R6698:6712 Systems.substitute <> formula_sub_ind def
+R6714:6714 Systems.substitute <> A:70 var
+R6716:6716 Systems.substitute <> A:70 var
+R6718:6718 Systems.substitute <> B:71 var
+R6720:6722 Systems.substitute <> :::'(1)' not
+R6726:6726 Systems.substitute <> B:71 var
+R6773:6784 Systems.fol <> eq_atom_refl thm
+R6773:6784 Systems.fol <> eq_atom_refl thm
+R6773:6784 Systems.fol <> eq_atom_refl thm
+R6810:6818 Systems.fol <> eq_f_refl thm
+R6810:6818 Systems.fol <> eq_f_refl thm
+R6810:6818 Systems.fol <> eq_f_refl thm
+R6859:6867 Systems.fol <> eq_f_refl thm
+R6859:6867 Systems.fol <> eq_f_refl thm
+R6859:6867 Systems.fol <> eq_f_refl thm
+R6878:6888 Maths_Facts.naturals <> eq_nat_refl thm
+R6878:6888 Maths_Facts.naturals <> eq_nat_refl thm
+R6878:6888 Maths_Facts.naturals <> eq_nat_refl thm
+prf 6911:6923 <> lor_sub_right
+binder 6933:6933 <> f:72
+binder 6935:6935 <> g:73
+binder 6937:6937 <> r:74
+R6941:6941 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R6968:6972 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R6961:6963 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R6942:6954 Systems.substitute <> subst_ind_fit def
+R6956:6956 Systems.substitute <> r:74 var
+R6958:6960 Systems.substitute <> :::'(1)' not
+R6964:6967 Coq.Init.Datatypes <> true constr
+R7031:7033 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R6973:6987 Systems.substitute <> formula_sub_ind def
+R6990:6992 Systems.fol <> lor constr
+R6994:6994 Systems.substitute <> f:72 var
+R6996:6996 Systems.substitute <> r:74 var
+R6999:6999 Systems.substitute <> r:74 var
+R7001:7001 Systems.substitute <> g:73 var
+R7004:7010 Systems.substitute <> lor_ind constr
+R7013:7022 Systems.substitute <> non_target def
+R7024:7024 Systems.substitute <> f:72 var
+R7027:7029 Systems.substitute <> :::'(1)' not
+R7034:7036 Systems.fol <> lor constr
+R7038:7038 Systems.substitute <> f:72 var
+R7040:7040 Systems.substitute <> g:73 var
+R7066:7084 Systems.substitute <> formula_sub_ind_lor thm
+R7066:7084 Systems.substitute <> formula_sub_ind_lor thm
+R7066:7084 Systems.substitute <> formula_sub_ind_lor thm
+R7066:7084 Systems.substitute <> formula_sub_ind_lor thm
+R7098:7114 Systems.substitute <> formula_sub_ind_1 thm
+R7098:7114 Systems.substitute <> formula_sub_ind_1 thm
+R7098:7114 Systems.substitute <> formula_sub_ind_1 thm
+R7132:7145 Systems.substitute <> non_target_sub thm
+R7132:7145 Systems.substitute <> non_target_sub thm
+R7132:7145 Systems.substitute <> non_target_sub thm
+R7164:7177 Systems.substitute <> non_target_fit thm
+R7164:7177 Systems.substitute <> non_target_fit thm
+R7164:7177 Systems.substitute <> non_target_fit thm
+prf 7200:7211 <> lor_sub_left
+binder 7221:7221 <> f:75
+binder 7223:7223 <> g:76
+binder 7225:7225 <> r:77
+R7228:7228 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7255:7259 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7248:7250 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R7229:7241 Systems.substitute <> subst_ind_fit def
+R7243:7243 Systems.substitute <> r:77 var
+R7245:7247 Systems.substitute <> :::'(1)' not
+R7251:7254 Coq.Init.Datatypes <> true constr
+R7318:7320 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R7260:7274 Systems.substitute <> formula_sub_ind def
+R7277:7279 Systems.fol <> lor constr
+R7281:7281 Systems.substitute <> r:77 var
+R7283:7283 Systems.substitute <> f:75 var
+R7286:7286 Systems.substitute <> r:77 var
+R7288:7288 Systems.substitute <> g:76 var
+R7291:7297 Systems.substitute <> lor_ind constr
+R7299:7301 Systems.substitute <> :::'(1)' not
+R7304:7313 Systems.substitute <> non_target def
+R7315:7315 Systems.substitute <> f:75 var
+R7321:7323 Systems.fol <> lor constr
+R7325:7325 Systems.substitute <> g:76 var
+R7327:7327 Systems.substitute <> f:75 var
+R7353:7371 Systems.substitute <> formula_sub_ind_lor thm
+R7353:7371 Systems.substitute <> formula_sub_ind_lor thm
+R7353:7371 Systems.substitute <> formula_sub_ind_lor thm
+R7353:7371 Systems.substitute <> formula_sub_ind_lor thm
+R7385:7401 Systems.substitute <> formula_sub_ind_1 thm
+R7385:7401 Systems.substitute <> formula_sub_ind_1 thm
+R7385:7401 Systems.substitute <> formula_sub_ind_1 thm
+R7419:7432 Systems.substitute <> non_target_sub thm
+R7419:7432 Systems.substitute <> non_target_sub thm
+R7419:7432 Systems.substitute <> non_target_sub thm
+R7451:7464 Systems.substitute <> non_target_fit thm
+R7451:7464 Systems.substitute <> non_target_fit thm
+R7451:7464 Systems.substitute <> non_target_fit thm

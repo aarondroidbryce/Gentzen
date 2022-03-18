@@ -1,0 +1,1142 @@
+DIGEST dadad2427e5473c8e775710a75d5b6c3
+FOrdering.list_permut
+R184:196 Ordering.decidable_set <> <> lib
+R214:217 Coq.Lists.List <> <> lib
+R249:257 Ordering.more_list <> <> lib
+R275:282 Coq.Sets.Multiset <> <> lib
+R300:304 Coq.Arith.Arith <> <> lib
+R322:327 Coq.Setoids.Setoid <> <> lib
+modtype 343:348 <> Permut
+R372:386 Ordering.decidable_set S <> mod
+mod 367:368 <> Permut.DS
+def 401:403 Permut elt
+R408:411 Ordering.list_permut Permut A defax
+def 425:434 Permut eq_elt_dec
+R439:449 Ordering.list_permut Permut eq_A_dec prfax
+def 462:477 Permut list_to_multiset
+R484:487 Coq.Init.Datatypes <> list ind
+R489:491 Ordering.list_permut Permut elt def
+binder 480:480 <> l:1
+R507:514 Coq.Sets.Multiset <> multiset ind
+R516:518 Ordering.list_permut Permut elt def
+R531:531 Ordering.list_permut <> l:1 var
+R542:544 Coq.Init.Datatypes <> nil constr
+R549:556 Coq.Sets.Multiset <> EmptyBag def
+R558:560 Ordering.list_permut Permut elt def
+R567:570 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R571:572 Coq.Lists.List <> tl def
+R583:588 Coq.Sets.Multiset <> munion def
+R621:636 Ordering.list_permut <> list_to_multiset:2 def
+R591:602 Coq.Sets.Multiset <> SingletonBag def
+R606:615 Ordering.list_permut Permut eq_elt_dec def
+def 661:671 Permut list_permut
+R680:683 Coq.Init.Datatypes <> list ind
+R685:687 Ordering.list_permut Permut elt def
+binder 674:675 <> l1:4
+binder 677:678 <> l2:5
+R702:704 Coq.Sets.Multiset <> meq def
+R729:744 Ordering.list_permut Permut list_to_multiset def
+R746:747 Ordering.list_permut <> l2:5 var
+R707:722 Ordering.list_permut Permut list_to_multiset def
+R724:725 Ordering.list_permut <> l1:4 var
+R756:761 Ordering.list_permut Permut <> modtype
+R832:846 Ordering.decidable_set S <> mod
+R852:857 Ordering.list_permut Permut <> mod
+R876:878 Ordering.list_permut DS1 <> modtype
+mod 820:823 <> Make
+R895:897 Ordering.list_permut DS1 <> modtype
+mod 889:890 <> Make.DS
+R907:909 Ordering.list_permut DS1 <> mod
+def 924:926 Make elt
+R931:934 Ordering.list_permut Make A defax
+def 948:957 Make eq_elt_dec
+R976:978 Ordering.list_permut Make elt def
+binder 968:969 <> t1:6
+binder 971:972 <> t2:7
+R981:981 Coq.Init.Specif <> ::type_scope:'{'_x_'}'_'+'_'{'_x_'}' not
+R989:993 Coq.Init.Specif <> ::type_scope:'{'_x_'}'_'+'_'{'_x_'}' not
+R1002:1002 Coq.Init.Specif <> ::type_scope:'{'_x_'}'_'+'_'{'_x_'}' not
+R984:986 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R982:983 Ordering.list_permut <> t1:6 var
+R987:988 Ordering.list_permut <> t2:7 var
+R996:999 Coq.Init.Logic <> ::type_scope:x_'<>'_x not
+R994:995 Ordering.list_permut <> t1:6 var
+R1000:1001 Ordering.list_permut <> t2:7 var
+R1007:1017 Ordering.list_permut Make eq_A_dec prfax
+def 1030:1045 Make list_to_multiset
+R1052:1055 Coq.Init.Datatypes <> list ind
+R1057:1059 Ordering.list_permut Make elt def
+binder 1048:1048 <> l:8
+R1075:1082 Coq.Sets.Multiset <> multiset ind
+R1084:1086 Ordering.list_permut Make elt def
+R1099:1099 Ordering.list_permut <> l:8 var
+R1110:1112 Coq.Init.Datatypes <> nil constr
+R1117:1124 Coq.Sets.Multiset <> EmptyBag def
+R1126:1128 Ordering.list_permut Make elt def
+R1135:1138 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R1139:1140 Coq.Lists.List <> tl def
+R1151:1156 Coq.Sets.Multiset <> munion def
+R1189:1204 Ordering.list_permut <> list_to_multiset:9 def
+R1159:1170 Coq.Sets.Multiset <> SingletonBag def
+R1174:1183 Ordering.list_permut Make eq_elt_dec def
+def 1229:1239 Make list_permut
+R1248:1251 Coq.Init.Datatypes <> list ind
+R1253:1255 Ordering.list_permut Make elt def
+binder 1242:1243 <> l1:11
+binder 1245:1246 <> l2:12
+R1270:1272 Coq.Sets.Multiset <> meq def
+R1297:1312 Ordering.list_permut Make list_to_multiset def
+R1314:1315 Ordering.list_permut <> l2:12 var
+R1275:1290 Ordering.list_permut Make list_to_multiset def
+R1292:1293 Ordering.list_permut <> l1:11 var
+prf 1367:1382 Make multiplicity_app
+R1401:1404 Coq.Init.Datatypes <> list ind
+R1406:1408 Ordering.list_permut Make elt def
+binder 1395:1396 <> l1:13
+binder 1398:1399 <> l2:14
+R1416:1418 Ordering.list_permut Make elt def
+binder 1412:1412 <> t:15
+R1469:1474 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1425:1436 Coq.Sets.Multiset <> multiplicity def
+R1468:1468 Ordering.list_permut <> t:15 var
+R1439:1454 Ordering.list_permut Make list_to_multiset def
+R1459:1462 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R1457:1458 Ordering.list_permut <> l1:13 var
+R1463:1464 Ordering.list_permut <> l2:14 var
+R1511:1513 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R1475:1486 Coq.Sets.Multiset <> multiplicity def
+R1510:1510 Ordering.list_permut <> t:15 var
+R1489:1504 Ordering.list_permut Make list_to_multiset def
+R1506:1507 Ordering.list_permut <> l1:13 var
+R1514:1525 Coq.Sets.Multiset <> multiplicity def
+R1549:1549 Ordering.list_permut <> t:15 var
+R1528:1543 Ordering.list_permut Make list_to_multiset def
+R1545:1546 Ordering.list_permut <> l2:14 var
+prf 1655:1664 Make out_mult_O
+R1682:1684 Ordering.list_permut Make elt def
+binder 1678:1678 <> t:16
+R1690:1693 Coq.Init.Datatypes <> list ind
+R1695:1697 Ordering.list_permut Make elt def
+binder 1688:1688 <> l:17
+R1709:1712 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1701:1702 Coq.Init.Logic <> ::type_scope:'~'_x not
+R1703:1704 Coq.Lists.List <> In def
+R1708:1708 Ordering.list_permut <> l:17 var
+R1706:1706 Ordering.list_permut <> t:16 var
+R1748:1750 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1713:1724 Coq.Sets.Multiset <> multiplicity def
+R1747:1747 Ordering.list_permut <> t:16 var
+R1727:1742 Ordering.list_permut Make list_to_multiset def
+R1744:1744 Ordering.list_permut <> l:17 var
+R1777:1792 Ordering.list_permut Make list_to_multiset def
+R1849:1858 Ordering.list_permut Make eq_elt_dec def
+R1849:1858 Ordering.list_permut Make eq_elt_dec def
+R1890:1891 Coq.Lists.List <> In def
+R1897:1900 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R1890:1891 Coq.Lists.List <> In def
+R1897:1900 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R1958:1960 Coq.Init.Logic <> not def
+prf 2018:2026 Make in_mult_S
+R2043:2045 Ordering.list_permut Make elt def
+binder 2039:2039 <> t:18
+R2053:2056 Coq.Init.Datatypes <> list ind
+R2058:2060 Ordering.list_permut Make elt def
+binder 2049:2049 <> l:19
+R2070:2073 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2064:2065 Coq.Lists.List <> In def
+R2069:2069 Ordering.list_permut <> l:19 var
+R2067:2067 Ordering.list_permut <> t:18 var
+R2109:2112 Coq.Init.Peano <> ::nat_scope:x_'>='_x not
+R2074:2085 Coq.Sets.Multiset <> multiplicity def
+R2108:2108 Ordering.list_permut <> t:18 var
+R2088:2103 Ordering.list_permut Make list_to_multiset def
+R2105:2105 Ordering.list_permut <> l:19 var
+R2139:2154 Ordering.list_permut Make list_to_multiset def
+R2242:2251 Ordering.list_permut Make eq_elt_dec def
+R2242:2251 Ordering.list_permut Make eq_elt_dec def
+R2303:2303 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2303:2303 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2323:2332 Ordering.list_permut Make eq_elt_dec def
+R2323:2332 Ordering.list_permut Make eq_elt_dec def
+prf 2486:2501 Make list_permut_refl
+R2518:2521 Coq.Init.Datatypes <> list ind
+R2523:2525 Ordering.list_permut Make elt def
+binder 2514:2514 <> l:20
+R2529:2539 Ordering.list_permut Make list_permut def
+R2543:2543 Ordering.list_permut <> l:20 var
+R2541:2541 Ordering.list_permut <> l:20 var
+R2560:2570 Ordering.list_permut Make list_permut def
+R2573:2575 Coq.Sets.Multiset <> meq def
+prf 2625:2639 Make list_permut_sym
+R2659:2662 Coq.Init.Datatypes <> list ind
+R2664:2666 Ordering.list_permut Make elt def
+binder 2651:2652 <> l1:21
+binder 2654:2655 <> l2:22
+R2686:2689 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2669:2679 Ordering.list_permut Make list_permut def
+R2684:2685 Ordering.list_permut <> l2:22 var
+R2681:2682 Ordering.list_permut <> l1:21 var
+R2690:2700 Ordering.list_permut Make list_permut def
+R2705:2706 Ordering.list_permut <> l1:21 var
+R2702:2703 Ordering.list_permut <> l2:22 var
+R2723:2733 Ordering.list_permut Make list_permut def
+R2736:2738 Coq.Sets.Multiset <> meq def
+R2755:2760 Coq.Init.Logic <> sym_eq syndef
+R2755:2760 Coq.Init.Logic <> sym_eq syndef
+prf 2871:2887 Make list_permut_trans
+R2911:2914 Coq.Init.Datatypes <> list ind
+R2916:2918 Ordering.list_permut Make elt def
+binder 2900:2901 <> l1:23
+binder 2903:2904 <> l2:24
+binder 2906:2907 <> l3:25
+R2938:2941 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2921:2931 Ordering.list_permut Make list_permut def
+R2936:2937 Ordering.list_permut <> l2:24 var
+R2933:2934 Ordering.list_permut <> l1:23 var
+R2959:2962 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2942:2952 Ordering.list_permut Make list_permut def
+R2957:2958 Ordering.list_permut <> l3:25 var
+R2954:2955 Ordering.list_permut <> l2:24 var
+R2963:2973 Ordering.list_permut Make list_permut def
+R2978:2979 Ordering.list_permut <> l3:25 var
+R2975:2976 Ordering.list_permut <> l1:23 var
+R2996:3006 Ordering.list_permut Make list_permut def
+R3009:3011 Coq.Sets.Multiset <> meq def
+R3043:3054 Coq.Sets.Multiset <> multiplicity def
+R3057:3072 Ordering.list_permut Make list_to_multiset def
+R3028:3035 Coq.Init.Logic <> trans_eq syndef
+R3043:3054 Coq.Sets.Multiset <> multiplicity def
+R3057:3072 Ordering.list_permut Make list_to_multiset def
+R3028:3035 Coq.Init.Logic <> trans_eq syndef
+R3111:3114 Coq.Init.Datatypes <> list ind
+R3116:3118 Ordering.list_permut Make elt def
+R3121:3131 Ordering.list_permut Make list_permut def
+R3111:3114 Coq.Init.Datatypes <> list ind
+R3116:3118 Ordering.list_permut Make elt def
+R3121:3131 Ordering.list_permut Make list_permut def
+R3156:3171 Ordering.list_permut Make list_permut_refl thm
+R3111:3114 Coq.Init.Datatypes <> list ind
+R3116:3118 Ordering.list_permut Make elt def
+R3121:3131 Ordering.list_permut Make list_permut def
+R3192:3206 Ordering.list_permut Make list_permut_sym thm
+R3111:3114 Coq.Init.Datatypes <> list ind
+R3116:3118 Ordering.list_permut Make elt def
+R3121:3131 Ordering.list_permut Make list_permut def
+R3231:3247 Ordering.list_permut Make list_permut_trans thm
+R3111:3114 Coq.Init.Datatypes <> list ind
+R3116:3118 Ordering.list_permut Make elt def
+R3121:3131 Ordering.list_permut Make list_permut def
+R3156:3171 Ordering.list_permut Make list_permut_refl thm
+R3192:3206 Ordering.list_permut Make list_permut_sym thm
+R3231:3247 Ordering.list_permut Make list_permut_trans thm
+prf 3300:3314 Make list_permut_nil
+binder 3326:3326 <> l:26
+R3346:3349 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3329:3339 Ordering.list_permut Make list_permut def
+R3343:3345 Coq.Init.Datatypes <> nil constr
+R3341:3341 Ordering.list_permut <> l:26 var
+R3351:3353 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R3350:3350 Ordering.list_permut <> l:26 var
+R3354:3356 Coq.Init.Datatypes <> nil constr
+R3429:3439 Ordering.list_permut Make list_permut def
+R3450:3452 Coq.Init.Datatypes <> nil constr
+R3443:3446 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R3429:3439 Ordering.list_permut Make list_permut def
+R3450:3452 Coq.Init.Datatypes <> nil constr
+R3443:3446 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R3472:3474 Coq.Init.Logic <> not def
+R3484:3494 Ordering.list_permut Make list_permut def
+R3497:3499 Coq.Sets.Multiset <> meq def
+R3543:3552 Ordering.list_permut Make eq_elt_dec def
+R3543:3552 Ordering.list_permut Make eq_elt_dec def
+R3600:3600 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R3600:3600 Coq.Init.Logic <> ::type_scope:x_'='_x not
+prf 3700:3711 Make in_permut_in
+binder 3724:3725 <> l1:27
+binder 3727:3728 <> l2:28
+binder 3730:3730 <> e:29
+R3740:3743 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3733:3734 Coq.Lists.List <> In def
+R3738:3739 Ordering.list_permut <> l1:27 var
+R3736:3736 Ordering.list_permut <> e:29 var
+R3761:3764 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3744:3754 Ordering.list_permut Make list_permut def
+R3759:3760 Ordering.list_permut <> l2:28 var
+R3756:3757 Ordering.list_permut <> l1:27 var
+R3765:3766 Coq.Lists.List <> In def
+R3770:3771 Ordering.list_permut <> l2:28 var
+R3768:3768 Ordering.list_permut <> e:29 var
+R3788:3798 Ordering.list_permut Make list_permut def
+R3801:3803 Coq.Sets.Multiset <> meq def
+R3840:3845 Coq.Lists.List <> In_dec syndef
+R3847:3856 Ordering.list_permut Make eq_elt_dec def
+R3840:3845 Coq.Lists.List <> In_dec syndef
+R3847:3856 Ordering.list_permut Make eq_elt_dec def
+R3929:3938 Ordering.list_permut Make out_mult_O thm
+R3978:3986 Ordering.list_permut Make in_mult_S thm
+R4020:4021 Coq.Init.Peano <> ge def
+R4044:4045 Coq.Init.Peano <> ::nat_scope:x_'<='_x not
+R3929:3938 Ordering.list_permut Make out_mult_O thm
+R3929:3938 Ordering.list_permut Make out_mult_O thm
+R3978:3986 Ordering.list_permut Make in_mult_S thm
+R4044:4045 Coq.Init.Peano <> ::nat_scope:x_'<='_x not
+R4108:4109 Coq.Lists.List <> In def
+R4116:4118 Ordering.list_permut Make elt def
+R4170:4181 Ordering.list_permut Make in_permut_in thm
+R4170:4181 Ordering.list_permut Make in_permut_in thm
+R4206:4217 Ordering.list_permut Make in_permut_in thm
+R4243:4257 Ordering.list_permut Make list_permut_sym thm
+R4206:4217 Ordering.list_permut Make in_permut_in thm
+R4243:4257 Ordering.list_permut Make list_permut_sym thm
+prf 4281:4294 Make cons_permut_in
+binder 4307:4308 <> l1:30
+binder 4310:4311 <> l2:31
+binder 4313:4313 <> e:32
+R4340:4343 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4316:4326 Ordering.list_permut Make list_permut def
+R4338:4339 Ordering.list_permut <> l2:31 var
+R4330:4333 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R4329:4329 Ordering.list_permut <> e:32 var
+R4334:4335 Ordering.list_permut <> l1:30 var
+R4344:4345 Coq.Lists.List <> In def
+R4349:4350 Ordering.list_permut <> l2:31 var
+R4347:4347 Ordering.list_permut <> e:32 var
+prf 4483:4506 Make context_list_permut_cons
+binder 4519:4519 <> e:33
+binder 4521:4522 <> l1:34
+binder 4524:4525 <> l2:35
+R4545:4548 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4528:4538 Ordering.list_permut Make list_permut def
+R4543:4544 Ordering.list_permut <> l2:35 var
+R4540:4541 Ordering.list_permut <> l1:34 var
+R4549:4559 Ordering.list_permut Make list_permut def
+R4573:4576 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R4572:4572 Ordering.list_permut <> e:33 var
+R4577:4578 Ordering.list_permut <> l2:35 var
+R4563:4566 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R4562:4562 Ordering.list_permut <> e:33 var
+R4567:4568 Ordering.list_permut <> l1:34 var
+R4612:4622 Ordering.list_permut Make list_permut def
+R4625:4627 Coq.Sets.Multiset <> meq def
+R4719:4727 Coq.Lists.List <> cons syndef
+R4733:4735 Ordering.list_permut Make elt def
+R4777:4800 Ordering.list_permut Make context_list_permut_cons thm
+R4777:4800 Ordering.list_permut Make context_list_permut_cons thm
+prf 4824:4845 Make list_permut_add_inside
+binder 4856:4856 <> a:36
+binder 4858:4859 <> l1:37
+binder 4861:4862 <> l2:38
+binder 4864:4865 <> l3:39
+binder 4867:4868 <> l4:40
+R4907:4912 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4874:4884 Ordering.list_permut Make list_permut def
+R4900:4903 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R4898:4899 Ordering.list_permut <> l3:39 var
+R4904:4905 Ordering.list_permut <> l4:40 var
+R4889:4892 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R4887:4888 Ordering.list_permut <> l1:37 var
+R4893:4894 Ordering.list_permut <> l2:38 var
+R4913:4923 Ordering.list_permut Make list_permut def
+R4944:4947 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R4942:4943 Ordering.list_permut <> l3:39 var
+R4949:4952 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R4948:4948 Ordering.list_permut <> a:36 var
+R4953:4954 Ordering.list_permut <> l4:40 var
+R4928:4931 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R4926:4927 Ordering.list_permut <> l1:37 var
+R4933:4936 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R4932:4932 Ordering.list_permut <> a:36 var
+R4937:4938 Ordering.list_permut <> l2:38 var
+R4994:5004 Ordering.list_permut Make list_permut def
+R5007:5009 Coq.Sets.Multiset <> meq def
+R5073:5088 Ordering.list_permut Make multiplicity_app thm
+R5115:5123 Coq.Arith.Plus <> plus_comm syndef
+R5137:5146 Coq.Arith.Plus <> plus_assoc syndef
+R5155:5160 Coq.Init.Logic <> sym_eq syndef
+R5171:5179 Coq.Arith.Plus <> plus_comm syndef
+R5193:5202 Coq.Arith.Plus <> plus_assoc syndef
+R5213:5219 Coq.Init.Logic <> f_equal thm
+binder 5226:5226 <> n:41
+R5341:5343 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R5237:5246 Ordering.list_permut Make eq_elt_dec def
+R5285:5288 Coq.Init.Specif <> left constr
+R5325:5329 Coq.Init.Specif <> right constr
+R5344:5344 Ordering.list_permut <> n:41 var
+R5357:5365 Coq.Arith.Plus <> plus_comm syndef
+R5388:5396 Coq.Arith.Plus <> plus_comm syndef
+R5073:5088 Ordering.list_permut Make multiplicity_app thm
+R5073:5088 Ordering.list_permut Make multiplicity_app thm
+R5073:5088 Ordering.list_permut Make multiplicity_app thm
+R5073:5088 Ordering.list_permut Make multiplicity_app thm
+R5073:5088 Ordering.list_permut Make multiplicity_app thm
+R5073:5088 Ordering.list_permut Make multiplicity_app thm
+R5073:5088 Ordering.list_permut Make multiplicity_app thm
+R5073:5088 Ordering.list_permut Make multiplicity_app thm
+R5073:5088 Ordering.list_permut Make multiplicity_app thm
+R5115:5123 Coq.Arith.Plus <> plus_comm syndef
+R5115:5123 Coq.Arith.Plus <> plus_comm syndef
+R5137:5146 Coq.Arith.Plus <> plus_assoc syndef
+R5137:5146 Coq.Arith.Plus <> plus_assoc syndef
+R5155:5160 Coq.Init.Logic <> sym_eq syndef
+R5171:5179 Coq.Arith.Plus <> plus_comm syndef
+R5171:5179 Coq.Arith.Plus <> plus_comm syndef
+R5193:5202 Coq.Arith.Plus <> plus_assoc syndef
+R5193:5202 Coq.Arith.Plus <> plus_assoc syndef
+R5213:5219 Coq.Init.Logic <> f_equal thm
+binder 5226:5226 <> n:42
+R5341:5343 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R5237:5246 Ordering.list_permut Make eq_elt_dec def
+R5285:5288 Coq.Init.Specif <> left constr
+R5325:5329 Coq.Init.Specif <> right constr
+R5344:5344 Ordering.list_permut <> n:42 var
+R5357:5365 Coq.Arith.Plus <> plus_comm syndef
+R5357:5365 Coq.Arith.Plus <> plus_comm syndef
+R5388:5396 Coq.Arith.Plus <> plus_comm syndef
+prf 5411:5437 Make list_permut_add_cons_inside
+binder 5448:5448 <> a:43
+binder 5450:5450 <> l:44
+binder 5452:5453 <> l1:45
+binder 5455:5456 <> l2:46
+R5486:5491 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R5462:5472 Ordering.list_permut Make list_permut def
+R5479:5482 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R5477:5478 Ordering.list_permut <> l1:45 var
+R5483:5484 Ordering.list_permut <> l2:46 var
+R5474:5474 Ordering.list_permut <> l:44 var
+R5492:5502 Ordering.list_permut Make list_permut def
+R5516:5519 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R5514:5515 Ordering.list_permut <> l1:45 var
+R5521:5524 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R5520:5520 Ordering.list_permut <> a:43 var
+R5525:5526 Ordering.list_permut <> l2:46 var
+R5506:5509 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R5505:5505 Ordering.list_permut <> a:43 var
+R5510:5510 Ordering.list_permut <> l:44 var
+R5555:5558 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R5571:5574 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R5568:5570 Coq.Init.Datatypes <> nil constr
+R5576:5579 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R5599:5620 Ordering.list_permut Make list_permut_add_inside thm
+R5555:5558 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R5571:5574 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R5568:5570 Coq.Init.Datatypes <> nil constr
+R5576:5579 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R5599:5620 Ordering.list_permut Make list_permut_add_inside thm
+prf 5690:5713 Make context_list_permut_app1
+binder 5726:5726 <> l:47
+binder 5728:5729 <> l1:48
+binder 5731:5732 <> l2:49
+R5752:5755 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R5735:5745 Ordering.list_permut Make list_permut def
+R5750:5751 Ordering.list_permut <> l2:49 var
+R5747:5748 Ordering.list_permut <> l1:48 var
+R5756:5766 Ordering.list_permut Make list_permut def
+R5780:5783 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R5779:5779 Ordering.list_permut <> l:47 var
+R5784:5785 Ordering.list_permut <> l2:49 var
+R5770:5773 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R5769:5769 Ordering.list_permut <> l:47 var
+R5774:5775 Ordering.list_permut <> l1:48 var
+R5819:5829 Ordering.list_permut Make list_permut def
+R5832:5834 Coq.Sets.Multiset <> meq def
+R5866:5881 Ordering.list_permut Make multiplicity_app thm
+R5899:5914 Ordering.list_permut Make multiplicity_app thm
+R5866:5881 Ordering.list_permut Make multiplicity_app thm
+R5866:5881 Ordering.list_permut Make multiplicity_app thm
+R5899:5914 Ordering.list_permut Make multiplicity_app thm
+R5899:5914 Ordering.list_permut Make multiplicity_app thm
+prf 5960:5983 Make context_list_permut_app2
+binder 5996:5996 <> l:50
+binder 5998:5999 <> l1:51
+binder 6001:6002 <> l2:52
+R6022:6025 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R6005:6015 Ordering.list_permut Make list_permut def
+R6020:6021 Ordering.list_permut <> l2:52 var
+R6017:6018 Ordering.list_permut <> l1:51 var
+R6026:6036 Ordering.list_permut Make list_permut def
+R6051:6054 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R6049:6050 Ordering.list_permut <> l2:52 var
+R6055:6055 Ordering.list_permut <> l:50 var
+R6041:6044 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R6039:6040 Ordering.list_permut <> l1:51 var
+R6045:6045 Ordering.list_permut <> l:50 var
+R6089:6099 Ordering.list_permut Make list_permut def
+R6102:6104 Coq.Sets.Multiset <> meq def
+R6136:6151 Ordering.list_permut Make multiplicity_app thm
+R6169:6184 Ordering.list_permut Make multiplicity_app thm
+R6136:6151 Ordering.list_permut Make multiplicity_app thm
+R6136:6151 Ordering.list_permut Make multiplicity_app thm
+R6169:6184 Ordering.list_permut Make multiplicity_app thm
+R6169:6184 Ordering.list_permut Make multiplicity_app thm
+R6264:6271 Coq.Lists.List <> app syndef
+R6277:6279 Ordering.list_permut Make elt def
+R6342:6345 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R6317:6333 Ordering.list_permut Make list_permut_trans thm
+R6342:6345 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R6317:6333 Ordering.list_permut Make list_permut_trans thm
+R6357:6380 Ordering.list_permut Make context_list_permut_app1 thm
+R6357:6380 Ordering.list_permut Make context_list_permut_app1 thm
+R6398:6421 Ordering.list_permut Make context_list_permut_app2 thm
+R6398:6421 Ordering.list_permut Make context_list_permut_app2 thm
+prf 6445:6463 Make list_permut_app_app
+binder 6475:6476 <> l1:53
+binder 6478:6479 <> l2:54
+R6482:6492 Ordering.list_permut Make list_permut def
+R6508:6511 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R6506:6507 Ordering.list_permut <> l2:54 var
+R6512:6513 Ordering.list_permut <> l1:53 var
+R6497:6500 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R6495:6496 Ordering.list_permut <> l1:53 var
+R6501:6502 Ordering.list_permut <> l2:54 var
+R6545:6555 Ordering.list_permut Make list_permut def
+R6558:6560 Coq.Sets.Multiset <> meq def
+R6581:6596 Ordering.list_permut Make multiplicity_app thm
+R6607:6622 Ordering.list_permut Make multiplicity_app thm
+R6631:6639 Coq.Arith.Plus <> plus_comm syndef
+R6581:6596 Ordering.list_permut Make multiplicity_app thm
+R6581:6596 Ordering.list_permut Make multiplicity_app thm
+R6607:6622 Ordering.list_permut Make multiplicity_app thm
+R6607:6622 Ordering.list_permut Make multiplicity_app thm
+R6631:6639 Coq.Arith.Plus <> plus_comm syndef
+prf 6719:6749 Make remove_context_list_permut_cons
+binder 6762:6762 <> e:55
+binder 6764:6765 <> l1:56
+binder 6767:6768 <> l2:57
+R6802:6805 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R6771:6781 Ordering.list_permut Make list_permut def
+R6795:6798 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R6794:6794 Ordering.list_permut <> e:55 var
+R6799:6800 Ordering.list_permut <> l2:57 var
+R6785:6788 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R6784:6784 Ordering.list_permut <> e:55 var
+R6789:6790 Ordering.list_permut <> l1:56 var
+R6806:6816 Ordering.list_permut Make list_permut def
+R6821:6822 Ordering.list_permut <> l2:57 var
+R6818:6819 Ordering.list_permut <> l1:56 var
+R6855:6865 Ordering.list_permut Make list_permut def
+R6868:6870 Coq.Sets.Multiset <> meq def
+R6916:6925 Coq.Arith.Plus <> plus_reg_l thm
+R6916:6925 Coq.Arith.Plus <> plus_reg_l thm
+prf 6940:6970 Make remove_context_list_permut_app2
+binder 6983:6983 <> l:58
+binder 6985:6986 <> l1:59
+binder 6988:6989 <> l2:60
+R7023:7026 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R6992:7002 Ordering.list_permut Make list_permut def
+R7017:7020 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R7015:7016 Ordering.list_permut <> l2:60 var
+R7021:7021 Ordering.list_permut <> l:58 var
+R7007:7010 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R7005:7006 Ordering.list_permut <> l1:59 var
+R7011:7011 Ordering.list_permut <> l:58 var
+R7027:7037 Ordering.list_permut Make list_permut def
+R7042:7043 Ordering.list_permut <> l2:60 var
+R7039:7040 Ordering.list_permut <> l1:59 var
+R7076:7086 Ordering.list_permut Make list_permut def
+R7089:7091 Coq.Sets.Multiset <> meq def
+R7140:7155 Ordering.list_permut Make multiplicity_app thm
+R7173:7188 Ordering.list_permut Make multiplicity_app thm
+R7229:7240 Coq.Sets.Multiset <> multiplicity def
+R7243:7258 Ordering.list_permut Make list_to_multiset def
+R7212:7221 Coq.Arith.Plus <> plus_reg_l thm
+R7140:7155 Ordering.list_permut Make multiplicity_app thm
+R7140:7155 Ordering.list_permut Make multiplicity_app thm
+R7173:7188 Ordering.list_permut Make multiplicity_app thm
+R7173:7188 Ordering.list_permut Make multiplicity_app thm
+R7229:7240 Coq.Sets.Multiset <> multiplicity def
+R7243:7258 Ordering.list_permut Make list_to_multiset def
+R7212:7221 Coq.Arith.Plus <> plus_reg_l thm
+R7275:7283 Coq.Arith.Plus <> plus_comm syndef
+R7306:7314 Coq.Arith.Plus <> plus_comm syndef
+R7275:7283 Coq.Arith.Plus <> plus_comm syndef
+R7275:7283 Coq.Arith.Plus <> plus_comm syndef
+R7306:7314 Coq.Arith.Plus <> plus_comm syndef
+R7306:7314 Coq.Arith.Plus <> plus_comm syndef
+prf 7338:7358 Make list_permut_remove_hd
+binder 7371:7371 <> l:61
+binder 7373:7374 <> l1:62
+binder 7376:7377 <> l2:63
+binder 7379:7379 <> a:64
+R7423:7426 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7387:7397 Ordering.list_permut Make list_permut def
+R7411:7414 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R7409:7410 Ordering.list_permut <> l1:62 var
+R7416:7419 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R7415:7415 Ordering.list_permut <> a:64 var
+R7420:7421 Ordering.list_permut <> l2:63 var
+R7401:7404 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R7400:7400 Ordering.list_permut <> a:64 var
+R7405:7405 Ordering.list_permut <> l:61 var
+R7427:7437 Ordering.list_permut Make list_permut def
+R7444:7447 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R7442:7443 Ordering.list_permut <> l1:62 var
+R7448:7449 Ordering.list_permut <> l2:63 var
+R7439:7439 Ordering.list_permut <> l:61 var
+R7485:7495 Ordering.list_permut Make list_permut def
+R7498:7500 Coq.Sets.Multiset <> meq def
+R7550:7565 Ordering.list_permut Make multiplicity_app thm
+R7576:7591 Ordering.list_permut Make multiplicity_app thm
+R7641:7650 Ordering.list_permut Make eq_elt_dec def
+R7662:7665 Coq.Init.Specif <> left constr
+R7676:7680 Coq.Init.Specif <> right constr
+R7618:7627 Coq.Arith.Plus <> plus_reg_l thm
+R7722:7731 Coq.Arith.Plus <> plus_assoc syndef
+R7741:7747 Coq.Init.Logic <> f_equal thm
+binder 7754:7754 <> n:65
+R7760:7762 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R7759:7759 Ordering.list_permut <> n:65 var
+R7763:7774 Coq.Sets.Multiset <> multiplicity def
+R7777:7792 Ordering.list_permut Make list_to_multiset def
+R7810:7818 Coq.Arith.Plus <> plus_comm syndef
+R7550:7565 Ordering.list_permut Make multiplicity_app thm
+R7550:7565 Ordering.list_permut Make multiplicity_app thm
+R7576:7591 Ordering.list_permut Make multiplicity_app thm
+R7576:7591 Ordering.list_permut Make multiplicity_app thm
+R7641:7650 Ordering.list_permut Make eq_elt_dec def
+R7662:7665 Coq.Init.Specif <> left constr
+R7676:7680 Coq.Init.Specif <> right constr
+R7618:7627 Coq.Arith.Plus <> plus_reg_l thm
+R7722:7731 Coq.Arith.Plus <> plus_assoc syndef
+R7722:7731 Coq.Arith.Plus <> plus_assoc syndef
+R7722:7731 Coq.Arith.Plus <> plus_assoc syndef
+R7722:7731 Coq.Arith.Plus <> plus_assoc syndef
+R7722:7731 Coq.Arith.Plus <> plus_assoc syndef
+R7741:7747 Coq.Init.Logic <> f_equal thm
+binder 7754:7754 <> n:66
+R7760:7762 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R7759:7759 Ordering.list_permut <> n:66 var
+R7763:7774 Coq.Sets.Multiset <> multiplicity def
+R7777:7792 Ordering.list_permut Make list_to_multiset def
+R7810:7818 Coq.Arith.Plus <> plus_comm syndef
+prf 7879:7896 Make list_permut_length
+binder 7908:7909 <> l1:67
+binder 7911:7912 <> l2:68
+R7932:7935 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7915:7925 Ordering.list_permut Make list_permut def
+R7930:7931 Ordering.list_permut <> l2:68 var
+R7927:7928 Ordering.list_permut <> l1:67 var
+R7945:7947 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R7936:7941 Coq.Init.Datatypes <> length def
+R7943:7944 Ordering.list_permut <> l1:67 var
+R7948:7953 Coq.Init.Datatypes <> length def
+R7955:7956 Ordering.list_permut <> l2:68 var
+R8002:8016 Ordering.list_permut Make list_permut_nil thm
+R8019:8033 Ordering.list_permut Make list_permut_sym thm
+R8002:8016 Ordering.list_permut Make list_permut_nil thm
+R8019:8033 Ordering.list_permut Make list_permut_sym thm
+R8002:8016 Ordering.list_permut Make list_permut_nil thm
+R8019:8033 Ordering.list_permut Make list_permut_sym thm
+R8052:8057 Coq.Lists.List <> In_dec syndef
+R8059:8068 Ordering.list_permut Make eq_elt_dec def
+R8052:8057 Coq.Lists.List <> In_dec syndef
+R8059:8068 Ordering.list_permut Make eq_elt_dec def
+R8102:8120 Ordering.more_list <> split_list_app_cons thm
+R8122:8131 Ordering.list_permut Make eq_elt_dec def
+R8156:8165 Ordering.more_list <> split_list def
+R8167:8176 Ordering.list_permut Make eq_elt_dec def
+R8102:8120 Ordering.more_list <> split_list_app_cons thm
+R8122:8131 Ordering.list_permut Make eq_elt_dec def
+R8156:8165 Ordering.more_list <> split_list def
+R8167:8176 Ordering.list_permut Make eq_elt_dec def
+R8210:8224 Ordering.more_list <> list_app_length thm
+R8251:8271 Ordering.list_permut Make list_permut_remove_hd thm
+R8291:8305 Ordering.more_list <> list_app_length thm
+R8210:8224 Ordering.more_list <> list_app_length thm
+R8210:8224 Ordering.more_list <> list_app_length thm
+R8251:8271 Ordering.list_permut Make list_permut_remove_hd thm
+R8251:8271 Ordering.list_permut Make list_permut_remove_hd thm
+R8291:8305 Ordering.more_list <> list_app_length thm
+R8291:8305 Ordering.more_list <> list_app_length thm
+R8349:8350 Coq.Lists.List <> In def
+R8394:8397 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8374:8385 Ordering.list_permut Make in_permut_in thm
+R8349:8350 Coq.Lists.List <> In def
+R8394:8397 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8374:8385 Ordering.list_permut Make in_permut_in thm
+R8448:8453 Coq.Init.Datatypes <> length def
+R8459:8461 Ordering.list_permut Make elt def
+R8494:8511 Ordering.list_permut Make list_permut_length thm
+R8494:8511 Ordering.list_permut Make list_permut_length thm
+prf 8570:8585 Make list_permut_size
+binder 8598:8601 <> size:69
+binder 8603:8604 <> l1:70
+binder 8606:8607 <> l2:71
+R8627:8630 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R8610:8620 Ordering.list_permut Make list_permut def
+R8625:8626 Ordering.list_permut <> l2:71 var
+R8622:8623 Ordering.list_permut <> l1:70 var
+R8648:8650 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R8631:8639 Ordering.more_list <> list_size def
+R8646:8647 Ordering.list_permut <> l1:70 var
+R8641:8644 Ordering.list_permut <> size:69 var
+R8651:8659 Ordering.more_list <> list_size def
+R8666:8667 Ordering.list_permut <> l2:71 var
+R8661:8664 Ordering.list_permut <> size:69 var
+R8726:8740 Ordering.list_permut Make list_permut_nil thm
+R8743:8757 Ordering.list_permut Make list_permut_sym thm
+R8726:8740 Ordering.list_permut Make list_permut_nil thm
+R8743:8757 Ordering.list_permut Make list_permut_sym thm
+R8726:8740 Ordering.list_permut Make list_permut_nil thm
+R8743:8757 Ordering.list_permut Make list_permut_sym thm
+R8799:8817 Ordering.more_list <> split_list_app_cons thm
+R8835:8848 Ordering.list_permut Make cons_permut_in thm
+R8819:8828 Ordering.list_permut Make eq_elt_dec def
+R8865:8874 Ordering.more_list <> split_list def
+R8876:8885 Ordering.list_permut Make eq_elt_dec def
+R8919:8931 Ordering.more_list <> list_size_app thm
+R8958:8978 Ordering.list_permut Make list_permut_remove_hd thm
+R8997:9009 Ordering.more_list <> list_size_app thm
+R9020:9028 Coq.Arith.Plus <> plus_comm syndef
+R9042:9051 Coq.Arith.Plus <> plus_assoc syndef
+R9061:9067 Coq.Init.Logic <> f_equal thm
+binder 9074:9074 <> n:72
+R9095:9097 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R9079:9087 Ordering.more_list <> list_size def
+R9098:9098 Ordering.list_permut <> n:72 var
+R9109:9117 Coq.Arith.Plus <> plus_comm syndef
+R8799:8817 Ordering.more_list <> split_list_app_cons thm
+R8835:8848 Ordering.list_permut Make cons_permut_in thm
+R8819:8828 Ordering.list_permut Make eq_elt_dec def
+R8865:8874 Ordering.more_list <> split_list def
+R8876:8885 Ordering.list_permut Make eq_elt_dec def
+R8919:8931 Ordering.more_list <> list_size_app thm
+R8919:8931 Ordering.more_list <> list_size_app thm
+R8958:8978 Ordering.list_permut Make list_permut_remove_hd thm
+R8958:8978 Ordering.list_permut Make list_permut_remove_hd thm
+R8997:9009 Ordering.more_list <> list_size_app thm
+R8997:9009 Ordering.more_list <> list_size_app thm
+R9020:9028 Coq.Arith.Plus <> plus_comm syndef
+R9020:9028 Coq.Arith.Plus <> plus_comm syndef
+R9042:9051 Coq.Arith.Plus <> plus_assoc syndef
+R9042:9051 Coq.Arith.Plus <> plus_assoc syndef
+R9061:9067 Coq.Init.Logic <> f_equal thm
+binder 9074:9074 <> n:73
+R9095:9097 Coq.Init.Peano <> ::nat_scope:x_'+'_x not
+R9079:9087 Ordering.more_list <> list_size def
+R9098:9098 Ordering.list_permut <> n:73 var
+R9109:9117 Coq.Arith.Plus <> plus_comm syndef
+binder 9144:9147 <> size:74
+R9152:9160 Ordering.more_list <> list_size def
+R9171:9174 Ordering.list_permut <> size:74 var
+R9166:9168 Ordering.list_permut Make elt def
+R9227:9254 Coq.Classes.Morphisms <> pointwise_relation def
+R9295:9309 Ordering.list_permut Make list_permut_nil thm
+R9312:9326 Ordering.list_permut Make list_permut_sym thm
+R9295:9309 Ordering.list_permut Make list_permut_nil thm
+R9312:9326 Ordering.list_permut Make list_permut_sym thm
+R9295:9309 Ordering.list_permut Make list_permut_nil thm
+R9312:9326 Ordering.list_permut Make list_permut_sym thm
+R9379:9390 Ordering.list_permut Make in_permut_in thm
+R9395:9399 Coq.Lists.List <> in_eq thm
+R9379:9390 Ordering.list_permut Make in_permut_in thm
+R9395:9399 Coq.Lists.List <> in_eq thm
+R9418:9425 Coq.Lists.List <> In_split syndef
+R9418:9425 Coq.Lists.List <> In_split syndef
+R9486:9506 Ordering.list_permut Make list_permut_remove_hd thm
+R9486:9506 Ordering.list_permut Make list_permut_remove_hd thm
+R9544:9556 Ordering.more_list <> list_size_app thm
+R9544:9556 Ordering.more_list <> list_size_app thm
+R9544:9556 Ordering.more_list <> list_size_app thm
+R9567:9579 Ordering.more_list <> list_size_app thm
+R9567:9579 Ordering.more_list <> list_size_app thm
+R9567:9579 Ordering.more_list <> list_size_app thm
+R9600:9608 Coq.Arith.Plus <> plus_comm syndef
+R9617:9625 Ordering.more_list <> list_size def
+R9600:9608 Coq.Arith.Plus <> plus_comm syndef
+R9617:9625 Ordering.more_list <> list_size def
+R9600:9608 Coq.Arith.Plus <> plus_comm syndef
+R9617:9625 Ordering.more_list <> list_size def
+R9644:9653 Coq.Arith.Plus <> plus_assoc syndef
+R9656:9664 Ordering.more_list <> list_size def
+R9644:9653 Coq.Arith.Plus <> plus_assoc syndef
+R9656:9664 Ordering.more_list <> list_size def
+R9644:9653 Coq.Arith.Plus <> plus_assoc syndef
+R9656:9664 Ordering.more_list <> list_size def
+R9682:9690 Coq.Arith.Plus <> plus_comm syndef
+R9682:9690 Coq.Arith.Plus <> plus_comm syndef
+R9682:9690 Coq.Arith.Plus <> plus_comm syndef
+prf 9754:9768 Make list_permut_map
+binder 9781:9781 <> f:75
+binder 9783:9784 <> l1:76
+binder 9786:9787 <> l2:77
+R9807:9810 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R9790:9800 Ordering.list_permut Make list_permut def
+R9805:9806 Ordering.list_permut <> l2:77 var
+R9802:9803 Ordering.list_permut <> l1:76 var
+R9811:9821 Ordering.list_permut Make list_permut def
+R9835:9837 Coq.Lists.List <> map def
+R9841:9842 Ordering.list_permut <> l2:77 var
+R9839:9839 Ordering.list_permut <> f:75 var
+R9824:9826 Coq.Lists.List <> map def
+R9830:9831 Ordering.list_permut <> l1:76 var
+R9828:9828 Ordering.list_permut <> f:75 var
+R9902:9916 Ordering.list_permut Make list_permut_nil thm
+R9919:9933 Ordering.list_permut Make list_permut_sym thm
+R9946:9961 Ordering.list_permut Make list_permut_refl thm
+R9902:9916 Ordering.list_permut Make list_permut_nil thm
+R9919:9933 Ordering.list_permut Make list_permut_sym thm
+R9902:9916 Ordering.list_permut Make list_permut_nil thm
+R9919:9933 Ordering.list_permut Make list_permut_sym thm
+R9946:9961 Ordering.list_permut Make list_permut_refl thm
+R9989:10007 Ordering.more_list <> split_list_app_cons thm
+R10025:10038 Ordering.list_permut Make cons_permut_in thm
+R10009:10018 Ordering.list_permut Make eq_elt_dec def
+R10055:10064 Ordering.more_list <> split_list def
+R10066:10075 Ordering.list_permut Make eq_elt_dec def
+R9989:10007 Ordering.more_list <> split_list_app_cons thm
+R10025:10038 Ordering.list_permut Make cons_permut_in thm
+R10009:10018 Ordering.list_permut Make eq_elt_dec def
+R10055:10064 Ordering.more_list <> split_list def
+R10066:10075 Ordering.list_permut Make eq_elt_dec def
+R10109:10115 Ordering.more_list <> map_app thm
+R10131:10157 Ordering.list_permut Make list_permut_add_cons_inside thm
+R10171:10177 Ordering.more_list <> map_app thm
+R10196:10216 Ordering.list_permut Make list_permut_remove_hd thm
+R10109:10115 Ordering.more_list <> map_app thm
+R10109:10115 Ordering.more_list <> map_app thm
+R10131:10157 Ordering.list_permut Make list_permut_add_cons_inside thm
+R10171:10177 Ordering.more_list <> map_app thm
+R10171:10177 Ordering.more_list <> map_app thm
+R10196:10216 Ordering.list_permut Make list_permut_remove_hd thm
+binder 10252:10252 <> l:78
+R10268:10271 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R10265:10267 Ordering.list_permut Make elt def
+R10272:10274 Ordering.list_permut Make elt def
+binder 10261:10261 <> f:79
+R10279:10281 Coq.Lists.List <> map def
+R10285:10285 Ordering.list_permut <> l:78 var
+R10283:10283 Ordering.list_permut <> f:79 var
+R10350:10364 Ordering.list_permut Make list_permut_nil thm
+R10367:10381 Ordering.list_permut Make list_permut_sym thm
+R10350:10364 Ordering.list_permut Make list_permut_nil thm
+R10367:10381 Ordering.list_permut Make list_permut_sym thm
+R10350:10364 Ordering.list_permut Make list_permut_nil thm
+R10367:10381 Ordering.list_permut Make list_permut_sym thm
+R10434:10445 Ordering.list_permut Make in_permut_in thm
+R10450:10454 Coq.Lists.List <> in_eq thm
+R10434:10445 Ordering.list_permut Make in_permut_in thm
+R10450:10454 Coq.Lists.List <> in_eq thm
+R10471:10478 Coq.Lists.List <> In_split syndef
+R10471:10478 Coq.Lists.List <> In_split syndef
+R10539:10559 Ordering.list_permut Make list_permut_remove_hd thm
+R10539:10559 Ordering.list_permut Make list_permut_remove_hd thm
+R10601:10607 Ordering.more_list <> map_app thm
+R10601:10607 Ordering.more_list <> map_app thm
+R10601:10607 Ordering.more_list <> map_app thm
+R10618:10624 Ordering.more_list <> map_app thm
+R10618:10624 Ordering.more_list <> map_app thm
+R10618:10624 Ordering.more_list <> map_app thm
+R10640:10666 Ordering.list_permut Make list_permut_add_cons_inside thm
+R10640:10666 Ordering.list_permut Make list_permut_add_cons_inside thm
+R10675:10690 Ordering.list_permut Make list_permut_refl thm
+R10675:10690 Ordering.list_permut Make list_permut_refl thm
+prf 10745:10764 Make list_permut_length_1
+binder 10775:10775 <> a:80
+binder 10777:10777 <> b:81
+R10813:10817 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R10780:10790 Ordering.list_permut Make list_permut def
+R10805:10808 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R10804:10804 Ordering.list_permut <> b:81 var
+R10809:10811 Coq.Init.Datatypes <> nil constr
+R10794:10797 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R10793:10793 Ordering.list_permut <> a:80 var
+R10798:10800 Coq.Init.Datatypes <> nil constr
+R10819:10821 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R10818:10818 Ordering.list_permut <> a:80 var
+R10822:10822 Ordering.list_permut <> b:81 var
+R10851:10861 Ordering.list_permut Make list_permut def
+R10864:10866 Coq.Sets.Multiset <> meq def
+R10918:10927 Ordering.list_permut Make eq_elt_dec def
+R10918:10927 Ordering.list_permut Make eq_elt_dec def
+R10951:10960 Ordering.list_permut Make eq_elt_dec def
+R10951:10960 Ordering.list_permut Make eq_elt_dec def
+R10991:10996 Coq.Init.Logic <> sym_eq syndef
+R10991:10996 Coq.Init.Logic <> sym_eq syndef
+R11045:11045 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R11045:11045 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R11089:11089 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R11089:11089 Coq.Init.Logic <> ::type_scope:x_'='_x not
+prf 11115:11134 Make list_permut_length_2
+binder 11146:11147 <> a1:82
+binder 11149:11150 <> b1:83
+binder 11152:11153 <> a2:84
+binder 11155:11156 <> b2:85
+R11206:11210 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R11159:11169 Ordering.list_permut Make list_permut def
+R11192:11195 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R11190:11191 Ordering.list_permut <> a2:84 var
+R11198:11201 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R11196:11197 Ordering.list_permut <> b2:85 var
+R11202:11204 Coq.Init.Datatypes <> nil constr
+R11174:11177 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R11172:11173 Ordering.list_permut <> a1:82 var
+R11180:11183 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R11178:11179 Ordering.list_permut <> b1:83 var
+R11184:11186 Coq.Init.Datatypes <> nil constr
+R11211:11211 Coq.Init.Logic <> ::type_scope:x_'\/'_x not
+R11226:11231 Coq.Init.Logic <> ::type_scope:x_'\/'_x not
+R11246:11246 Coq.Init.Logic <> ::type_scope:x_'\/'_x not
+R11217:11220 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R11214:11214 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R11212:11213 Ordering.list_permut <> a1:82 var
+R11215:11216 Ordering.list_permut <> a2:84 var
+R11223:11223 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R11221:11222 Ordering.list_permut <> b1:83 var
+R11224:11225 Ordering.list_permut <> b2:85 var
+R11237:11240 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R11234:11234 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R11232:11233 Ordering.list_permut <> a1:82 var
+R11235:11236 Ordering.list_permut <> b2:85 var
+R11243:11243 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R11241:11242 Ordering.list_permut <> a2:84 var
+R11244:11245 Ordering.list_permut <> b1:83 var
+R11284:11297 Ordering.list_permut Make cons_permut_in thm
+R11284:11297 Ordering.list_permut Make cons_permut_in thm
+R11348:11367 Ordering.list_permut Make list_permut_length_1 thm
+R11376:11406 Ordering.list_permut Make remove_context_list_permut_cons thm
+R11348:11367 Ordering.list_permut Make list_permut_length_1 thm
+R11376:11406 Ordering.list_permut Make remove_context_list_permut_cons thm
+R11499:11504 Coq.Init.Logic <> sym_eq syndef
+R11513:11532 Ordering.list_permut Make list_permut_length_1 thm
+R11542:11562 Ordering.list_permut Make list_permut_remove_hd thm
+R11576:11578 Coq.Init.Datatypes <> nil constr
+R11567:11570 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R11571:11573 Coq.Init.Datatypes <> nil constr
+R11499:11504 Coq.Init.Logic <> sym_eq syndef
+R11513:11532 Ordering.list_permut Make list_permut_length_1 thm
+R11542:11562 Ordering.list_permut Make list_permut_remove_hd thm
+R11576:11578 Coq.Init.Datatypes <> nil constr
+R11567:11570 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R11571:11573 Coq.Init.Datatypes <> nil constr
+prf 11666:11681 Make ac_syntactic_aux
+R11708:11711 Coq.Init.Datatypes <> list ind
+R11713:11715 Ordering.list_permut Make elt def
+binder 11694:11695 <> l1:86
+binder 11697:11698 <> l2:87
+binder 11700:11701 <> l3:88
+binder 11703:11704 <> l4:89
+R11753:11758 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R11920:11920 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R11720:11730 Ordering.list_permut Make list_permut def
+R11746:11749 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R11744:11745 Ordering.list_permut <> l3:88 var
+R11750:11751 Ordering.list_permut <> l4:89 var
+R11735:11738 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R11733:11734 Ordering.list_permut <> l1:86 var
+R11739:11740 Ordering.list_permut <> l2:87 var
+R11759:11765 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R11768:11769 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+binder 11766:11767 <> u1:90
+R11770:11776 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R11779:11780 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+binder 11777:11778 <> u2:91
+R11781:11787 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R11790:11791 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+binder 11788:11789 <> u3:92
+R11792:11798 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R11801:11804 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+binder 11799:11800 <> u4:93
+R11830:11834 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R11805:11815 Ordering.list_permut Make list_permut def
+R11823:11826 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R11821:11822 Ordering.list_permut <> u1:90 var
+R11827:11828 Ordering.list_permut <> u2:91 var
+R11817:11818 Ordering.list_permut <> l1:86 var
+R11860:11864 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R11835:11845 Ordering.list_permut Make list_permut def
+R11853:11856 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R11851:11852 Ordering.list_permut <> u3:92 var
+R11857:11858 Ordering.list_permut <> u4:93 var
+R11847:11848 Ordering.list_permut <> l2:87 var
+R11890:11894 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R11865:11875 Ordering.list_permut Make list_permut def
+R11883:11886 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R11881:11882 Ordering.list_permut <> u1:90 var
+R11887:11888 Ordering.list_permut <> u3:92 var
+R11877:11878 Ordering.list_permut <> l3:88 var
+R11895:11905 Ordering.list_permut Make list_permut def
+R11913:11916 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R11911:11912 Ordering.list_permut <> u2:91 var
+R11917:11918 Ordering.list_permut <> u4:93 var
+R11907:11908 Ordering.list_permut <> l4:89 var
+R11977:11980 Coq.Init.Datatypes <> list ind
+R11982:11984 Ordering.list_permut Make elt def
+R11971:11973 Coq.Init.Datatypes <> nil constr
+R12002:12005 Coq.Init.Datatypes <> list ind
+R12007:12009 Ordering.list_permut Make elt def
+R11996:11998 Coq.Init.Datatypes <> nil constr
+R11977:11980 Coq.Init.Datatypes <> list ind
+R11982:11984 Ordering.list_permut Make elt def
+R11971:11973 Coq.Init.Datatypes <> nil constr
+R12002:12005 Coq.Init.Datatypes <> list ind
+R12007:12009 Ordering.list_permut Make elt def
+R11996:11998 Coq.Init.Datatypes <> nil constr
+R12086:12098 Coq.Lists.List <> app_comm_cons thm
+R12112:12120 Coq.Lists.List <> in_app_or thm
+R12131:12144 Ordering.list_permut Make cons_permut_in thm
+R12175:12193 Ordering.more_list <> split_list_app_cons thm
+R12195:12204 Ordering.list_permut Make eq_elt_dec def
+R12086:12098 Coq.Lists.List <> app_comm_cons thm
+R12086:12098 Coq.Lists.List <> app_comm_cons thm
+R12112:12120 Coq.Lists.List <> in_app_or thm
+R12131:12144 Ordering.list_permut Make cons_permut_in thm
+R12175:12193 Ordering.more_list <> split_list_app_cons thm
+R12195:12204 Ordering.list_permut Make eq_elt_dec def
+R12175:12193 Ordering.more_list <> split_list_app_cons thm
+R12195:12204 Ordering.list_permut Make eq_elt_dec def
+R12227:12236 Ordering.more_list <> split_list def
+R12238:12247 Ordering.list_permut Make eq_elt_dec def
+R12281:12287 Coq.Lists.List <> app_ass syndef
+R12306:12318 Coq.Lists.List <> app_comm_cons thm
+R12338:12358 Ordering.list_permut Make list_permut_remove_hd thm
+R12398:12404 Coq.Lists.List <> app_ass syndef
+R12429:12432 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R12662:12665 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R12227:12236 Ordering.more_list <> split_list def
+R12238:12247 Ordering.list_permut Make eq_elt_dec def
+R12281:12287 Coq.Lists.List <> app_ass syndef
+R12281:12287 Coq.Lists.List <> app_ass syndef
+R12306:12318 Coq.Lists.List <> app_comm_cons thm
+R12306:12318 Coq.Lists.List <> app_comm_cons thm
+R12338:12358 Ordering.list_permut Make list_permut_remove_hd thm
+R12398:12404 Coq.Lists.List <> app_ass syndef
+R12398:12404 Coq.Lists.List <> app_ass syndef
+R12429:12432 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R12662:12665 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R12765:12788 Ordering.list_permut Make context_list_permut_cons thm
+R12765:12788 Ordering.list_permut Make context_list_permut_cons thm
+R12806:12820 Ordering.list_permut Make list_permut_sym thm
+R12829:12855 Ordering.list_permut Make list_permut_add_cons_inside thm
+R12864:12878 Ordering.list_permut Make list_permut_sym thm
+R12806:12820 Ordering.list_permut Make list_permut_sym thm
+R12829:12855 Ordering.list_permut Make list_permut_add_cons_inside thm
+R12864:12878 Ordering.list_permut Make list_permut_sym thm
+R12901:12910 Ordering.more_list <> split_list def
+R12912:12921 Ordering.list_permut Make eq_elt_dec def
+R12958:12964 Coq.Lists.List <> app_ass syndef
+R12985:13005 Ordering.list_permut Make list_permut_remove_hd thm
+R13041:13047 Coq.Lists.List <> app_ass syndef
+R13075:13078 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R13316:13319 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R12901:12910 Ordering.more_list <> split_list def
+R12912:12921 Ordering.list_permut Make eq_elt_dec def
+R12958:12964 Coq.Lists.List <> app_ass syndef
+R12958:12964 Coq.Lists.List <> app_ass syndef
+R12985:13005 Ordering.list_permut Make list_permut_remove_hd thm
+R13041:13047 Coq.Lists.List <> app_ass syndef
+R13041:13047 Coq.Lists.List <> app_ass syndef
+R13075:13078 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R13316:13319 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R13380:13406 Ordering.list_permut Make list_permut_add_cons_inside thm
+R13380:13406 Ordering.list_permut Make list_permut_add_cons_inside thm
+R13424:13438 Ordering.list_permut Make list_permut_sym thm
+R13447:13473 Ordering.list_permut Make list_permut_add_cons_inside thm
+R13483:13497 Ordering.list_permut Make list_permut_sym thm
+R13424:13438 Ordering.list_permut Make list_permut_sym thm
+R13447:13473 Ordering.list_permut Make list_permut_add_cons_inside thm
+R13483:13497 Ordering.list_permut Make list_permut_sym thm
+prf 13521:13532 Make ac_syntactic
+R13559:13562 Coq.Init.Datatypes <> list ind
+R13564:13566 Ordering.list_permut Make elt def
+binder 13545:13546 <> l1:94
+binder 13548:13549 <> l2:95
+binder 13551:13552 <> l3:96
+binder 13554:13555 <> l4:97
+R13604:13609 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R13771:13771 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R13571:13581 Ordering.list_permut Make list_permut def
+R13597:13600 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R13595:13596 Ordering.list_permut <> l4:97 var
+R13601:13602 Ordering.list_permut <> l3:96 var
+R13586:13589 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R13584:13585 Ordering.list_permut <> l2:95 var
+R13590:13591 Ordering.list_permut <> l1:94 var
+R13610:13616 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R13619:13620 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+binder 13617:13618 <> u1:98
+R13621:13627 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R13630:13631 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+binder 13628:13629 <> u2:99
+R13632:13638 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R13641:13642 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+binder 13639:13640 <> u3:100
+R13643:13649 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R13652:13655 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+binder 13650:13651 <> u4:101
+R13681:13685 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R13656:13666 Ordering.list_permut Make list_permut def
+R13674:13677 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R13672:13673 Ordering.list_permut <> u1:98 var
+R13678:13679 Ordering.list_permut <> u2:99 var
+R13668:13669 Ordering.list_permut <> l1:94 var
+R13711:13715 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R13686:13696 Ordering.list_permut Make list_permut def
+R13704:13707 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R13702:13703 Ordering.list_permut <> u3:100 var
+R13708:13709 Ordering.list_permut <> u4:101 var
+R13698:13699 Ordering.list_permut <> l2:95 var
+R13741:13745 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R13716:13726 Ordering.list_permut Make list_permut def
+R13734:13737 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R13732:13733 Ordering.list_permut <> u1:98 var
+R13738:13739 Ordering.list_permut <> u3:100 var
+R13728:13729 Ordering.list_permut <> l3:96 var
+R13746:13756 Ordering.list_permut Make list_permut def
+R13764:13767 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R13762:13763 Ordering.list_permut <> u2:99 var
+R13768:13769 Ordering.list_permut <> u4:101 var
+R13758:13759 Ordering.list_permut <> l4:97 var
+R13809:13824 Ordering.list_permut Make ac_syntactic_aux thm
+R13809:13824 Ordering.list_permut Make ac_syntactic_aux thm
+R13859:13862 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R13833:13849 Ordering.list_permut Make list_permut_trans thm
+R13859:13862 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R13833:13849 Ordering.list_permut Make list_permut_trans thm
+R13874:13892 Ordering.list_permut Make list_permut_app_app thm
+R13874:13892 Ordering.list_permut Make list_permut_app_app thm
+R13927:13930 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R13901:13917 Ordering.list_permut Make list_permut_trans thm
+R13927:13930 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R13901:13917 Ordering.list_permut Make list_permut_trans thm
+R13951:13969 Ordering.list_permut Make list_permut_app_app thm
+R13951:13969 Ordering.list_permut Make list_permut_app_app thm
+prf 13984:13998 Make list_permut_dec
+binder 14009:14010 <> l1:102
+binder 14012:14013 <> l2:103
+R14016:14016 Coq.Init.Specif <> ::type_scope:'{'_x_'}'_'+'_'{'_x_'}' not
+R14034:14036 Coq.Init.Specif <> ::type_scope:'{'_x_'}'_'+'_'{'_x_'}' not
+R14055:14055 Coq.Init.Specif <> ::type_scope:'{'_x_'}'_'+'_'{'_x_'}' not
+R14017:14027 Ordering.list_permut Make list_permut def
+R14032:14033 Ordering.list_permut <> l2:103 var
+R14029:14030 Ordering.list_permut <> l1:102 var
+R14037:14037 Coq.Init.Logic <> ::type_scope:'~'_x not
+R14038:14048 Ordering.list_permut Make list_permut def
+R14053:14054 Ordering.list_permut <> l2:103 var
+R14050:14051 Ordering.list_permut <> l1:102 var
+R14142:14157 Ordering.list_permut Make list_permut_refl thm
+R14142:14157 Ordering.list_permut Make list_permut_refl thm
+R14189:14206 Ordering.list_permut Make list_permut_length thm
+R14189:14206 Ordering.list_permut Make list_permut_length thm
+R14246:14251 Coq.Lists.List <> In_dec syndef
+R14253:14262 Ordering.list_permut Make eq_elt_dec def
+R14246:14251 Coq.Lists.List <> In_dec syndef
+R14253:14262 Ordering.list_permut Make eq_elt_dec def
+R14313:14331 Ordering.more_list <> split_list_app_cons thm
+R14333:14342 Ordering.list_permut Make eq_elt_dec def
+R14385:14394 Ordering.more_list <> split_list def
+R14396:14405 Ordering.list_permut Make eq_elt_dec def
+R14313:14331 Ordering.more_list <> split_list_app_cons thm
+R14333:14342 Ordering.list_permut Make eq_elt_dec def
+R14385:14394 Ordering.more_list <> split_list def
+R14396:14405 Ordering.list_permut Make eq_elt_dec def
+R14462:14465 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R14462:14465 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R14498:14524 Ordering.list_permut Make list_permut_add_cons_inside thm
+R14498:14524 Ordering.list_permut Make list_permut_add_cons_inside thm
+R14568:14588 Ordering.list_permut Make list_permut_remove_hd thm
+R14568:14588 Ordering.list_permut Make list_permut_remove_hd thm
+R14671:14674 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R14650:14661 Ordering.list_permut Make in_permut_in thm
+R14671:14674 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R14650:14661 Ordering.list_permut Make in_permut_in thm
+R14714:14717 Ordering.list_permut Make <> mod

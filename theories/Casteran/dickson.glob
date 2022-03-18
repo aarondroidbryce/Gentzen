@@ -1,0 +1,800 @@
+DIGEST cf73e46ac8ee9a0497306db1bc0e320c
+FOrdering.dickson
+R208:216 Coq.Relations.Relations <> <> lib
+R234:244 Coq.Classes.Equivalence <> <> lib
+R262:265 Coq.Lists.List <> <> lib
+R297:303 Ordering.closure <> <> lib
+R335:343 Ordering.more_list <> <> lib
+R361:368 Coq.Sets.Multiset <> <> lib
+R400:410 Ordering.list_permut <> <> lib
+R433:447 Ordering.decidable_set S <> mod
+mod 421:424 <> Make
+R465:467 Ordering.dickson DS1 <> modtype
+mod 459:460 <> Make.DS
+R483:498 Ordering.list_permut Make <> modtype
+R501:503 Ordering.dickson DS1 <> modtype
+mod 477:478 <> Make.LP
+R514:515 Ordering.dickson Make.LP <> mod
+ind 591:613 Make multiset_extension_step
+constr 672:679 Make rmv_case
+R620:627 Coq.Relations.Relation_Definitions <> relation def
+R629:631 Ordering.dickson Make elt def
+binder 616:616 <> R:1
+R644:647 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R636:639 Coq.Init.Datatypes <> list ind
+R641:643 Ordering.dickson Make elt def
+R656:659 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R648:651 Coq.Init.Datatypes <> list ind
+R653:655 Ordering.dickson Make elt def
+binder 696:697 <> l1:4
+binder 699:700 <> l2:5
+binder 702:702 <> l:6
+binder 704:705 <> la:7
+binder 707:707 <> a:8
+R710:710 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R737:748 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+binder 718:718 <> b:9
+R728:731 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R721:722 Coq.Lists.List <> In def
+R726:727 Ordering.dickson <> la:7 var
+R724:724 Ordering.dickson <> b:9 var
+R732:732 Ordering.dickson <> R:1 var
+R734:734 Ordering.dickson <> b:9 var
+R736:736 Ordering.dickson <> a:8 var
+R773:776 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R749:759 Ordering.dickson Make list_permut def
+R767:770 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R765:766 Ordering.dickson <> la:7 var
+R771:771 Ordering.dickson <> l:6 var
+R761:762 Ordering.dickson <> l1:4 var
+R800:809 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R777:787 Ordering.dickson Make list_permut def
+R794:797 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R793:793 Ordering.dickson <> a:8 var
+R798:798 Ordering.dickson <> l:6 var
+R789:790 Ordering.dickson <> l2:5 var
+R810:832 Ordering.dickson <> multiset_extension_step:2 ind
+R839:840 Ordering.dickson <> l2:5 var
+R836:837 Ordering.dickson <> l1:4 var
+R834:834 Ordering.dickson <> R:1 var
+prf 1007:1015 Make two_cases
+binder 1027:1027 <> R:10
+binder 1029:1029 <> a:11
+binder 1031:1031 <> m:12
+binder 1033:1033 <> n:13
+R1074:1078 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1038:1060 Ordering.dickson Make multiset_extension_step ind
+R1068:1071 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R1067:1067 Ordering.dickson <> a:11 var
+R1072:1072 Ordering.dickson <> m:12 var
+R1064:1064 Ordering.dickson <> n:13 var
+R1062:1062 Ordering.dickson <> R:10 var
+R1079:1079 Coq.Init.Logic <> ::type_scope:x_'\/'_x not
+R1162:1168 Coq.Init.Logic <> ::type_scope:x_'\/'_x not
+R1245:1245 Coq.Init.Logic <> ::type_scope:x_'\/'_x not
+R1080:1086 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R1089:1090 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+binder 1087:1088 <> n':14
+R1114:1131 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R1091:1101 Ordering.dickson Make list_permut def
+R1107:1110 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R1106:1106 Ordering.dickson <> a:11 var
+R1111:1112 Ordering.dickson <> n':14 var
+R1103:1103 Ordering.dickson <> n:13 var
+R1132:1154 Ordering.dickson Make multiset_extension_step ind
+R1161:1161 Ordering.dickson <> m:12 var
+R1158:1159 Ordering.dickson <> n':14 var
+R1156:1156 Ordering.dickson <> R:10 var
+R1169:1175 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R1177:1178 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+binder 1176:1176 <> k:15
+R1179:1179 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R1205:1222 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+binder 1187:1187 <> b:16
+R1196:1199 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1190:1191 Coq.Lists.List <> In def
+R1195:1195 Ordering.dickson <> k:15 var
+R1193:1193 Ordering.dickson <> b:16 var
+R1200:1200 Ordering.dickson <> R:10 var
+R1202:1202 Ordering.dickson <> b:16 var
+R1204:1204 Ordering.dickson <> a:11 var
+R1223:1233 Ordering.dickson Make list_permut def
+R1239:1242 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R1238:1238 Ordering.dickson <> k:15 var
+R1243:1243 Ordering.dickson <> m:12 var
+R1235:1235 Ordering.dickson <> n:13 var
+R1325:1334 Ordering.dickson Make eq_elt_dec def
+R1325:1334 Ordering.dickson Make eq_elt_dec def
+R1379:1389 Ordering.dickson Make list_permut def
+R1379:1389 Ordering.dickson Make list_permut def
+R1403:1433 Ordering.dickson Make remove_context_list_permut_cons thm
+R1403:1433 Ordering.dickson Make remove_context_list_permut_cons thm
+R1544:1549 Coq.Lists.List <> In_dec syndef
+R1551:1560 Ordering.dickson Make eq_elt_dec def
+R1544:1549 Coq.Lists.List <> In_dec syndef
+R1551:1560 Ordering.dickson Make eq_elt_dec def
+R1594:1612 Ordering.more_list <> split_list_app_cons thm
+R1614:1623 Ordering.dickson Make eq_elt_dec def
+R1660:1669 Ordering.more_list <> split_list def
+R1671:1680 Ordering.dickson Make eq_elt_dec def
+R1594:1612 Ordering.more_list <> split_list_app_cons thm
+R1614:1623 Ordering.dickson Make eq_elt_dec def
+R1660:1669 Ordering.more_list <> split_list def
+R1671:1680 Ordering.dickson Make eq_elt_dec def
+R1716:1726 Ordering.dickson Make list_permut def
+R1730:1733 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R1736:1739 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R1716:1726 Ordering.dickson Make list_permut def
+R1730:1733 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R1736:1739 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R1754:1784 Ordering.dickson Make remove_context_list_permut_cons thm
+R1846:1858 Coq.Lists.List <> app_comm_cons thm
+R1867:1893 Ordering.dickson Make list_permut_add_cons_inside thm
+R1754:1784 Ordering.dickson Make remove_context_list_permut_cons thm
+R1846:1858 Coq.Lists.List <> app_comm_cons thm
+R1846:1858 Coq.Lists.List <> app_comm_cons thm
+R1846:1858 Coq.Lists.List <> app_comm_cons thm
+R1846:1858 Coq.Lists.List <> app_comm_cons thm
+R1867:1893 Ordering.dickson Make list_permut_add_cons_inside thm
+R1912:1915 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R1918:1921 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R1912:1915 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R1918:1921 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R1981:1995 Ordering.dickson Make list_permut_sym thm
+R2004:2030 Ordering.dickson Make list_permut_add_cons_inside thm
+R1981:1995 Ordering.dickson Make list_permut_sym thm
+R2004:2030 Ordering.dickson Make list_permut_add_cons_inside thm
+R2046:2053 Ordering.dickson Make rmv_case constr
+R2105:2108 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R2084:2087 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R2090:2093 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R2062:2065 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R2068:2071 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R2135:2149 Ordering.dickson Make list_permut_sym thm
+R2158:2184 Ordering.dickson Make list_permut_add_cons_inside thm
+R2046:2053 Ordering.dickson Make rmv_case constr
+R2105:2108 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R2084:2087 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R2090:2093 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R2062:2065 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R2068:2071 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R2135:2149 Ordering.dickson Make list_permut_sym thm
+R2158:2184 Ordering.dickson Make list_permut_add_cons_inside thm
+R2202:2203 Coq.Lists.List <> In def
+R2210:2213 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R2202:2203 Coq.Lists.List <> In def
+R2210:2213 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R2277:2279 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2294:2295 Coq.Lists.List <> In def
+R2277:2279 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2294:2295 Coq.Lists.List <> In def
+prf 2426:2462 Make list_permut_multiset_extension_step_1
+binder 2475:2475 <> R:17
+binder 2477:2478 <> l1:18
+binder 2480:2481 <> l2:19
+binder 2483:2483 <> l:20
+R2503:2509 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2486:2496 Ordering.dickson Make list_permut def
+R2501:2502 Ordering.dickson <> l2:19 var
+R2498:2499 Ordering.dickson <> l1:18 var
+R2540:2543 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2510:2532 Ordering.dickson Make multiset_extension_step ind
+R2539:2539 Ordering.dickson <> l:20 var
+R2536:2537 Ordering.dickson <> l1:18 var
+R2534:2534 Ordering.dickson <> R:17 var
+R2544:2566 Ordering.dickson Make multiset_extension_step ind
+R2573:2573 Ordering.dickson <> l:20 var
+R2570:2571 Ordering.dickson <> l2:19 var
+R2568:2568 Ordering.dickson <> R:17 var
+R2634:2641 Ordering.dickson Make rmv_case constr
+R2634:2641 Ordering.dickson Make rmv_case constr
+prf 2728:2764 Make list_permut_multiset_extension_step_2
+binder 2777:2777 <> R:21
+binder 2779:2780 <> l1:22
+binder 2782:2783 <> l2:23
+binder 2785:2785 <> l:24
+R2805:2811 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2788:2798 Ordering.dickson Make list_permut def
+R2803:2804 Ordering.dickson <> l2:23 var
+R2800:2801 Ordering.dickson <> l1:22 var
+R2842:2845 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2812:2834 Ordering.dickson Make multiset_extension_step ind
+R2840:2841 Ordering.dickson <> l1:22 var
+R2838:2838 Ordering.dickson <> l:24 var
+R2836:2836 Ordering.dickson <> R:21 var
+R2846:2868 Ordering.dickson Make multiset_extension_step ind
+R2874:2875 Ordering.dickson <> l2:23 var
+R2872:2872 Ordering.dickson <> l:24 var
+R2870:2870 Ordering.dickson <> R:21 var
+R2936:2943 Ordering.dickson Make rmv_case constr
+R2936:2943 Ordering.dickson Make rmv_case constr
+prf 3030:3065 Make context_multiset_extension_step_app1
+binder 3078:3078 <> R:25
+binder 3080:3081 <> l1:26
+binder 3083:3084 <> l2:27
+binder 3086:3086 <> l:28
+R3120:3148 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3089:3111 Ordering.dickson Make multiset_extension_step ind
+R3118:3119 Ordering.dickson <> l2:27 var
+R3115:3116 Ordering.dickson <> l1:26 var
+R3113:3113 Ordering.dickson <> R:25 var
+R3149:3171 Ordering.dickson Make multiset_extension_step ind
+R3187:3190 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R3186:3186 Ordering.dickson <> l:28 var
+R3191:3192 Ordering.dickson <> l2:27 var
+R3177:3180 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R3176:3176 Ordering.dickson <> l:28 var
+R3181:3182 Ordering.dickson <> l1:26 var
+R3173:3173 Ordering.dickson <> R:25 var
+R3271:3278 Ordering.dickson Make rmv_case constr
+R3284:3285 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R3292:3293 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R3300:3301 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R3271:3278 Ordering.dickson Make rmv_case constr
+R3284:3285 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R3292:3293 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R3300:3301 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R3354:3357 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R3360:3363 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R3329:3345 Ordering.dickson Make list_permut_trans thm
+R3354:3357 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R3360:3363 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R3329:3345 Ordering.dickson Make list_permut_trans thm
+R3376:3399 Ordering.dickson Make context_list_permut_app1 thm
+R3376:3399 Ordering.dickson Make context_list_permut_app1 thm
+R3427:3433 Coq.Lists.List <> app_ass syndef
+R3442:3465 Ordering.dickson Make context_list_permut_app2 thm
+R3427:3433 Coq.Lists.List <> app_ass syndef
+R3427:3433 Coq.Lists.List <> app_ass syndef
+R3427:3433 Coq.Lists.List <> app_ass syndef
+R3427:3433 Coq.Lists.List <> app_ass syndef
+R3442:3465 Ordering.dickson Make context_list_permut_app2 thm
+R3483:3501 Ordering.dickson Make list_permut_app_app thm
+R3483:3501 Ordering.dickson Make list_permut_app_app thm
+R3535:3538 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R3540:3543 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R3510:3526 Ordering.dickson Make list_permut_trans thm
+R3535:3538 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R3540:3543 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R3510:3526 Ordering.dickson Make list_permut_trans thm
+R3556:3579 Ordering.dickson Make context_list_permut_app1 thm
+R3556:3579 Ordering.dickson Make context_list_permut_app1 thm
+R3597:3611 Ordering.dickson Make list_permut_sym thm
+R3620:3646 Ordering.dickson Make list_permut_add_cons_inside thm
+R3656:3671 Ordering.dickson Make list_permut_refl thm
+R3597:3611 Ordering.dickson Make list_permut_sym thm
+R3620:3646 Ordering.dickson Make list_permut_add_cons_inside thm
+R3656:3671 Ordering.dickson Make list_permut_refl thm
+prf 3686:3732 Make context_trans_clos_multiset_extension_step_app1
+binder 3745:3745 <> R:29
+binder 3747:3748 <> l1:30
+binder 3750:3751 <> l2:31
+binder 3753:3753 <> l:32
+R3800:3828 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3756:3765 Ordering.closure <> trans_clos ind
+R3798:3799 Ordering.dickson <> l2:31 var
+R3795:3796 Ordering.dickson <> l1:30 var
+R3768:3790 Ordering.dickson Make multiset_extension_step ind
+R3792:3792 Ordering.dickson <> R:29 var
+R3829:3838 Ordering.closure <> trans_clos ind
+R3880:3883 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R3879:3879 Ordering.dickson <> l:32 var
+R3884:3885 Ordering.dickson <> l2:31 var
+R3870:3873 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R3869:3869 Ordering.dickson <> l:32 var
+R3874:3875 Ordering.dickson <> l1:30 var
+R3841:3863 Ordering.dickson Make multiset_extension_step ind
+R3865:3865 Ordering.dickson <> R:29 var
+R3935:3940 Ordering.closure <> t_step constr
+R3949:3984 Ordering.dickson Make context_multiset_extension_step_app1 thm
+R3935:3940 Ordering.closure <> t_step constr
+R3949:3984 Ordering.dickson Make context_multiset_extension_step_app1 thm
+R4017:4020 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R4002:4008 Ordering.closure <> t_trans constr
+R4017:4020 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R4002:4008 Ordering.closure <> t_trans constr
+R4040:4075 Ordering.dickson Make context_multiset_extension_step_app1 thm
+R4040:4075 Ordering.dickson Make context_multiset_extension_step_app1 thm
+prf 4099:4134 Make context_multiset_extension_step_app2
+binder 4147:4147 <> R:33
+binder 4149:4150 <> l1:34
+binder 4152:4153 <> l2:35
+binder 4155:4155 <> l:36
+R4189:4217 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4158:4180 Ordering.dickson Make multiset_extension_step ind
+R4187:4188 Ordering.dickson <> l2:35 var
+R4184:4185 Ordering.dickson <> l1:34 var
+R4182:4182 Ordering.dickson <> R:33 var
+R4218:4240 Ordering.dickson Make multiset_extension_step ind
+R4257:4260 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R4255:4256 Ordering.dickson <> l2:35 var
+R4261:4261 Ordering.dickson <> l:36 var
+R4247:4250 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R4245:4246 Ordering.dickson <> l1:34 var
+R4251:4251 Ordering.dickson <> l:36 var
+R4242:4242 Ordering.dickson <> R:33 var
+R4340:4347 Ordering.dickson Make rmv_case constr
+R4354:4355 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R4362:4363 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R4371:4372 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R4340:4347 Ordering.dickson Make rmv_case constr
+R4354:4355 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R4362:4363 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R4371:4372 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R4403:4409 Coq.Lists.List <> app_ass syndef
+R4418:4441 Ordering.dickson Make context_list_permut_app2 thm
+R4403:4409 Coq.Lists.List <> app_ass syndef
+R4403:4409 Coq.Lists.List <> app_ass syndef
+R4418:4441 Ordering.dickson Make context_list_permut_app2 thm
+R4461:4473 Coq.Lists.List <> app_comm_cons thm
+R4482:4505 Ordering.dickson Make context_list_permut_app2 thm
+R4461:4473 Coq.Lists.List <> app_comm_cons thm
+R4461:4473 Coq.Lists.List <> app_comm_cons thm
+R4482:4505 Ordering.dickson Make context_list_permut_app2 thm
+prf 4529:4548 Make Relation_equiv_lists
+R4568:4575 Coq.Relations.Relation_Definitions <> relation def
+R4577:4579 Ordering.dickson Make elt def
+binder 4560:4561 <> R1:37
+binder 4563:4564 <> R2:38
+R4591:4594 Coq.Init.Datatypes <> list ind
+R4596:4598 Ordering.dickson Make elt def
+binder 4583:4584 <> l1:39
+binder 4586:4587 <> l2:40
+R4644:4647 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4602:4637 Coq.Classes.RelationClasses <> relation_equivalence def
+R4639:4640 Ordering.dickson <> R1:37 var
+R4642:4643 Ordering.dickson <> R2:38 var
+R4680:4682 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R4648:4670 Ordering.dickson Make multiset_extension_step ind
+R4678:4679 Ordering.dickson <> l2:40 var
+R4675:4676 Ordering.dickson <> l1:39 var
+R4672:4673 Ordering.dickson <> R1:37 var
+R4683:4705 Ordering.dickson Make multiset_extension_step ind
+R4714:4715 Ordering.dickson <> l2:40 var
+R4710:4711 Ordering.dickson <> l1:39 var
+R4707:4708 Ordering.dickson <> R2:38 var
+R4774:4796 Ordering.dickson Make multiset_extension_step ind
+R4805:4807 Coq.Init.Datatypes <> nil constr
+R4801:4803 Coq.Init.Datatypes <> nil constr
+R4774:4796 Ordering.dickson Make multiset_extension_step ind
+R4805:4807 Coq.Init.Datatypes <> nil constr
+R4801:4803 Coq.Init.Datatypes <> nil constr
+binder 4826:4826 <> a:41
+binder 4828:4828 <> b:42
+R4839:4842 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4831:4832 Coq.Lists.List <> In def
+R4836:4838 Coq.Init.Datatypes <> nil constr
+R4834:4834 Ordering.dickson <> b:42 var
+R4846:4846 Ordering.dickson <> b:42 var
+R4848:4848 Ordering.dickson <> a:41 var
+binder 4826:4826 <> a:43
+binder 4828:4828 <> b:44
+R4839:4842 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4831:4832 Coq.Lists.List <> In def
+R4836:4838 Coq.Init.Datatypes <> nil constr
+R4834:4834 Ordering.dickson <> b:44 var
+R4846:4846 Ordering.dickson <> b:44 var
+R4848:4848 Ordering.dickson <> a:43 var
+binder 4869:4869 <> a:45
+R4874:4881 Ordering.dickson Make rmv_case constr
+R4930:4930 Ordering.dickson <> a:45 var
+R4887:4887 Ordering.dickson <> a:45 var
+R4922:4924 Coq.Init.Datatypes <> nil constr
+R4894:4896 Coq.Init.Datatypes <> nil constr
+R4914:4916 Coq.Init.Datatypes <> nil constr
+R4904:4906 Coq.Init.Datatypes <> nil constr
+binder 4869:4869 <> a:46
+R4874:4881 Ordering.dickson Make rmv_case constr
+R4930:4930 Ordering.dickson <> a:46 var
+R4887:4887 Ordering.dickson <> a:46 var
+R4922:4924 Coq.Init.Datatypes <> nil constr
+R4894:4896 Coq.Init.Datatypes <> nil constr
+R4914:4916 Coq.Init.Datatypes <> nil constr
+R4904:4906 Coq.Init.Datatypes <> nil constr
+R4943:4950 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R4958:4960 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R4955:4957 Ordering.dickson Make elt def
+binder 4951:4951 <> a:47
+R4962:4964 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R4961:4961 Ordering.dickson <> a:47 var
+R4965:4965 Ordering.dickson <> a:47 var
+R4943:4950 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R4958:4960 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R4955:4957 Ordering.dickson Make elt def
+binder 4951:4951 <> a:48
+R4962:4964 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R4961:4961 Ordering.dickson <> a:48 var
+R4965:4965 Ordering.dickson <> a:48 var
+R5053:5075 Ordering.dickson Make multiset_extension_step ind
+R5173:5209 Ordering.dickson Make list_permut_multiset_extension_step_2 thm
+R5173:5209 Ordering.dickson Make list_permut_multiset_extension_step_2 thm
+R5235:5271 Ordering.dickson Make list_permut_multiset_extension_step_1 thm
+R5235:5271 Ordering.dickson Make list_permut_multiset_extension_step_1 thm
+R5300:5319 Ordering.dickson Make Relation_equiv_lists prfax
+R5300:5319 Ordering.dickson Make Relation_equiv_lists prfax
+R5300:5319 Ordering.dickson Make Relation_equiv_lists prfax
+R5300:5319 Ordering.dickson Make Relation_equiv_lists prfax
+R5353:5388 Coq.Classes.RelationClasses <> relation_equivalence def
+R5402:5438 Coq.Classes.RelationClasses <> predicate_equivalence def
+R5527:5563 Ordering.dickson Make list_permut_multiset_extension_step_2 thm
+R5586:5622 Ordering.dickson Make list_permut_multiset_extension_step_1 thm
+R5527:5563 Ordering.dickson Make list_permut_multiset_extension_step_2 thm
+R5586:5622 Ordering.dickson Make list_permut_multiset_extension_step_1 thm
+R5648:5667 Ordering.dickson Make Relation_equiv_lists prfax
+R5648:5667 Ordering.dickson Make Relation_equiv_lists prfax
+R5648:5667 Ordering.dickson Make Relation_equiv_lists prfax
+R5648:5667 Ordering.dickson Make Relation_equiv_lists prfax
+prf 5740:5754 Make list_permut_acc
+binder 5767:5767 <> R:49
+binder 5769:5770 <> l1:50
+binder 5772:5773 <> l2:51
+R5793:5799 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R5776:5786 Ordering.dickson Make list_permut def
+R5791:5792 Ordering.dickson <> l1:50 var
+R5788:5789 Ordering.dickson <> l2:51 var
+R5834:5837 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R5800:5802 Coq.Init.Wf <> Acc ind
+R5832:5833 Ordering.dickson <> l1:50 var
+R5805:5827 Ordering.dickson Make multiset_extension_step ind
+R5829:5829 Ordering.dickson <> R:49 var
+R5838:5840 Coq.Init.Wf <> Acc ind
+R5870:5871 Ordering.dickson <> l2:51 var
+R5843:5865 Ordering.dickson Make multiset_extension_step ind
+R5867:5867 Ordering.dickson <> R:49 var
+R5910:5918 Coq.Init.Wf <> Acc_intro constr
+R5910:5918 Coq.Init.Wf <> Acc_intro constr
+prf 6282:6293 Make dickson_aux1
+R6309:6316 Coq.Relations.Relation_Definitions <> relation def
+R6318:6320 Ordering.dickson Make elt def
+binder 6305:6305 <> R:52
+binder 6323:6323 <> a:53
+R6327:6327 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R6450:6455 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+binder 6335:6335 <> b:54
+R6343:6349 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R6338:6338 Ordering.dickson <> R:52 var
+R6340:6340 Ordering.dickson <> b:54 var
+R6342:6342 Ordering.dickson <> a:53 var
+binder 6357:6357 <> m:55
+R6393:6409 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R6360:6362 Coq.Init.Wf <> Acc ind
+R6392:6392 Ordering.dickson <> m:55 var
+R6365:6387 Ordering.dickson Make multiset_extension_step ind
+R6389:6389 Ordering.dickson <> R:52 var
+R6410:6412 Coq.Init.Wf <> Acc ind
+R6444:6447 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R6443:6443 Ordering.dickson <> b:54 var
+R6448:6448 Ordering.dickson <> m:55 var
+R6415:6437 Ordering.dickson Make multiset_extension_step ind
+R6439:6439 Ordering.dickson <> R:52 var
+binder 6463:6463 <> m:56
+R6499:6504 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R6466:6468 Coq.Init.Wf <> Acc ind
+R6498:6498 Ordering.dickson <> m:56 var
+R6471:6493 Ordering.dickson Make multiset_extension_step ind
+R6495:6495 Ordering.dickson <> R:52 var
+R6505:6505 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R6608:6613 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+binder 6513:6514 <> m':57
+R6549:6566 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R6518:6540 Ordering.dickson Make multiset_extension_step ind
+R6542:6542 Ordering.dickson <> R:52 var
+R6545:6546 Ordering.dickson <> m':57 var
+R6548:6548 Ordering.dickson <> m:56 var
+R6567:6569 Coq.Init.Wf <> Acc ind
+R6601:6604 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R6600:6600 Ordering.dickson <> a:53 var
+R6605:6606 Ordering.dickson <> m':57 var
+R6572:6594 Ordering.dickson Make multiset_extension_step ind
+R6596:6596 Ordering.dickson <> R:52 var
+R6614:6616 Coq.Init.Wf <> Acc ind
+R6648:6651 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R6647:6647 Ordering.dickson <> a:53 var
+R6652:6652 Ordering.dickson <> m:56 var
+R6619:6641 Ordering.dickson Make multiset_extension_step ind
+R6643:6643 Ordering.dickson <> R:52 var
+R6702:6710 Coq.Init.Wf <> Acc_intro constr
+R6731:6739 Ordering.dickson Make two_cases thm
+R6702:6710 Coq.Init.Wf <> Acc_intro constr
+R6731:6739 Ordering.dickson Make two_cases thm
+R6781:6795 Ordering.dickson Make list_permut_acc thm
+R6781:6795 Ordering.dickson Make list_permut_acc thm
+R6851:6865 Ordering.dickson Make list_permut_acc thm
+R6851:6865 Ordering.dickson Make list_permut_acc thm
+prf 7004:7015 Make dickson_aux2
+binder 7026:7026 <> R:58
+binder 7028:7028 <> m:59
+R7066:7071 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7033:7035 Coq.Init.Wf <> Acc ind
+R7065:7065 Ordering.dickson <> m:59 var
+R7038:7060 Ordering.dickson Make multiset_extension_step ind
+R7062:7062 Ordering.dickson <> R:58 var
+binder 7079:7079 <> a:60
+R7082:7082 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7227:7234 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+binder 7090:7090 <> b:61
+R7098:7115 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7093:7093 Ordering.dickson <> R:58 var
+R7095:7095 Ordering.dickson <> b:61 var
+R7097:7097 Ordering.dickson <> a:60 var
+binder 7123:7123 <> m:62
+R7159:7186 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7126:7128 Coq.Init.Wf <> Acc ind
+R7158:7158 Ordering.dickson <> m:62 var
+R7131:7153 Ordering.dickson Make multiset_extension_step ind
+R7155:7155 Ordering.dickson <> R:58 var
+R7187:7189 Coq.Init.Wf <> Acc ind
+R7221:7224 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R7220:7220 Ordering.dickson <> b:61 var
+R7225:7225 Ordering.dickson <> m:62 var
+R7192:7214 Ordering.dickson Make multiset_extension_step ind
+R7216:7216 Ordering.dickson <> R:58 var
+R7235:7237 Coq.Init.Wf <> Acc ind
+R7269:7272 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R7268:7268 Ordering.dickson <> a:60 var
+R7273:7273 Ordering.dickson <> m:59 var
+R7240:7262 Ordering.dickson Make multiset_extension_step ind
+R7264:7264 Ordering.dickson <> R:58 var
+R7318:7325 Coq.Init.Wf <> Acc_iter syndef
+binder 7365:7365 <> m:63
+R7403:7407 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7370:7372 Coq.Init.Wf <> Acc ind
+R7402:7402 Ordering.dickson <> m:63 var
+R7375:7397 Ordering.dickson Make multiset_extension_step ind
+R7408:7410 Coq.Init.Wf <> Acc ind
+R7442:7445 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R7446:7446 Ordering.dickson <> m:63 var
+R7413:7435 Ordering.dickson Make multiset_extension_step ind
+R7333:7355 Ordering.dickson Make multiset_extension_step ind
+R7500:7511 Ordering.dickson Make dickson_aux1 thm
+R7555:7561 Coq.Init.Wf <> Acc_inv thm
+R7318:7325 Coq.Init.Wf <> Acc_iter syndef
+binder 7365:7365 <> m:64
+R7403:7407 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7370:7372 Coq.Init.Wf <> Acc ind
+R7402:7402 Ordering.dickson <> m:64 var
+R7375:7397 Ordering.dickson Make multiset_extension_step ind
+R7408:7410 Coq.Init.Wf <> Acc ind
+R7442:7445 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R7446:7446 Ordering.dickson <> m:64 var
+R7413:7435 Ordering.dickson Make multiset_extension_step ind
+R7333:7355 Ordering.dickson Make multiset_extension_step ind
+R7500:7511 Ordering.dickson Make dickson_aux1 thm
+R7555:7561 Coq.Init.Wf <> Acc_inv thm
+prf 7592:7603 Make dickson_aux3
+binder 7614:7614 <> R:65
+binder 7616:7616 <> a:66
+R7626:7629 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7619:7621 Coq.Init.Wf <> Acc ind
+R7625:7625 Ordering.dickson <> a:66 var
+R7623:7623 Ordering.dickson <> R:65 var
+binder 7637:7637 <> m:67
+R7673:7676 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7640:7642 Coq.Init.Wf <> Acc ind
+R7672:7672 Ordering.dickson <> m:67 var
+R7645:7667 Ordering.dickson Make multiset_extension_step ind
+R7669:7669 Ordering.dickson <> R:65 var
+R7677:7679 Coq.Init.Wf <> Acc ind
+R7711:7714 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R7710:7710 Ordering.dickson <> a:66 var
+R7715:7715 Ordering.dickson <> m:67 var
+R7682:7704 Ordering.dickson Make multiset_extension_step ind
+R7706:7706 Ordering.dickson <> R:65 var
+R7751:7758 Coq.Init.Wf <> Acc_iter syndef
+binder 7774:7774 <> a:68
+R7786:7789 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7779:7781 Coq.Init.Wf <> Acc ind
+R7785:7785 Ordering.dickson <> a:68 var
+binder 7797:7797 <> m:69
+R7833:7837 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7800:7802 Coq.Init.Wf <> Acc ind
+R7832:7832 Ordering.dickson <> m:69 var
+R7805:7827 Ordering.dickson Make multiset_extension_step ind
+R7838:7840 Coq.Init.Wf <> Acc ind
+R7872:7875 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R7871:7871 Ordering.dickson <> a:68 var
+R7876:7876 Ordering.dickson <> m:69 var
+R7843:7865 Ordering.dickson Make multiset_extension_step ind
+R7938:7949 Ordering.dickson Make dickson_aux2 thm
+R7993:7999 Coq.Init.Wf <> Acc_inv thm
+R7751:7758 Coq.Init.Wf <> Acc_iter syndef
+binder 7774:7774 <> a:70
+R7786:7789 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7779:7781 Coq.Init.Wf <> Acc ind
+R7785:7785 Ordering.dickson <> a:70 var
+binder 7797:7797 <> m:71
+R7833:7837 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7800:7802 Coq.Init.Wf <> Acc ind
+R7832:7832 Ordering.dickson <> m:71 var
+R7805:7827 Ordering.dickson Make multiset_extension_step ind
+R7838:7840 Coq.Init.Wf <> Acc ind
+R7872:7875 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R7871:7871 Ordering.dickson <> a:70 var
+R7876:7876 Ordering.dickson <> m:71 var
+R7843:7865 Ordering.dickson Make multiset_extension_step ind
+R7938:7949 Ordering.dickson Make dickson_aux2 thm
+R7993:7999 Coq.Init.Wf <> Acc_inv thm
+prf 8049:8055 Make dickson
+binder 8069:8069 <> R:72
+R8086:8089 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R8072:8083 Coq.Init.Wf <> well_founded def
+R8085:8085 Ordering.dickson <> R:72 var
+R8090:8101 Coq.Init.Wf <> well_founded def
+R8104:8126 Ordering.dickson Make multiset_extension_step ind
+R8128:8128 Ordering.dickson <> R:72 var
+R8161:8172 Coq.Init.Wf <> well_founded def
+R8221:8229 Coq.Init.Wf <> Acc_intro constr
+R8277:8279 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R8272:8275 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8280:8282 Coq.Init.Datatypes <> nil constr
+R8309:8323 Ordering.dickson Make list_permut_nil thm
+R8221:8229 Coq.Init.Wf <> Acc_intro constr
+R8277:8279 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R8272:8275 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8280:8282 Coq.Init.Datatypes <> nil constr
+R8309:8323 Ordering.dickson Make list_permut_nil thm
+R8358:8369 Ordering.dickson Make dickson_aux3 thm
+R8358:8369 Ordering.dickson Make dickson_aux3 thm
+prf 8393:8408 Make multiset_closure
+binder 8421:8421 <> R:73
+binder 8423:8423 <> p:74
+binder 8425:8425 <> q:75
+R8442:8447 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R8428:8437 Coq.Relations.Relation_Definitions <> transitive def
+R8441:8441 Ordering.dickson <> R:73 var
+R8498:8503 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R8448:8465 Ordering.closure <> trans_clos ind
+R8497:8497 Ordering.dickson <> q:75 var
+R8495:8495 Ordering.dickson <> p:74 var
+R8468:8490 Ordering.dickson Make multiset_extension_step ind
+R8492:8492 Ordering.dickson <> R:73 var
+R8504:8510 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R8513:8514 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+binder 8511:8512 <> p':76
+R8515:8521 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R8524:8525 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+binder 8522:8523 <> q':77
+R8526:8532 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R8535:8540 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+binder 8533:8534 <> pq:78
+R8565:8572 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R8541:8551 Ordering.dickson Make list_permut def
+R8558:8561 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R8556:8557 Ordering.dickson <> p':76 var
+R8562:8563 Ordering.dickson <> pq:78 var
+R8553:8553 Ordering.dickson <> p:74 var
+R8597:8604 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R8573:8583 Ordering.dickson Make list_permut def
+R8590:8593 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R8588:8589 Ordering.dickson <> q':77 var
+R8594:8595 Ordering.dickson <> pq:78 var
+R8585:8585 Ordering.dickson <> q:75 var
+R8614:8622 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R8670:8670 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R8607:8610 Coq.Init.Logic <> ::type_scope:x_'<>'_x not
+R8605:8606 Ordering.dickson <> q':77 var
+R8611:8613 Coq.Init.Datatypes <> nil constr
+binder 8630:8630 <> a:79
+R8640:8643 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R8633:8634 Coq.Lists.List <> In def
+R8638:8639 Ordering.dickson <> p':76 var
+R8636:8636 Ordering.dickson <> a:79 var
+R8644:8650 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R8652:8653 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+binder 8651:8651 <> b:80
+R8661:8664 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R8654:8655 Coq.Lists.List <> In def
+R8659:8660 Ordering.dickson <> q':77 var
+R8657:8657 Ordering.dickson <> b:80 var
+R8665:8665 Ordering.dickson <> R:73 var
+R8667:8667 Ordering.dickson <> a:79 var
+R8669:8669 Ordering.dickson <> b:80 var
+R8827:8830 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8831:8833 Coq.Init.Datatypes <> nil constr
+R8827:8830 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8831:8833 Coq.Init.Datatypes <> nil constr
+R9151:9152 Coq.Lists.List <> In def
+R9159:9162 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R9151:9152 Coq.Lists.List <> In def
+R9159:9162 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R9175:9186 Ordering.dickson Make in_permut_in thm
+R9175:9186 Ordering.dickson Make in_permut_in thm
+R9231:9234 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R9211:9222 Ordering.dickson Make in_permut_in thm
+R9254:9268 Ordering.dickson Make list_permut_sym thm
+R9231:9234 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R9211:9222 Ordering.dickson Make in_permut_in thm
+R9254:9268 Ordering.dickson Make list_permut_sym thm
+R9291:9299 Coq.Lists.List <> in_app_or thm
+R9291:9299 Coq.Lists.List <> in_app_or thm
+R9373:9391 Ordering.more_list <> split_list_app_cons thm
+R9393:9402 Ordering.dickson Make eq_elt_dec def
+R9429:9438 Ordering.more_list <> split_list def
+R9440:9449 Ordering.dickson Make eq_elt_dec def
+R9373:9391 Ordering.more_list <> split_list_app_cons thm
+R9393:9402 Ordering.dickson Make eq_elt_dec def
+R9429:9438 Ordering.more_list <> split_list def
+R9440:9449 Ordering.dickson Make eq_elt_dec def
+R9495:9498 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R9502:9505 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R9495:9498 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R9502:9505 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R9549:9565 Ordering.dickson Make list_permut_trans thm
+R9549:9565 Ordering.dickson Make list_permut_trans thm
+R9587:9593 Coq.Lists.List <> app_ass syndef
+R9602:9625 Ordering.dickson Make context_list_permut_app1 thm
+R9587:9593 Coq.Lists.List <> app_ass syndef
+R9587:9593 Coq.Lists.List <> app_ass syndef
+R9587:9593 Coq.Lists.List <> app_ass syndef
+R9587:9593 Coq.Lists.List <> app_ass syndef
+R9602:9625 Ordering.dickson Make context_list_permut_app1 thm
+R9634:9654 Ordering.dickson Make list_permut_remove_hd thm
+R9634:9654 Ordering.dickson Make list_permut_remove_hd thm
+R9672:9688 Ordering.dickson Make list_permut_trans thm
+R9691:9705 Ordering.dickson Make list_permut_sym thm
+R9672:9688 Ordering.dickson Make list_permut_trans thm
+R9691:9705 Ordering.dickson Make list_permut_sym thm
+R9723:9735 Coq.Lists.List <> app_comm_cons thm
+R9749:9755 Coq.Lists.List <> app_ass syndef
+R9723:9735 Coq.Lists.List <> app_comm_cons thm
+R9723:9735 Coq.Lists.List <> app_comm_cons thm
+R9749:9755 Coq.Lists.List <> app_ass syndef
+R9749:9755 Coq.Lists.List <> app_ass syndef
+R9836:9844 Coq.Lists.List <> in_app_or thm
+R9942:9950 Coq.Lists.List <> in_app_or thm
+R9836:9844 Coq.Lists.List <> in_app_or thm
+R9942:9950 Coq.Lists.List <> in_app_or thm
+R10177:10185 Coq.Lists.List <> in_or_app thm
+R10177:10185 Coq.Lists.List <> in_or_app thm
+R10225:10233 Coq.Lists.List <> in_or_app thm
+R10225:10233 Coq.Lists.List <> in_or_app thm
+R10272:10290 Ordering.more_list <> split_list_app_cons thm
+R10292:10301 Ordering.dickson Make eq_elt_dec def
+R10328:10337 Ordering.more_list <> split_list def
+R10339:10348 Ordering.dickson Make eq_elt_dec def
+R10272:10290 Ordering.more_list <> split_list_app_cons thm
+R10292:10301 Ordering.dickson Make eq_elt_dec def
+R10328:10337 Ordering.more_list <> split_list def
+R10339:10348 Ordering.dickson Make eq_elt_dec def
+R10394:10397 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R10412:10415 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R10432:10435 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R10394:10397 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R10412:10415 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R10432:10435 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R10457:10473 Ordering.dickson Make list_permut_trans thm
+R10457:10473 Ordering.dickson Make list_permut_trans thm
+R10490:10496 Coq.Lists.List <> app_ass syndef
+R10505:10528 Ordering.dickson Make context_list_permut_app1 thm
+R10490:10496 Coq.Lists.List <> app_ass syndef
+R10490:10496 Coq.Lists.List <> app_ass syndef
+R10505:10528 Ordering.dickson Make context_list_permut_app1 thm
+R10542:10548 Coq.Lists.List <> app_ass syndef
+R10557:10577 Ordering.dickson Make list_permut_remove_hd thm
+R10542:10548 Coq.Lists.List <> app_ass syndef
+R10542:10548 Coq.Lists.List <> app_ass syndef
+R10557:10577 Ordering.dickson Make list_permut_remove_hd thm
+R10595:10611 Ordering.dickson Make list_permut_trans thm
+R10614:10628 Ordering.dickson Make list_permut_sym thm
+R10595:10611 Ordering.dickson Make list_permut_trans thm
+R10614:10628 Ordering.dickson Make list_permut_sym thm
+R10646:10652 Coq.Lists.List <> app_ass syndef
+R10646:10652 Coq.Lists.List <> app_ass syndef
+R10646:10652 Coq.Lists.List <> app_ass syndef
+R10679:10695 Ordering.dickson Make list_permut_trans thm
+R10715:10721 Coq.Lists.List <> app_ass syndef
+R10730:10744 Ordering.dickson Make list_permut_sym thm
+R10760:10786 Ordering.dickson Make list_permut_add_cons_inside thm
+R10797:10803 Coq.Lists.List <> ass_app syndef
+R10812:10827 Ordering.dickson Make list_permut_refl thm
+R10679:10695 Ordering.dickson Make list_permut_trans thm
+R10715:10721 Coq.Lists.List <> app_ass syndef
+R10715:10721 Coq.Lists.List <> app_ass syndef
+R10730:10744 Ordering.dickson Make list_permut_sym thm
+R10760:10786 Ordering.dickson Make list_permut_add_cons_inside thm
+R10797:10803 Coq.Lists.List <> ass_app syndef
+R10797:10803 Coq.Lists.List <> ass_app syndef
+R10812:10827 Ordering.dickson Make list_permut_refl thm
+R10883:10891 Coq.Lists.List <> in_app_or thm
+R10883:10891 Coq.Lists.List <> in_app_or thm
+R12144:12147 Ordering.dickson Make <> mod
