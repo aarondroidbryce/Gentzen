@@ -444,3 +444,14 @@ Proof.
 intros. case_eq (eq_nat n m); intros; auto.
 apply eq_nat_symm in H0. rewrite H0 in H. inversion H.
 Qed.
+
+Lemma nat_2_exp_help : forall n m, 2 ^ S (S n) = S m -> S (S n) < m.
+Proof.
+intros n. induction n.
+- intros. inversion H. auto.
+- intros. destruct m. pose (nat_2_exp_succ_not_one (S (S n))). lia.
+  assert ((S (S m)) = 2^(S (S n)) + 2^(S (S n))). simpl. simpl in H. lia.
+  case (2^(S ( S n))) eqn:X. inversion H0.
+  assert (n0 + n0 = m). lia.
+  pose (IHn n0 (nat_eq_decid _ _(eq_nat_refl _))). lia.
+Qed.

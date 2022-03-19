@@ -1,4 +1,4 @@
-DIGEST 221d0bb4974a7f7a49562e178c031382
+DIGEST 713bfc3ceb82116f53897147acff3b30
 FMaths_Facts.naturals
 R15:17 Coq.micromega.Lia <> <> lib
 R35:37 Coq.Init.Nat <> <> lib
@@ -1063,3 +1063,67 @@ R11789:11794 Maths_Facts.naturals <> eq_nat syndef
 R11789:11794 Maths_Facts.naturals <> eq_nat syndef
 R11822:11832 Maths_Facts.naturals <> eq_nat_symm thm
 R11822:11832 Maths_Facts.naturals <> eq_nat_symm thm
+prf 11883:11896 <> nat_2_exp_help
+binder 11907:11907 <> n:120
+binder 11909:11909 <> m:121
+R11929:11932 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R11923:11925 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R11913:11915 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
+R11916:11916 Coq.Init.Datatypes <> S constr
+R11919:11919 Coq.Init.Datatypes <> S constr
+R11921:11921 Maths_Facts.naturals <> n:120 var
+R11926:11926 Coq.Init.Datatypes <> S constr
+R11928:11928 Maths_Facts.naturals <> m:121 var
+R11940:11942 Coq.Init.Peano <> ::nat_scope:x_'<'_x not
+R11933:11933 Coq.Init.Datatypes <> S constr
+R11936:11936 Coq.Init.Datatypes <> S constr
+R11938:11938 Maths_Facts.naturals <> n:120 var
+R11943:11943 Maths_Facts.naturals <> m:121 var
+R12033:12054 Maths_Facts.naturals <> nat_2_exp_succ_not_one thm
+R12057:12057 Coq.Init.Datatypes <> S constr
+R12060:12060 Coq.Init.Datatypes <> S constr
+R12033:12054 Maths_Facts.naturals <> nat_2_exp_succ_not_one thm
+R12057:12057 Coq.Init.Datatypes <> S constr
+R12060:12060 Coq.Init.Datatypes <> S constr
+R12083:12083 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R12091:12094 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R12084:12084 Coq.Init.Datatypes <> S constr
+R12087:12087 Coq.Init.Datatypes <> S constr
+R12106:12108 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R12096:12097 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
+R12105:12105 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
+R12098:12098 Coq.Init.Datatypes <> S constr
+R12101:12101 Coq.Init.Datatypes <> S constr
+R12110:12111 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
+R12119:12119 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
+R12112:12112 Coq.Init.Datatypes <> S constr
+R12115:12115 Coq.Init.Datatypes <> S constr
+R12083:12083 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R12091:12094 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R12084:12084 Coq.Init.Datatypes <> S constr
+R12087:12087 Coq.Init.Datatypes <> S constr
+R12106:12108 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R12096:12097 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
+R12105:12105 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
+R12098:12098 Coq.Init.Datatypes <> S constr
+R12101:12101 Coq.Init.Datatypes <> S constr
+R12110:12111 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
+R12119:12119 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
+R12112:12112 Coq.Init.Datatypes <> S constr
+R12115:12115 Coq.Init.Datatypes <> S constr
+R12156:12157 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
+R12166:12166 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
+R12158:12158 Coq.Init.Datatypes <> S constr
+R12162:12162 Coq.Init.Datatypes <> S constr
+R12156:12157 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
+R12166:12166 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
+R12158:12158 Coq.Init.Datatypes <> S constr
+R12162:12162 Coq.Init.Datatypes <> S constr
+R12207:12209 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R12202:12204 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R12207:12209 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R12202:12204 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R12235:12246 Maths_Facts.naturals <> nat_eq_decid thm
+R12252:12262 Maths_Facts.naturals <> eq_nat_refl thm
+R12235:12246 Maths_Facts.naturals <> nat_eq_decid thm
+R12252:12262 Maths_Facts.naturals <> eq_nat_refl thm
