@@ -12,59 +12,276 @@ From Systems Require Import proof_trees.
 From Systems Require Import substitute.
 Require Import Lia.
 
+Definition associativity_1' (P : ptree) : ptree :=
+match ptree_formula P, ptree_deg P, ptree_ord P with
+| lor (lor C0 A) B, d, alpha =>
+    exchange_ab
+      (lor A B) C0 d alpha
+      (exchange_cab
+        A C0 B d alpha
+        (exchange_abd C0 A B d alpha P))
+
+| _, _, _ => P
+end.
+
+Definition associativity_2' (P : ptree) : ptree :=
+match ptree_formula P, ptree_deg P, ptree_ord P with
+| lor C0 (lor A B), d, alpha =>
+    exchange_abd
+      A C0 B d alpha
+      (exchange_cab
+        A B C0 d alpha
+        (exchange_ab C0 (lor A B) d alpha P))
+
+| _, _, _ => P
+end.
+
+Lemma associativity1_valid : forall (P : ptree),
+  valid P -> valid (associativity_1' P).
+Proof.
+intros. unfold associativity_1'. destruct (ptree_formula P) eqn:HP; auto.
+destruct f1; auto. repeat split; auto.
+Qed.
+
+Lemma associativity2_valid : forall (P : ptree),
+  valid P -> valid (associativity_2' P).
+Proof.
+intros. unfold associativity_2'. destruct (ptree_formula P) eqn:HP; auto.
+destruct f2; auto. repeat split; auto.
+Qed.
+
+Fixpoint within_f (A B : formula) : subst_ind :=
+match eq_f A B with
+| true => target A
+| false => match A with
+  | lor C D => lor_ind (within_f C B) (within_f D B)
+  | _ => non_target A
+  end
+end.
+
+Fixpoint contains_f (A B : formula) : bool :=
+match eq_f A B with
+| true => true
+| false => match A with
+  | lor C D => (contains_f C B) || (contains_f D B)
+  | _ => false
+  end
+end.
+
+Definition neg_invert (alpha : ord ) : Type := forall (P : ptree) (A B : formula) (n d : nat),
+      contains_f A (neg (univ n B)) = true -> (P_proves P A d alpha ->
+            { t : term & provable (formula_sub_ind A (neg (univ n B)) (substitution (neg B) n t) (within_f A (neg (univ n B)))) d alpha}).
+
+Lemma w_rule_invertible_a : forall (P : ptree) (A B : formula) (n d : nat) (alpha : ord),
+      contains_f A (neg (univ n B)) = true -> (P_proves P A d alpha ->
+            { t : term & provable (formula_sub_ind A (neg (univ n B)) (substitution (neg B) n t) (within_f A (neg (univ n B)))) d alpha}).
+Proof.
+unfold provable. induction P; intros A B m d alpha C [[[Ht1 Ht2] Ht3] Ht4].
+- destruct Ht2. simpl in Ht3. apply IHP; repeat split; auto. lia.
+- destruct Ht2 as [[Ht2a Ht2b] Ht2c]. simpl in Ht1,Ht3,Ht4. destruct Ht4.
+    assert (P_proves P A (ptree_deg P) (ptree_ord P)). repeat split; auto. destruct (IHP A B m (ptree_deg P) (ptree_ord P) C X)as [p [P1 [[[HP1 HP2] HP3] HP4]]]. exists p. exists (ord_up o P1). destruct HP4. repeat split; simpl; auto. lia.
+-
+  + intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. rewrite Ht1 in Ht2. inversion Ht2.
+  + intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. rewrite Ht1 in Ht2. inversion Ht2.
+  + intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. rewrite Ht1 in Ht2. inversion Ht2.
+- repeat split.
+  + intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+  + intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1,Ht3,Ht4. destruct Ht2 as [[[Ht2a Ht2b] Ht2c] Ht2d]. inversion Ht1. rewrite H0,H1 in *. destruct Ht4.
+    assert (P_proves P (lor B (neg (univ m A))) d o). repeat split; auto. lia.
+    destruct (IHP A m d) as [[IP1 IP2] IP3]. destruct (IP3 B X) as [p [P1 [[[HP1 HP2] HP3] HP4]]]. exists p. exists (exchange_ab B (substitution (neg A) m p) (ptree_deg P1) o P1). destruct HP4. repeat split; simpl; auto.
+  + intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1,Ht3,Ht4. destruct Ht2 as [[[Ht2a Ht2b] Ht2c] Ht2d]. inversion Ht1. rewrite H0,H1 in *. destruct Ht4.
+    assert (P_proves P (lor (neg (univ m A)) B) d o). repeat split; auto. lia.
+    destruct (IHP A m d) as [[IP1 IP2] IP3]. destruct (IP2 B X) as [p [P1 [[[HP1 HP2] HP3] HP4]]]. exists p. exists (exchange_ab (substitution (neg A) m p) B (ptree_deg P1) o P1). destruct HP4. repeat split; simpl; auto.
+- repeat split.
+  + intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+  + intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+  + intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1,Ht3,Ht4. inversion Ht1. rewrite H1 in *. destruct Ht2 as [[[Ht2a Ht2b] Ht2c] Ht2d].
+    assert (P_proves P (lor (lor f (neg (univ m A))) f1) d (ptree_ord P)). repeat split; auto. lia.
+    destruct (IHP A m d (ptree_ord P)) as [[[[IP1 IP2] IP3] IP4] IP5]. destruct (IP4 f f1 X) as [p [P1 [[[HP1 HP2] HP3] HP4]]]. exists p. exists (exchange_abd f1 f (substitution (neg A) m p) (ptree_deg P1) o (associativity_2' (exchange_ab (lor f (substitution (neg A) m p)) f1 (ptree_deg P1) o P1))). destruct Ht4,HP4. repeat split; simpl; auto.  
+  + intros B C [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1,Ht3,Ht4. inversion Ht1. rewrite H0,H1,H2 in *. destruct Ht2 as [[[Ht2a Ht2b] Ht2c] Ht2d].
+    assert (P_proves P (lor (lor B C) (neg (univ m A))) d (ptree_ord P)). repeat split; auto. lia.
+    destruct (IHP A m d (ptree_ord P)) as [[[[IP1 IP2] IP3] IP4] IP5]. destruct (IP3 (lor B C) X) as [p [P1 [[[HP1 HP2] HP3] HP4]]]. exists p. exists (exchange_cab B C (substitution (neg A) m p) (ptree_deg P1) o P1). destruct Ht4,HP4. repeat split; simpl; auto.  
+  + intros B C [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1,Ht3,Ht4. inversion Ht1. rewrite H1 in *. destruct Ht2 as [[[Ht2a Ht2b] Ht2c] Ht2d].
+    assert (P_proves P (lor (lor B C) (neg (univ m A))) d (ptree_ord P)). repeat split; auto. lia.
+    destruct (IHP A m d (ptree_ord P)) as [[[[IP1 IP2] IP3] IP4] IP5]. destruct (IP3 (lor B C) X) as [p [P1 [[[HP1 HP2] HP3] HP4]]]. exists p. exists (exchange_cab B C (substitution (neg A) m p) (ptree_deg P1) o P1). destruct Ht4,HP4. repeat split; simpl; auto.  
+
+- intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
+- intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
+- intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
+- intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
+- intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
+- intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+- intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
+- intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. 
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. 
+- intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
+- intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. destruct H0,H1. destruct Ht2 as [[[[Ht2a Ht2b] Ht2c] Ht2d] Ht2e]. simpl in Ht3,Ht4. exists t. simpl in Ht4. exists (ord_up (ord_succ o) P). rewrite Ht2e. repeat split; simpl; auto. apply ord_succ_monot. apply ord_succ_nf. apply ptree_ord_nf. auto. lia. rewrite <- Ht2e. auto.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+- intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. destruct H0,H1,H2. destruct Ht2 as [[[[Ht2a Ht2b] Ht2c] Ht2d] Ht2e]. simpl in Ht3,Ht4. exists t. simpl in Ht4. exists (ord_up (ord_succ o) P). rewrite Ht2e. repeat split; simpl; auto. apply ord_succ_monot. apply ord_succ_nf. apply ptree_ord_nf. auto. lia. rewrite <- Ht2e. auto. 
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. rewrite H0,H1 in *. destruct Ht2 as [[[[Ht2a Ht2b] Ht2c] Ht2d] Ht2e]. simpl in Ht3,Ht4.
+  assert (P_proves P (lor (neg (substitution f n t)) (neg (univ m A))) d (ptree_ord P)). repeat split; auto. lia.
+  destruct (IHP A m d (ptree_ord P)) as [[IP1 IP2] IP3]. destruct (IP3 (neg (substitution f n t)) X) as [p [P1 [[[HP1 HP2] HP3] HP4]]]. exists p. exists (quantification_ad f (neg (substitution A m p)) n t (ptree_deg P1) o P1). repeat split; simpl; auto. rewrite H0. auto. destruct HP4. auto.
+- intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+- intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
+- intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
+- intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
+- intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
+Admitted.
+
 
 Lemma w_rule_invertible_a :
   forall (P : ptree) (A : formula) (n d : nat) (alpha : ord),
   (P_proves P (neg (univ n A)) d alpha ->
   { t : term & provable (substitution (neg A) n t) d alpha}) * (forall B, P_proves P (lor (neg (univ n A)) B) d alpha ->
-  { t : term & provable (lor (substitution (neg A) n t) B) d alpha}).
+  { t : term & provable (lor (substitution (neg A) n t) B) d alpha}) * (forall B, P_proves P (lor B (neg (univ n A))) d alpha ->
+  { t : term & provable (lor B (substitution (neg A) n t)) d alpha}) * (forall B C, P_proves P (lor (lor B (neg (univ n A))) C) d alpha ->
+  { t : term & provable (lor (lor B (substitution (neg A) n t)) C) d alpha}) * (forall B C, P_proves P (lor C (lor B (neg (univ n A)))) d alpha ->
+  { t : term & provable (lor C (lor B (substitution (neg A) n t))) d alpha}) * (forall B C D, P_proves P (lor (lor C (lor B (neg (univ n A)))) D) d alpha ->
+  { t : term & provable (lor (lor C (lor B (substitution (neg A) n t))) D) d alpha}).
 Proof.
-unfold provable. intros P. induction P; intros A m d alpha; split.
-- intros [[[Ht1 Ht2] Ht3] Ht4]. destruct Ht2. simpl in Ht3. apply IHP; repeat split; auto. lia.
-- intros B [[[Ht1 Ht2] Ht3] Ht4]. destruct Ht2. simpl in Ht3. apply IHP; repeat split; auto. lia.
-- intros [[[Ht1 Ht2] Ht3] Ht4]. destruct Ht2 as [[Ht2a Ht2b] Ht2c]. simpl in Ht3,Ht4.
-  assert (P_proves P (neg (univ m A)) d (ptree_ord P)). repeat split; auto.
-  destruct (IHP A m d (ptree_ord P)) as [IP1 IP2]. destruct (IP1 X) as [p [P1 [[[HP1 HP2] HP3] HP4]]]. exists p. exists (ord_up alpha P1). destruct Ht4,HP4. repeat split; auto.
-- intros B [[[Ht1 Ht2] Ht3] Ht4]. destruct Ht2 as [[Ht2a Ht2b] Ht2c]. simpl in Ht3,Ht4.
-  assert (P_proves P (lor (neg (univ m A)) B) d (ptree_ord P)). repeat split; auto.
-  destruct (IHP A m d (ptree_ord P)) as [IP1 IP2]. destruct (IP2 B X) as [p [P1 [[[HP1 HP2] HP3] HP4]]]. exists p. exists (ord_up alpha P1). destruct Ht4,HP4. repeat split; auto.
-- intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. rewrite Ht1 in Ht2. inversion Ht2.
-- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. rewrite Ht1 in Ht2. inversion Ht2.
+unfold provable. intros P. induction P; intros A m d alpha.
+- repeat split.
+  + intros [[[Ht1 Ht2] Ht3] Ht4]. destruct Ht2. simpl in Ht3. apply IHP; repeat split; auto. lia.
+  + intros B [[[Ht1 Ht2] Ht3] Ht4]. destruct Ht2. simpl in Ht3. apply IHP; repeat split; auto. lia.
+  + intros B [[[Ht1 Ht2] Ht3] Ht4]. destruct Ht2. simpl in Ht3. apply IHP; repeat split; auto. lia.
+  + intros B C [[[Ht1 Ht2] Ht3] Ht4]. destruct Ht2. simpl in Ht3. apply IHP; repeat split; auto. lia.
+  + intros B C [[[Ht1 Ht2] Ht3] Ht4]. destruct Ht2. simpl in Ht3. apply IHP; repeat split; auto. lia.
+  + intros B C D [[[Ht1 Ht2] Ht3] Ht4]. destruct Ht2. simpl in Ht3. apply IHP; repeat split; auto. lia.
+- repeat split.
+  + intros [[[Ht1 Ht2] Ht3] Ht4]. destruct Ht2 as [[Ht2a Ht2b] Ht2c]. simpl in Ht3,Ht4.
+    assert (P_proves P (neg (univ m A)) d (ptree_ord P)). repeat split; auto.
+    destruct (IHP A m d (ptree_ord P)) as [[[[[IP1 IP2] IP3] IP4] IP5] IP6]. destruct (IP1 X) as [p [P1 [[[HP1 HP2] HP3] HP4]]]. exists p. exists (ord_up alpha P1). destruct Ht4,HP4. repeat split; auto.
+  + intros B [[[Ht1 Ht2] Ht3] Ht4]. destruct Ht2 as [[Ht2a Ht2b] Ht2c]. simpl in Ht3,Ht4.
+    assert (P_proves P (lor (neg (univ m A)) B) d (ptree_ord P)). repeat split; auto.
+    destruct (IHP A m d (ptree_ord P)) as [[[[[IP1 IP2] IP3] IP4] IP5] IP6]. destruct (IP2 B X) as [p [P1 [[[HP1 HP2] HP3] HP4]]]. exists p. exists (ord_up alpha P1). destruct Ht4,HP4. repeat split; auto.
+  + intros B [[[Ht1 Ht2] Ht3] Ht4]. destruct Ht2 as [[Ht2a Ht2b] Ht2c]. simpl in Ht3,Ht4.
+    assert (P_proves P (lor B (neg (univ m A))) d (ptree_ord P)). repeat split; auto.
+    destruct (IHP A m d (ptree_ord P)) as [[[[[IP1 IP2] IP3] IP4] IP5] IP6]. destruct (IP3 B X) as [p [P1 [[[HP1 HP2] HP3] HP4]]]. exists p. exists (ord_up alpha P1). destruct Ht4,HP4. repeat split; auto.
+  + intros B C [[[Ht1 Ht2] Ht3] Ht4]. destruct Ht2 as [[Ht2a Ht2b] Ht2c]. simpl in Ht3,Ht4.
+    assert (P_proves P (lor (lor B (neg (univ m A))) C) d (ptree_ord P)). repeat split; auto.
+    destruct (IHP A m d (ptree_ord P)) as [[[[[IP1 IP2] IP3] IP4] IP5] IP6]. destruct (IP4 B C X) as [p [P1 [[[HP1 HP2] HP3] HP4]]]. exists p. exists (ord_up alpha P1). destruct Ht4,HP4. repeat split; auto.
+  + intros B C [[[Ht1 Ht2] Ht3] Ht4]. destruct Ht2 as [[Ht2a Ht2b] Ht2c]. simpl in Ht3,Ht4.
+    assert (P_proves P (lor C (lor B (neg (univ m A)))) d (ptree_ord P)). repeat split; auto.
+    destruct (IHP A m d (ptree_ord P)) as [[[[[IP1 IP2] IP3] IP4] IP5] IP6]. destruct (IP5 B C X) as [p [P1 [[[HP1 HP2] HP3] HP4]]]. exists p. exists (ord_up alpha P1). destruct Ht4,HP4. repeat split; auto.
+  + intros B C D [[[Ht1 Ht2] Ht3] Ht4]. destruct Ht2 as [[Ht2a Ht2b] Ht2c]. simpl in Ht3,Ht4.
+    assert (P_proves P (lor (lor C (lor B (neg (univ m A)))) D) d (ptree_ord P)). repeat split; auto.
+    destruct (IHP A m d (ptree_ord P)) as [[[[[IP1 IP2] IP3] IP4] IP5] IP6]. destruct (IP6 B C D X) as [p [P1 [[[HP1 HP2] HP3] HP4]]]. exists p. exists (ord_up alpha P1). destruct Ht4,HP4. repeat split; auto.
+- repeat split.
+  + intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. rewrite Ht1 in Ht2. inversion Ht2.
+  + intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. rewrite Ht1 in Ht2. inversion Ht2.
+  + intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. rewrite Ht1 in Ht2. inversion Ht2.
+  + intros B C [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. rewrite Ht1 in Ht2. inversion Ht2.
+  + intros B C [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. rewrite Ht1 in Ht2. inversion Ht2.
+  + intros B C D [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. rewrite Ht1 in Ht2. inversion Ht2.
+- repeat split.
+  + intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+  + intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1,Ht3,Ht4. destruct Ht2 as [[[Ht2a Ht2b] Ht2c] Ht2d]. inversion Ht1. rewrite H0,H1 in *.
+    assert (P_proves P (lor B (neg (univ m A))) d (ptree_ord P)). repeat split; auto. lia.
+    destruct (IHP A m d (ptree_ord P)) as [[[[[IP1 IP2] IP3] IP4] IP5] IP6]. destruct (IP3 B X) as [p [P1 [[[HP1 HP2] HP3] HP4]]]. exists p. exists (exchange_ab B (substitution (neg A) m p) (ptree_deg P1) o P1). destruct Ht4,HP4. repeat split; auto.
+  + intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1,Ht3,Ht4. destruct Ht2 as [[[Ht2a Ht2b] Ht2c] Ht2d]. inversion Ht1. rewrite H0,H1 in *.
+    assert (P_proves P (lor (neg (univ m A)) B) d (ptree_ord P)). repeat split; auto. lia.
+    destruct (IHP A m d (ptree_ord P)) as [[[[[IP1 IP2] IP3] IP4] IP5] IP6]. destruct (IP2 B X) as [p [P1 [[[HP1 HP2] HP3] HP4]]]. exists p. exists (exchange_ab (substitution (neg A) m p) B (ptree_deg P1) o P1). destruct Ht4,HP4. repeat split; auto.
+  + intros B C [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1,Ht3,Ht4. destruct Ht2 as [[[Ht2a Ht2b] Ht2c] Ht2d]. inversion Ht1. rewrite H0,H1 in *.
+    assert (P_proves P (lor C (lor B (neg (univ m A)))) d (ptree_ord P)). repeat split; auto. lia.
+    destruct (IHP A m d (ptree_ord P)) as [[[[[IP1 IP2] IP3] IP4] IP5] IP6]. destruct (IP5 B C X) as [p [P1 [[[HP1 HP2] HP3] HP4]]]. exists p. exists (exchange_ab C (lor B (substitution (neg A) m p)) (ptree_deg P1) o P1). destruct Ht4,HP4. repeat split; simpl; auto.
+  + intros B C [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1,Ht3,Ht4. destruct Ht2 as [[[Ht2a Ht2b] Ht2c] Ht2d]. inversion Ht1. rewrite H0,H1 in *.
+    assert (P_proves P (lor (lor B (neg (univ m A))) C) d (ptree_ord P)). repeat split; auto. lia.
+    destruct (IHP A m d (ptree_ord P)) as [[[[[IP1 IP2] IP3] IP4] IP5] IP6]. destruct (IP4 B C X) as [p [P1 [[[HP1 HP2] HP3] HP4]]]. exists p. exists (exchange_ab (lor B (substitution (neg A) m p)) C (ptree_deg P1) o P1). destruct Ht4,HP4. repeat split; simpl; auto. 
+  + intros B C D [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1,Ht3,Ht4. destruct Ht2 as [[[Ht2a Ht2b] Ht2c] Ht2d]. inversion Ht1. rewrite H0,H1 in *. 
+    assert (P_proves P (lor (lor B (neg (univ m A))) C) d (ptree_ord P)). repeat split; auto. lia.
+    destruct (IHP A m d (ptree_ord P)) as [[[[[IP1 IP2] IP3] IP4] IP5] IP6]. destruct (IP4 B C X) as [p [P1 [[[HP1 HP2] HP3] HP4]]]. exists p. exists (exchange_ab (lor B (substitution (neg A) m p)) C (ptree_deg P1) o P1). destruct Ht4,HP4. repeat split; simpl; auto. 
+    
+- repeat split.
+  + intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+  + intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+  + intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1,Ht3,Ht4. inversion Ht1. rewrite H1 in *. destruct Ht2 as [[[Ht2a Ht2b] Ht2c] Ht2d].
+    assert (P_proves P (lor (lor f (neg (univ m A))) f1) d (ptree_ord P)). repeat split; auto. lia.
+    destruct (IHP A m d (ptree_ord P)) as [[[[IP1 IP2] IP3] IP4] IP5]. destruct (IP4 f f1 X) as [p [P1 [[[HP1 HP2] HP3] HP4]]]. exists p. exists (exchange_abd f1 f (substitution (neg A) m p) (ptree_deg P1) o (associativity_2' (exchange_ab (lor f (substitution (neg A) m p)) f1 (ptree_deg P1) o P1))). destruct Ht4,HP4. repeat split; simpl; auto.  
+  + intros B C [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1,Ht3,Ht4. inversion Ht1. rewrite H0,H1,H2 in *. destruct Ht2 as [[[Ht2a Ht2b] Ht2c] Ht2d].
+    assert (P_proves P (lor (lor B C) (neg (univ m A))) d (ptree_ord P)). repeat split; auto. lia.
+    destruct (IHP A m d (ptree_ord P)) as [[[[IP1 IP2] IP3] IP4] IP5]. destruct (IP3 (lor B C) X) as [p [P1 [[[HP1 HP2] HP3] HP4]]]. exists p. exists (exchange_cab B C (substitution (neg A) m p) (ptree_deg P1) o P1). destruct Ht4,HP4. repeat split; simpl; auto.  
+  + intros B C [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1,Ht3,Ht4. inversion Ht1. rewrite H1 in *. destruct Ht2 as [[[Ht2a Ht2b] Ht2c] Ht2d].
+    assert (P_proves P (lor (lor B C) (neg (univ m A))) d (ptree_ord P)). repeat split; auto. lia.
+    destruct (IHP A m d (ptree_ord P)) as [[[[IP1 IP2] IP3] IP4] IP5]. destruct (IP3 (lor B C) X) as [p [P1 [[[HP1 HP2] HP3] HP4]]]. exists p. exists (exchange_cab B C (substitution (neg A) m p) (ptree_deg P1) o P1). destruct Ht4,HP4. repeat split; simpl; auto.  
+
 - intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
 - intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
 - intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
 - intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
-- intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
-- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
-- intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
-- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
 - intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
 - intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
-- intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
 - intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
 - intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
 - intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
 - intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
+- intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
 - intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
 - intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
 - intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
 - intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. 
 - intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. 
 - intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
 - intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
 - intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. destruct H0,H1. destruct Ht2 as [[[[Ht2a Ht2b] Ht2c] Ht2d] Ht2e]. simpl in Ht3,Ht4. exists t. simpl in Ht4. exists (ord_up (ord_succ o) P). rewrite Ht2e. repeat split; simpl; auto. apply ord_succ_monot. apply ord_succ_nf. apply ptree_ord_nf. auto. lia. rewrite <- Ht2e. auto.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
 - intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
 - intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
 - intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. destruct H0,H1,H2. destruct Ht2 as [[[[Ht2a Ht2b] Ht2c] Ht2d] Ht2e]. simpl in Ht3,Ht4. exists t. simpl in Ht4. exists (ord_up (ord_succ o) P). rewrite Ht2e. repeat split; simpl; auto. apply ord_succ_monot. apply ord_succ_nf. apply ptree_ord_nf. auto. lia. rewrite <- Ht2e. auto. 
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. rewrite H0,H1 in *. destruct Ht2 as [[[[Ht2a Ht2b] Ht2c] Ht2d] Ht2e]. simpl in Ht3,Ht4.
+  assert (P_proves P (lor (neg (substitution f n t)) (neg (univ m A))) d (ptree_ord P)). repeat split; auto. lia.
+  destruct (IHP A m d (ptree_ord P)) as [[IP1 IP2] IP3]. destruct (IP3 (neg (substitution f n t)) X) as [p [P1 [[[HP1 HP2] HP3] HP4]]]. exists p. exists (quantification_ad f (neg (substitution A m p)) n t (ptree_deg P1) o P1). repeat split; simpl; auto. rewrite H0. auto. destruct HP4. auto.
 - intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
 - intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
 - intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
 - intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
-- intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
 - intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
 - intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
+- intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
 - intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
 - intros [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1.
+- intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
 - intros B [[[Ht1 Ht2] Ht3] Ht4]. simpl in Ht1. inversion Ht1. admit.
 Admitted.
 
