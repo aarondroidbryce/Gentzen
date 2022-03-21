@@ -183,13 +183,26 @@ unfold provable. induction P; intros A B m d alpha C [[[Ht1 Ht2] Ht3] Ht4].
     simpl. rewrite (not_contain_non_tatget f0); auto. rewrite non_target_fit. repeat rewrite within_fits. simpl. rewrite non_target_sub'. rewrite sub_fit_true. auto. apply within_fits.  inversion C; inversion H. rewrite H. pose (contains_closed _ _ Ht2b H). apply formula_sub_ind_closed; auto. intros. apply closed_univ_sub; auto.
 - admit.
 - admit.
+- simpl in Ht1,Ht3,Ht4. destruct Ht2 as [[[Ht2a Ht2b] Ht2c] Ht2d]. destruct Ht1,Ht4. simpl in C. inversion C.
+- simpl in Ht1,Ht3,Ht4. destruct Ht2 as [[[Ht2a Ht2b] Ht2c] Ht2d]. destruct Ht1,Ht4. simpl in C.  
+  assert (P_proves P (lor f f0) (ptree_deg P) (ptree_ord P)). repeat split; auto. assert (eq_f (lor f0 f) (neg (univ m B)) = false) as X0. auto.
+  destruct (IHP (lor f f0) B m (ptree_deg P) (ptree_ord P) (contains_symm _ _ _ X0 (contains_weaken _ _ _ C)) X) as [p [P1 [[[HP1 HP2] HP3] HP4]]]. case (contains_f f (neg (univ m B))) eqn:Y.
+  + exists p; auto. exists (negation_ad f (formula_sub_ind f0 (neg (univ m B)) (substitution (neg B) m p) (within_f f0 (neg (univ m B)))) (ptree_deg P1) o P1). destruct HP4. repeat split; simpl; auto.
+    rewrite within_fits. rewrite sub_fit_true; auto. apply within_fits. auto. repeat rewrite within_fits. auto. admit. lia.
+  + exists p; auto. exists (negation_ad f (formula_sub_ind f0 (neg (univ m B)) (substitution (neg B) m p) (within_f f0 (neg (univ m B)))) (ptree_deg P1) o P1). destruct HP4. repeat split; simpl; auto.
+    rewrite within_fits. rewrite sub_fit_true; auto. apply within_fits. simpl in HP1. repeat rewrite within_fits in HP1. simpl in HP1. rewrite not_contain_non_tatget in HP1; auto. rewrite <- sub_fit_true in HP1. rewrite <- sub_fit_true in HP1. rewrite non_target_sub in HP1. auto. apply within_fits. apply non_target_fit. lia.
+
 - admit.
 - admit.
-- admit.
-- admit.
-- admit.
-- admit.
-- admit.
+- simpl in Ht1,Ht3,Ht4. destruct Ht1,Ht4. inversion C.
+- simpl in Ht1,Ht3,Ht4. destruct Ht1,Ht4. inversion C. simpl in Ht2. admit.
+- simpl in Ht1,Ht3,Ht4. destruct Ht2 as [[[[[[[Ht2a Ht2b] Ht2c] Ht2d] Ht2e] Ht2f] Ht2g] Ht2h]. destruct Ht1,Ht4.
+  assert (P_proves P1 (lor f f0) (ptree_deg P1) (ptree_ord P1)). repeat split; auto. assert (P_proves P2 (neg f0) (ptree_deg P2) (ptree_ord P2)). repeat split; auto.
+  
+  assert (eq_f (lor (lor f f0) f) (neg (univ m B)) = false) as X0. auto. assert (eq_f (lor f f0) (neg (univ m B)) = false) as X1. auto.
+  destruct (IHP (lor (lor f f) f0) B m (ptree_deg P) (ptree_ord P) (contains_swap_end _ _ _ _ X0 X1 (contains_weaken  _ f _ C)) X) as [p [P1 [[[HP1 HP2] HP3] HP4]]]. exists p; auto. exists (contraction_ad (formula_sub_ind f (neg (univ m B)) (substitution (neg B) m p) (within_f f (neg (univ m B)))) (formula_sub_ind f0 (neg (univ m B)) (substitution (neg B) m p) (within_f f0 (neg (univ m B)))) (ptree_deg P1) o P1). destruct HP4. repeat split; simpl; auto.
+  rewrite <- formula_sub_ind_lor. auto. repeat rewrite within_fits. auto. repeat rewrite <- formula_sub_ind_lor. auto. simpl. repeat rewrite within_fits. auto. repeat rewrite within_fits. auto. lia.
+
 - admit.
 - admit.
 Admitted.
