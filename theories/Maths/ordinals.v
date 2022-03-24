@@ -1918,6 +1918,16 @@ intros. induction alpha.
   + simpl. rewrite (IHalpha2 (nf_hered_third _ _ _ H)). auto.
 Qed.
 
+Lemma ord_add_succ_nat_succ_add : forall alpha n, nf alpha -> ord_add alpha (nat_ord (S n)) = ord_add (ord_succ alpha) (nat_ord n).
+Proof.
+intros. induction alpha. destruct n. auto. simpl. rewrite plus_n_1. auto. simpl. unfold ord_add. fold ord_add. destruct alpha1.
+- rewrite ord_ltb_irrefl. rewrite ord_eqb_refl. inversion H; inversion H3. destruct n. rewrite plus_n_0. rewrite plus_n_1. auto. simpl. rewrite plus_n_1. rewrite plus_n_1. rewrite <- plus_n_Sm. auto.
+- rewrite (ltb_asymm _ _ (ord_lt_ltb _ _ (zero_lt _ _ _))). rewrite (ord_lt_ne _ _ (ord_lt_ltb _ _ (zero_lt _ _ _))). simpl in IHalpha2. rewrite IHalpha2. unfold ord_add. fold ord_add. destruct n.
+  + simpl. rewrite ord_add_zero. auto.
+  + simpl. auto.
+  + inversion H. apply zero_nf. auto.
+Qed.
+
 Lemma is_succ_mult_rule : forall alpha beta, nf alpha -> nf beta -> is_succ (ord_mult alpha beta) = is_succ alpha && is_succ beta.
 Proof.
 intros. induction beta. rewrite ord_mult_zero_right. case (is_succ alpha); auto. destruct alpha. auto. destruct beta1.
