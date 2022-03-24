@@ -299,3 +299,43 @@ intros. split.
 - induction l2; auto. simpl.
   apply (repeated_element_n_concat_aux l1 l2 x n), H.
 Qed.
+
+Lemma concat_empty_left : forall (l : list nat), concat [] l = l.
+Proof.
+auto.
+Qed.
+
+Lemma concat_empty_right : forall (l : list nat), concat l [] = l.
+Proof.
+intros. induction l; simpl; auto. rewrite IHl. auto.
+Qed.
+
+Lemma remove_dup_single_right : forall l1 l2 m, remove_dups (concat l1 l2) = [m] -> remove_dups l2 = [m] \/ remove_dups l2 = [].
+Proof.
+intros. pose proof (remove_dups_repeated_element' _ _ H). pose proof (repeated_element_n_concat _ _ _ H0). destruct H1. destruct (remove_dups_repeated_element _ _ H2); auto. rewrite e. auto.
+Qed.
+
+Lemma remove_dup_single_left : forall l1 l2 m, remove_dups (concat l1 l2) = [m] -> remove_dups l1 = [m] \/ remove_dups l1 = [].
+Proof.
+intros. pose proof (remove_dups_repeated_element' _ _ H). pose proof (repeated_element_n_concat _ _ _ H0). destruct H1. destruct (remove_dups_repeated_element _ _ H1); auto. rewrite e. auto.
+Qed.
+
+Lemma remove_not_in : forall l n, eq_list (remove n l) [n] = false.
+Proof.
+intros. induction l. auto. simpl. case (eq_nat x n) eqn:X. auto. simpl. rewrite X. auto.
+Qed. 
+
+Lemma remove_not_member : forall l n, member n (remove n l) = false.
+Proof.
+intros. induction l. auto. simpl. case (eq_nat x n) eqn:X. auto. simpl. rewrite X. auto.
+Qed. 
+
+Lemma member_remove_true : forall l n m, member n (remove m l) = true -> member n l = true.
+Proof.
+intros. induction l; inversion H. rewrite H1. simpl. case (eq_nat x n) eqn:X; auto. case (eq_nat x m) eqn:X1; auto. simpl in H1. rewrite X in H1. auto.
+Qed.
+
+Lemma member_remove_dups_true : forall l n, member n (remove_dups l) = true -> member n l = true.
+Proof.
+intros. induction l; inversion H. simpl. case (eq_nat x n) eqn:X; auto. rewrite H1. apply IHl. apply (member_remove_true _ _ x). auto.
+Qed.  

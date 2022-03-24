@@ -1,0 +1,20 @@
+#!/bin/bash
+
+coqc -R theories/Maths/ Maths_Facts theories/Maths/naturals.v
+coqc -R theories/Maths/ Maths_Facts theories/Maths/lists.v
+coqc -R theories/Maths/ Maths_Facts theories/Maths/ordinals.v
+
+coqc -R theories/Logic/ Systems theories/Logic/fol.v
+coqc -R theories/Logic/ Systems theories/Logic/PA_omega.v
+coqc -R theories/Logic/ Systems theories/Logic/proof_trees.v
+coqc -R theories/Logic/ Systems theories/Logic/substitute.v
+coqc -R theories/Logic/ Systems theories/Logic/inverse_neg.v
+coqc -R theories/Logic/ Systems theories/Logic/inverse_dem_1.v
+coqc -R theories/Logic/ Systems theories/Logic/inverse_dem_2.v
+coqc -R theories/Logic/ Systems theories/Logic/inverse_omega.v
+coqc -R theories/Logic/ Systems theories/Logic/formula_sub.v
+coqc -R theories/Logic/ Systems theories/Logic/formula_lists.v
+coqc -R theories/Logic/ Systems theories/Logic/cut_elim.v
+
+coqc -R theories/ Main theories/gentzen.v
+

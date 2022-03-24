@@ -2128,6 +2128,16 @@ destruct n.
   + apply ord_ltb_lt. unfold ord_succ. unfold ord_ltb. fold ord_ltb. pose proof (omega_exp_incr' o1 o2 n0). apply ord_lt_ltb in H. rewrite H. auto.
 Qed.
 
+Lemma w_tower_succ3 : forall n, ord_lt (ord_succ (ord_succ (ord_succ (w_tower n)))) (w_tower (S n)).
+Proof.
+intros.
+destruct n.
+- simpl. apply ord_ltb_lt. auto.
+- simpl. destruct (w_tower n).
+  + apply ord_ltb_lt. auto.
+  + simpl. apply head_lt. apply ord_lt_self.
+Qed.
+
 Lemma w_tower_lt : forall n m,  (m < n)%nat -> ord_lt (w_tower m) (w_tower n).
 Proof.
 intros n. induction n.

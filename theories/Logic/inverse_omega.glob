@@ -56,9 +56,9 @@ R764:767 Coq.Init.Datatypes <> true constr
 R792:809 Systems.inverse_omega <> w_rule_sub_formula def
 R818:839 Systems.substitute <> formula_sub_ind_closed thm
 R818:839 Systems.substitute <> formula_sub_ind_closed thm
-R863:877 Systems.PA_omega <> closed_univ_sub thm
+R863:877 Systems.fol <> closed_univ_sub thm
 R887:895 Systems.fol <> represent def
-R863:877 Systems.PA_omega <> closed_univ_sub thm
+R863:877 Systems.fol <> closed_univ_sub thm
 R887:895 Systems.fol <> represent def
 R908:918 Systems.PA_omega <> repr_closed thm
 R908:918 Systems.PA_omega <> repr_closed thm
