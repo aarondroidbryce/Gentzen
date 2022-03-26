@@ -335,7 +335,54 @@ Proof.
 intros. induction l; inversion H. rewrite H1. simpl. case (eq_nat x n) eqn:X; auto. case (eq_nat x m) eqn:X1; auto. simpl in H1. rewrite X in H1. auto.
 Qed.
 
+Lemma remove_member_false : forall l n m, member n l = false -> member n (remove m l) = false.
+Proof.
+intros. case (eq_nat n m) eqn:X.
+- apply nat_eq_decid in X. destruct X. apply remove_not_member.
+- induction l. auto. simpl. inversion H. case (eq_nat x n) eqn:X1; auto. inversion H1. rewrite H1. case (eq_nat x m) eqn:X2; auto. simpl. rewrite X1. auto.
+Qed.
+
 Lemma member_remove_dups_true : forall l n, member n (remove_dups l) = true -> member n l = true.
 Proof.
 intros. induction l; inversion H. simpl. case (eq_nat x n) eqn:X; auto. rewrite H1. apply IHl. apply (member_remove_true _ _ x). auto.
 Qed.  
+
+Lemma remove_dups_concat_self : forall L, remove_dups (concat L L) = remove_dups L.
+Proof.
+intros. induction L. auto. simpl. rewrite <- IHL. rewrite remove_dups_order. rewrite remove_dups_order. rewrite remove_concat. rewrite remove_concat. simpl. rewrite eq_nat_refl. auto.
+Qed.
+
+Lemma remove_dups_double_cons_ne : forall n m l, remove_dups (n :: m :: l) = n :: m :: l -> eq_nat m n = false.
+Proof.
+intros. unfold remove_dups in H. fold remove_dups in H. inversion H. induction l; case (eq_nat m n) eqn:X; auto. inversion H1.
+apply nat_eq_decid in X. destruct X. rewrite remove_twice in H1. pose proof (remove_not_member (remove_dups (x :: l)) m). rewrite H1 in H0. simpl in H0. rewrite eq_nat_refl in H0. inversion H0.
+Qed.
+
+Lemma remove_idem_not_mem : forall l n, remove n l = l -> member n l = false.
+Proof.
+intros. induction l. auto. simpl in *. case (eq_nat x n) eqn:X.
+- apply nat_eq_decid in X. destruct X. pose proof (remove_not_member l x). rewrite H in H0. simpl in H0. rewrite eq_nat_refl in H0. inversion H0.
+- inversion H. rewrite H1. rewrite IHl; auto.
+Qed.
+
+Lemma remove_not_mem_idem : forall l n, member n l = false -> remove n l = l.
+Proof.
+intros. induction l. auto. simpl in *. case (eq_nat x n) eqn:X. inversion H. rewrite IHl; auto.
+Qed.
+
+Lemma remove_dups_idem_remove_false : forall l n, remove_dups (n :: l) = n :: l -> member n l = false.
+Proof.
+intros. induction l. auto. simpl. rewrite (remove_dups_double_cons_ne _ _ _ H). apply remove_idem_not_mem.
+inversion H. rewrite (remove_dups_double_cons_ne _ _ _ H) in H1. inversion H1. rewrite remove_twice. auto.
+Qed.
+
+Lemma not_mem_dupes : forall l n, member n l = false -> member n (remove_dups l) = false.
+Proof.
+intros. induction l. auto. simpl in *. case (eq_nat x n) eqn:X. inversion H. apply remove_member_false. apply IHl. auto.
+Qed.
+
+Lemma remove_dups_idem_remove_triv : forall l n, remove_dups (n :: l) = n :: l -> remove n (n :: l) = l.
+Proof.
+intros. inversion H. rewrite H1. rename H1 into Z. induction l; simpl; rewrite eq_nat_refl; auto.
+rewrite (remove_dups_double_cons_ne _ _ _ H). rewrite remove_not_mem_idem. auto. pose proof (remove_dups_idem_remove_false _ _ H). simpl in H0. case (eq_nat x n) eqn:X. inversion H0. auto.
+Qed.

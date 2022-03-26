@@ -873,6 +873,25 @@ intros. induction A.
 - simpl in *. pose proof (univ_free_var _ _ _ H). rewrite H0. simpl. rewrite free_list_sub_self; auto. apply (member_remove_true _ _ n0). rewrite H. simpl. rewrite eq_nat_refl. auto.
 Qed.
 
+Lemma sub_succ_self_t : forall (t s : term) (n : nat), substitution_t (substitution_t t n (succ (var n))) n s = substitution_t t n (succ s).
+Proof.
+intros t. induction t; intros.
+- auto.
+- simpl. rewrite IHt. auto.
+- simpl. rewrite IHt1. rewrite IHt2. auto.
+- simpl. rewrite IHt1. rewrite IHt2. auto.
+- simpl. case (eq_nat n n0) eqn:X. apply nat_eq_decid in X. destruct X. simpl. rewrite eq_nat_refl. auto. simpl. rewrite X. auto.
+Qed.
+
+Lemma sub_succ_self : forall (A : formula) (n : nat) (t : term), substitution (substitution A n (succ (var n))) n t = substitution A n (succ t).
+Proof.
+intros A. induction A; intros.
+- destruct a. simpl. rewrite sub_succ_self_t. rewrite sub_succ_self_t. auto.
+- simpl. rewrite IHA. auto.
+- simpl. rewrite IHA1. rewrite IHA2. auto.
+- simpl. case (eq_nat n n0) eqn:X. apply nat_eq_decid in X. destruct X. simpl. rewrite eq_nat_refl. auto. simpl. rewrite X. rewrite IHA. auto.
+Qed.
+
 (* Boolean equality on formulas implies actual equality *)
 (* *)
 Definition term_beq_eq_nice (t : term) : Prop := forall (s : term),
@@ -920,3 +939,24 @@ Qed.
 
 Lemma f_eq_decid : forall (A B : formula), eq_f A B = true -> A = B.
 Proof. intros. apply f_eq_decid'. apply H. Qed.
+
+Fixpoint closure_type (A : formula) (t : term) (L : list nat) : formula :=
+match L with
+| [] => A
+| x :: L' => closure_type (substitution A x t) t L'
+end.
+
+Definition closure (A : formula) (t : term) := closure_type A t (free_list A).
+
+Lemma closure_closed' : forall (L : list nat) (A : formula) (t : term), closed_t t = true -> free_list A = L -> closed (closure_type A t L) = true.
+Proof.
+intros L. induction L; intros.
+- simpl. apply free_list_closed. auto.
+- simpl. rewrite IHL; auto. rewrite subst_remove; auto. rewrite H0. rewrite remove_dups_idem_remove_triv. auto. destruct H0. rewrite <- free_list_remove_dups. auto.
+Qed.
+
+Lemma closure_closed : forall (A : formula) (t : term), closed_t t = true -> closed (closure A t) = true.
+Proof.
+intros. unfold closure. rewrite closure_closed'; auto.
+Qed.
+

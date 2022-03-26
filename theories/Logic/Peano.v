@@ -116,17 +116,15 @@ Lemma induction_iterate : forall (A : formula) (n m : nat) (t : term), PA_omega_
 Proof.
 intros. apply exchange1. apply contraction2. apply associativity2. apply (quantification2 _ _ _ (represent (S m))). apply repr_closed. unfold inductive_chain in H. fold inductive_chain in H. unfold "~>" in H.
 simpl in H. simpl. repeat apply associativity1. apply exchange1. apply associativity1. apply associativity1. apply exchange4. apply associativity2. apply exchange3. apply associativity1. apply exchange4. apply associativity2. apply exchange2.
-apply associativity1. apply exchange2. apply exchange4. apply exchange2. apply exchange4. apply associativity1. apply exchange4. apply exchange2. apply exchange4. 
-assert ((substitution (substitution A n (succ (var n))) n (succ (represent m))) = substitution A n (succ (succ (represent m)))). admit. rewrite H0. auto.
-Admitted.
+apply associativity1. apply exchange2. apply exchange4. apply exchange2. apply exchange4. apply associativity1. apply exchange4. apply exchange2. apply exchange4. rewrite sub_succ_self. auto. 
+Qed.
 
 Lemma induction_iterate_general : forall (A : formula) (n m : nat) (t : term) (alpha : ord), PA_omega_theorem (lor (lor (lor (inductive_chain A n (S m)) (substitution A n t)) (neg (substitution A n zero))) (neg (univ n (lor (neg A) (substitution A n (succ (var n))))))) 0 alpha -> PA_omega_theorem (lor (lor (lor (inductive_chain A n m) (substitution A n t)) (neg (substitution A n zero))) (neg (univ n (lor (neg A) (substitution A n (succ (var n))))))) 0 (ord_succ alpha).
 Proof.
 intros. apply exchange1. apply contraction2. apply associativity2. apply (quantification2 _ _ _ (represent (S m))). apply repr_closed. unfold inductive_chain in H. fold inductive_chain in H. unfold "~>" in H.
 simpl in H. simpl. repeat apply associativity1. apply exchange1. apply associativity1. apply associativity1. apply exchange4. apply associativity2. apply exchange3. apply associativity1. apply exchange4. apply associativity2. apply exchange2.
-apply associativity1. apply exchange2. apply exchange4. apply exchange2. apply exchange4. apply associativity1. apply exchange4. apply exchange2. apply exchange4. 
-assert ((substitution (substitution A n (succ (var n))) n (succ (represent m))) = substitution A n (succ (succ (represent m)))). admit. rewrite H0. auto.
-Admitted.
+apply associativity1. apply exchange2. apply exchange4. apply exchange2. apply exchange4. apply associativity1. apply exchange4. apply exchange2. apply exchange4. rewrite sub_succ_self. auto.
+Qed.
 
 Lemma induction_terminate : forall (A : formula) (n m : nat) (t : term) (alpha : ord), PA_omega_theorem (lor (lor (lor (inductive_chain A n (S m)) (substitution A n t)) (neg (substitution A n zero))) (neg (univ n (lor (neg A) (substitution A n (succ (var n))))))) 0 alpha -> PA_omega_theorem (lor (lor (lor (inductive_chain A n 0) (substitution A n t)) (neg (substitution A n zero))) (neg (univ n (lor (neg A) (substitution A n (succ (var n))))))) 0 (ord_add alpha (nat_ord (S m))).
 Proof.
@@ -138,9 +136,8 @@ Qed.
 Lemma induction_final : forall (A : formula) (n m : nat) (t : term) (alpha : ord), PA_omega_theorem (lor (lor (lor (inductive_chain A n (S m)) (substitution A n t)) (neg (substitution A n zero))) (neg (univ n (lor (neg A) (substitution A n (succ (var n))))))) 0 alpha -> PA_omega_theorem (lor (lor (substitution A n t) (neg (substitution A n zero))) (neg (univ n (lor (neg A) (substitution A n (succ (var n))))))) 0 (ord_succ (ord_add alpha (nat_ord (S m)))).
 Proof.
 intros. pose proof (induction_terminate _ _ _ _ _ H). unfold inductive_chain in H0. unfold "~>" in H0. apply exchange1. apply contraction2. apply associativity2. apply (quantification2 _ _ _ (represent 0)). apply repr_closed. simpl.
-assert ((substitution (substitution A n (succ (var n))) n zero) = substitution A n (succ zero)). admit. rewrite H1. apply associativity1. apply associativity1. apply exchange4. apply exchange2. auto.
-Admitted.
-
+rewrite sub_succ_self. apply associativity1. apply associativity1. apply exchange4. apply exchange2. auto.
+Qed.
 
 Lemma induction_aux : forall A n m, free_list A = [n] -> PA_omega_theorem (lor (lor (substitution A n (represent m)) (neg (substitution A n zero))) (neg (univ n (lor (neg A) (substitution A n (succ (var n))))))) 0 (w_tower (S (S (S (num_conn A + num_conn A))))).
 Proof.
@@ -171,6 +168,58 @@ Lemma PA_omega_to_PA : forall A, closed A = true -> Peano_Theorems A -> {d : nat
 Proof.
 intros. induction H0.
 - inversion H. apply and_bool_prop in H1. destruct H1. apply and_bool_prop in H1. destruct H1. clear H2. pose (LEM A H0). exists 0. exists (ord_succ (ord_succ (w_tower (num_conn A + num_conn A)))). unfold "~>".
+  apply associativity1. apply exchange2. apply exchange1. apply weakening. auto. auto.
+- inversion H. apply and_bool_prop in H1. destruct H1. clear H1. apply and_bool_prop in H0. destruct H0. apply and_bool_prop in H1. destruct H1. unfold "~>". exists (max (max 0 0) (num_conn (neg B))). exists (ord_succ (ord_max (ord_succ (w_tower (num_conn (lor (neg A) B) + num_conn (lor (neg A) B)))) ((ord_succ (w_tower (num_conn (lor (neg A) (lor (neg B) C)) + num_conn (lor (neg A) (lor (neg B) C)))))))).
+  assert (closed (lor (neg A) B) = true). simpl; try rewrite H0,H1; auto. pose proof (LEM _ H3).
+  assert (closed (lor (neg A) (lor (neg B) C)) = true). simpl; try rewrite H0,H1,H2; auto. pose proof (LEM _ H5). 
+  apply associativity1. apply associativity1. apply exchange2. apply exchange3. apply exchange2. apply exchange3. apply exchange1. apply exchange3. apply exchange2.
+  apply exchange3. apply exchange4. apply associativity2. apply associativity2. apply contraction2. apply associativity1. apply exchange4. apply exchange2. apply associativity2. apply (cut3 _ B).
+  + apply exchange2. apply exchange1. auto. 
+  + apply exchange1. apply exchange4. apply exchange2. apply exchange4. apply exchange3. apply associativity2. apply exchange1. apply associativity2. apply exchange3. apply exchange1. apply associativity2. auto. 
+- inversion H. apply and_bool_prop in H1. destruct H1. clear H1. apply and_bool_prop in H0. destruct H0. unfold "~>". exists (max 0 (max 0 0)). exists (ord_succ (ord_max (ord_succ (ord_succ (ord_succ (w_tower (num_conn (A) + num_conn (A)))))) ((ord_succ (ord_max (ord_succ (ord_succ (ord_succ (w_tower (num_conn A + num_conn A))))) (ord_succ (ord_succ (w_tower (num_conn (neg B) + num_conn (neg B)))))))))). apply demorgan2.
+  + apply associativity1. apply exchange2. apply exchange1. apply weakening. simpl. rewrite H0. rewrite H1. auto. apply negation2. apply LEM. auto.
+  + apply exchange1. apply associativity2. apply demorgan2.
+    * apply negation2. apply associativity1. apply exchange1. apply weakening. simpl. auto. apply LEM. auto.
+    * apply associativity1. apply exchange3. apply associativity2. apply weakening. auto. apply exchange1. apply LEM. auto.
+- inversion H. apply and_bool_prop in H1. destruct H1. exists 0. exists (ord_succ (ord_succ (w_tower (num_conn (substitution A n t) + num_conn (substitution A n t))))). apply (quantification2 _ _ _ t). auto. apply LEM. auto.
+- unfold "~>". exists 0. exists (cons (ord_succ (ord_succ (w_tower (num_conn (lor (neg A) B) + num_conn (lor (neg A) B))))) 0 Zero). apply associativity1. apply exchange1. apply w_rule2. intros. apply exchange1. apply associativity2. apply (quantification2 _ _ _ (represent m)). apply repr_closed.
+  unfold substitution. fold substitution. rewrite closed_subst_eq_aux; auto. assert (num_conn (lor (neg A) B) = num_conn (lor (neg A) (substitution B n (represent m)))). simpl. rewrite num_conn_sub. auto. rewrite H0. apply LEM. 
+  unfold "~>" in H. apply closed_lor in H. destruct H. apply closed_lor in H1. destruct H1. simpl. simpl in H1. rewrite H1. simpl. apply closed_univ_sub_repr. auto.  
+- 
+admit.
+- assert (closed A = false). case (closed A) eqn:X; auto. rewrite (closed_free_list _ X) in e. inversion e. assert ((free_list A) = [n]). inversion H. rewrite H1 in H3. destruct (free_list A). inversion e. apply and_bool_prop in H3. destruct H3. apply nat_eq_decid in H2. destruct H2. apply eq_list_decid in H3. rewrite H3. auto.
+  exists 0. exists (cons Zero 0 Zero). apply w_rule1. intros. admit. 
+- case (correct_a (equ t s)) eqn:X. 
+  + unfold "~>". unfold "~>" in H. apply closed_lor in H. destruct H. apply closed_lor in H0. destruct H0. inversion H1. apply and_bool_prop in H3. destruct H3. pose (atom (equ (var 0) r)).
+    assert ((substitution f 0 t) = (atom (equ t r))). simpl. rewrite closed_subst_eq_t; auto. assert ((substitution f 0 s) = (atom (equ s r))). simpl. rewrite closed_subst_eq_t; auto.
+    exists 0. exists (ord_succ (ord_succ (w_tower (num_conn (atom (equ s t)))))). apply weakening. apply correct_closed. auto. rewrite <- H4. rewrite <- H5. apply LEM_term.
+    unfold correct_a in *. unfold correctness in *. destruct (correct_eval _ _ X). destruct (eval s). inversion H7. destruct (eval t). inversion H6. case (eq_nat (S n0) (S n)) eqn:Y. apply eq_nat_symm in Y. rewrite Y. auto. inversion X. simpl. rewrite closed_free_list_t; auto.
+  + unfold "~>". apply closed_lor in H. destruct H. unfold closed in H. exists 0. exists (ord_succ Zero). apply exchange1. apply weakening. auto. apply axiom. simpl. destruct (correctness_decid _ H). rewrite e in X. inversion X. auto.
+- case (correct_a (equ t s)) eqn:X. 
+  + unfold "~>". apply closed_lor in H. destruct H. unfold closed in H. exists 0. exists (ord_succ Zero). apply weakening. auto. apply axiom. simpl.
+    unfold correct_a in *. unfold correctness in *. destruct (correct_eval _ _ X). simpl. destruct (eval s). inversion H2. destruct (eval t). inversion H1. simpl. simpl in X. rewrite X. auto.
+  + unfold "~>". apply closed_lor in H. destruct H. unfold closed in H. exists 0. exists (ord_succ Zero). apply exchange1. apply weakening. auto. apply axiom. simpl. destruct (correctness_decid _ H). rewrite e in X. inversion X. auto.
+- exists 0. exists Zero. apply axiom. simpl. destruct (correctness_decid _ H); auto. unfold correct_a in *. unfold correctness in *. simpl in *. destruct (eval t); inversion e.
+- case (correct_a (equ t s)) eqn:X. 
+  + unfold "~>". apply closed_lor in H. destruct H. unfold closed in H. exists 0. exists (ord_succ Zero). apply weakening. auto. apply axiom. simpl.
+    unfold correct_a in *. unfold correctness in *. destruct (correct_eval _ _ X). simpl. destruct (eval s). inversion H2. destruct (eval t). inversion H1. simpl. simpl in X. rewrite X. auto.
+  + unfold "~>". apply closed_lor in H. destruct H. unfold closed in H. exists 0. exists (ord_succ Zero). apply exchange1. apply weakening. auto. apply axiom. simpl. destruct (correctness_decid _ H); auto.
+    unfold correct_a in *. unfold correctness in *. simpl in *. destruct (eval t). inversion e. destruct (eval s). inversion e. simpl in *. rewrite X in e. inversion e.
+- exists 0. exists Zero. apply axiom. simpl. destruct (correctness_decid _ H); auto. unfold incorrect_a in e. unfold correct_a. unfold correctness in *. simpl in *. destruct (eval t). inversion e. simpl in *. rewrite plus_n_0. rewrite eq_nat_refl. auto.
+- exists 0. exists Zero. apply axiom. simpl. destruct (correctness_decid _ H); auto. unfold incorrect_a in e. unfold correct_a. unfold correctness in *. simpl in *. destruct (eval t). inversion e. destruct (eval s). inversion e. simpl in *. rewrite plus_n_Sm. rewrite eq_nat_refl. auto.
+- exists 0. exists Zero. apply axiom. simpl. destruct (correctness_decid _ H); auto. unfold incorrect_a in e. unfold correct_a. unfold correctness in *. simpl in *. destruct (eval t). inversion e. simpl in *. rewrite mult_0_r. rewrite eq_nat_refl. auto.
+- exists 0. exists Zero. apply axiom. simpl. destruct (correctness_decid _ H); auto. unfold incorrect_a in e. unfold correct_a. unfold correctness in *. simpl in *. destruct (eval t). inversion e. destruct (eval s). inversion e. assert ((S (n * S n0)) = (S (n * n0 + n))). lia. rewrite H0. rewrite eq_nat_refl. auto.
+- case (closed A) eqn:X.
+  + unfold "~>". exists 0. exists (cons (w_tower (S (S (S (num_conn A + num_conn A))))) 0 Zero). apply associativity1. apply exchange1. apply w_rule2. intros. apply induction_aux'. auto.
+  + assert ((free_list A) = [n]). unfold "~>" in H. apply closed_lor in H. destruct H. apply closed_lor in H0. destruct H0. simpl in H1. rewrite X in H1. destruct (free_list A). inversion H1. apply and_bool_prop in H1. destruct H1. apply nat_eq_decid in H1. destruct H1. apply eq_list_decid in H2. rewrite H2. auto.
+    unfold "~>". exists 0. exists (cons (w_tower (S (S (S (num_conn A + num_conn A))))) 0 Zero). apply associativity1. apply exchange1. apply w_rule2. intros. apply associativity1. apply induction_aux. auto.
+Admitted.
+
+Lemma PA_omega_to_PA_closed : forall A t, closed_t t = true -> Peano_Theorems A -> {d : nat & {alpha : ord & PA_omega_theorem (closure A t) d alpha}}.
+Proof.
+intros. induction H0.
+- pose proof (closure_closed A _ H).
+inversion H. apply and_bool_prop in H1. destruct H1. apply and_bool_prop in H1. destruct H1. clear H2. pose (LEM A H0). exists 0. exists (ord_succ (ord_succ (w_tower (num_conn A + num_conn A)))). unfold "~>".
   apply associativity1. apply exchange2. apply exchange1. apply weakening. auto. auto.
 - inversion H. apply and_bool_prop in H1. destruct H1. clear H1. apply and_bool_prop in H0. destruct H0. apply and_bool_prop in H1. destruct H1. unfold "~>". exists (max (max 0 0) (num_conn (neg B))). exists (ord_succ (ord_max (ord_succ (w_tower (num_conn (lor (neg A) B) + num_conn (lor (neg A) B)))) ((ord_succ (w_tower (num_conn (lor (neg A) (lor (neg B) C)) + num_conn (lor (neg A) (lor (neg B) C)))))))).
   assert (closed (lor (neg A) B) = true). simpl; try rewrite H0,H1; auto. pose proof (LEM _ H3).
