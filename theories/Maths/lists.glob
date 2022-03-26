@@ -1,4 +1,4 @@
-DIGEST 1bbd1972a695bc4c68ba325431144a67
+DIGEST 5f257a2bc4de531d651ff15f4c72b786
 FMaths_Facts.lists
 R104:106 Coq.micromega.Lia <> <> lib
 R124:126 Coq.Init.Nat <> <> lib
@@ -1120,3 +1120,112 @@ R13077:13105 Maths_Facts.lists <> remove_dups_idem_remove_false thm
 R13077:13105 Maths_Facts.lists <> remove_dups_idem_remove_false thm
 R13134:13139 Maths_Facts.lists <> eq_nat syndef
 R13134:13139 Maths_Facts.lists <> eq_nat syndef
+prf 13185:13200 <> remove_idem_tail
+binder 13211:13211 <> l:120
+binder 13213:13213 <> n:121
+R13245:13248 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R13236:13238 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R13216:13226 Maths_Facts.lists <> remove_dups def
+R13230:13233 Maths_Facts.lists <> :::x_'::'_x not
+R13229:13229 Maths_Facts.lists <> n:121 var
+R13234:13234 Maths_Facts.lists <> l:120 var
+R13240:13243 Maths_Facts.lists <> :::x_'::'_x not
+R13239:13239 Maths_Facts.lists <> n:121 var
+R13244:13244 Maths_Facts.lists <> l:120 var
+R13262:13264 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R13249:13259 Maths_Facts.lists <> remove_dups def
+R13261:13261 Maths_Facts.lists <> l:120 var
+R13265:13265 Maths_Facts.lists <> l:120 var
+R13316:13334 Maths_Facts.lists <> remove_not_mem_idem thm
+R13316:13334 Maths_Facts.lists <> remove_not_mem_idem thm
+R13316:13334 Maths_Facts.lists <> remove_not_mem_idem thm
+R13316:13334 Maths_Facts.lists <> remove_not_mem_idem thm
+R13361:13389 Maths_Facts.lists <> remove_dups_idem_remove_false thm
+R13361:13389 Maths_Facts.lists <> remove_dups_idem_remove_false thm
+R13405:13410 Maths_Facts.lists <> member def
+R13415:13425 Maths_Facts.lists <> remove_dups def
+R13405:13410 Maths_Facts.lists <> member def
+R13415:13425 Maths_Facts.lists <> remove_dups def
+R13453:13475 Maths_Facts.lists <> member_remove_dups_true thm
+R13453:13475 Maths_Facts.lists <> member_remove_dups_true thm
+R13453:13475 Maths_Facts.lists <> member_remove_dups_true thm
+prf 13517:13528 <> member_split
+binder 13539:13539 <> l:122
+binder 13541:13541 <> n:123
+R13561:13564 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R13554:13556 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R13544:13549 Maths_Facts.lists <> member def
+R13551:13551 Maths_Facts.lists <> n:123 var
+R13553:13553 Maths_Facts.lists <> l:122 var
+R13557:13560 Coq.Init.Datatypes <> true constr
+R13565:13571 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R13577:13578 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+binder 13572:13573 <> l1:124
+binder 13575:13576 <> l2:125
+R13580:13582 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R13579:13579 Maths_Facts.lists <> l:122 var
+R13583:13588 Maths_Facts.lists <> concat def
+R13595:13598 Maths_Facts.lists <> :::x_'::'_x not
+R13594:13594 Maths_Facts.lists <> n:123 var
+R13599:13600 Maths_Facts.lists <> l2:125 var
+R13590:13591 Maths_Facts.lists <> l1:124 var
+R13663:13668 Maths_Facts.lists <> eq_nat syndef
+R13663:13668 Maths_Facts.lists <> eq_nat syndef
+R13690:13701 Maths_Facts.naturals <> nat_eq_decid thm
+R13690:13701 Maths_Facts.naturals <> nat_eq_decid thm
+R13728:13729 Maths_Facts.lists <> :::'['_']' not
+R13728:13729 Maths_Facts.lists <> :::'['_']' not
+R13786:13789 Maths_Facts.lists <> :::x_'::'_x not
+R13786:13789 Maths_Facts.lists <> :::x_'::'_x not
+prf 13829:13846 <> member_split_first
+binder 13857:13857 <> l:126
+binder 13859:13859 <> n:127
+R13879:13882 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R13872:13874 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R13862:13867 Maths_Facts.lists <> member def
+R13869:13869 Maths_Facts.lists <> n:127 var
+R13871:13871 Maths_Facts.lists <> l:126 var
+R13875:13878 Coq.Init.Datatypes <> true constr
+R13883:13889 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R13895:13896 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+binder 13890:13891 <> l1:128
+binder 13893:13894 <> l2:129
+R13920:13923 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R13898:13900 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R13897:13897 Maths_Facts.lists <> l:126 var
+R13901:13906 Maths_Facts.lists <> concat def
+R13913:13916 Maths_Facts.lists <> :::x_'::'_x not
+R13912:13912 Maths_Facts.lists <> n:127 var
+R13917:13918 Maths_Facts.lists <> l2:129 var
+R13908:13909 Maths_Facts.lists <> l1:128 var
+R13935:13937 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R13924:13929 Maths_Facts.lists <> member def
+R13931:13931 Maths_Facts.lists <> n:127 var
+R13933:13934 Maths_Facts.lists <> l1:128 var
+R13938:13942 Coq.Init.Datatypes <> false constr
+R14004:14009 Maths_Facts.lists <> eq_nat syndef
+R14004:14009 Maths_Facts.lists <> eq_nat syndef
+R14031:14042 Maths_Facts.naturals <> nat_eq_decid thm
+R14031:14042 Maths_Facts.naturals <> nat_eq_decid thm
+R14069:14070 Maths_Facts.lists <> :::'['_']' not
+R14069:14070 Maths_Facts.lists <> :::'['_']' not
+R14134:14137 Maths_Facts.lists <> :::x_'::'_x not
+R14134:14137 Maths_Facts.lists <> :::x_'::'_x not
+prf 14209:14220 <> split_member
+binder 14231:14232 <> l1:130
+binder 14234:14235 <> l2:131
+binder 14237:14237 <> n:132
+R14270:14272 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R14240:14245 Maths_Facts.lists <> member def
+R14247:14247 Maths_Facts.lists <> n:132 var
+R14250:14255 Maths_Facts.lists <> concat def
+R14262:14265 Maths_Facts.lists <> :::x_'::'_x not
+R14261:14261 Maths_Facts.lists <> n:132 var
+R14266:14267 Maths_Facts.lists <> l2:131 var
+R14257:14258 Maths_Facts.lists <> l1:130 var
+R14273:14276 Coq.Init.Datatypes <> true constr
+R14334:14344 Maths_Facts.naturals <> eq_nat_refl thm
+R14334:14344 Maths_Facts.naturals <> eq_nat_refl thm
+R14334:14344 Maths_Facts.naturals <> eq_nat_refl thm
+R14374:14379 Maths_Facts.lists <> eq_nat syndef
+R14374:14379 Maths_Facts.lists <> eq_nat syndef

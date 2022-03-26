@@ -386,3 +386,27 @@ Proof.
 intros. inversion H. rewrite H1. rename H1 into Z. induction l; simpl; rewrite eq_nat_refl; auto.
 rewrite (remove_dups_double_cons_ne _ _ _ H). rewrite remove_not_mem_idem. auto. pose proof (remove_dups_idem_remove_false _ _ H). simpl in H0. case (eq_nat x n) eqn:X. inversion H0. auto.
 Qed.
+
+Lemma remove_idem_tail : forall l n, remove_dups (n :: l) = n :: l -> remove_dups l = l.
+Proof.
+intros. inversion H. rewrite H1. rewrite remove_not_mem_idem in H1. auto. pose proof (remove_dups_idem_remove_false _ _ H). case (member n (remove_dups l)) eqn:X; auto. rewrite (member_remove_dups_true _ _ X) in H0. inversion H0.
+Qed.
+
+Lemma member_split : forall l n, member n l = true -> exists l1 l2, l = concat l1 (n :: l2).
+Proof.
+intros. induction l. inversion H. simpl in H. case (eq_nat x n) eqn:X.
+- apply nat_eq_decid in X. destruct X. exists [], l. auto.
+- destruct (IHl H) as [l1 [l2 HL]]. exists (x :: l1), l2. rewrite HL. auto.
+Qed.
+
+Lemma member_split_first : forall l n, member n l = true -> exists l1 l2, l = concat l1 (n :: l2) /\ member n l1 = false.
+Proof.
+intros. induction l. inversion H. simpl in H. case (eq_nat x n) eqn:X.
+- apply nat_eq_decid in X. destruct X. exists [], l. auto.
+- destruct (IHl H) as [l1 [l2 [HL1 Hl2]]]. exists (x :: l1), l2. split. rewrite HL1. auto. simpl. rewrite X. auto.
+Qed.
+
+Lemma split_member : forall l1 l2 n, member n (concat l1 (n :: l2)) = true.
+Proof.
+intros l1. induction l1. intros. simpl. rewrite eq_nat_refl. auto. intros. simpl. case (eq_nat x n); auto.
+Qed.
