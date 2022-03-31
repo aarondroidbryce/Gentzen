@@ -236,7 +236,6 @@ match P with
 | _ => P
 end.
 
-
 (* Defining cut_elimination_univ, the case where the cut formula is univ n E *)
 (* *)
 Fixpoint cut_elimination_univ (P : ptree) : ptree :=
@@ -994,7 +993,7 @@ apply (transfinite_induction cut_remove).
                   { simpl. lia. }
               **  simpl. rewrite (nat_eq_decid _ _ E1) in X3. inversion X3. lia. simpl in H10. lia.
               **  simpl. rewrite (nat_eq_decid _ _ E1) in X3. inversion X3. lia. simpl in H10. lia.
-              **  admit.                  
+              **                    
           ++  exists (ord_up (ord_2_exp (ord_succ (ord_max o o0))) (cut_elimination (cut_ca f f0 n0 n1 o o0 P1 P2))). case (ord_succ (ord_max o o0)) eqn:Y1. pose (ord_succ_non_Zero (ord_max o o0)). rewrite Y1 in e. inversion e. repeat split; auto.
               **  unfold ptree_formula. fold ptree_formula. rewrite cut_elimination_formula; auto.
               **  simpl in Y. rewrite Y1 in Y. simpl. rewrite Y1. destruct f0.

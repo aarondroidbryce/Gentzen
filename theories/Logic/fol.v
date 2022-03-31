@@ -660,6 +660,27 @@ induction n.
   + lia.
 Qed.
 
+Lemma eval_represent_equiv : forall (n : nat),
+  eval (represent n) = n + 1.
+Proof.
+intros.
+induction n.
+- auto.
+- simpl. case_eq (eval (represent n)); intros.
+  + rewrite H in IHn. rewrite plus_n_1 in IHn. inversion IHn.
+  + lia.
+Qed.
+
+Lemma represent_eval : forall (t : term), closed_t t = true -> eval (represent ((eval t) - 1)) = (eval t).
+Proof.
+intros.
+induction t.
+- auto.
+- simpl. pose proof (closed_eval _ H). simpl in H0. case (eval t) eqn:H1. inversion H0. rewrite eval_represent_equiv. lia.
+- simpl. pose proof (closed_eval _ H). simpl in H0. case (eval t1) eqn:X1. inversion H0. case (eval t2) eqn:X2. inversion H0. simpl. rewrite minus_n_0. rewrite eval_represent_equiv. lia.
+- simpl. pose proof (closed_eval _ H). simpl in H0. case (eval t1) eqn:X1. inversion H0. case (eval t2) eqn:X2. inversion H0. simpl. rewrite minus_n_0. rewrite eval_represent_equiv. lia.
+- simpl. pose proof (closed_eval _ H). simpl in H0. inversion H0. 
+Qed.
 
 Lemma closed_univ_sub_repr : forall (B : formula) (n : nat),
   closed (univ n B) = true ->

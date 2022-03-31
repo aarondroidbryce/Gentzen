@@ -36,6 +36,13 @@ match l1,l2 with
 | m :: l1', n :: l2' => eq_nat m n && eq_list l1' l2'
 end.
 
+Lemma eq_list_symm : forall l1 l2, eq_list l1 l2 = eq_list l2 l1.
+Proof.
+intros l1. induction l1.
+- intros. destruct l2; auto.
+- intros. destruct l2; simpl; auto. rewrite IHl1. case (eq_nat x n) eqn:X. rewrite eq_nat_symm; auto. rewrite eq_nat_symm'; auto.
+Qed.
+
 Definition eq_list_decid_nice (l1 : list nat) :=
   forall (l2 : list nat), eq_list l1 l2 = true -> l1 = l2.
 
@@ -53,6 +60,15 @@ Qed.
 Lemma eq_list_decid : forall (l1 l2 : list nat),
   eq_list l1 l2 = true -> l1 = l2.
 Proof. intros. apply (eq_list_decid' l1). auto. Qed.
+
+Lemma list_ne_symm : forall (l1 l2 : list nat), l1 <> l2 -> l2 <> l1. auto. Qed.
+
+Lemma list_ne_cons : forall (l1 : list nat) (n : nat), eq_list l1 (n :: l1) = false.
+Proof. intros. induction l1. auto. simpl. case (eq_nat x n) eqn:X. apply nat_eq_decid in X. destruct X. auto. auto. Qed.
+
+Lemma eq_list_decid_conv : forall (l1 l2 : list nat),
+  eq_list l1 l2 = false -> l1 <> l2.
+Proof.  unfold "<>". intros. destruct H0. induction l1; inversion H. rewrite eq_nat_refl in H1. auto. Qed.
 
 Fixpoint remove (n : nat) (l : list nat) : list nat :=
 match l with

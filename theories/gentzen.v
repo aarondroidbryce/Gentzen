@@ -14,6 +14,7 @@ From Systems Require Import PA_omega.
 From Systems Require Import proof_trees.
 From Systems Require Import substitute.
 From Systems Require Import cut_elim.
+From Systems Require Import Peano.
 Notation "b1 && b2" := (andb b1 b2).
 Notation "b1 || b2" := (orb b1 b2).
 Notation eq_nat := Nat.eqb.
@@ -49,6 +50,20 @@ intros.
 unfold dangerous_disjunct. unfold disjunction_of. fold disjunction_of. case (eq_f A danger) eqn:X.
 - case (eq_f B danger) eqn:X1; destruct A; destruct B; unfold disjunction_of; fold disjunction_of; try rewrite X; try rewrite X1; auto; inversion X1; inversion X.
 - case (eq_f B danger) eqn:X1; destruct B; unfold disjunction_of; fold disjunction_of; try rewrite X1; try rewrite X; auto; inversion X; inversion X1; try rewrite H1; case (disjunction_of A danger); auto.
+Qed.
+
+Lemma danger_closed : forall A, dangerous_disjunct A = true -> closed A = true.
+Proof.
+intros. unfold dangerous_disjunct in H. induction A.
+- apply f_eq_decid in H. rewrite H. auto.
+- inversion H.
+- inversion H. rewrite H1. simpl. case (eq_f A1 danger) eqn:X; case (eq_f A2 danger) eqn:X1; rewrite IHA1,IHA2; auto; try apply f_eq_decid in X; try rewrite X; try apply f_eq_decid in X1; try rewrite X1; auto; apply and_bool_prop in H1; destruct H1; auto.
+- inversion H.
+Qed.
+
+Lemma closed_danger : forall A, closed A = false -> dangerous_disjunct A = false.
+Proof.
+intros. case (dangerous_disjunct A) eqn:X; auto. rewrite danger_closed in H. inversion H. auto.
 Qed.
 
 Lemma danger_not_deg_0 : forall P A d alpha, P_proves P A d alpha -> dangerous_disjunct A = true -> 0 < d.
@@ -111,4 +126,14 @@ Qed.
 Lemma danger_not_theorem : forall A, dangerous_disjunct A = true -> forall n alpha, PA_omega_theorem A n alpha -> False.
 Proof.
 intros. apply (danger_not_provable _ H _ _ _ (projT2(provable_theorem _ _ _ H0))). 
+Qed.
+
+Lemma PA_Consistent : forall A n alpha, Peano_Theorems_Base A n alpha -> dangerous_disjunct A = false.
+Proof.
+intros. case (closed A) eqn:X. pose proof (PA_Base_closed_PA_omega _ _ _  H (represent 0) (repr_closed _)). rewrite closure_closed_id in H0; auto. apply (provable_not_danger _ _ _ (provable_theorem _ _ _ H0)). apply closed_danger. auto. 
+Qed.
+
+Lemma PA_Consistent_2 : forall A, dangerous_disjunct A = true -> forall n alpha, Peano_Theorems_Base A n alpha -> False.
+Proof.
+intros. pose proof (PA_Base_closed_PA_omega _ _ _  H0 (represent 0) (repr_closed _)). rewrite closure_closed_id in H1; auto. apply (danger_not_provable _ H _ _ _ (projT2(provable_theorem _ _ _ H1))). apply danger_closed. auto. 
 Qed.
