@@ -69,6 +69,26 @@ match eq_f A B with
   end
 end.
 
+Fixpoint exists_at (A B : formula) (S : subst_ind) : bool :=
+match eq_f A B, S with
+| true , _ => true
+| _, (0) => true
+| false, (1) => false
+| false, lor_ind S_1 S_2 => match A with
+    | lor A1 A2 => (exists_at A1 B S_1) && (exists_at A2 B S_2)
+    | _ => false
+    end
+end.
+
+Lemma exists_at_contains : forall A B, exists_at A B (within_f A B) = true.
+Proof.
+intros A. induction A.
+- intros. simpl. destruct B; auto. case (eq_atom a a0); auto.
+- intros. simpl. destruct B; auto. case (eq_f A B); auto.
+- intros. simpl. destruct B; auto; try rewrite IHA1; auto; try rewrite IHA2; auto. case (eq_f A1 B1); simpl; case (eq_f A2 B2); auto; rewrite IHA1; rewrite IHA2; auto.
+- intros. simpl. destruct B; auto. case (eq_f A B); case (eq_nat n n0); auto.
+Qed.
+
 Lemma target_fits : forall f, subst_ind_fit f (target f) = true.
 Proof.
 intros f. induction f; simpl; auto. rewrite IHf1,IHf2. auto.
@@ -156,6 +176,51 @@ Proof.
 intros. unfold contains_f. fold contains_f. rewrite H. case (eq_f (lor A B) C); auto.
 Qed.
 
+Lemma exists_symm : forall A B C SA SB, eq_f (lor A B) C = false -> exists_at (lor A B) C (lor_ind SA SB) = true -> exists_at (lor B A) C (lor_ind SB SA) = true.
+Proof. 
+intros. unfold exists_at in *. fold exists_at in *. rewrite H in H0. apply and_bool_prop in H0. destruct H0. rewrite H1,H0. case (eq_f (lor B A) C); auto. 
+Qed.
+
+Lemma exists_swap_end : forall A B C D SA SB SC, eq_f (lor (lor A B) C) D = false -> eq_f (lor A B) D = false -> exists_at (lor (lor A B) C) D (lor_ind (lor_ind SA SB) SC) = true -> exists_at (lor (lor A C) B) D (lor_ind (lor_ind SA SC) SB) = true.
+Proof. 
+intros. unfold exists_at in *. fold exists_at in *. rewrite H in H1. rewrite H0 in H1. apply and_bool_prop in H1. destruct H1. apply and_bool_prop in H1. destruct H1. rewrite H1,H2,H3. case (eq_f (lor (lor A C) B) D); case (eq_f (lor A C) D); auto.
+Qed.
+
+Lemma exists_swap_start : forall A B C D SA SB SC, eq_f (lor (lor A B) C) D = false -> eq_f (lor A B) D = false -> exists_at (lor (lor A B) C) D (lor_ind (lor_ind SA SB) SC) = true -> exists_at (lor (lor B A) C) D (lor_ind (lor_ind SB SA) SC) = true.
+Proof. 
+intros. unfold exists_at in *. fold exists_at in *. rewrite H in H1. rewrite H0 in H1. apply and_bool_prop in H1. destruct H1. apply and_bool_prop in H1. destruct H1. rewrite H1,H2,H3. case (eq_f (lor (lor B A) C) D); case (eq_f (lor B A) D); auto.
+Qed.
+
+Lemma exists_swap_mid : forall A B C D E SA SB SC SD, eq_f (lor (lor (lor A B) C) D) E = false -> eq_f (lor (lor A B) C) E = false -> eq_f (lor A B) E = false -> exists_at (lor (lor (lor A B) C) D) E (lor_ind (lor_ind (lor_ind SA SB) SC) SD) = true -> exists_at (lor (lor (lor A C) B) D) E (lor_ind (lor_ind (lor_ind SA SC) SB) SD) = true.
+Proof. 
+intros. unfold exists_at in *. fold exists_at in *. rewrite H in H2. rewrite H0 in H2. rewrite H1 in H2. apply and_bool_prop in H2. destruct H2. apply and_bool_prop in H2. destruct H2. apply and_bool_prop in H2. destruct H2; rewrite H2,H3,H4,H5; case (eq_f (lor (lor (lor A C) B) D) E); case (eq_f (lor (lor A C) B) E); case (eq_f (lor A C) E); auto.
+Qed.
+
+Lemma exists_contract1 : forall A B SA1 SA2, eq_f (lor A A) B = false -> exists_at (lor A A) B (lor_ind SA1 SA2) = true -> exists_at A B SA1 = true.
+Proof.
+intros. unfold exists_at in H0. fold exists_at in H0. rewrite H in H0. apply and_bool_prop in H0. destruct H0. auto.
+Qed.
+
+Lemma exists_contract2 : forall A B SA1 SA2, eq_f (lor A A) B = false -> exists_at (lor A A) B (lor_ind SA1 SA2) = true -> exists_at A B SA2 = true.
+Proof.
+intros. unfold exists_at in H0. fold exists_at in H0. rewrite H in H0. apply and_bool_prop in H0. destruct H0. auto.
+Qed.
+
+Lemma exist_non_target : forall A B, exists_at A B (non_target A) = true.
+Proof.
+intros. induction A; destruct B; simpl; auto; try rewrite IHA1; try rewrite IHA2; auto. case (eq_atom a a0); auto. case (eq_f A B); auto. case (eq_f A1 B1); auto. case (eq_f A2 B2); auto. case (eq_nat n n0); auto. case (eq_f A B); auto. 
+Qed.
+
+Lemma exists_weaken : forall A B C SA, exists_at A C SA = true -> exists_at (lor A B) C (lor_ind SA (non_target B)) = true.
+Proof.
+intros. unfold exists_at. fold exists_at. rewrite H. case (eq_f (lor A B) C); auto. apply exist_non_target. 
+Qed.
+
+Lemma exists_weaken_prov : forall A B C SA SB, exists_at A C SA = true -> exists_at B C SB = true -> exists_at (lor A B) C (lor_ind SA SB) = true.
+Proof.
+intros. unfold exists_at. fold exists_at. rewrite H. case (eq_f (lor A B) C); auto. 
+Qed.
+
 Lemma contains_closed : forall A B, closed A = true -> contains_f A B = true -> closed B = true.
 Proof.
 intros A. induction A.
@@ -166,134 +231,176 @@ intros A. induction A.
 Qed.
 
 Fixpoint univ_counter_example 
-  (P : ptree) (E : formula) (n : nat) (S : subst_ind) : list term :=
+  (P : ptree) (E : formula) (n : nat) (S : subst_ind) (r : term) : list term :=
 match P, S with
-| deg_up d P', _ => univ_counter_example P' E n S
+| deg_up d P', _ => univ_counter_example P' E n S r
 
-| ord_up alpha P', _ => univ_counter_example P' E n S
+| ord_up alpha P', _ => univ_counter_example P' E n S r
 
 | node A, _ => nil
 
-| exchange_ab A B d alpha P', lor_ind S_A S_B => univ_counter_example P' E n (lor_ind S_B S_A)
+| exchange_ab A B d alpha P', lor_ind S_A S_B => univ_counter_example P' E n (lor_ind S_B S_A) r
 
-| exchange_cab C A B d alpha P', lor_ind (lor_ind S_C S_B) S_A  => univ_counter_example P' E n (lor_ind (lor_ind S_C S_A) S_B)
+| exchange_cab C A B d alpha P', lor_ind (lor_ind S_C S_B) S_A  => univ_counter_example P' E n (lor_ind (lor_ind S_C S_A) S_B) r
 
-| exchange_abd A B D d alpha P', lor_ind (lor_ind S_B S_A) S_D => univ_counter_example P' E n (lor_ind (lor_ind S_A S_B) S_D)
+| exchange_abd A B D d alpha P', lor_ind (lor_ind S_B S_A) S_D => univ_counter_example P' E n (lor_ind (lor_ind S_A S_B) S_D) r
 
-| exchange_cabd C0 A B D d alpha P', lor_ind (lor_ind (lor_ind S_C S_B) S_A) S_D => univ_counter_example P' E n (lor_ind (lor_ind (lor_ind S_C S_A) S_B) S_D)
+| exchange_cabd C0 A B D d alpha P', lor_ind (lor_ind (lor_ind S_C S_B) S_A) S_D => univ_counter_example P' E n (lor_ind (lor_ind (lor_ind S_C S_A) S_B) S_D) r
 
-| contraction_a A d alpha P', _ => univ_counter_example P' E n (lor_ind S S)
+| contraction_a A d alpha P', _ => univ_counter_example P' E n (lor_ind S S) r
 
-| contraction_ad A D d alpha P', lor_ind S_A S_D => univ_counter_example P' E n (lor_ind (lor_ind S_A S_A) S_D)
+| contraction_ad A D d alpha P', lor_ind S_A S_D => univ_counter_example P' E n (lor_ind (lor_ind S_A S_A) S_D) r
 
 | weakening_ad A D d alpha P', lor_ind S_A S_D => match contains_f A (neg (univ n E)) with
-    | true => (cons zero (univ_counter_example P' E n S_D))
-    | false => (univ_counter_example P' E n S_D)
+    | true => ((univ_counter_example P' E n S_D r) ++ cons r nil)
+    | false => (univ_counter_example P' E n S_D) r
     end
 
 | demorgan_ab A B d1 d2 alpha1 alpha2 P1 P2, _ => nil
 
-| demorgan_abd A B D d1 d2 alpha1 alpha2 P1 P2, lor_ind S_AB S_D => (univ_counter_example P1 E n (lor_ind (0) S_D)) ++ (univ_counter_example P2 E n (lor_ind (0) S_D))
+| demorgan_abd A B D d1 d2 alpha1 alpha2 P1 P2, lor_ind S_AB S_D => (univ_counter_example P1 E n (lor_ind (0) S_D) r) ++ (univ_counter_example P2 E n (lor_ind (0) S_D) r)
 
 | negation_a A d alpha P', _ => nil
 
-| negation_ad A D d alpha P', lor_ind S_A S_D => (univ_counter_example P' E n (lor_ind S_A S_D))
+| negation_ad A D d alpha P', lor_ind S_A S_D => (univ_counter_example P' E n (lor_ind (non_target A) S_D) r)
 
 | quantification_a A k t d alpha P', _ =>
     (match eq_f A E, eq_nat k n, S with
           | true, true, (1) => (cons t nil)
-          | _,_,_ => univ_counter_example P' E n S
+          | _,_,_ => univ_counter_example P' E n S r
       end)
 
 | quantification_ad A D k t d alpha P', lor_ind S_A S_D =>
     (match eq_f A E, eq_nat k n, S_A with
-    | true, true, (1) => (cons t (univ_counter_example P' E n (lor_ind (0) S_D)))
-    | _, _, _ => univ_counter_example P' E n S
+    | true, true, (1) => (cons t (univ_counter_example P' E n (lor_ind (0) S_D) t))
+    | _, _, _ => univ_counter_example P' E n S r
     end)
 
 | w_rule_a A k d alpha g, _ => nil
 
-| w_rule_ad A D k d alpha g, lor_ind S_A S_D => univ_counter_example (g 0) E n S_D
+| w_rule_ad A D k d alpha g, lor_ind S_A S_D => univ_counter_example (g 0) E n S_D r
 
-| cut_ca C0 A d1 d2 alpha1 alpha2 P1 P2, _ => univ_counter_example P1 E n (lor_ind S (non_target A))
+| cut_ca C0 A d1 d2 alpha1 alpha2 P1 P2, _ => univ_counter_example P1 E n (lor_ind S (non_target A)) r
 
-| cut_ad A D d1 d2 alpha1 alpha2 P1 P2, _ => univ_counter_example P2 E n (lor_ind (0) S)
+| cut_ad A D d1 d2 alpha1 alpha2 P1 P2, _ => univ_counter_example P2 E n (lor_ind (0) S) r
 
-| cut_cad C0 A D d1 d2 alpha1 alpha2 P1 P2, lor_ind S_C S_D => (univ_counter_example P1 E n (lor_ind S_C (non_target A))) ++ (univ_counter_example P2 E n (lor_ind (0) S_D))
+| cut_cad C0 A D d1 d2 alpha1 alpha2 P1 P2, lor_ind S_C S_D => (univ_counter_example P1 E n (lor_ind S_C (non_target A)) r) ++ (univ_counter_example P2 E n (lor_ind (0) S_D) r)
 
 | _, _ => nil
 end.
 
-Lemma contains_has_counter : forall (P : ptree) (E : formula) (n : nat), contains_f (ptree_formula P) (neg (univ n E)) = true -> length (univ_counter_example P E n (within_f (ptree_formula P) (neg (univ n E)))) > 0.
+Lemma contains_has_counter : forall (P : ptree) (E : formula) (n : nat), contains_f (ptree_formula P) (neg (univ n E)) = true -> length (univ_counter_example P E n (within_f (ptree_formula P) (neg (univ n E))) zero) > 0.
 Proof.
 Admitted.
 
-Definition bad_head (L : list term) : term. destruct L. exact zero. exact t. Defined.
+Definition bad_head (L : list term) (r : term) : term. destruct L. exact r. exact t. Defined.
+
+Lemma bad_head_closed : forall (P : ptree) (B : formula) (m : nat) (S : subst_ind) (r : term) (Hr : closed_t r = true) (PV : valid P), closed_t (bad_head (univ_counter_example P B m S r) r) = true.
+Proof.
+intros P. induction P; intros; induction (univ_counter_example _ B m S r) eqn:X; auto; simpl.
+- simpl in *. destruct PV as [PV1 PV2]. pose proof (IHP B m S r Hr). rewrite X in H. auto.
+- simpl in *. destruct PV as [[PV1 PV2] PV3]. pose proof (IHP B m S r Hr). rewrite X in H. auto.
+- simpl in *. inversion X.
+- simpl in *. destruct PV as [[[PV1 PV2] PV3] PV4]. destruct S; inversion X. pose proof (IHP B m (lor_ind S2 S1) r Hr). rewrite X in H. auto.
+- simpl in *. destruct PV as [[[PV1 PV2] PV3] PV4]. destruct S; inversion X. destruct S1; inversion X. pose proof (IHP B m (lor_ind (lor_ind S1_1 S2) S1_2) r Hr). rewrite X in H. auto.
+- simpl in *. destruct PV as [[[PV1 PV2] PV3] PV4]. destruct S; inversion X. destruct S1; inversion X. pose proof (IHP B m (lor_ind (lor_ind S1_2 S1_1) S2) r Hr). rewrite X in H. auto.
+- simpl in *. destruct PV as [[[PV1 PV2] PV3] PV4]. destruct S; inversion X. destruct S1; inversion X. destruct S1_1; inversion X. pose proof (IHP B m (lor_ind (lor_ind (lor_ind S1_1_1 S1_2) S1_1_2) S2) r Hr). rewrite X in H. auto.
+- simpl in *. destruct PV as [[[PV1 PV2] PV3] PV4]. pose proof (IHP B m (lor_ind S S) r Hr). rewrite X in H. auto.
+- simpl in *. destruct PV as [[[PV1 PV2] PV3] PV4]. destruct S; inversion X. pose proof (IHP B m (lor_ind (lor_ind S1 S1) S2) r Hr). rewrite X in H. auto.
+- simpl in *. destruct PV as [[[PV1 PV2] PV3] PV4]. destruct S; inversion X. case (contains_f f (neg (univ m B))) eqn:Y. case (univ_counter_example P B m S2) eqn:Y1; inversion X; destruct H1; auto. pose proof (IHP B m S2 r Hr). rewrite Y1 in H. auto. pose proof (IHP B m S2 r Hr). rewrite X in H. auto. 
+- simpl in *. inversion X.
+- simpl in *. destruct PV as [[[[[[[PV1 PV2] PV3] PV4] PV5] PV6] PV7] PV8]. destruct S; inversion X. case (univ_counter_example P1 B m (lor_ind (0) S2) r) eqn:Y. simpl in *. pose proof (IHP2 B m (lor_ind (0) S2) r Hr). rewrite H0 in H. auto. pose proof (IHP1 B m (lor_ind (0) S2) r Hr). inversion H0. destruct H2. rewrite Y in H. auto.
+- simpl in *. inversion X. 
+- simpl in *. destruct PV as [[[PV1 PV2] PV3] PV4]. destruct S; inversion X. pose proof (IHP B m (lor_ind (non_target f) S2) r Hr). rewrite X in H. auto.
+- simpl in *. destruct PV as [[[[PV1 PV2] PV3] PV4] PV5]. case (eq_f f B) eqn:Z.
+  + case (eq_nat n m) eqn:Z1.
+    * destruct S; inversion X.
+      --  case (univ_counter_example P B m (0)) eqn:Y1; inversion X; destruct H1; auto. pose proof (IHP B m (0) r Hr). rewrite Y1 in H. auto.
+      --  destruct H0. auto.
+      --  case (univ_counter_example P B m (lor_ind S1 S2)) eqn:Y1; inversion X; destruct H1; auto. pose proof (IHP B m (lor_ind S1 S2) r Hr). rewrite Y1 in H. auto.
+    * case (univ_counter_example P B m S) eqn:Y1; inversion X; destruct H1,H0; auto. pose proof (IHP B m S r Hr). rewrite Y1 in H. auto.
+  + case (univ_counter_example P B m S) eqn:Y1; inversion X; destruct H1,H0; auto. pose proof (IHP B m S r Hr). rewrite Y1 in H. auto.
+- simpl in *. destruct PV as [[[[PV1 PV2] PV3] PV4] PV5]. destruct S; inversion X. case (eq_f f B) eqn:Z.
+  + case (eq_nat n m) eqn:Z1.
+    * destruct S1; inversion X.
+      --  case (univ_counter_example P B m (lor_ind (0) S2)) eqn:Y1; inversion X; destruct H2; auto. pose proof (IHP B m (lor_ind (0) S2) r Hr). rewrite Y1 in H. auto.
+      --  destruct H1. auto.
+      --  case (univ_counter_example P B m (lor_ind (lor_ind S1_1 S1_2) S2)) eqn:Y1; inversion X; destruct H2; auto. pose proof (IHP B m (lor_ind (lor_ind S1_1 S1_2) S2) r Hr). rewrite Y1 in H. auto.
+    * case (univ_counter_example P B m (lor_ind S1 S2)) eqn:Y1; inversion X; destruct H1,H0; auto. pose proof (IHP B m (lor_ind S1 S2) r Hr). rewrite Y1 in H. auto.
+  + case (univ_counter_example P B m (lor_ind S1 S2)) eqn:Y1; inversion X; destruct H1,H0; auto. pose proof (IHP B m (lor_ind S1 S2) r Hr). rewrite Y1 in H. auto.
+- simpl in *. inversion X.
+- simpl in *. destruct (PV 0) as [[[PV1 PV2] PV3] PV4]. destruct S; inversion X. case (univ_counter_example (p 0) B m S2) eqn:Y1; inversion X; destruct H1,H2; auto. pose proof (H 0 B m S2 r Hr). rewrite Y1 in H0. auto.
+- simpl in *. destruct PV as [[[[[[[PV1 PV2] PV3] PV4] PV5] PV6] PV7] PV8]. case (univ_counter_example P1 B m (lor_ind S (non_target f0))) eqn:Y1; inversion X; destruct H1,H0; auto. pose proof (IHP1 B m (lor_ind S (non_target f0)) r Hr). rewrite Y1 in H. auto.
+- simpl in *. destruct PV as [[[[[[[PV1 PV2] PV3] PV4] PV5] PV6] PV7] PV8]. case (univ_counter_example P2 B m (lor_ind (0) S)) eqn:Y1; inversion X; destruct H1,H0; auto. pose proof (IHP2 B m (lor_ind (0) S) r Hr). rewrite Y1 in H. auto.
+- simpl in *. destruct PV as [[[[[[[PV1 PV2] PV3] PV4] PV5] PV6] PV7] PV8]. destruct S; inversion X. case (univ_counter_example P1 B m (lor_ind S1 (non_target f0))) eqn:Y1. simpl in *. pose proof (IHP2 B m (lor_ind (0) S2) r Hr). rewrite X in H. auto. inversion H0. destruct H1. pose proof (IHP1 B m (lor_ind S1 (non_target f0)) r Hr). rewrite Y1 in H. auto. 
+Qed.
 
 Definition neg_invert (alpha : ord ) : Type := forall (P : ptree) (A B : formula) (n d : nat),
       contains_f A (neg (univ n B)) = true -> (P_proves P A d alpha ->
             { t : term & provable (formula_sub_ind A (neg (univ n B)) (substitution (neg B) n t) (within_f A (neg (univ n B)))) d alpha & closed_t t = true}).
 
 Lemma w_rule_invertible_a : forall (P : ptree) (A B : formula) (n d : nat) (alpha : ord) (C : contains_f (ptree_formula P) (neg (univ n B)) = true), (P_proves P A d alpha ->
-      forall (S : subst_ind), subst_ind_fit A S = true -> 
-            provable (formula_sub_ind A (neg (univ n B)) (substitution (neg B) n (bad_head (univ_counter_example P B n (target A)))) S) d alpha).
+      forall (S : subst_ind) (r : term), subst_ind_fit A S = true -> closed_t r = true -> exists_at A (neg (univ n B)) S = true -> 
+            provable (formula_sub_ind A (neg (univ n B)) (substitution (neg B) n (bad_head (univ_counter_example P B n S r) r)) S) d alpha).
 Proof.
-unfold provable. induction P; intros A B m d alpha C [[[Ht1 Ht2] Ht3] Ht4] S HS.
+unfold provable. induction P; intros A B m d alpha C [[[Ht1 Ht2] Ht3] Ht4] S r HS Hr HE.
 - destruct Ht2. simpl in Ht3. apply IHP; auto. repeat split; auto. lia.
 - destruct Ht2 as [[Ht2a Ht2b] Ht2c]. simpl in Ht1,Ht3,Ht4. destruct Ht4.
-  assert (P_proves P A (ptree_deg P) (ptree_ord P)). repeat split; auto. destruct (IHP A B m (ptree_deg P) (ptree_ord P) C X S HS) as [P1 [[[HP1 HP2] HP3] HP4]]. exists (ord_up o P1). destruct HP4. repeat split; simpl; auto. lia.
-- rewrite Ht1 in C. unfold contains_f in C. fold contains_f in C. destruct A; inversion C.
-  + admit.
-  + admit. (* simpl in Ht1. inversion Ht1. case (eq_f (neg A) (neg (univ m B))) eqn:X. inversion X. apply f_eq_decid in H1. rewrite H1 in *. simpl in Ht1. rewrite Ht1 in Ht2. inversion Ht2. inversion C. simpl in Ht1. rewrite Ht1 in Ht2. inversion Ht2. *)
+  assert (P_proves P A (ptree_deg P) (ptree_ord P)). repeat split; auto. destruct (IHP A B m (ptree_deg P) (ptree_ord P) C X S r HS Hr HE) as [P1 [[[HP1 HP2] HP3] HP4]]. exists (ord_up o P1). destruct HP4. repeat split; simpl; auto. lia.
+- rewrite Ht1 in C. unfold contains_f in C. fold contains_f in C. simpl in Ht1. destruct Ht1. case (eq_f (neg f) (neg (univ m B))) eqn:X. inversion X. apply f_eq_decid in H0. rewrite H0 in *. inversion Ht2.
+  destruct f; inversion Ht2; inversion C. destruct f; inversion H0. simpl in H1. inversion H1.
 - simpl in Ht1,Ht3,Ht4. destruct Ht2 as [[[Ht2a Ht2b] Ht2c] Ht2d]. destruct Ht1,Ht4.
   assert (P_proves P (lor f f0) (ptree_deg P) (ptree_ord P)). repeat split; auto. assert (eq_f (lor f0 f) (neg (univ m B)) = false) as X0. auto. destruct S; inversion HS. apply and_bool_prop in H0. destruct H0.
   assert (subst_ind_fit (lor f f0) (lor_ind S2 S1) = true) as HS'. simpl. rewrite H,H0. auto. rewrite Ht2a in IHP.
-  destruct (IHP (lor f f0) B m (ptree_deg P) (ptree_ord P) (contains_symm _ _ _ X0 C) X _ HS') as [P1 [[[HP1 HP2] HP3] HP4]]. exists (exchange_ab (formula_sub_ind f (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m (target (lor f f0))))) S2) (formula_sub_ind f0 (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m (target (lor f f0))))) S1) (ptree_deg P1) o P1). destruct HP4. repeat split; simpl; auto.
-  rewrite and_bool_symm; auto. rewrite <- formula_sub_ind_lor; auto. simpl. rewrite H,H0. simpl. auto. rewrite HP1. rewrite formula_sub_ind_lor; auto. lia.
+  destruct (IHP (lor f f0) B m (ptree_deg P) (ptree_ord P) (contains_symm _ _ _ X0 C) X _ r HS' Hr (exists_symm _ _ _ _ _ X0 HE)) as [P1 [[[HP1 HP2] HP3] HP4]]. exists (exchange_ab (formula_sub_ind f (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m (lor_ind S2 S1) r) r)) S2) (formula_sub_ind f0 (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m (lor_ind S2 S1) r) r)) S1) (ptree_deg P1) o P1). destruct HP4. repeat split; simpl; auto.
+  rewrite and_bool_symm; auto. repeat rewrite sub_fit_true; auto. rewrite HP1. rewrite formula_sub_ind_lor; auto. lia.
 - simpl in Ht1,Ht3,Ht4. destruct Ht2 as [[[Ht2a Ht2b] Ht2c] Ht2d]. destruct Ht1,Ht4.
   assert (P_proves P (lor (lor f f0) f1) (ptree_deg P) (ptree_ord P)). repeat split; auto. assert (eq_f (lor (lor f f1) f0) (neg (univ m B)) = false) as X0. auto. assert (eq_f (lor f0 f) (neg (univ m B)) = false) as X1. auto. destruct S; inversion HS. destruct S1; inversion H0. clear H1. apply and_bool_prop in H0. destruct H0. apply and_bool_prop in H. destruct H.
   assert (subst_ind_fit (lor (lor f f0) f1) (lor_ind (lor_ind S1_1 S2) S1_2) = true) as HS'. simpl. rewrite H,H0,H1. auto. rewrite Ht2a in *.
-  destruct (IHP (lor (lor f f0) f1) B m (ptree_deg P) (ptree_ord P) (contains_swap_end _ _ _ _ X0 X1 C) X _ HS') as [P1 [[[HP1 HP2] HP3] HP4]]. 
-  exists (exchange_cab (formula_sub_ind f (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m (target (ptree_formula P))))) S1_1) (formula_sub_ind f0 (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m (target (ptree_formula P))))) S2) (formula_sub_ind f1 (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m (target (ptree_formula P))))) S1_2) (ptree_deg P1) o P1). destruct HP4. rewrite Ht2a. repeat split; simpl; auto.
+  destruct (IHP (lor (lor f f0) f1) B m (ptree_deg P) (ptree_ord P) (contains_swap_end _ _ _ _ X0 X1 C) X _ r HS' Hr (exists_swap_end _ _ _ _ _ _ _ X0 X1 HE)) as [P1 [[[HP1 HP2] HP3] HP4]]. 
+  exists (exchange_cab (formula_sub_ind f (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m (lor_ind (lor_ind S1_1 S2) S1_2) r) r)) S1_1) (formula_sub_ind f0 (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m (lor_ind (lor_ind S1_1 S2) S1_2) r) r)) S2) (formula_sub_ind f1 (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m (lor_ind (lor_ind S1_1 S2) S1_2) r) r)) S1_2) (ptree_deg P1) o P1). destruct HP4. repeat split; simpl; auto.
   rewrite H,H1,H0. simpl. repeat rewrite sub_fit_true; auto. repeat rewrite <- formula_sub_ind_lor; auto. rewrite H0,H. auto. lia.
 - simpl in Ht1,Ht3,Ht4. destruct Ht2 as [[[Ht2a Ht2b] Ht2c] Ht2d]. destruct Ht1,Ht4. rewrite Ht2a in *.
   assert (P_proves P (lor (lor f f0) f1) (ptree_deg P) (ptree_ord P)). repeat split; auto. assert (eq_f (lor (lor f0 f) f1) (neg (univ m B)) = false) as X0. auto. assert (eq_f (lor f0 f) (neg (univ m B)) = false) as X1. auto. destruct S; inversion HS. destruct S1; inversion H0. clear H1. apply and_bool_prop in H0. destruct H0. apply and_bool_prop in H. destruct H.
   assert (subst_ind_fit (lor (lor f f0) f1) (lor_ind (lor_ind S1_2 S1_1) S2) = true) as HS'; simpl; rewrite H,H1,H0; simpl; auto.
-  destruct (IHP (lor (lor f f0) f1) B m (ptree_deg P) (ptree_ord P) (contains_swap_start _ _ _ _ X0 X1 C) X _ HS') as [P1 [[[HP1 HP2] HP3] HP4]].
-  exists (exchange_abd (formula_sub_ind f (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m (target (ptree_formula P))))) S1_2) (formula_sub_ind f0 (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m (target (ptree_formula P))))) S1_1) (formula_sub_ind f1 (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m (target (ptree_formula P))))) S2) (ptree_deg P1) o P1). destruct HP4. rewrite Ht2a. repeat split; simpl; auto.
+  destruct (IHP (lor (lor f f0) f1) B m (ptree_deg P) (ptree_ord P) (contains_swap_start _ _ _ _ X0 X1 C) X _ r HS' Hr (exists_swap_start _ _ _ _ _ _ _ X0 X1 HE)) as [P1 [[[HP1 HP2] HP3] HP4]].
+  exists (exchange_abd (formula_sub_ind f (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m (lor_ind (lor_ind S1_2 S1_1) S2) r) r)) S1_2) (formula_sub_ind f0 (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m (lor_ind (lor_ind S1_2 S1_1) S2) r) r)) S1_1) (formula_sub_ind f1 (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m (lor_ind (lor_ind S1_2 S1_1) S2) r) r)) S2) (ptree_deg P1) o P1). destruct HP4. repeat split; simpl; auto.
   repeat rewrite sub_fit_true; auto. repeat rewrite <- formula_sub_ind_lor; auto. rewrite H,H1. auto. lia.
 - simpl in Ht1,Ht3,Ht4. destruct Ht2 as [[[Ht2a Ht2b] Ht2c] Ht2d]. destruct Ht1,Ht4. rewrite Ht2a in *.
   assert (P_proves P (lor (lor (lor f f0) f1) f2) (ptree_deg P) (ptree_ord P)). repeat split; auto. assert (eq_f (lor (lor (lor f f1) f0) f2) (neg (univ m B)) = false) as X0. auto. assert (eq_f (lor (lor f f1) f0) (neg (univ m B)) = false) as X1. auto. assert (eq_f (lor f f1) (neg (univ m B)) = false) as X2. auto. destruct S; inversion HS. destruct S1; inversion H0. clear H1. destruct S1_1; inversion H0. clear H1. apply and_bool_prop in H0. destruct H0. apply and_bool_prop in H. destruct H. apply and_bool_prop in H. destruct H.
   assert (subst_ind_fit (lor (lor ( lor f f0) f1) f2) (lor_ind (lor_ind (lor_ind S1_1_1 S1_2) S1_1_2) S2) = true) as HS'; simpl; rewrite H,H1,H0,H2; simpl; auto.
-  destruct (IHP (lor (lor (lor f f0) f1) f2) B m (ptree_deg P) (ptree_ord P) (contains_swap_mid _ _ _ _ _ X0 X1 X2 C) X _ HS') as [P1 [[[HP1 HP2] HP3] HP4]].
-  exists (exchange_cabd (formula_sub_ind f (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m (target (ptree_formula P))))) S1_1_1) (formula_sub_ind f0 (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m (target (ptree_formula P))))) S1_2) (formula_sub_ind f1 (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m (target (ptree_formula P))))) S1_1_2) (formula_sub_ind f2 (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m (target (ptree_formula P))))) S2) (ptree_deg P1) o P1). destruct HP4. rewrite Ht2a. repeat split; simpl; auto.
+  destruct (IHP (lor (lor (lor f f0) f1) f2) B m (ptree_deg P) (ptree_ord P) (contains_swap_mid _ _ _ _ _ X0 X1 X2 C) X _ r HS' Hr (exists_swap_mid _ _ _ _ _ _ _ _ _ X0 X1 X2 HE)) as [P1 [[[HP1 HP2] HP3] HP4]].
+  exists (exchange_cabd (formula_sub_ind f (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m (lor_ind (lor_ind (lor_ind S1_1_1 S1_2) S1_1_2) S2) r) r)) S1_1_1) (formula_sub_ind f0 (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m (lor_ind (lor_ind (lor_ind S1_1_1 S1_2) S1_1_2) S2) r) r)) S1_2) (formula_sub_ind f1 (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m (lor_ind (lor_ind (lor_ind S1_1_1 S1_2) S1_1_2) S2) r) r)) S1_1_2) (formula_sub_ind f2 (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m (lor_ind (lor_ind (lor_ind S1_1_1 S1_2) S1_1_2) S2) r) r)) S2) (ptree_deg P1) o P1). destruct HP4. repeat split; simpl; auto.
   repeat rewrite sub_fit_true; auto. repeat rewrite <- formula_sub_ind_lor; simpl; auto; try rewrite H; try rewrite H2; try rewrite H1; auto. lia.
 - simpl in Ht1,Ht3,Ht4. destruct Ht2 as [[[Ht2a Ht2b] Ht2c] Ht2d]. destruct Ht1,Ht4. rewrite Ht2a in *.
   assert (P_proves P (lor f f) (ptree_deg P) (ptree_ord P)). repeat split; auto.
   assert (subst_ind_fit (lor f f) (lor_ind S S) = true) as HS'; simpl; try rewrite HS; auto.
-  destruct (IHP (lor f f) B m (ptree_deg P) (ptree_ord P) (contains_weaken  _ f _ C) X _ HS') as [P1 [[[HP1 HP2] HP3] HP4]]. exists (contraction_a (formula_sub_ind f (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m (target (ptree_formula P))))) S) (ptree_deg P1) o P1). destruct HP4. rewrite Ht2a. repeat split; simpl; auto.
+  destruct (IHP (lor f f) B m (ptree_deg P) (ptree_ord P) (contains_weaken  _ f _ C) X _ r HS' Hr (exists_weaken_prov  _ f _ _ _ HE HE)) as [P1 [[[HP1 HP2] HP3] HP4]]. exists (contraction_a (formula_sub_ind f (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m (lor_ind S S) r) r)) S) (ptree_deg P1) o P1). destruct HP4. repeat split; simpl; auto.
   rewrite <- formula_sub_ind_lor. auto. rewrite HS; auto. lia.
 - simpl in Ht1,Ht3,Ht4. destruct Ht2 as [[[Ht2a Ht2b] Ht2c] Ht2d]. destruct Ht1,Ht4. rewrite Ht2a in *.
   assert (P_proves P (lor (lor f f) f0) (ptree_deg P) (ptree_ord P)). repeat split; auto. assert (eq_f (lor (lor f f0) f) (neg (univ m B)) = false) as X0. auto. assert (eq_f (lor f f0) (neg (univ m B)) = false) as X1. auto.
-  destruct S; inversion HS. apply and_bool_prop in H0. destruct H0. simpl. rewrite H,H0. simpl. assert (subst_ind_fit (lor (lor f f) f0) (lor_ind (lor_ind S1 S1) S2) = true) as HS'; simpl; try rewrite H; try rewrite H0; auto.
-  destruct (IHP (lor (lor f f) f0) B m (ptree_deg P) (ptree_ord P) (contains_swap_end _ _ _ _ X0 X1 (contains_weaken  _ f _ C)) X _ HS') as [P1 [[[HP1 HP2] HP3] HP4]]. exists (contraction_ad (formula_sub_ind f (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m (target (ptree_formula P))))) S1) (formula_sub_ind f0 (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m (target (ptree_formula P))))) S2) (ptree_deg P1) o P1). destruct HP4. rewrite Ht2a. repeat split; simpl; auto.
+  destruct S; inversion HS. apply and_bool_prop in H0. destruct H0. simpl. rewrite H,H0. simpl. assert (subst_ind_fit (lor (lor f f) f0) (lor_ind (lor_ind S1 S1) S2) = true) as HS'; simpl; try rewrite H; try rewrite H0; auto. inversion HE. apply and_bool_prop in H2. destruct H2.
+  destruct (IHP (lor (lor f f) f0) B m (ptree_deg P) (ptree_ord P) (contains_swap_end _ _ _ _ X0 X1 (contains_weaken  _ f _ C)) X _ r HS'  Hr (exists_swap_end _ _ _ _ _ _ _ X0 X1 (exists_weaken_prov _ _ _ _ _ HE H1))) as [P1 [[[HP1 HP2] HP3] HP4]]. exists (contraction_ad (formula_sub_ind f (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m (lor_ind (lor_ind S1 S1) S2) r) r)) S1) (formula_sub_ind f0 (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m (lor_ind (lor_ind S1 S1) S2) r) r)) S2) (ptree_deg P1) o P1). destruct HP4. repeat split; simpl; auto.
   repeat rewrite sub_fit_true; auto. repeat rewrite <- formula_sub_ind_lor; auto. rewrite H. auto. lia.
 - simpl in Ht1,Ht3,Ht4. destruct Ht2 as [[[[Ht2a Ht2b] Ht2c] Ht2d] Ht2e]. rewrite Ht2a in *. destruct Ht1. simpl in C. apply or_bool_prop in C. destruct S; inversion HS. apply and_bool_prop in H0. destruct H0. case (contains_f f0 (neg (univ m B))) eqn:Y.
   + assert (P_proves P f0 (ptree_deg P) (ptree_ord P)). repeat split; auto.
-    destruct (IHP f0 B m (ptree_deg P) (ptree_ord P) Y X _ H0) as [P1 [[[HP1 HP2] HP3] HP4]]. exists (weakening_ad (formula_sub_ind f (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m (target (ptree_formula P))))) S1) (formula_sub_ind f0 (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m (target (ptree_formula P))))) S2) (ptree_deg P1) o P1). destruct HP4. rewrite Ht2a. repeat split; simpl; auto.
-    rewrite H,H0. simpl. repeat rewrite sub_fit_true; auto. admit. apply formula_sub_ind_closed; auto. intros. apply closed_univ_sub; auto. admit. lia.
-  + exists (weakening_ad (formula_sub_ind f (neg (univ m B)) (substitution (neg B) m (represent 0)) S1) f0 n o P). repeat split; auto.
-    simpl. rewrite H,H0. simpl. repeat rewrite sub_fit_true; auto. rewrite (not_contain_no_change_fit _ _ _ _ Y); auto. destruct C. rewrite H1. simpl. auto. inversion H1. apply formula_sub_ind_closed; auto. intros. apply closed_univ_sub; auto.
+    destruct (IHP f0 B m (ptree_deg P) (ptree_ord P) Y X _ r H0 Hr) as [P1 [[[HP1 HP2] HP3] HP4]]. inversion HE. rewrite H2. apply and_bool_prop in H2. destruct H2. auto. case (contains_f f (neg (univ m B))) eqn:Y1.
+    * exists (weakening_ad (formula_sub_ind f (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m S2 r) r)) S1) (formula_sub_ind f0 (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m S2 r) r)) S2) (ptree_deg P1) o P1). destruct HP4. repeat split; simpl; auto.
+      rewrite H,H0. simpl. repeat rewrite sub_fit_true; auto. rewrite Y1. case (univ_counter_example P B m S2 r); simpl; auto. apply formula_sub_ind_closed; auto. intros. apply closed_univ_sub; auto. apply bad_head_closed; auto. lia.
+    * exists (weakening_ad (formula_sub_ind f (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m S2 r) r)) S1) (formula_sub_ind f0 (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m S2 r) r)) S2) (ptree_deg P1) o P1). destruct HP4. repeat split; simpl; auto.
+      rewrite H,H0. simpl. repeat rewrite sub_fit_true; auto. rewrite Y1. auto. apply formula_sub_ind_closed; auto. intros. apply closed_univ_sub; auto. apply bad_head_closed; auto. lia.
+  + exists (weakening_ad (formula_sub_ind f (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m S2 r) r)) S1) f0 n o P). repeat split; auto.
+    simpl. rewrite H,H0. simpl. repeat rewrite sub_fit_true; auto. rewrite (not_contain_no_change_fit _ _ _ _ Y); auto. destruct C. rewrite H1. case (univ_counter_example P B m S2 r); auto. inversion H1. apply formula_sub_ind_closed; auto. intros. apply closed_univ_sub; auto. apply bad_head_closed; auto.
 - admit.
 - admit.
 - simpl in Ht1,Ht3,Ht4. destruct Ht2 as [[[Ht2a Ht2b] Ht2c] Ht2d]. destruct Ht1,Ht4. simpl in C. inversion C.
 - simpl in Ht1,Ht3,Ht4. destruct Ht2 as [[[Ht2a Ht2b] Ht2c] Ht2d]. destruct Ht1,Ht4. simpl in C.  
   assert (P_proves P (lor f f0) (ptree_deg P) (ptree_ord P)). repeat split; auto. assert (eq_f (lor f0 f) (neg (univ m B)) = false) as X0. auto.
   destruct S; inversion HS. assert (subst_ind_fit f0 S2 = true). destruct S1; auto. inversion H0. rewrite Ht2a in *.
-  assert (subst_ind_fit (lor f f0) (lor_ind (non_target f) S2) = true) as HS'. simpl. rewrite non_target_fit. rewrite H. auto.
-  destruct (IHP (lor f f0) B m (ptree_deg P) (ptree_ord P) (contains_symm _ _ _ X0 (contains_weaken _ _ _ C)) X _ HS') as [P1 [[[HP1 HP2] HP3] HP4]].
-  exists (negation_ad f (formula_sub_ind f0 (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m (target (ptree_formula P))))) S2) (ptree_deg P1) o P1). destruct HP4. repeat split; simpl; auto.
-  rewrite H0. rewrite Ht2a. repeat rewrite sub_fit_true; auto. simpl. reflexivity.  admit. rewrite HP1. rewrite Ht2a. simpl. rewrite non_target_fit. rewrite H. simpl. rewrite non_target_sub'. rewrite sub_fit_true; auto. lia.
+  assert (subst_ind_fit (lor f f0) (lor_ind (non_target f) S2) = true) as HS'. simpl. rewrite non_target_fit. rewrite H. auto. inversion HE. destruct S1; inversion H2. simpl in H0.
+  destruct (IHP (lor f f0) B m (ptree_deg P) (ptree_ord P) (contains_symm _ _ _ X0 (contains_weaken _ _ _ C)) X _ r HS' Hr (exists_symm _ _ _ _ _ X0 (exists_weaken _ _ _ _ HE))) as [P1 [[[HP1 HP2] HP3] HP4]].
+  exists (negation_ad f (formula_sub_ind f0 (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m (lor_ind (non_target f) S2) r) r)) S2) (ptree_deg P1) o P1). destruct HP4. repeat split; simpl; auto.
+  rewrite H0. repeat rewrite sub_fit_true; auto. rewrite HP1. simpl. rewrite non_target_fit. rewrite H. simpl. rewrite non_target_sub'. rewrite sub_fit_true; auto. lia.
 - simpl in Ht1,Ht3,Ht4. destruct Ht2 as [[[[Ht2a Ht2b] Ht2c] Ht2d] Ht2e]. destruct Ht1,Ht4. simpl in C. case (eq_nat n m) eqn:Y; inversion C. case (eq_f f B) eqn:Y1; inversion C. apply nat_eq_decid in Y. destruct Y. apply f_eq_decid in Y1. destruct Y1. destruct S; inversion HS.
   + simpl. rewrite eq_nat_refl. rewrite eq_f_refl. simpl. exists (quantification_a f n t n0 o P). repeat split; auto.
   + exists (ord_up (ord_succ o) P). simpl. rewrite eq_nat_refl. rewrite eq_f_refl. simpl. repeat split; simpl; auto; try rewrite Ht2e. apply ord_succ_monot. apply ord_succ_nf. apply ptree_ord_nf. auto. lia. 
@@ -301,41 +408,33 @@ unfold provable. induction P; intros A B m d alpha C [[[Ht1 Ht2] Ht3] Ht4] S HS.
   + simpl. rewrite H1. case (eq_nat n m) eqn:Y; case (eq_f f B) eqn:Y1; simpl.
     * case (contains_f f0 (neg (univ n f))) eqn:Y2.
       --  apply nat_eq_decid in Y. destruct Y. apply f_eq_decid in Y1. destruct Y1. simpl. assert (P_proves P (lor (neg (substitution f n t)) f0) (ptree_deg P) (ptree_ord P)). repeat split; auto. assert (eq_f (lor f0 (neg (substitution f n t))) (neg (univ n f)) = false) as X0. auto.
-          assert (subst_ind_fit (lor (neg(substitution f n t)) f0) (lor_ind (0) S2) = true) as HS'. simpl. rewrite H1. auto.
-          destruct (IHP (lor (neg (substitution f n t)) f0) f n (ptree_deg P) (ptree_ord P) (contains_symm _ _ _ X0 (contains_weaken _ _ _ Y2)) X _ HS') as [P1 [[[HP1 HP2] HP3] HP4]].
-          exists (quantification_ad f (formula_sub_ind f0 (neg (univ n f)) (substitution (neg f) n (bad_head (univ_counter_example P f n (within_f (ptree_formula P) (neg (univ n f)))))) S2) n t (ptree_deg P1) o P1). simpl. repeat split; simpl; auto; try rewrite Ht2e. rewrite Ht2a. rewrite sub_fit_true; auto. simpl. assert (eq_f (substitution f n t) (univ n f) = false). admit. rewrite H.  rewrite HP1. simpl. rewrite H1. case (eq_f (substitution f n t) (univ n f)); rewrite sub_fit_true; auto. rewrite HP4. auto. lia.
-      --  apply nat_eq_decid in Y. destruct Y. apply f_eq_decid in Y1. destruct Y1. exists t; auto. exists (quantification_ad f f0 n t n0 o P). rewrite not_contain_no_change_fit; auto. repeat split; auto.
+          assert (subst_ind_fit (lor (neg(substitution f n t)) f0) (lor_ind (0) S2) = true) as HS'. simpl. rewrite H1. auto. inversion HE. rewrite eq_nat_refl in H0. rewrite eq_f_refl in H0. simpl in H0.
+          destruct (IHP (lor (neg (substitution f n t)) f0) f n (ptree_deg P) (ptree_ord P) (contains_symm _ _ _ X0 (contains_weaken _ _ _ Y2)) X _ r HS' Hr (exists_symm _ _ _ _ _ X0 (exists_weaken _ _ _ _ H0))) as [P1 [[[HP1 HP2] HP3] HP4]].
+          exists (quantification_ad f (formula_sub_ind f0 (neg (univ n f)) (substitution (neg f) n (bad_head (univ_counter_example P f n (lor_ind (0) S2) r) r)) S2) n t (ptree_deg P1) o P1). simpl. repeat split; simpl; auto; try rewrite Ht2e. rewrite sub_fit_true; auto.
+          rewrite HP1. simpl. assert (eq_f (substitution f n t) (univ n f) = false). admit. rewrite H. rewrite H1.  rewrite sub_fit_true; auto. rewrite HP4. auto. lia.
+      --  apply nat_eq_decid in Y. destruct Y. apply f_eq_decid in Y1. destruct Y1. exists (quantification_ad f f0 n t n0 o P). rewrite not_contain_no_change_fit; auto. repeat split; auto.
     * simpl in C. apply nat_eq_decid in Y. destruct Y. assert (P_proves P (lor (neg (substitution f n t)) f0) (ptree_deg P) (ptree_ord P)). repeat split; auto. assert (eq_f (lor f0 (neg (substitution f n t))) (neg (univ n B)) = false) as X0. auto.
-      assert (subst_ind_fit (lor (neg(substitution f n t)) f0) (lor_ind (0) S2) = true) as HS'. simpl. rewrite H1. auto.
-      destruct (IHP (lor (neg (substitution f n t)) f0) B n (ptree_deg P) (ptree_ord P) (contains_symm _ _ _ X0 (contains_weaken _ _ _ C)) X _ HS') as [p HC [P1 [[[HP1 HP2] HP3] HP4]]].
-      exists p; auto. exists (quantification_ad f (formula_sub_ind f0 (neg (univ n B)) (substitution (neg B) n p) S2) n t (ptree_deg P1) o P1). repeat split; simpl; auto; try rewrite Ht2e. rewrite sub_fit_true; auto. rewrite HP1. simpl. rewrite H1. case (eq_f (substitution f n t) (univ n B)); rewrite sub_fit_true; auto. rewrite HP4. auto. lia.
+      assert (subst_ind_fit (lor (neg(substitution f n t)) f0) (lor_ind (0) S2) = true) as HS'. simpl. rewrite H1. auto. inversion HE. rewrite eq_nat_refl in H0. rewrite Y1 in H0. simpl in H0. 
+      destruct (IHP (lor (neg (substitution f n t)) f0) B n (ptree_deg P) (ptree_ord P) (contains_symm _ _ _ X0 (contains_weaken _ _ _ C)) X _ r HS' Hr (exists_symm _ _ _ _ _ X0 (exists_weaken _ _ _ _ H0))) as [P1 [[[HP1 HP2] HP3] HP4]].
+      exists (quantification_ad f (formula_sub_ind f0 (neg (univ n B)) (substitution (neg B) n (bad_head (univ_counter_example P B n (lor_ind (0) S2) r) r)) S2) n t (ptree_deg P1) o P1). repeat split; simpl; auto; try rewrite Ht2e. rewrite sub_fit_true; auto. rewrite HP1. simpl. rewrite H1. case (eq_f (substitution f n t) (univ n B)); rewrite sub_fit_true; auto. rewrite HP4. auto. lia.
     * simpl in C. apply f_eq_decid in Y1. destruct Y1. assert (P_proves P (lor (neg (substitution f n t)) f0) (ptree_deg P) (ptree_ord P)). repeat split; auto. assert (eq_f (lor f0 (neg (substitution f n t))) (neg (univ m f)) = false) as X0. auto.
-      assert (subst_ind_fit (lor (neg(substitution f n t)) f0) (lor_ind (0) S2) = true) as HS'. simpl. rewrite H1. auto.
-      destruct (IHP (lor (neg (substitution f n t)) f0) f m (ptree_deg P) (ptree_ord P) (contains_symm _ _ _ X0 (contains_weaken _ _ _ C)) X _ HS') as [p HC [P1 [[[HP1 HP2] HP3] HP4]]].
-      exists p; auto. exists (quantification_ad f (formula_sub_ind f0 (neg (univ m f)) (substitution (neg f) m p) S2) n t (ptree_deg P1) o P1). repeat split; simpl; auto; try rewrite Ht2e. rewrite sub_fit_true; auto. rewrite HP1. simpl. rewrite H1. case (eq_f (substitution f n t) (univ m f)); rewrite sub_fit_true; auto. rewrite HP4. auto. lia.
+      assert (subst_ind_fit (lor (neg(substitution f n t)) f0) (lor_ind (0) S2) = true) as HS'. simpl. rewrite H1. auto. inversion HE. rewrite eq_f_refl in H0. rewrite Y in H0. simpl in H0. 
+      destruct (IHP (lor (neg (substitution f n t)) f0) f m (ptree_deg P) (ptree_ord P) (contains_symm _ _ _ X0 (contains_weaken _ _ _ C)) X _ r HS' Hr (exists_symm _ _ _ _ _ X0 (exists_weaken _ _ _ _ H0))) as [P1 [[[HP1 HP2] HP3] HP4]].
+      exists (quantification_ad f (formula_sub_ind f0 (neg (univ m f)) (substitution (neg f) m (bad_head (univ_counter_example P f m (lor_ind (0) S2) r) r)) S2) n t (ptree_deg P1) o P1). repeat split; simpl; auto; try rewrite Ht2e. rewrite sub_fit_true; auto. rewrite HP1. simpl. rewrite H1. case (eq_f (substitution f n t) (univ m f)); rewrite sub_fit_true; auto. rewrite HP4. auto. lia.
     * simpl in C. assert (P_proves P (lor (neg (substitution f n t)) f0) (ptree_deg P) (ptree_ord P)). repeat split; auto. assert (eq_f (lor f0 (neg (substitution f n t))) (neg (univ m B)) = false) as X0. auto.
-      assert (subst_ind_fit (lor (neg(substitution f n t)) f0) (lor_ind (0) S2) = true) as HS'. simpl. rewrite H1. auto.
-      destruct (IHP (lor (neg (substitution f n t)) f0) B m (ptree_deg P) (ptree_ord P) (contains_symm _ _ _ X0 (contains_weaken _ _ _ C)) X _ HS') as [p HC [P1 [[[HP1 HP2] HP3] HP4]]].
-      exists p; auto. exists (quantification_ad f (formula_sub_ind f0 (neg (univ m B)) (substitution (neg B) m p) S2) n t (ptree_deg P1) o P1). repeat split; simpl; auto; try rewrite Ht2e. rewrite sub_fit_true; auto. rewrite HP1. simpl. rewrite H1. case (eq_f (substitution f n t) (univ m B)); rewrite sub_fit_true; auto. rewrite HP4. auto. lia.
-    + simpl. rewrite H1. case (eq_nat n m) eqn:Y; case (eq_f f B) eqn:Y1; simpl.
-      * case (contains_f f0 (neg (univ n f))) eqn:Y2.
-        --  apply nat_eq_decid in Y. destruct Y. apply f_eq_decid in Y1. destruct Y1. simpl. assert (P_proves P (lor (neg (substitution f n t)) f0) (ptree_deg P) (ptree_ord P)). repeat split; auto. assert (eq_f (lor f0 (neg (substitution f n t))) (neg (univ n f)) = false) as X0. auto.
-            assert (subst_ind_fit (lor (neg(substitution f n t)) f0) (lor_ind (1) S2) = true) as HS'. simpl. rewrite H1. auto.
-            destruct (IHP (lor (neg (substitution f n t)) f0) f n (ptree_deg P) (ptree_ord P) (contains_symm _ _ _ X0 (contains_weaken _ _ _ Y2)) X _ HS') as [p HC [P1 [[[HP1 HP2] HP3] HP4]]].
-            exists p; auto. exists (ord_up (ord_succ o) P1). repeat split; simpl; auto; try rewrite Ht2e. rewrite HP1. simpl. rewrite H1. assert (eq_f (substitution f n t) (univ n f) = false). admit. rewrite H. admit. rewrite HP4. apply ord_succ_monot. apply ord_succ_nf. apply ptree_ord_nf. auto. lia.
-        --  apply nat_eq_decid in Y. destruct Y. apply f_eq_decid in Y1. destruct Y1. exists t; auto. exists (ord_up (ord_succ (ptree_ord P)) P). rewrite not_contain_no_change_fit; auto. repeat split; simpl; auto. apply ord_succ_monot. apply ord_succ_nf. apply ptree_ord_nf. auto. lia. rewrite Ht2e. auto.
-      * simpl in C. apply nat_eq_decid in Y. destruct Y. assert (P_proves P (lor (neg (substitution f n t)) f0) (ptree_deg P) (ptree_ord P)). repeat split; auto. assert (eq_f (lor f0 (neg (substitution f n t))) (neg (univ n B)) = false) as X0. auto.
-        assert (subst_ind_fit (lor (neg(substitution f n t)) f0) (lor_ind (0) S2) = true) as HS'. simpl. rewrite H1. auto.
-        destruct (IHP (lor (neg (substitution f n t)) f0) B n (ptree_deg P) (ptree_ord P) (contains_symm _ _ _ X0 (contains_weaken _ _ _ C)) X _ HS') as [p HC [P1 [[[HP1 HP2] HP3] HP4]]].
-        exists p; auto. exists (quantification_ad f (formula_sub_ind f0 (neg (univ n B)) (substitution (neg B) n p) S2) n t (ptree_deg P1) o P1). repeat split; simpl; auto; try rewrite Ht2e. rewrite sub_fit_true; auto. rewrite HP1. simpl. rewrite H1. case (eq_f (substitution f n t) (univ n B)); rewrite sub_fit_true; auto. rewrite HP4. auto. lia.
-      * simpl in C. apply f_eq_decid in Y1. destruct Y1. assert (P_proves P (lor (neg (substitution f n t)) f0) (ptree_deg P) (ptree_ord P)). repeat split; auto. assert (eq_f (lor f0 (neg (substitution f n t))) (neg (univ m f)) = false) as X0. auto.
-        assert (subst_ind_fit (lor (neg(substitution f n t)) f0) (lor_ind (0) S2) = true) as HS'. simpl. rewrite H1. auto.
-        destruct (IHP (lor (neg (substitution f n t)) f0) f m (ptree_deg P) (ptree_ord P) (contains_symm _ _ _ X0 (contains_weaken _ _ _ C)) X _ HS') as [p HC [P1 [[[HP1 HP2] HP3] HP4]]].
-        exists p; auto. exists (quantification_ad f (formula_sub_ind f0 (neg (univ m f)) (substitution (neg f) m p) S2) n t (ptree_deg P1) o P1). repeat split; simpl; auto; try rewrite Ht2e. rewrite sub_fit_true; auto. rewrite HP1. simpl. rewrite H1. case (eq_f (substitution f n t) (univ m f)); rewrite sub_fit_true; auto. rewrite HP4. auto. lia.
-      * simpl in C. assert (P_proves P (lor (neg (substitution f n t)) f0) (ptree_deg P) (ptree_ord P)). repeat split; auto. assert (eq_f (lor f0 (neg (substitution f n t))) (neg (univ m B)) = false) as X0. auto.
-        assert (subst_ind_fit (lor (neg(substitution f n t)) f0) (lor_ind (0) S2) = true) as HS'. simpl. rewrite H1. auto.
-        destruct (IHP (lor (neg (substitution f n t)) f0) B m (ptree_deg P) (ptree_ord P) (contains_symm _ _ _ X0 (contains_weaken _ _ _ C)) X _ HS') as [p HC [P1 [[[HP1 HP2] HP3] HP4]]].
-        exists p; auto. exists (quantification_ad f (formula_sub_ind f0 (neg (univ m B)) (substitution (neg B) m p) S2) n t (ptree_deg P1) o P1). repeat split; simpl; auto; try rewrite Ht2e. rewrite sub_fit_true; auto. rewrite HP1. simpl. rewrite H1. case (eq_f (substitution f n t) (univ m B)); rewrite sub_fit_true; auto. rewrite HP4. auto. lia.
+      assert (subst_ind_fit (lor (neg(substitution f n t)) f0) (lor_ind (0) S2) = true) as HS'. simpl. rewrite H1. auto. inversion HE. rewrite Y,Y1 in H0. simpl in H0. 
+      destruct (IHP (lor (neg (substitution f n t)) f0) B m (ptree_deg P) (ptree_ord P) (contains_symm _ _ _ X0 (contains_weaken _ _ _ C)) X _ r HS' Hr (exists_symm _ _ _ _ _ X0 (exists_weaken _ _ _ _ H0))) as [P1 [[[HP1 HP2] HP3] HP4]].
+      exists (quantification_ad f (formula_sub_ind f0 (neg (univ m B)) (substitution (neg B) m (bad_head (univ_counter_example P B m (lor_ind (0) S2) r) r)) S2) n t (ptree_deg P1) o P1). repeat split; simpl; auto; try rewrite Ht2e. rewrite sub_fit_true; auto. rewrite HP1. simpl. rewrite H1. case (eq_f (substitution f n t) (univ m B)); rewrite sub_fit_true; auto. rewrite HP4. auto. lia.
+  + simpl. rewrite H1. case (eq_nat n m) eqn:Y; case (eq_f f B) eqn:Y1; simpl.
+    * case (contains_f f0 (neg (univ n f))) eqn:Y2.
+      --  apply nat_eq_decid in Y. destruct Y. apply f_eq_decid in Y1. destruct Y1. simpl. assert (P_proves P (lor (neg (substitution f n t)) f0) (ptree_deg P) (ptree_ord P)). repeat split; auto. assert (eq_f (lor f0 (neg (substitution f n t))) (neg (univ n f)) = false) as X0. auto.
+          assert (subst_ind_fit (lor (neg(substitution f n t)) f0) (lor_ind (1) S2) = true) as HS'. simpl. rewrite H1. auto. inversion HE. rewrite eq_nat_refl in H0. rewrite eq_f_refl in H0. simpl in H0. assert (subst_ind_fit (lor (neg (substitution f n t)) f0) (lor_ind (0) (non_target f0)) = true). rewrite non_target_fit. auto.
+          destruct (IHP (lor (neg (substitution f n t)) f0) f n (ptree_deg P) (ptree_ord P) (contains_symm _ _ _ X0 (contains_weaken _ _ _ Y2)) X _ t H Ht2b) as [P1 [[[HP1 HP2] HP3] HP4]]. rewrite exist_non_target. auto.
+          exists (ord_up (ord_succ o) P1). repeat split; simpl; auto; try rewrite Ht2e. rewrite HP1. simpl. rewrite non_target_fit. case (eq_f (substitution f n t) (univ n f)). admit. admit. rewrite HP4. apply ord_succ_monot. apply ord_succ_nf. apply ptree_ord_nf. auto. lia.
+      --  apply nat_eq_decid in Y. destruct Y. apply f_eq_decid in Y1. destruct Y1. exists (ord_up (ord_succ (ptree_ord P)) P). rewrite not_contain_no_change_fit; auto. repeat split; simpl; auto. apply ord_succ_monot. apply ord_succ_nf. apply ptree_ord_nf. auto. lia. rewrite Ht2e. auto.
+    * simpl in C. apply nat_eq_decid in Y. destruct Y. inversion HE. rewrite eq_nat_refl in H0. rewrite Y1 in H0. simpl in H0. inversion H0.
+    * simpl in C. apply f_eq_decid in Y1. destruct Y1. inversion HE. rewrite eq_f_refl in H0. rewrite Y in H0. simpl in H0. inversion H0.
+    * simpl in C. inversion HE. rewrite Y in H0. simpl in H0. inversion H0.
 - simpl in Ht1,Ht3,Ht4. destruct Ht1,Ht4. inversion C.
 - simpl in Ht1,Ht3,Ht4. destruct Ht1,Ht4. inversion C. simpl in Ht2. admit.
 - simpl in Ht1,Ht3,Ht4. destruct Ht2 as [[[[[[[Ht2a Ht2b] Ht2c] Ht2d] Ht2e] Ht2f] Ht2g] Ht2h]. destruct Ht1,Ht4.
