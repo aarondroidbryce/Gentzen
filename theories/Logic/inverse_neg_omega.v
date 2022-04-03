@@ -306,9 +306,44 @@ induction P; intros.
 - destruct H as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]; destruct S; inversion H0. apply (IHP2 X4 (lor_ind (0) S2)); auto. rewrite X3. simpl. apply and_bool_prop in H1. destruct H1. auto.
 Defined.
 
+Definition neg_w_rule_term_2 (P : ptree) (E : formula) (n : nat) (H : valid P) : term.
+induction P; intros.
+- destruct H. apply (IHP v).
+- destruct H as [[X1 X2] X3]. apply (IHP X2).
+- exact zero.
+- destruct H as [[[X1 X2] X3] X4]. apply (IHP X2).
+- destruct H as [[[X1 X2] X3] X4]. apply (IHP X2).
+- destruct H as [[[X1 X2] X3] X4]. apply (IHP X2).
+- destruct H as [[[X1 X2] X3] X4]. apply (IHP X2).
+- destruct H as [[[X1 X2] X3] X4]. apply (IHP X2).
+- destruct H as [[[X1 X2] X3] X4]. apply (IHP X2).
+- destruct H as [[[[X1 X2] X3] X4] X5]. apply (IHP X3).
+- destruct H as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]; apply (IHP2 X4); auto.
+- destruct H as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]; apply (IHP2 X4); auto.
+- destruct H as [[[X1 X2] X3] X4]. apply (IHP X2).
+- destruct H as [[[X1 X2] X3] X4]. apply (IHP X2).
+- case (eq_nat n0 n). case (eq_f f E). exact t. destruct H as [[[[X1 X2] X3] X4] X5]; apply (IHP X3); auto. destruct H as [[[[X1 X2] X3] X4] X5]; apply (IHP X3); auto.
+- case (eq_nat n0 n). case (eq_f f E). exact t. destruct H as [[[[X1 X2] X3] X4] X5]; apply (IHP X3); auto. destruct H as [[[[X1 X2] X3] X4] X5]; apply (IHP X3); auto.
+- destruct (H 0) as [[[X1 X2] X3] X4]. apply (X 0 X2).
+- destruct (H 0) as [[[X1 X2] X3] X4]. apply (X 0 X2).
+- destruct H as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]; apply (IHP1 X2); auto.
+- destruct H as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]; apply (IHP2 X4); auto.
+- destruct H as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]; apply (IHP2 X4); auto.
+Defined.
+
 Lemma term_helper1 : forall f n0 t n1 o P Hs X1 X2 X3 X4 X5, eq_term (neg_w_rule_term (quantification_a f n0 t n1 o P) f n0 (X1, X2, X3, X4, X5) (1) Hs) t = true.
 Proof.
 fold valid. intros. simpl. rewrite eq_nat_refl. rewrite eq_f_refl. destruct Hs. simpl. apply eq_term_refl.
+Defined.
+
+Lemma term_helper1' : forall f n0 t n1 o P X1 X2 X3 X4 X5, eq_term (neg_w_rule_term (quantification_a f n0 t n1 o P) f n0 (X1, X2, X3, X4, X5) (1) (neg_univ_target_fits (neg (univ n0 f)))) t = true.
+Proof.
+fold valid. intros. simpl. rewrite eq_nat_refl. rewrite eq_f_refl. destruct (neg_univ_target_fits (neg (univ n0 f))). simpl. apply eq_term_refl.
+Defined.
+
+Lemma term_helper1'2 : forall f n0 t n1 o P X1 X2 X3 X4 X5, eq_term (neg_w_rule_term_2 (quantification_a f n0 t n1 o P) f n0 (X1, X2, X3, X4, X5)) t = true.
+Proof.
+fold valid. intros. simpl. rewrite eq_nat_refl. rewrite eq_f_refl. apply eq_term_refl.
 Defined.
 
 Lemma term_helper2 : forall f f0 n0 t n1 o P S Hs X1 X2 X3 X4 X5, eq_term (neg_w_rule_term (quantification_ad f f0 n0 t n1 o P) f n0 (X1, X2, X3, X4, X5) (lor_ind (1) S) Hs) t = true.
@@ -316,6 +351,17 @@ Proof.
 fold valid. intros. simpl. assert (negb false = true). auto. rewrite eq_nat_refl. rewrite eq_f_refl. destruct Hs. simpl. rewrite eq_term_refl. simpl in H. auto.
 Defined.
 
+Lemma term_helper2' : forall f f0 n0 t n1 o P X1 X2 X3 X4 X5, eq_term (neg_w_rule_term (quantification_ad f f0 n0 t n1 o P) f n0 (X1, X2, X3, X4, X5) (neg_univ_target (lor (neg (univ n0 f)) f0)) (neg_univ_target_fits (lor (neg (univ n0 f)) f0))) t = true.
+Proof.
+fold valid. intros. simpl. assert (negb false = true). auto. rewrite eq_nat_refl. rewrite eq_f_refl. destruct (neg_univ_target_fits (lor (neg (univ n0 f)) f0)). simpl. rewrite eq_term_refl. simpl in H. auto.
+Defined.
+
+Lemma term_helper2'2 : forall f f0 n0 t n1 o P X1 X2 X3 X4 X5, eq_term (neg_w_rule_term_2 (quantification_ad f f0 n0 t n1 o P) f n0 (X1, X2, X3, X4, X5)) t = true.
+Proof.
+fold valid. intros. simpl. rewrite eq_nat_refl. rewrite eq_f_refl. apply eq_term_refl.
+Defined.
+
+(*
 Lemma neg_w_rule_ptree_formula : forall (P : ptree) (E : formula) (n : nat) (H : valid P) (S : subst_ind) (Hs: subst_ind_fit (ptree_formula P) S = true),
     ptree_formula (neg_w_rule_sub_ptree P E n (neg_w_rule_term P E n H S Hs) (neg_w_rule_trace P S)) = neg_w_rule_sub_formula (ptree_formula P) E n (neg_w_rule_term P E n H S Hs) (neg_w_rule_trace P S).
 Proof.
@@ -452,7 +498,7 @@ induction P; try intros H S Hs; unfold neg_w_rule_trace; fold neg_w_rule_trace.
 - simpl. destruct S; inversion Hs. rewrite neg_w_rule_simp; simpl; auto.
   unfold neg_w_rule_sub_formula. rewrite formula_sub_ind_lor; auto.
 Defined.
-
+*)
 
 Lemma neg_w_rule_ptree_formula_2: forall (P : ptree) (E : formula) (n : nat) (H : valid P),
     ptree_formula (neg_w_rule_sub_ptree P E n (neg_w_rule_term P E n H (neg_univ_target (ptree_formula P)) (neg_univ_target_fits (ptree_formula P))) (neg_univ_target (ptree_formula P))) = neg_w_rule_sub_formula (ptree_formula P) E n (neg_w_rule_term P E n H (neg_univ_target (ptree_formula P)) (neg_univ_target_fits (ptree_formula P))) (neg_univ_target (ptree_formula P)).
@@ -611,99 +657,249 @@ induction P; try intros H.
     unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits.
 
 - destruct H as [[[[X1 X2] X3] X4] X5]. unfold neg_w_rule_sub_ptree. rewrite neg_univ_target_fits at 1. unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit. case (eq_f f E) eqn:Y.
-  + case (eq_nat n0 n) eqn:Y2.
-    * unfold ptree_formula. fold ptree_formula. unfold neg_univ_target. admit.
+  + case (eq_nat n0 n) eqn:Y1.
+    * unfold ptree_formula. fold ptree_formula. unfold neg_univ_target. apply nat_eq_decid in Y1. destruct Y1. apply f_eq_decid in Y. destruct Y. rewrite term_helper1'. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. unfold subst_ind_fit. unfold formula_sub_ind_fit. rewrite eq_f_refl. unfold ptree_formula. fold ptree_formula. pose proof (term_helper1' f n0 t n1 o P X1 X2 X3 X4 X5). apply term_beq_eq in H. rewrite H at 1. auto.
     * unfold ptree_formula. fold ptree_formula. unfold neg_univ_target. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. rewrite neg_univ_target_fits at 1.
-      unfold formula_sub_ind_fit. unfold eq_f. fold eq_f. rewrite Y2. unfold "&&". auto.
+      unfold formula_sub_ind_fit. unfold eq_f. fold eq_f. rewrite Y1. unfold "&&". auto.
   + unfold ptree_formula. unfold neg_univ_target. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. rewrite neg_univ_target_fits at 1.
     unfold formula_sub_ind_fit. unfold eq_f. fold eq_f. rewrite Y. unfold "&&". case (eq_nat n0 n); auto.
 
-- simpl. destruct (eq_f f E) eqn:Heq; destruct S.
-  + simpl. unfold neg_w_rule_sub_formula. rewrite formula_sub_ind_0. auto.
-  + unfold neg_w_rule_sub_formula. simpl. inversion H as [[[H1 H2] H3] H4]. auto.
-  + inversion Hs.
-  + simpl. unfold neg_w_rule_sub_formula. rewrite formula_sub_ind_0. auto.
-  + unfold neg_w_rule_sub_formula. simpl. auto.
-  + inversion Hs.
+- destruct H as [[[[X1 X2] X3] X4] X5]. unfold neg_w_rule_sub_ptree. rewrite neg_univ_target_fits at 1. unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit. unfold ptree_formula. fold ptree_formula. unfold neg_univ_target. fold neg_univ_target. case (eq_f f E) eqn:Y.
+  + case (eq_nat n0 n) eqn:Y1.
+    * apply nat_eq_decid in Y1. destruct Y1. apply f_eq_decid in Y. destruct Y. rewrite term_helper2'. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. unfold subst_ind_fit. fold subst_ind_fit. rewrite non_target_fit. unfold "&&". unfold formula_sub_ind_fit. fold formula_sub_ind_fit. rewrite eq_f_refl. unfold ptree_formula. fold ptree_formula. pose proof (term_helper2' f f0 n0 t n1 o P X1 X2 X3 X4 X5). apply term_beq_eq in H. rewrite H at 1. rewrite non_target_sub'. auto.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1.
+    unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. fold eq_f. rewrite Y1. unfold "&&". repeat rewrite sub_fit_true; auto. apply non_target_fit.
+  + unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1.
+    unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. fold eq_f. rewrite Y. unfold "&&". case (eq_nat n0 n); repeat rewrite sub_fit_true; auto; apply non_target_fit.
 
-- simpl in Hs. destruct (eq_f f E) eqn:Heq; destruct S.
-  + inversion Hs.
-  + inversion Hs.
-  + destruct S1.
-    * destruct H as [[[X1 X2] X3] X4]. simpl. 
-      rewrite neg_w_rule_simp; simpl; auto. unfold neg_w_rule_sub_formula.
-      rewrite formula_sub_ind_lor, formula_sub_ind_0. auto. apply Hs.
-    * inversion Hs. rewrite neg_w_rule_simp; simpl; auto. destruct H as [[[H2 H3] H4] H5].
-      unfold neg_w_rule_sub_formula. simpl. rewrite H1 at 1. rewrite sub_fit_true; auto.
-    * inversion Hs.
-  + inversion Hs.
-  + inversion Hs.
-  + destruct S1.
-    * rewrite neg_w_rule_simp; simpl; auto. unfold neg_w_rule_sub_formula.
-      rewrite formula_sub_ind_lor, formula_sub_ind_0. auto. apply Hs.
-    * inversion Hs. rewrite neg_w_rule_simp; simpl; auto. unfold neg_w_rule_sub_formula.
-      rewrite formula_sub_ind_lor; auto.
-    * simpl. inversion Hs.
+- intros. auto.
 
-- destruct H as [[[[X1 X2] X3] X4] X5]. case (eq_f f E) eqn:Y; case (eq_nat n0 n) eqn:Y1.
-  + apply f_eq_decid in Y. destruct Y. apply nat_eq_decid in Y1. destruct Y1. destruct S.
-    * rewrite neg_w_rule_simp; auto. unfold neg_w_rule_sub_formula. unfold ptree_formula. fold ptree_formula. unfold formula_sub_ind. unfold formula_sub_ind_fit. rewrite eq_f_refl. unfold ptree_formula in Hs. rewrite Hs at 1.
-      unfold neg_w_rule_sub_ptree_fit. rewrite eq_f_refl. rewrite eq_nat_refl. case (eq_term (neg_w_rule_term (quantification_a f n0 t n1 o P) f n0 (X1, X2, X3, X4, X5) (0) Hs) t); auto.
-    * rewrite neg_w_rule_simp; auto. unfold neg_w_rule_sub_formula. unfold ptree_formula. fold ptree_formula. unfold formula_sub_ind. unfold subst_ind_fit. unfold formula_sub_ind_fit. rewrite eq_f_refl. unfold neg_w_rule_sub_ptree_fit. rewrite eq_f_refl. rewrite eq_nat_refl.
-      rewrite term_helper1. unfold ptree_formula. fold ptree_formula. pose proof (term_helper1 f n0 t n1 o P Hs X1 X2 X3 X4 X5). apply term_beq_eq in H. rewrite X1 at 1. rewrite <- H at 1. auto.
-    * inversion Hs.
-  + destruct S; rewrite neg_w_rule_simp; simpl; auto; unfold neg_w_rule_sub_formula; simpl; try rewrite Y; try rewrite Y1; auto.
-  + destruct S; rewrite neg_w_rule_simp; simpl; auto; unfold neg_w_rule_sub_formula; simpl; try rewrite Y; try rewrite Y1;  auto.
-  + destruct S; rewrite neg_w_rule_simp; simpl; auto; unfold neg_w_rule_sub_formula; simpl; try rewrite Y; try rewrite Y1;  auto.
+- intros. destruct (H0 0) as [[[X1 X2] X3] X4]. fold valid in X2. unfold neg_w_rule_sub_ptree. rewrite neg_univ_target_fits at 1. unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit. unfold ptree_formula. fold ptree_formula. unfold neg_univ_target. fold neg_univ_target.
+  unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1.
+  unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. 
 
-- destruct H as [[[[X1 X2] X3] X4] X5]. case (eq_f f E) eqn:Y; case (eq_nat n0 n) eqn:Y1.
-  + apply f_eq_decid in Y. destruct Y. apply nat_eq_decid in Y1. destruct Y1. destruct S.
-    * rewrite neg_w_rule_simp; auto.
-    * rewrite neg_w_rule_simp; auto. 
-    * assert (subst_ind_fit f0 S2 = true) as Z. destruct S1; inversion Hs; auto. rewrite Z. rewrite neg_w_rule_simp; auto. unfold neg_w_rule_sub_formula. unfold ptree_formula. fold ptree_formula. rewrite formula_sub_ind_lor; auto. destruct S1; inversion Hs.
-      --  repeat rewrite sub_fit_true; auto; try rewrite non_target_fit; auto. unfold formula_sub_ind_fit. fold formula_sub_ind_fit. rewrite eq_f_refl. 
-          unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit. rewrite eq_f_refl. rewrite eq_nat_refl.
-          case (eq_term (neg_w_rule_term (quantification_ad f f0 n0 t n1 o P) f n0 (X1, X2, X3, X4, X5) (lor_ind (0) S2) Hs) t); auto; unfold ptree_formula; unfold neg_w_rule_sub_formula; rewrite sub_fit_true; auto; apply non_target_fit.
-      --  repeat rewrite sub_fit_true; auto; try rewrite non_target_fit; auto. unfold formula_sub_ind_fit. fold formula_sub_ind_fit. rewrite eq_f_refl. 
-          unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit. rewrite eq_f_refl. rewrite eq_nat_refl.
-          rewrite term_helper2. unfold ptree_formula. fold ptree_formula. pose proof (term_helper2 f f0 n0 t n1 o P S2 Hs X1 X2 X3 X4 X5). apply term_beq_eq in H. rewrite X1 at 1. rewrite <- H at 1. rewrite non_target_sub'. auto.
-      --  rewrite non_target_fit. destruct S1; inversion Hs; auto.
-      --  simpl. rewrite non_target_fit. destruct S1; inversion Hs; try rewrite H0; auto.
-  + destruct S.
-    * simpl. unfold neg_w_rule_sub_formula. simpl. auto.
-    * simpl. unfold neg_w_rule_sub_formula. simpl. auto.
-    * assert (subst_ind_fit f0 S2 = true) as Z. destruct S1; inversion Hs; auto. rewrite Z. destruct S1; inversion Hs; rewrite neg_w_rule_simp; simpl; auto; try rewrite non_target_fit; auto; unfold neg_w_rule_sub_formula; rewrite Y,Y1; simpl; rewrite Y,Y1; simpl; rewrite non_target_fit; try rewrite H0; try rewrite sub_fit_true; try rewrite non_target_fit; auto.
-  + destruct S.
-    * simpl. unfold neg_w_rule_sub_formula. simpl. auto.
-    * simpl. unfold neg_w_rule_sub_formula. simpl. auto.
-    * inversion Hs. apply and_bool_prop in H0. destruct H0. rewrite H0.
-      destruct S1; inversion Hs; rewrite neg_w_rule_simp; simpl; auto; try rewrite non_target_fit; auto; unfold neg_w_rule_sub_formula;  try rewrite Y,Y1; simpl; try rewrite non_target_fit; auto; try rewrite Y,Y1; simpl; try rewrite H0; try rewrite sub_fit_true; try rewrite non_target_fit; auto.
-  + destruct S.
-    * simpl. unfold neg_w_rule_sub_formula. simpl. auto.
-    * simpl. unfold neg_w_rule_sub_formula. simpl. auto.
-    * assert (subst_ind_fit f0 S2 = true) as Z. destruct S1; inversion Hs; auto. rewrite Z. destruct S1; inversion Hs; rewrite neg_w_rule_simp; simpl; auto; try rewrite non_target_fit; auto; unfold neg_w_rule_sub_formula; simpl; try rewrite non_target_fit; auto; try rewrite Y,Y1; simpl; try rewrite Y,Y1; simpl; try rewrite H0; rewrite sub_fit_true; try rewrite non_target_fit; auto.
+- destruct H as [[[X1 X2] X3] X4]. unfold neg_w_rule_sub_ptree. rewrite neg_univ_target_fits at 1. unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit. unfold ptree_formula. auto.
 
-- intros. simpl. destruct S; auto.
+- destruct H as [[[X1 X2] X3] X4]. unfold neg_w_rule_sub_ptree. rewrite neg_univ_target_fits at 1. unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit. unfold ptree_formula. auto.
 
-- intros. destruct S; auto. destruct S1; auto. 
-  + destruct (subst_ind_fit f0 S2) eqn:HS2; rewrite neg_w_rule_simp; auto.
-    * unfold neg_w_rule_sub_formula. unfold ptree_formula. fold ptree_formula. unfold formula_sub_ind.  unfold subst_ind_fit. fold subst_ind_fit. rewrite HS2. unfold "&&".  unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit.
-      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. unfold ptree_formula. rewrite <- sub_fit_true; auto.
-    * unfold neg_w_rule_sub_formula. unfold ptree_formula. fold ptree_formula. unfold formula_sub_ind.  unfold subst_ind_fit. fold subst_ind_fit. rewrite HS2. unfold "&&".  unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit.
-      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. unfold ptree_formula. unfold neg_w_rule_sub_formula. rewrite sub_fit_false; auto.
-  + destruct (subst_ind_fit f0 S2) eqn:HS2; rewrite neg_w_rule_simp; auto.
-    * unfold neg_w_rule_sub_formula. unfold ptree_formula. fold ptree_formula. unfold formula_sub_ind.  unfold subst_ind_fit. fold subst_ind_fit. rewrite HS2. unfold "&&".  unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit.
-      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. unfold ptree_formula. rewrite <- sub_fit_true; auto.
-    * unfold neg_w_rule_sub_formula. unfold ptree_formula. fold ptree_formula. unfold formula_sub_ind.  unfold subst_ind_fit. fold subst_ind_fit. rewrite HS2. unfold "&&".  unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit.
-      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. unfold ptree_formula. unfold neg_w_rule_sub_formula. rewrite sub_fit_false; auto.
+- destruct H as [[[X1 X2] X3] X4]. unfold neg_w_rule_sub_ptree. rewrite neg_univ_target_fits at 1. unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit. unfold ptree_formula. fold ptree_formula. unfold neg_univ_target. fold neg_univ_target. destruct f.
+  + unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+    unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. 
+  + destruct f.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. repeat rewrite neg_univ_target_fits at 1.
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. fold eq_f. case (eq_nat n1 n && eq_f f E); repeat rewrite sub_fit_true; auto; try apply non_target_fit; apply neg_univ_target_fits.
+  + unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+    unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. 
+  + unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+    unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits.
+Qed.
 
-- simpl. inversion Hs. rewrite neg_w_rule_simp; simpl; auto.
 
-- simpl. inversion Hs. rewrite neg_w_rule_simp; simpl; auto. 
+Lemma neg_w_rule_ptree_formula_3: forall (P : ptree) (E : formula) (n : nat) (H : valid P),
+    ptree_formula (neg_w_rule_sub_ptree P E n (neg_w_rule_term_2 P E n H) (neg_univ_target (ptree_formula P))) = neg_w_rule_sub_formula (ptree_formula P) E n (neg_w_rule_term_2 P E n H) (neg_univ_target (ptree_formula P)).
+Proof.
+intros P E n.
+induction P; try intros H.
 
-- simpl. destruct S; inversion Hs. rewrite neg_w_rule_simp; simpl; auto.
-  unfold neg_w_rule_sub_formula. rewrite formula_sub_ind_lor; auto.
-Defined.
+- unfold neg_w_rule_sub_ptree. rewrite neg_univ_target_fits at 1. destruct H as [H1 H2]. unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit. rewrite neg_w_rule_ptree_formula_true; auto. apply IHP. apply neg_univ_target_fits.
+
+- unfold neg_w_rule_sub_ptree. rewrite neg_univ_target_fits at 1. destruct H as [[H1 H2] H3]. unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit. rewrite neg_w_rule_ptree_formula_true; auto. apply IHP. apply neg_univ_target_fits.
+
+- simpl. inversion H. destruct (axiom_atomic _ H); destruct H0; rewrite H0;
+  unfold neg_w_rule_sub_formula; simpl; destruct S; auto.
+
+- destruct H as [[[X1 X2] X3] X4]. unfold neg_w_rule_sub_ptree. rewrite neg_univ_target_fits at 1. unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit. unfold ptree_formula. fold ptree_formula. unfold neg_univ_target. fold neg_univ_target. destruct f0.
+  + unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+    unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. rewrite sub_fit_true. auto. apply neg_univ_target_fits. 
+  + destruct f0. 
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. rewrite sub_fit_true. auto. apply neg_univ_target_fits.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. rewrite sub_fit_true. auto. apply neg_univ_target_fits.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. rewrite sub_fit_true. auto. apply neg_univ_target_fits.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. rewrite neg_univ_target_fits at 1.
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. fold eq_f. case (eq_nat n1 n && eq_f f0 E); rewrite sub_fit_true; auto; apply non_target_fit.
+  + unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+    unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. rewrite sub_fit_true. auto. apply neg_univ_target_fits. 
+  + unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+    unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. rewrite sub_fit_true. auto. apply neg_univ_target_fits.
+
+- destruct H as [[[X1 X2] X3] X4]. unfold neg_w_rule_sub_ptree. rewrite neg_univ_target_fits at 1. unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit. unfold ptree_formula. fold ptree_formula. unfold neg_univ_target. fold neg_univ_target. destruct f.
+  + unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+    unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. apply neg_univ_target_fits. 
+  + destruct f.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. apply neg_univ_target_fits.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. apply neg_univ_target_fits.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. apply neg_univ_target_fits.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. repeat rewrite neg_univ_target_fits at 1.
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. fold eq_f. case (eq_nat n1 n && eq_f f E); repeat rewrite sub_fit_true; auto; try apply non_target_fit; apply neg_univ_target_fits.
+  + unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+    unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. apply neg_univ_target_fits. 
+  + unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+    unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. apply neg_univ_target_fits.
+
+- destruct H as [[[X1 X2] X3] X4]. unfold neg_w_rule_sub_ptree. rewrite neg_univ_target_fits at 1. unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit. unfold ptree_formula. fold ptree_formula. unfold neg_univ_target. fold neg_univ_target. destruct f0.
+  + unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+    unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. apply neg_univ_target_fits. 
+  + destruct f0.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. apply neg_univ_target_fits.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. apply neg_univ_target_fits.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. apply neg_univ_target_fits.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. repeat rewrite neg_univ_target_fits at 1.
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. fold eq_f. case (eq_nat n1 n && eq_f f E); repeat rewrite sub_fit_true; auto; try apply non_target_fit; apply neg_univ_target_fits.
+  + unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+    unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. apply neg_univ_target_fits. 
+  + unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+    unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. apply neg_univ_target_fits.
+
+- destruct H as [[[X1 X2] X3] X4]. unfold neg_w_rule_sub_ptree. rewrite neg_univ_target_fits at 1. unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit. unfold ptree_formula. fold ptree_formula. unfold neg_univ_target. fold neg_univ_target. destruct f.
+  + unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+    unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. apply neg_univ_target_fits. apply neg_univ_target_fits. 
+  + destruct f.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. apply neg_univ_target_fits. apply neg_univ_target_fits.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. apply neg_univ_target_fits. apply neg_univ_target_fits.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. apply neg_univ_target_fits. apply neg_univ_target_fits.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. repeat rewrite neg_univ_target_fits at 1.
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. fold eq_f. case (eq_nat n1 n && eq_f f E); repeat rewrite sub_fit_true; auto; try apply non_target_fit; apply neg_univ_target_fits.
+  + unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+    unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. apply neg_univ_target_fits. apply neg_univ_target_fits. 
+  + unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+    unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. apply neg_univ_target_fits. apply neg_univ_target_fits.
+
+- destruct H as [[[X1 X2] X3] X4]. unfold neg_w_rule_sub_ptree. rewrite neg_univ_target_fits at 1. unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit. unfold ptree_formula. auto.
+
+- destruct H as [[[X1 X2] X3] X4]. unfold neg_w_rule_sub_ptree. rewrite neg_univ_target_fits at 1. unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit. unfold ptree_formula. fold ptree_formula. unfold neg_univ_target. fold neg_univ_target. destruct f.
+  + unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+    unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. 
+  + destruct f.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. repeat rewrite neg_univ_target_fits at 1.
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. fold eq_f. case (eq_nat n1 n && eq_f f E); repeat rewrite sub_fit_true; auto; try apply non_target_fit; apply neg_univ_target_fits.
+  + unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+    unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. 
+  + unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+    unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits.
+
+- destruct H as [[[X1 X2] X3] X4]. unfold neg_w_rule_sub_ptree. rewrite neg_univ_target_fits at 1. unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit. unfold ptree_formula. fold ptree_formula. unfold neg_univ_target. fold neg_univ_target. destruct f.
+  + unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+    unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. 
+  + destruct f.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. repeat rewrite neg_univ_target_fits at 1.
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. fold eq_f. case (eq_nat n1 n && eq_f f E); repeat rewrite sub_fit_true; auto; try apply non_target_fit; apply neg_univ_target_fits.
+  + unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+    unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. 
+  + unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+    unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits.
+
+- destruct H as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. unfold neg_w_rule_sub_ptree. rewrite neg_univ_target_fits at 1. unfold neg_w_rule_sub_ptree_fit. unfold ptree_formula. unfold neg_univ_target.
+  unfold neg_w_rule_sub_formula. unfold formula_sub_ind. unfold subst_ind_fit. unfold formula_sub_ind_fit. unfold eq_f. auto. 
+
+- destruct H as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. unfold neg_w_rule_sub_ptree. rewrite neg_univ_target_fits at 1. unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit. unfold ptree_formula. fold ptree_formula. unfold neg_univ_target. fold neg_univ_target. destruct f.
+  + unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+    unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. 
+  + destruct f.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. repeat rewrite neg_univ_target_fits at 1.
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. fold eq_f. case (eq_nat n1 n && eq_f f E); repeat rewrite sub_fit_true; auto; try apply non_target_fit; apply neg_univ_target_fits.
+  + unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+    unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. 
+  + unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+    unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits.
+
+- auto. 
+
+- destruct H as [[[X1 X2] X3] X4]. unfold neg_w_rule_sub_ptree. rewrite neg_univ_target_fits at 1. unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit. unfold ptree_formula. fold ptree_formula. unfold neg_univ_target. fold neg_univ_target. destruct f.
+  + unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+    unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. 
+  + destruct f.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. repeat rewrite neg_univ_target_fits at 1.
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. fold eq_f. case (eq_nat n1 n && eq_f f E); repeat rewrite sub_fit_true; auto; try apply non_target_fit; apply neg_univ_target_fits.
+  + unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+    unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. 
+  + unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+    unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits.
+
+- destruct H as [[[[X1 X2] X3] X4] X5]. unfold neg_w_rule_sub_ptree. rewrite neg_univ_target_fits at 1. unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit. case (eq_f f E) eqn:Y.
+  + case (eq_nat n0 n) eqn:Y1.
+    * simpl. apply nat_eq_decid in Y1. destruct Y1. apply f_eq_decid in Y. destruct Y. rewrite eq_nat_refl. rewrite eq_f_refl. rewrite eq_term_refl. simpl. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. unfold subst_ind_fit. unfold formula_sub_ind_fit. rewrite eq_f_refl. auto.
+    * unfold ptree_formula. fold ptree_formula. unfold neg_univ_target. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. rewrite neg_univ_target_fits at 1.
+      unfold formula_sub_ind_fit. unfold eq_f. fold eq_f. rewrite Y1. unfold "&&". auto.
+  + unfold ptree_formula. unfold neg_univ_target. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. rewrite neg_univ_target_fits at 1.
+    unfold formula_sub_ind_fit. unfold eq_f. fold eq_f. rewrite Y. unfold "&&". case (eq_nat n0 n); auto.
+
+- destruct H as [[[[X1 X2] X3] X4] X5]. unfold neg_w_rule_sub_ptree. rewrite neg_univ_target_fits at 1. unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit. unfold ptree_formula. fold ptree_formula. unfold neg_univ_target. fold neg_univ_target. case (eq_f f E) eqn:Y.
+  + case (eq_nat n0 n) eqn:Y1.
+    * apply nat_eq_decid in Y1. destruct Y1. apply f_eq_decid in Y. destruct Y. simpl. rewrite eq_nat_refl. rewrite eq_f_refl. rewrite eq_term_refl. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. unfold subst_ind_fit. fold subst_ind_fit. rewrite non_target_fit. unfold "&&". unfold formula_sub_ind_fit. fold formula_sub_ind_fit. rewrite eq_f_refl. simpl. rewrite non_target_sub'. auto.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1.
+    unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. fold eq_f. rewrite Y1. unfold "&&". repeat rewrite sub_fit_true; auto. apply non_target_fit.
+  + unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1.
+    unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. fold eq_f. rewrite Y. unfold "&&". case (eq_nat n0 n); repeat rewrite sub_fit_true; auto; apply non_target_fit.
+
+- intros. auto.
+
+- intros. destruct (H0 0) as [[[X1 X2] X3] X4]. fold valid in X2. unfold neg_w_rule_sub_ptree. rewrite neg_univ_target_fits at 1. unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit. unfold ptree_formula. fold ptree_formula. unfold neg_univ_target. fold neg_univ_target.
+  unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1.
+  unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. 
+
+- destruct H as [[[X1 X2] X3] X4]. unfold neg_w_rule_sub_ptree. rewrite neg_univ_target_fits at 1. unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit. unfold ptree_formula. auto.
+
+- destruct H as [[[X1 X2] X3] X4]. unfold neg_w_rule_sub_ptree. rewrite neg_univ_target_fits at 1. unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit. unfold ptree_formula. auto.
+
+- destruct H as [[[X1 X2] X3] X4]. unfold neg_w_rule_sub_ptree. rewrite neg_univ_target_fits at 1. unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit. unfold ptree_formula. fold ptree_formula. unfold neg_univ_target. fold neg_univ_target. destruct f.
+  + unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+    unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. 
+  + destruct f.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits.
+    * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. repeat rewrite neg_univ_target_fits at 1.
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. fold eq_f. case (eq_nat n1 n && eq_f f E); repeat rewrite sub_fit_true; auto; try apply non_target_fit; apply neg_univ_target_fits.
+  + unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+    unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. 
+  + unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. repeat rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+    unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits.
+Qed.
 
 (* Second, we must prove that w_rule_sub_ptree does not change the degree
 of an ptree. *)
@@ -1358,36 +1554,85 @@ Arguments neg_w_rule_sub_ptree : simpl nomatch.
 (*Arguments neg_w_rule_term : simpl nomatch.*)
 
 
-Lemma neg_w_rule_valid_3 : forall (P : ptree) (E : formula) (n : nat) (H : valid P) (S : subst_ind) (Hs : subst_ind_fit (ptree_formula P) S = true),
-      valid (neg_w_rule_sub_ptree P E n (neg_w_rule_term P E n H S Hs) S).
+Lemma neg_w_rule_valid_3 : forall (P : ptree) (E : formula) (n : nat) (H : valid P),
+      valid (neg_w_rule_sub_ptree P E n (neg_w_rule_term_2 P E n H) (neg_univ_target (ptree_formula P))).
 Proof.
 intros P E n.
-induction P; try intros H S Hs; unfold neg_w_rule_sub_ptree.
+induction P; try intros H; simpl; auto; unfold neg_w_rule_sub_ptree; rewrite neg_univ_target_fits; auto. (* unfold neg_w_rule_sub_ptree; unfold ptree_formula; fold ptree_formula; rewrite neg_univ_target_fits at 1; unfold neg_w_rule_sub_ptree_fit; fold neg_w_rule_sub_ptree_fit; unfold ptree_formula; fold ptree_formula; unfold neg_univ_target; fold neg_univ_target; auto. *)
 
-- simpl. destruct H as [H1 H2]. inversion Hs. rewrite H0.
-  pose proof (IHP H2 S H0) as Ht.
-  rewrite neg_w_rule_ptree_formula_true; auto. split; simpl; auto. 
-  rewrite <- neg_w_rule_ptree_deg; auto.
+- destruct H as [X1 X2]. unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit. repeat split; rewrite neg_w_rule_ptree_formula_true; try apply neg_univ_target_fits. rewrite <- neg_w_rule_ptree_deg; auto. apply IHP.
 
-- simpl. destruct H as [[H1 H2] H3]. inversion Hs. rewrite H0.
-  pose proof (IHP H2 S Hs) as Ht.
-  rewrite neg_w_rule_ptree_formula_true; auto. repeat split; simpl; auto. 
-  rewrite neg_w_rule_ptree_ord; auto.
+- destruct H as [[X1 X2] X3]. unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit. repeat split; auto; rewrite neg_w_rule_ptree_formula_true; try apply neg_univ_target_fits. rewrite neg_w_rule_ptree_ord; auto. apply IHP.
 
-- simpl. destruct (subst_ind_fit f S); apply H.
+(*
+- destruct H as [[[X1 X2] X3] X4]. pose proof (neg_w_rule_ptree_formula_3 P E n X2) as Z. rewrite X1 in Z. destruct f0. 
+  + repeat split; auto.
+    * unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1.
+      unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. rewrite sub_fit_true. auto. unfold formula_sub_ind_fit. fold formula_sub_ind_fit. simpl in Z. simpl. admit. apply neg_univ_target_fits. 
+    * destruct f0. 
+        * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+          unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. rewrite sub_fit_true. auto. apply neg_univ_target_fits.
+        * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+          unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. rewrite sub_fit_true. auto. apply neg_univ_target_fits.
+        * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+          unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. rewrite sub_fit_true. auto. apply neg_univ_target_fits.
+        * unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. rewrite neg_univ_target_fits at 1.
+          unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. fold eq_f. case (eq_nat n1 n && eq_f f0 E); rewrite sub_fit_true; auto; apply non_target_fit.
+      + unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+        unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. rewrite sub_fit_true. auto. apply neg_univ_target_fits. 
+      + unfold ptree_formula. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. fold formula_sub_ind. rewrite neg_univ_target_fits at 1. unfold subst_ind_fit. fold subst_ind_fit. rewrite neg_univ_target_fits at 1. unfold neg_univ_target. fold neg_univ_target. unfold "&&".
+        unfold formula_sub_ind_fit. fold formula_sub_ind_fit. unfold eq_f. rewrite sub_fit_true. auto. apply neg_univ_target_fits.
+*)
+- admit.
 
-- destruct S; inversion Hs. unfold ptree_formula. unfold subst_ind_fit. fold subst_ind_fit. rewrite H1.
-  destruct H as [[[H2 H3] H4] H5].
-  assert (subst_ind_fit (ptree_formula P) (lor_ind S2 S1) = true) as Z. rewrite H2. simpl. apply and_bool_symm; auto.
-  pose proof (IHP H3 (lor_ind S2 S1) Z) as Ht. unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit.
-  rewrite neg_w_rule_ptree_formula_true; auto.
-  assert ((neg_w_rule_term P E n H3 (lor_ind S2 S1) Z) = (neg_w_rule_term (exchange_ab f f0 n0 o P) E n (H2,H3,H4,H5) (lor_ind S1 S2) Hs)) as Z1. admit.
-  destruct Z1. repeat split; auto.
-  + rewrite neg_w_rule_ptree_formula.
-  + rewrite <- neg_w_rule_ptree_deg; auto.
-  + rewrite neg_w_rule_ptree_ord; auto.
 
-- simpl. destruct S; try destruct S1; inversion Hs.
+- destruct H as [[[X1 X2] X3] X4]. destruct f.
+  + unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit. rewrite neg_w_rule_ptree_formula_true. repeat split; auto.
+    * pose proof (neg_w_rule_ptree_formula_3 P E n X2). rewrite X1 in H. unfold neg_univ_target in H. fold neg_univ_target in H. simpl. rewrite H. unfold neg_w_rule_sub_formula. simpl. repeat rewrite neg_univ_target_fits. simpl. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. apply neg_univ_target_fits.
+    * rewrite X1 in IHP. apply IHP. 
+    * rewrite <- neg_w_rule_ptree_deg; auto.
+    * rewrite neg_w_rule_ptree_ord; auto.
+    * rewrite X1. simpl. repeat rewrite neg_univ_target_fits. auto.
+  + destruct f.
+    * unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit. rewrite neg_w_rule_ptree_formula_true. repeat split; auto.
+      --  pose proof (neg_w_rule_ptree_formula_3 P E n X2). rewrite X1 in H. unfold neg_univ_target in H. fold neg_univ_target in H. simpl. rewrite H. unfold neg_w_rule_sub_formula. simpl. repeat rewrite neg_univ_target_fits. simpl. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. apply neg_univ_target_fits.
+      --  rewrite X1 in IHP. apply IHP. 
+      --  rewrite <- neg_w_rule_ptree_deg; auto.
+      --  rewrite neg_w_rule_ptree_ord; auto.
+      --  rewrite X1. simpl. repeat rewrite neg_univ_target_fits. auto.
+    * unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit. rewrite neg_w_rule_ptree_formula_true. repeat split; auto.
+      --  pose proof (neg_w_rule_ptree_formula_3 P E n X2). rewrite X1 in H. unfold neg_univ_target in H. fold neg_univ_target in H. simpl. rewrite H. unfold neg_w_rule_sub_formula. simpl. repeat rewrite neg_univ_target_fits. simpl. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. apply neg_univ_target_fits.
+      --  rewrite X1 in IHP. apply IHP. 
+      --  rewrite <- neg_w_rule_ptree_deg; auto.
+      --  rewrite neg_w_rule_ptree_ord; auto.
+      --  rewrite X1. simpl. repeat rewrite neg_univ_target_fits. auto. 
+    * unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit. rewrite neg_w_rule_ptree_formula_true. repeat split; auto.
+      --  pose proof (neg_w_rule_ptree_formula_3 P E n X2). rewrite X1 in H. unfold neg_univ_target in *. fold neg_univ_target in *. rewrite H. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. repeat rewrite neg_univ_target_fits. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. apply neg_univ_target_fits.
+      --  rewrite X1 in IHP. apply IHP. 
+      --  rewrite <- neg_w_rule_ptree_deg; auto.
+      --  rewrite neg_w_rule_ptree_ord; auto.
+      --  rewrite X1. repeat rewrite neg_univ_target_fits. auto.
+    * unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit. rewrite neg_w_rule_ptree_formula_true. repeat split; auto.
+      -- admit.  
+      --   
+      --  rewrite <- neg_w_rule_ptree_deg; auto.
+      --  rewrite neg_w_rule_ptree_ord; auto.
+      --  rewrite X1. simpl. repeat rewrite neg_univ_target_fits. apply non_target_fit.
+  + unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit. rewrite neg_w_rule_ptree_formula_true. repeat split; auto.
+    * pose proof (neg_w_rule_ptree_formula_3 P E n X2). rewrite X1 in H. unfold neg_univ_target in *. fold neg_univ_target in *. rewrite H. unfold neg_w_rule_sub_formula. unfold formula_sub_ind. repeat rewrite neg_univ_target_fits. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. apply neg_univ_target_fits.
+    * rewrite X1 in IHP. apply IHP. 
+    * rewrite <- neg_w_rule_ptree_deg; auto.
+    * rewrite neg_w_rule_ptree_ord; auto.
+    * rewrite X1. repeat rewrite neg_univ_target_fits. auto.
+  + unfold neg_w_rule_sub_ptree_fit. fold neg_w_rule_sub_ptree_fit. rewrite neg_w_rule_ptree_formula_true. repeat split; auto.
+    * pose proof (neg_w_rule_ptree_formula_3 P E n X2). rewrite X1 in H. unfold neg_univ_target in H. fold neg_univ_target in H. simpl. rewrite H. unfold neg_w_rule_sub_formula. simpl. repeat rewrite neg_univ_target_fits. simpl. repeat rewrite sub_fit_true; auto. apply neg_univ_target_fits. apply neg_univ_target_fits.
+    * rewrite X1 in IHP. apply IHP. 
+    * rewrite <- neg_w_rule_ptree_deg; auto.
+    * rewrite neg_w_rule_ptree_ord; auto.
+    * rewrite X1. simpl. repeat rewrite neg_univ_target_fits. auto.
+  
+
+    - simpl. destruct S; try destruct S1; inversion Hs.
   rewrite H1. simpl. inversion H as [[[H4 H5] H6] H7].
   destruct (and_bool_prop _ _ H1). clear H1.
   destruct (and_bool_prop _ _ H0). clear H0.
