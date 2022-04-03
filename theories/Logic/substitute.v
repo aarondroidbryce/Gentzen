@@ -161,6 +161,19 @@ intros. induction A; auto; simpl.
 - destruct (eq_nat n0 n); auto.
 Qed.
 
+Lemma target_fit : forall f, subst_ind_fit f (target f) = true.
+Proof.
+intros f. induction f; simpl; auto. rewrite IHf1,IHf2. auto.
+Qed.
+
+Lemma target_term_sub : forall (A : formula) (n : nat) (t : term),
+  target A = target (substitution A n t).
+Proof.
+intros. induction A; auto; simpl.
+- rewrite IHA1, IHA2. auto.
+- destruct (eq_nat n0 n); auto.
+Qed.
+
 Lemma formula_sub_ind_closed : forall (A B C : formula),
   closed A = true -> (closed B = true -> closed C = true) ->
   forall (S : subst_ind), closed (formula_sub_ind A B C S) = true.
