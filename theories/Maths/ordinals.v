@@ -599,17 +599,6 @@ match alpha with
     ord_mult (cons (cons (cons a n b) n' Zero) 0 Zero) (ord_2_exp b')
 end.
 
-Fixpoint ord_2_exp_old (alpha : ord) : ord :=
-match alpha with
-| Zero => cons Zero 0 Zero
-| cons Zero n' _ => nat_ord (2 ^ (S n'))
-| cons (cons Zero n Zero) 0 Zero =>
-    cons (cons (cons Zero n Zero) 0 Zero) 0 Zero
-| cons (cons a n b) n' b' =>
-    ord_mult (cons (cons (cons a n b) n' Zero) 0 Zero) (ord_2_exp_old b')
-end.
-
-
 (* Here we show that addition and multiplication for ordinal numbers
 agrees with the usual definitions for natural numbers *)
 (* *)
@@ -2068,8 +2057,6 @@ apply ord_lt_ltb in H.
 apply ord_ltb_neb.
 auto.
 Qed.
-
-Definition ord_mult_distr_nice (alpha : ord) := forall (beta gamma : ord), nf beta -> nf gamma -> ord_mult alpha (ord_add beta gamma) = ord_add (ord_mult alpha beta) (ord_mult alpha gamma). 
 
 Fixpoint w_tower (n : nat) : ord :=
 match n with

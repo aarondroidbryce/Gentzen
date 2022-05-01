@@ -118,22 +118,17 @@ Proof.
 intros. destruct X as [[[X1 X2] X3] X4]. pose proof (danger_not_provable' _ _ H X2). destruct X1. rewrite eq_f_refl in H0. inversion H0.
 Qed.
 
-Lemma theorem_not_danger : forall A n alpha, PA_omega_theorem A n alpha -> dangerous_disjunct A = false.
-Proof.
-intros. apply (provable_not_danger _ _ _ (provable_theorem _ _ _ H)). 
-Qed.
-
 Lemma danger_not_theorem : forall A, dangerous_disjunct A = true -> forall n alpha, PA_omega_theorem A n alpha -> False.
 Proof.
 intros. apply (danger_not_provable _ H _ _ _ (projT2(provable_theorem _ _ _ H0))). 
 Qed.
 
-Lemma PA_Consistent : forall A n alpha, Peano_Theorems_Base A n alpha -> dangerous_disjunct A = false.
+Lemma inconsistent_danger : forall A n1 n2 alpha1 alpha2, PA_omega_theorem A n1 alpha1 -> PA_omega_theorem (neg A) n2 alpha2 -> False.
 Proof.
-intros. case (closed A) eqn:X. pose proof (PA_Base_closed_PA_omega _ _ _  H (represent 0) (repr_closed _)). rewrite closure_closed_id in H0; auto. apply (provable_not_danger _ _ _ (provable_theorem _ _ _ H0)). apply closed_danger. auto. 
+intros. assert (closed danger = true). auto. assert (dangerous_disjunct danger = true). auto. apply (danger_not_theorem _ H2 _ _ (cut2 _ _ _ _ _ _ H (exchange1 _ _ _ _ (weakening (danger) _ _ _ H1 H0)))).
 Qed.
 
-Lemma PA_Consistent_2 : forall A, dangerous_disjunct A = true -> forall n alpha, Peano_Theorems_Base A n alpha -> False.
+Lemma PA_Consistent : forall A n1 n2 alpha1 alpha2, Peano_Theorems_Base A n1 alpha1 -> Peano_Theorems_Base (neg A) n2 alpha2 -> False.
 Proof.
-intros. pose proof (PA_Base_closed_PA_omega _ _ _  H0 (represent 0) (repr_closed _)). rewrite closure_closed_id in H1; auto. apply (danger_not_provable _ H _ _ _ (projT2(provable_theorem _ _ _ H1))). apply danger_closed. auto. 
+intros. pose proof (PA_Base_closed_PA_omega _ _ _  H (represent 0) (repr_closed _)). pose proof (PA_Base_closed_PA_omega _ _ _  H0 (represent 0) (repr_closed _)). rewrite closure_neg in H2; auto. apply (inconsistent_danger _ _ _ _ _ H1 H2). 
 Qed.

@@ -993,7 +993,7 @@ apply (transfinite_induction cut_remove).
                   { simpl. lia. }
               **  simpl. rewrite (nat_eq_decid _ _ E1) in X3. inversion X3. lia. simpl in H10. lia.
               **  simpl. rewrite (nat_eq_decid _ _ E1) in X3. inversion X3. lia. simpl in H10. lia.
-              **                    
+              **   admit.                 
           ++  exists (ord_up (ord_2_exp (ord_succ (ord_max o o0))) (cut_elimination (cut_ca f f0 n0 n1 o o0 P1 P2))). case (ord_succ (ord_max o o0)) eqn:Y1. pose (ord_succ_non_Zero (ord_max o o0)). rewrite Y1 in e. inversion e. repeat split; auto.
               **  unfold ptree_formula. fold ptree_formula. rewrite cut_elimination_formula; auto.
               **  simpl in Y. rewrite Y1 in Y. simpl. rewrite Y1. destruct f0.
@@ -1045,7 +1045,7 @@ Admitted.
 
 Lemma cut_elim_aux1 : forall (alpha : ord) (P : ptree) (A : formula) (d : nat), P_proves P A (S d) alpha -> provable A d (ord_2_exp alpha).
 Proof.
-intros. inversion X. destruct X0 as [[H1 H2] H3]. pose (ptree_ord_nf _ H2). destruct H. apply (cut_elim_aux0 _ n P). auto.
+intros alpha P A d X. inversion X as [[[X1 X2] X3] X4]. destruct X4. apply (cut_elim_aux0 _ (ptree_ord_nf _ X2) P _ _ X).
 Qed.
 
 Lemma cut_elim_aux2 : forall (A : formula) (d : nat),
