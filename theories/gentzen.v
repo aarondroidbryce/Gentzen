@@ -103,19 +103,18 @@ Qed.
 
 Lemma provable_not_danger : forall A d alpha, provable A d alpha -> dangerous_disjunct A = false.
 Proof.
-intros. case (dangerous_disjunct A) eqn:Y; auto.
-- destruct (cut_elim_aux3 _ _ _ X) as [beta [P HP]]. pose (danger_not_deg_0 P A 0 beta HP Y). inversion l.
+intros. case (dangerous_disjunct A) eqn:Y; auto. destruct (cut_elim_aux3 _ _ _ X) as [beta [P HP]]. pose proof (danger_not_deg_0 P A 0 beta HP Y) as Deg. inversion Deg.
 Qed.
 
 Lemma danger_not_provable' : forall A P, dangerous_disjunct A = true -> valid P -> eq_f (ptree_formula P) A = false.
 Proof.
 intros. case (eq_f (ptree_formula P) A) eqn:Y; auto. intros. assert (provable (ptree_formula P) (ptree_deg P) (ptree_ord P)) as HP. exists P. repeat split; simpl; auto.
-pose (provable_not_danger _ _ _ HP). apply f_eq_decid in Y. destruct Y. rewrite H in e. inversion e.
+pose (provable_not_danger _ _ _ HP) as Danger. apply f_eq_decid in Y. destruct Y. rewrite H in Danger. inversion Danger.
 Qed.
 
 Lemma danger_not_provable : forall A, dangerous_disjunct A = true -> forall P d alpha, P_proves P A d alpha -> False.
 Proof.
-intros. destruct X as [[[X1 X2] X3] X4]. pose proof (danger_not_provable' _ _ H X2). destruct X1. rewrite eq_f_refl in H0. inversion H0.
+intros. destruct X as [[[X1 X2] X3] X4]. pose proof (danger_not_provable' _ _ H X2) as Danger. destruct X1. rewrite eq_f_refl in Danger. inversion Danger.
 Qed.
 
 Lemma danger_not_theorem : forall A, dangerous_disjunct A = true -> forall n alpha, PA_omega_theorem A n alpha -> False.
