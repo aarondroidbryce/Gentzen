@@ -27,15 +27,18 @@ Section 13: The consistency of PA
 ###############################################################################
 *)
 Fixpoint disjunction_of (A E : formula) : bool :=
-match A with
-| lor B C0 =>
-  (match eq_f B E, eq_f C0 E with
-  | true, true => true
-  | true, false => disjunction_of C0 E
-  | false, true => disjunction_of B E
-  | false, false => disjunction_of B E && disjunction_of C0 E
-  end)
-| _ => eq_f A E
+match eq_f A E with
+| true => true
+| false => match A with
+  | lor B C =>
+    (match eq_f B E, eq_f C E with
+    | true, true => true
+    | true, false => disjunction_of C E
+    | false, true => disjunction_of B E
+    | false, false => disjunction_of B E && disjunction_of C E
+    end)
+  | _ => false
+  end
 end.
 
 Definition danger : formula := atom (equ zero (succ zero)).
@@ -54,11 +57,9 @@ Qed.
 
 Lemma danger_closed : forall A, dangerous_disjunct A = true -> closed A = true.
 Proof.
-intros. unfold dangerous_disjunct in H. induction A.
-- apply f_eq_decid in H. rewrite H. auto.
-- inversion H.
-- inversion H. rewrite H1. simpl. case (eq_f A1 danger) eqn:X; case (eq_f A2 danger) eqn:X1; rewrite IHA1,IHA2; auto; try apply f_eq_decid in X; try rewrite X; try apply f_eq_decid in X1; try rewrite X1; auto; apply and_bool_prop in H1; destruct H1; auto.
-- inversion H.
+intros. unfold dangerous_disjunct in H. induction A; inversion H.
+- case (eq_f (atom a) danger) eqn:X. apply f_eq_decid in X. rewrite X. auto. simpl in X. rewrite X in H1. inversion H1.
+- rewrite H1. simpl. case (eq_f A1 danger) eqn:X; case (eq_f A2 danger) eqn:X1; rewrite IHA1,IHA2; auto; try apply f_eq_decid in X; try rewrite X; try apply f_eq_decid in X1; try rewrite X1; auto; apply and_bool_prop in H1; destruct H1; auto.
 Qed.
 
 Lemma closed_danger : forall A, closed A = false -> dangerous_disjunct A = false.
@@ -72,10 +73,9 @@ intros P. induction P.
 - intros. destruct X as [[[HP1 HP2] HP3] HP4]. simpl in HP1,HP3,HP4. destruct HP2 as [HP2a HP2b]. apply (IHP A _ alpha); auto. repeat split; auto. lia.
 - intros. destruct X as [[[HP1 HP2] HP3] HP4]. simpl in HP1,HP3,HP4. destruct HP2 as [[HP2a HP2b] HP2c]. apply (IHP A _ (ptree_ord P)); auto. repeat split; auto.
 - intros A. induction A.
-  + intros. destruct X as [[[HP1 HP2] HP3] HP4]. simpl in HP1,HP3,HP4. rewrite HP1 in HP2. inversion HP2. unfold dangerous_disjunct in H. unfold disjunction_of in H. simpl in H. unfold eq_atom in H.
-    destruct a; inversion H. apply and_bool_prop in H. destruct H. unfold eq_term in H. destruct t; inversion H. destruct t0; inversion H0.
-    unfold correct_a in H1. unfold correctness in H1. simpl in H1. unfold eval in H1. fold eval in H1. case (eval t0) eqn:Y; inversion H1.
-  + intros. unfold dangerous_disjunct in H. unfold disjunction_of in H. simpl in H. inversion H.
+  + intros. destruct X as [[[HP1 HP2] HP3] HP4]. simpl in HP1,HP3,HP4. rewrite HP1 in HP2. inversion HP2. unfold dangerous_disjunct in H. unfold disjunction_of in H. case (eq_f (atom a) danger) eqn:X; inversion H.
+    simpl in X. apply atom_beq_eq in X. symmetry in X. destruct X. unfold correct_a in H1. unfold correctness in H1. inversion H1.
+  + intros. unfold dangerous_disjunct in H. unfold disjunction_of in H. case (eq_f (neg A) danger) eqn:Y; inversion H; inversion Y.
   + intros. destruct X as [[[HP1 HP2] HP3] HP4]. simpl in HP1,HP3,HP4. rewrite HP1 in HP2. inversion HP2.
   + intros. destruct X as [[[HP1 HP2] HP3] HP4]. simpl in HP1,HP3,HP4. rewrite HP1 in HP2. inversion HP2.
 - intros. destruct X as [[[HP1 HP2] HP3] HP4]. simpl in HP1,HP3,HP4. destruct HP2 as [[[HP2a HP2b] HP2c] HP2d]. apply (IHP (ptree_formula P) _ (ptree_ord P)); auto. repeat split; auto. lia. rewrite HP2a. rewrite danger_swap. rewrite HP1. auto.
