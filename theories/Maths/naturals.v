@@ -422,8 +422,6 @@ Proof.
 intros. induction n. simpl. auto. simpl. lia.
 Qed.
 
-Lemma nat_ne_symm : forall n m, eq_nat n m = false -> eq_nat m n = false. intros n. induction n. intros. destruct m. inversion H. auto. intros. destruct m. auto. simpl. auto. Qed.
-
 Lemma nat_max_left_not : forall n m, eq_nat n (max n m) = false -> eq_nat m (max n m) = true.
 Proof.
 intros n. induction n. intros. simpl. apply eq_nat_refl. intros. destruct m. rewrite eq_nat_refl in H. inversion H. simpl in H. simpl. auto. 
@@ -454,4 +452,35 @@ intros n. induction n.
   case (2^(S ( S n))) eqn:X. inversion H0.
   assert (n0 + n0 = m). lia.
   pose (IHn n0 (nat_eq_decid _ _(eq_nat_refl _))). lia.
+Qed.
+
+Lemma nat_max_symm : forall n m, max n m = max m n.
+Proof.
+intros.
+intros. destruct (nat_semiconnex_bool n m) as [H | [H | H]].
+- rewrite (max_split1 _ _ H). rewrite (max_split2 _ _ H). auto.
+- rewrite (max_split1 _ _ H). rewrite (max_split2 _ _ H). auto.
+- apply nat_eq_decid in H. destruct H. auto.
+Qed.
+
+Lemma nat_max_comm : forall n m p, max (max n m) p = max n (max m p).
+Proof.
+intros. destruct (nat_semiconnex_bool n m) as [H | [H | H]].
+- rewrite (max_split1 _ _ H). rewrite (max_split1 n); auto. destruct (nat_semiconnex_bool m p) as [H1 | [H1 | H1]].
+  + rewrite (max_split1 _ _ H1). apply (lt_nat_trans _ _ _ H H1).
+  + rewrite (max_split2 _ _ H1). auto.
+  + apply nat_eq_decid in H1. destruct H1. rewrite max_n_n. auto.
+- rewrite (max_split2 _ _ H). destruct (nat_semiconnex_bool m p) as [H1 | [H1 | H1]].
+  + rewrite (max_split1 _ _ H1). auto.
+  + rewrite (max_split2 _ _ H1). rewrite (max_split2 _ _ H). refine (max_split2 _ _ _). apply (lt_nat_trans _ _ _ H1 H).
+  + apply nat_eq_decid in H1. destruct H1. rewrite max_n_n. auto.
+- apply nat_eq_decid in H. destruct H. rewrite max_n_n. destruct (nat_semiconnex_bool n p) as [H1 | [H1 | H1]].
+  + rewrite (max_split1 _ _ H1). rewrite (max_split1 _ _ H1). auto.
+  + rewrite (max_split2 _ _ H1). rewrite max_n_n. auto.
+  + apply nat_eq_decid in H1. destruct H1. rewrite max_n_n. rewrite max_n_n. auto.
+Qed.
+
+Lemma nat_max_order : forall n m p, max (max n m) p = max (max n p) m.
+Proof.
+intros. rewrite (nat_max_symm _ p). rewrite <- (nat_max_comm p). rewrite (nat_max_symm p). auto.
 Qed.

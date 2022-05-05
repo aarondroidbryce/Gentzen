@@ -1,4 +1,4 @@
-DIGEST 713bfc3ceb82116f53897147acff3b30
+DIGEST e18bfbc805048cf20de4a11a9d226b90
 FMaths_Facts.naturals
 R15:17 Coq.micromega.Lia <> <> lib
 R35:37 Coq.Init.Nat <> <> lib
@@ -965,165 +965,290 @@ R10776:10779 Coq.Init.Nat <> ::nat_scope:x_'*'_x not
 R10773:10773 Coq.Init.Datatypes <> S constr
 R10775:10775 Maths_Facts.naturals <> n:108 var
 R10780:10780 Maths_Facts.naturals <> m:109 var
-prf 10848:10858 <> nat_ne_symm
-binder 10869:10869 <> n:110
-binder 10871:10871 <> m:111
-R10892:10895 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R10884:10886 Coq.Init.Logic <> ::type_scope:x_'='_x not
-R10874:10879 Maths_Facts.naturals <> eq_nat syndef
-R10881:10881 Maths_Facts.naturals <> n:110 var
-R10883:10883 Maths_Facts.naturals <> m:111 var
-R10887:10891 Coq.Init.Datatypes <> false constr
-R10906:10908 Coq.Init.Logic <> ::type_scope:x_'='_x not
-R10896:10901 Maths_Facts.naturals <> eq_nat syndef
-R10903:10903 Maths_Facts.naturals <> m:111 var
-R10905:10905 Maths_Facts.naturals <> n:110 var
-R10909:10913 Coq.Init.Datatypes <> false constr
-prf 11029:11044 <> nat_max_left_not
-binder 11055:11055 <> n:112
-binder 11057:11057 <> m:113
-R11086:11089 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R11078:11080 Coq.Init.Logic <> ::type_scope:x_'='_x not
-R11060:11065 Maths_Facts.naturals <> eq_nat syndef
-R11067:11067 Maths_Facts.naturals <> n:112 var
-R11070:11072 Coq.Init.Nat <> max def
-R11074:11074 Maths_Facts.naturals <> n:112 var
-R11076:11076 Maths_Facts.naturals <> m:113 var
-R11081:11085 Coq.Init.Datatypes <> false constr
-R11108:11110 Coq.Init.Logic <> ::type_scope:x_'='_x not
-R11090:11095 Maths_Facts.naturals <> eq_nat syndef
-R11097:11097 Maths_Facts.naturals <> m:113 var
-R11100:11102 Coq.Init.Nat <> max def
-R11104:11104 Maths_Facts.naturals <> n:112 var
-R11106:11106 Maths_Facts.naturals <> m:113 var
-R11111:11114 Coq.Init.Datatypes <> true constr
-R11168:11178 Maths_Facts.naturals <> eq_nat_refl thm
-R11168:11178 Maths_Facts.naturals <> eq_nat_refl thm
-R11209:11219 Maths_Facts.naturals <> eq_nat_refl thm
-R11209:11219 Maths_Facts.naturals <> eq_nat_refl thm
-R11209:11219 Maths_Facts.naturals <> eq_nat_refl thm
-prf 11278:11294 <> nat_max_right_not
-binder 11305:11305 <> n:114
-binder 11307:11307 <> m:115
-R11336:11339 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R11328:11330 Coq.Init.Logic <> ::type_scope:x_'='_x not
-R11310:11315 Maths_Facts.naturals <> eq_nat syndef
-R11317:11317 Maths_Facts.naturals <> m:115 var
-R11320:11322 Coq.Init.Nat <> max def
-R11324:11324 Maths_Facts.naturals <> n:114 var
-R11326:11326 Maths_Facts.naturals <> m:115 var
-R11331:11335 Coq.Init.Datatypes <> false constr
-R11358:11360 Coq.Init.Logic <> ::type_scope:x_'='_x not
-R11340:11345 Maths_Facts.naturals <> eq_nat syndef
-R11347:11347 Maths_Facts.naturals <> n:114 var
-R11350:11352 Coq.Init.Nat <> max def
-R11354:11354 Maths_Facts.naturals <> n:114 var
-R11356:11356 Maths_Facts.naturals <> m:115 var
-R11361:11364 Coq.Init.Datatypes <> true constr
-R11413:11423 Maths_Facts.naturals <> eq_nat_refl thm
-R11413:11423 Maths_Facts.naturals <> eq_nat_refl thm
-R11413:11423 Maths_Facts.naturals <> eq_nat_refl thm
-R11477:11487 Maths_Facts.naturals <> eq_nat_refl thm
-R11477:11487 Maths_Facts.naturals <> eq_nat_refl thm
-prf 11528:11538 <> eq_nat_symm
-R11556:11558 Coq.Init.Datatypes <> nat ind
-binder 11550:11550 <> n:116
-binder 11552:11552 <> m:117
-R11581:11584 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+prf 10848:10863 <> nat_max_left_not
+binder 10874:10874 <> n:110
+binder 10876:10876 <> m:111
+R10905:10908 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R10897:10899 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R10879:10884 Maths_Facts.naturals <> eq_nat syndef
+R10886:10886 Maths_Facts.naturals <> n:110 var
+R10889:10891 Coq.Init.Nat <> max def
+R10893:10893 Maths_Facts.naturals <> n:110 var
+R10895:10895 Maths_Facts.naturals <> m:111 var
+R10900:10904 Coq.Init.Datatypes <> false constr
+R10927:10929 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R10909:10914 Maths_Facts.naturals <> eq_nat syndef
+R10916:10916 Maths_Facts.naturals <> m:111 var
+R10919:10921 Coq.Init.Nat <> max def
+R10923:10923 Maths_Facts.naturals <> n:110 var
+R10925:10925 Maths_Facts.naturals <> m:111 var
+R10930:10933 Coq.Init.Datatypes <> true constr
+R10987:10997 Maths_Facts.naturals <> eq_nat_refl thm
+R10987:10997 Maths_Facts.naturals <> eq_nat_refl thm
+R11028:11038 Maths_Facts.naturals <> eq_nat_refl thm
+R11028:11038 Maths_Facts.naturals <> eq_nat_refl thm
+R11028:11038 Maths_Facts.naturals <> eq_nat_refl thm
+prf 11097:11113 <> nat_max_right_not
+binder 11124:11124 <> n:112
+binder 11126:11126 <> m:113
+R11155:11158 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R11147:11149 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R11129:11134 Maths_Facts.naturals <> eq_nat syndef
+R11136:11136 Maths_Facts.naturals <> m:113 var
+R11139:11141 Coq.Init.Nat <> max def
+R11143:11143 Maths_Facts.naturals <> n:112 var
+R11145:11145 Maths_Facts.naturals <> m:113 var
+R11150:11154 Coq.Init.Datatypes <> false constr
+R11177:11179 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R11159:11164 Maths_Facts.naturals <> eq_nat syndef
+R11166:11166 Maths_Facts.naturals <> n:112 var
+R11169:11171 Coq.Init.Nat <> max def
+R11173:11173 Maths_Facts.naturals <> n:112 var
+R11175:11175 Maths_Facts.naturals <> m:113 var
+R11180:11183 Coq.Init.Datatypes <> true constr
+R11232:11242 Maths_Facts.naturals <> eq_nat_refl thm
+R11232:11242 Maths_Facts.naturals <> eq_nat_refl thm
+R11232:11242 Maths_Facts.naturals <> eq_nat_refl thm
+R11296:11306 Maths_Facts.naturals <> eq_nat_refl thm
+R11296:11306 Maths_Facts.naturals <> eq_nat_refl thm
+prf 11347:11357 <> eq_nat_symm
+R11375:11377 Coq.Init.Datatypes <> nat ind
+binder 11369:11369 <> n:114
+binder 11371:11371 <> m:115
+R11400:11403 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R11393:11395 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R11383:11388 Maths_Facts.naturals <> eq_nat syndef
+R11390:11390 Maths_Facts.naturals <> m:115 var
+R11392:11392 Maths_Facts.naturals <> n:114 var
+R11396:11399 Coq.Init.Datatypes <> true constr
+R11414:11416 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R11404:11409 Maths_Facts.naturals <> eq_nat syndef
+R11411:11411 Maths_Facts.naturals <> n:114 var
+R11413:11413 Maths_Facts.naturals <> m:115 var
+R11417:11420 Coq.Init.Datatypes <> true constr
+R11444:11455 Maths_Facts.naturals <> nat_eq_decid thm
+R11444:11455 Maths_Facts.naturals <> nat_eq_decid thm
+R11480:11490 Maths_Facts.naturals <> eq_nat_refl thm
+R11480:11490 Maths_Facts.naturals <> eq_nat_refl thm
+prf 11505:11516 <> eq_nat_symm'
+R11534:11536 Coq.Init.Datatypes <> nat ind
+binder 11528:11528 <> n:116
+binder 11530:11530 <> m:117
+R11560:11563 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R11552:11554 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R11542:11547 Maths_Facts.naturals <> eq_nat syndef
+R11549:11549 Maths_Facts.naturals <> m:117 var
+R11551:11551 Maths_Facts.naturals <> n:116 var
+R11555:11559 Coq.Init.Datatypes <> false constr
 R11574:11576 Coq.Init.Logic <> ::type_scope:x_'='_x not
 R11564:11569 Maths_Facts.naturals <> eq_nat syndef
-R11571:11571 Maths_Facts.naturals <> m:117 var
-R11573:11573 Maths_Facts.naturals <> n:116 var
-R11577:11580 Coq.Init.Datatypes <> true constr
-R11595:11597 Coq.Init.Logic <> ::type_scope:x_'='_x not
-R11585:11590 Maths_Facts.naturals <> eq_nat syndef
-R11592:11592 Maths_Facts.naturals <> n:116 var
-R11594:11594 Maths_Facts.naturals <> m:117 var
-R11598:11601 Coq.Init.Datatypes <> true constr
-R11625:11636 Maths_Facts.naturals <> nat_eq_decid thm
-R11625:11636 Maths_Facts.naturals <> nat_eq_decid thm
-R11661:11671 Maths_Facts.naturals <> eq_nat_refl thm
-R11661:11671 Maths_Facts.naturals <> eq_nat_refl thm
-prf 11686:11697 <> eq_nat_symm'
-R11715:11717 Coq.Init.Datatypes <> nat ind
-binder 11709:11709 <> n:118
-binder 11711:11711 <> m:119
-R11741:11744 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R11733:11735 Coq.Init.Logic <> ::type_scope:x_'='_x not
-R11723:11728 Maths_Facts.naturals <> eq_nat syndef
-R11730:11730 Maths_Facts.naturals <> m:119 var
-R11732:11732 Maths_Facts.naturals <> n:118 var
-R11736:11740 Coq.Init.Datatypes <> false constr
-R11755:11757 Coq.Init.Logic <> ::type_scope:x_'='_x not
-R11745:11750 Maths_Facts.naturals <> eq_nat syndef
-R11752:11752 Maths_Facts.naturals <> n:118 var
-R11754:11754 Maths_Facts.naturals <> m:119 var
-R11758:11762 Coq.Init.Datatypes <> false constr
-R11789:11794 Maths_Facts.naturals <> eq_nat syndef
-R11789:11794 Maths_Facts.naturals <> eq_nat syndef
-R11822:11832 Maths_Facts.naturals <> eq_nat_symm thm
-R11822:11832 Maths_Facts.naturals <> eq_nat_symm thm
-prf 11883:11896 <> nat_2_exp_help
-binder 11907:11907 <> n:120
-binder 11909:11909 <> m:121
-R11929:11932 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R11923:11925 Coq.Init.Logic <> ::type_scope:x_'='_x not
-R11913:11915 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
-R11916:11916 Coq.Init.Datatypes <> S constr
-R11919:11919 Coq.Init.Datatypes <> S constr
-R11921:11921 Maths_Facts.naturals <> n:120 var
-R11926:11926 Coq.Init.Datatypes <> S constr
-R11928:11928 Maths_Facts.naturals <> m:121 var
-R11940:11942 Coq.Init.Peano <> ::nat_scope:x_'<'_x not
-R11933:11933 Coq.Init.Datatypes <> S constr
-R11936:11936 Coq.Init.Datatypes <> S constr
-R11938:11938 Maths_Facts.naturals <> n:120 var
-R11943:11943 Maths_Facts.naturals <> m:121 var
-R12033:12054 Maths_Facts.naturals <> nat_2_exp_succ_not_one thm
-R12057:12057 Coq.Init.Datatypes <> S constr
-R12060:12060 Coq.Init.Datatypes <> S constr
-R12033:12054 Maths_Facts.naturals <> nat_2_exp_succ_not_one thm
-R12057:12057 Coq.Init.Datatypes <> S constr
-R12060:12060 Coq.Init.Datatypes <> S constr
-R12083:12083 Coq.Init.Logic <> ::type_scope:x_'='_x not
-R12091:12094 Coq.Init.Logic <> ::type_scope:x_'='_x not
-R12084:12084 Coq.Init.Datatypes <> S constr
-R12087:12087 Coq.Init.Datatypes <> S constr
-R12106:12108 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
-R12096:12097 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
-R12105:12105 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
-R12098:12098 Coq.Init.Datatypes <> S constr
-R12101:12101 Coq.Init.Datatypes <> S constr
-R12110:12111 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
-R12119:12119 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
-R12112:12112 Coq.Init.Datatypes <> S constr
-R12115:12115 Coq.Init.Datatypes <> S constr
-R12083:12083 Coq.Init.Logic <> ::type_scope:x_'='_x not
-R12091:12094 Coq.Init.Logic <> ::type_scope:x_'='_x not
-R12084:12084 Coq.Init.Datatypes <> S constr
-R12087:12087 Coq.Init.Datatypes <> S constr
-R12106:12108 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
-R12096:12097 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
-R12105:12105 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
-R12098:12098 Coq.Init.Datatypes <> S constr
-R12101:12101 Coq.Init.Datatypes <> S constr
-R12110:12111 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
-R12119:12119 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
-R12112:12112 Coq.Init.Datatypes <> S constr
-R12115:12115 Coq.Init.Datatypes <> S constr
-R12156:12157 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
-R12166:12166 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
-R12158:12158 Coq.Init.Datatypes <> S constr
-R12162:12162 Coq.Init.Datatypes <> S constr
-R12156:12157 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
-R12166:12166 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
-R12158:12158 Coq.Init.Datatypes <> S constr
-R12162:12162 Coq.Init.Datatypes <> S constr
-R12207:12209 Coq.Init.Logic <> ::type_scope:x_'='_x not
-R12202:12204 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
-R12207:12209 Coq.Init.Logic <> ::type_scope:x_'='_x not
-R12202:12204 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
-R12235:12246 Maths_Facts.naturals <> nat_eq_decid thm
-R12252:12262 Maths_Facts.naturals <> eq_nat_refl thm
-R12235:12246 Maths_Facts.naturals <> nat_eq_decid thm
-R12252:12262 Maths_Facts.naturals <> eq_nat_refl thm
+R11571:11571 Maths_Facts.naturals <> n:116 var
+R11573:11573 Maths_Facts.naturals <> m:117 var
+R11577:11581 Coq.Init.Datatypes <> false constr
+R11608:11613 Maths_Facts.naturals <> eq_nat syndef
+R11608:11613 Maths_Facts.naturals <> eq_nat syndef
+R11641:11651 Maths_Facts.naturals <> eq_nat_symm thm
+R11641:11651 Maths_Facts.naturals <> eq_nat_symm thm
+prf 11702:11715 <> nat_2_exp_help
+binder 11726:11726 <> n:118
+binder 11728:11728 <> m:119
+R11748:11751 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R11742:11744 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R11732:11734 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
+R11735:11735 Coq.Init.Datatypes <> S constr
+R11738:11738 Coq.Init.Datatypes <> S constr
+R11740:11740 Maths_Facts.naturals <> n:118 var
+R11745:11745 Coq.Init.Datatypes <> S constr
+R11747:11747 Maths_Facts.naturals <> m:119 var
+R11759:11761 Coq.Init.Peano <> ::nat_scope:x_'<'_x not
+R11752:11752 Coq.Init.Datatypes <> S constr
+R11755:11755 Coq.Init.Datatypes <> S constr
+R11757:11757 Maths_Facts.naturals <> n:118 var
+R11762:11762 Maths_Facts.naturals <> m:119 var
+R11852:11873 Maths_Facts.naturals <> nat_2_exp_succ_not_one thm
+R11876:11876 Coq.Init.Datatypes <> S constr
+R11879:11879 Coq.Init.Datatypes <> S constr
+R11852:11873 Maths_Facts.naturals <> nat_2_exp_succ_not_one thm
+R11876:11876 Coq.Init.Datatypes <> S constr
+R11879:11879 Coq.Init.Datatypes <> S constr
+R11902:11902 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R11910:11913 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R11903:11903 Coq.Init.Datatypes <> S constr
+R11906:11906 Coq.Init.Datatypes <> S constr
+R11925:11927 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R11915:11916 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
+R11924:11924 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
+R11917:11917 Coq.Init.Datatypes <> S constr
+R11920:11920 Coq.Init.Datatypes <> S constr
+R11929:11930 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
+R11938:11938 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
+R11931:11931 Coq.Init.Datatypes <> S constr
+R11934:11934 Coq.Init.Datatypes <> S constr
+R11902:11902 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R11910:11913 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R11903:11903 Coq.Init.Datatypes <> S constr
+R11906:11906 Coq.Init.Datatypes <> S constr
+R11925:11927 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R11915:11916 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
+R11924:11924 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
+R11917:11917 Coq.Init.Datatypes <> S constr
+R11920:11920 Coq.Init.Datatypes <> S constr
+R11929:11930 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
+R11938:11938 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
+R11931:11931 Coq.Init.Datatypes <> S constr
+R11934:11934 Coq.Init.Datatypes <> S constr
+R11975:11976 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
+R11985:11985 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
+R11977:11977 Coq.Init.Datatypes <> S constr
+R11981:11981 Coq.Init.Datatypes <> S constr
+R11975:11976 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
+R11985:11985 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
+R11977:11977 Coq.Init.Datatypes <> S constr
+R11981:11981 Coq.Init.Datatypes <> S constr
+R12026:12028 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R12021:12023 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R12026:12028 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R12021:12023 Coq.Init.Nat <> ::nat_scope:x_'+'_x not
+R12054:12065 Maths_Facts.naturals <> nat_eq_decid thm
+R12071:12081 Maths_Facts.naturals <> eq_nat_refl thm
+R12054:12065 Maths_Facts.naturals <> nat_eq_decid thm
+R12071:12081 Maths_Facts.naturals <> eq_nat_refl thm
+prf 12106:12117 <> nat_max_symm
+binder 12128:12128 <> n:120
+binder 12130:12130 <> m:121
+R12140:12142 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R12133:12135 Coq.Init.Nat <> max def
+R12137:12137 Maths_Facts.naturals <> n:120 var
+R12139:12139 Maths_Facts.naturals <> m:121 var
+R12143:12145 Coq.Init.Nat <> max def
+R12147:12147 Maths_Facts.naturals <> m:121 var
+R12149:12149 Maths_Facts.naturals <> n:120 var
+R12185:12203 Maths_Facts.naturals <> nat_semiconnex_bool thm
+R12185:12203 Maths_Facts.naturals <> nat_semiconnex_bool thm
+R12239:12248 Maths_Facts.naturals <> max_split1 thm
+R12239:12248 Maths_Facts.naturals <> max_split1 thm
+R12239:12248 Maths_Facts.naturals <> max_split1 thm
+R12267:12276 Maths_Facts.naturals <> max_split2 thm
+R12267:12276 Maths_Facts.naturals <> max_split2 thm
+R12267:12276 Maths_Facts.naturals <> max_split2 thm
+R12303:12312 Maths_Facts.naturals <> max_split1 thm
+R12303:12312 Maths_Facts.naturals <> max_split1 thm
+R12303:12312 Maths_Facts.naturals <> max_split1 thm
+R12331:12340 Maths_Facts.naturals <> max_split2 thm
+R12331:12340 Maths_Facts.naturals <> max_split2 thm
+R12331:12340 Maths_Facts.naturals <> max_split2 thm
+R12364:12375 Maths_Facts.naturals <> nat_eq_decid thm
+R12364:12375 Maths_Facts.naturals <> nat_eq_decid thm
+prf 12413:12424 <> nat_max_comm
+binder 12435:12435 <> n:122
+binder 12437:12437 <> m:123
+binder 12439:12439 <> p:124
+R12457:12459 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R12442:12444 Coq.Init.Nat <> max def
+R12447:12449 Coq.Init.Nat <> max def
+R12451:12451 Maths_Facts.naturals <> n:122 var
+R12453:12453 Maths_Facts.naturals <> m:123 var
+R12456:12456 Maths_Facts.naturals <> p:124 var
+R12460:12462 Coq.Init.Nat <> max def
+R12464:12464 Maths_Facts.naturals <> n:122 var
+R12467:12469 Coq.Init.Nat <> max def
+R12471:12471 Maths_Facts.naturals <> m:123 var
+R12473:12473 Maths_Facts.naturals <> p:124 var
+R12502:12520 Maths_Facts.naturals <> nat_semiconnex_bool thm
+R12502:12520 Maths_Facts.naturals <> nat_semiconnex_bool thm
+R12556:12565 Maths_Facts.naturals <> max_split1 thm
+R12556:12565 Maths_Facts.naturals <> max_split1 thm
+R12556:12565 Maths_Facts.naturals <> max_split1 thm
+R12584:12593 Maths_Facts.naturals <> max_split1 thm
+R12584:12593 Maths_Facts.naturals <> max_split1 thm
+R12584:12593 Maths_Facts.naturals <> max_split1 thm
+R12584:12593 Maths_Facts.naturals <> max_split1 thm
+R12615:12633 Maths_Facts.naturals <> nat_semiconnex_bool thm
+R12615:12633 Maths_Facts.naturals <> nat_semiconnex_bool thm
+R12674:12683 Maths_Facts.naturals <> max_split1 thm
+R12674:12683 Maths_Facts.naturals <> max_split1 thm
+R12674:12683 Maths_Facts.naturals <> max_split1 thm
+R12701:12712 Maths_Facts.naturals <> lt_nat_trans thm
+R12701:12712 Maths_Facts.naturals <> lt_nat_trans thm
+R12740:12749 Maths_Facts.naturals <> max_split2 thm
+R12740:12749 Maths_Facts.naturals <> max_split2 thm
+R12740:12749 Maths_Facts.naturals <> max_split2 thm
+R12776:12787 Maths_Facts.naturals <> nat_eq_decid thm
+R12776:12787 Maths_Facts.naturals <> nat_eq_decid thm
+R12817:12823 Maths_Facts.naturals <> max_n_n thm
+R12817:12823 Maths_Facts.naturals <> max_n_n thm
+R12817:12823 Maths_Facts.naturals <> max_n_n thm
+R12843:12852 Maths_Facts.naturals <> max_split2 thm
+R12843:12852 Maths_Facts.naturals <> max_split2 thm
+R12843:12852 Maths_Facts.naturals <> max_split2 thm
+R12872:12890 Maths_Facts.naturals <> nat_semiconnex_bool thm
+R12872:12890 Maths_Facts.naturals <> nat_semiconnex_bool thm
+R12931:12940 Maths_Facts.naturals <> max_split1 thm
+R12931:12940 Maths_Facts.naturals <> max_split1 thm
+R12931:12940 Maths_Facts.naturals <> max_split1 thm
+R12970:12979 Maths_Facts.naturals <> max_split2 thm
+R12970:12979 Maths_Facts.naturals <> max_split2 thm
+R12970:12979 Maths_Facts.naturals <> max_split2 thm
+R12999:13008 Maths_Facts.naturals <> max_split2 thm
+R12999:13008 Maths_Facts.naturals <> max_split2 thm
+R12999:13008 Maths_Facts.naturals <> max_split2 thm
+R13026:13035 Maths_Facts.naturals <> max_split2 thm
+R13026:13035 Maths_Facts.naturals <> max_split2 thm
+R13052:13063 Maths_Facts.naturals <> lt_nat_trans thm
+R13052:13063 Maths_Facts.naturals <> lt_nat_trans thm
+R13088:13099 Maths_Facts.naturals <> nat_eq_decid thm
+R13088:13099 Maths_Facts.naturals <> nat_eq_decid thm
+R13129:13135 Maths_Facts.naturals <> max_n_n thm
+R13129:13135 Maths_Facts.naturals <> max_n_n thm
+R13129:13135 Maths_Facts.naturals <> max_n_n thm
+R13152:13163 Maths_Facts.naturals <> nat_eq_decid thm
+R13152:13163 Maths_Facts.naturals <> nat_eq_decid thm
+R13191:13197 Maths_Facts.naturals <> max_n_n thm
+R13191:13197 Maths_Facts.naturals <> max_n_n thm
+R13191:13197 Maths_Facts.naturals <> max_n_n thm
+R13210:13228 Maths_Facts.naturals <> nat_semiconnex_bool thm
+R13210:13228 Maths_Facts.naturals <> nat_semiconnex_bool thm
+R13269:13278 Maths_Facts.naturals <> max_split1 thm
+R13269:13278 Maths_Facts.naturals <> max_split1 thm
+R13269:13278 Maths_Facts.naturals <> max_split1 thm
+R13298:13307 Maths_Facts.naturals <> max_split1 thm
+R13298:13307 Maths_Facts.naturals <> max_split1 thm
+R13298:13307 Maths_Facts.naturals <> max_split1 thm
+R13337:13346 Maths_Facts.naturals <> max_split2 thm
+R13337:13346 Maths_Facts.naturals <> max_split2 thm
+R13337:13346 Maths_Facts.naturals <> max_split2 thm
+R13365:13371 Maths_Facts.naturals <> max_n_n thm
+R13365:13371 Maths_Facts.naturals <> max_n_n thm
+R13365:13371 Maths_Facts.naturals <> max_n_n thm
+R13390:13401 Maths_Facts.naturals <> nat_eq_decid thm
+R13390:13401 Maths_Facts.naturals <> nat_eq_decid thm
+R13431:13437 Maths_Facts.naturals <> max_n_n thm
+R13431:13437 Maths_Facts.naturals <> max_n_n thm
+R13431:13437 Maths_Facts.naturals <> max_n_n thm
+R13448:13454 Maths_Facts.naturals <> max_n_n thm
+R13448:13454 Maths_Facts.naturals <> max_n_n thm
+R13448:13454 Maths_Facts.naturals <> max_n_n thm
+prf 13475:13487 <> nat_max_order
+binder 13498:13498 <> n:125
+binder 13500:13500 <> m:126
+binder 13502:13502 <> p:127
+R13520:13522 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R13505:13507 Coq.Init.Nat <> max def
+R13510:13512 Coq.Init.Nat <> max def
+R13514:13514 Maths_Facts.naturals <> n:125 var
+R13516:13516 Maths_Facts.naturals <> m:126 var
+R13519:13519 Maths_Facts.naturals <> p:127 var
+R13523:13525 Coq.Init.Nat <> max def
+R13528:13530 Coq.Init.Nat <> max def
+R13532:13532 Maths_Facts.naturals <> n:125 var
+R13534:13534 Maths_Facts.naturals <> p:127 var
+R13537:13537 Maths_Facts.naturals <> m:126 var
+R13564:13575 Maths_Facts.naturals <> nat_max_symm thm
+R13564:13575 Maths_Facts.naturals <> nat_max_symm thm
+R13564:13575 Maths_Facts.naturals <> nat_max_symm thm
+R13595:13606 Maths_Facts.naturals <> nat_max_comm thm
+R13595:13606 Maths_Facts.naturals <> nat_max_comm thm
+R13595:13606 Maths_Facts.naturals <> nat_max_comm thm
+R13621:13632 Maths_Facts.naturals <> nat_max_symm thm
+R13621:13632 Maths_Facts.naturals <> nat_max_symm thm
+R13621:13632 Maths_Facts.naturals <> nat_max_symm thm
