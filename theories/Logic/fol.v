@@ -37,6 +37,12 @@ match a with
 | univ n a' => S (num_conn a')
 end.
 
+Fixpoint log_comp (a : formula) : nat :=
+match a with
+| atom a' => 1
+| _ => num_conn a + num_conn a
+end.
+
 
 (* Check syntactic equality of formulas *)
 (* *)

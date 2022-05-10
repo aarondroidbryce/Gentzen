@@ -119,17 +119,17 @@ match P, S with
 
 | w_rule_a A k d alpha g, _ =>
     (match eq_f A E, eq_nat d (ptree_deg (g m)), eq_nat k n, S with
-    | true, true, true, (1) => ord_up (cons alpha 0 Zero) (g m)
-    | true, false, true, (1) => deg_up d (ord_up (cons alpha 0 Zero) (g m))
+    | true, true, true, (1) => ord_up (ord_succ alpha) (g m)
+    | true, false, true, (1) => deg_up d (ord_up (ord_succ alpha) (g m))
     | _, _, _, _ => P
     end)
 
 | w_rule_ad A D k d alpha g, lor_ind S_A S_D =>
     (match eq_f A E, eq_nat d (ptree_deg (g m)), eq_nat k n, S_A with
     | true, true, true, (1) =>
-        ord_up (cons alpha 0 Zero) (w_rule_sub_ptree_fit (g m) E n m (lor_ind (non_target A) S_D))
+        ord_up (ord_succ alpha) (w_rule_sub_ptree_fit (g m) E n m (lor_ind (non_target A) S_D))
     | true, false, true, (1) =>
-        deg_up d (ord_up (cons alpha 0 Zero) (w_rule_sub_ptree_fit (g m) E n m (lor_ind (non_target A) S_D)))
+        deg_up d (ord_up (ord_succ alpha) (w_rule_sub_ptree_fit (g m) E n m (lor_ind (non_target A) S_D)))
     
     | _, _, _, _ => 
         w_rule_ad
@@ -792,11 +792,9 @@ induction P; try intros H S Hs.
   destruct (valid_w_rule_a A n0 d alpha g H m) as [[[H1 H2] H3] H4].
   simpl. destruct S; auto;
   destruct (eq_nat d (ptree_deg (g m))) eqn:HD; destruct (eq_f A E) eqn:HE; auto; destruct (eq_nat n0 n) eqn:Hn; simpl; auto; repeat split; auto.
-  rewrite H4. apply omega_exp_incr.
-  apply single_nf. rewrite H4. apply (ptree_ord_nf (g m) H2).
+  rewrite H4. apply ord_succ_monot. apply ord_succ_nf. rewrite H4. apply (ptree_ord_nf (g m) H2).
   apply leq_type in H3. destruct H3 as [H3 | H3]. auto. rewrite H3 in HD. rewrite eq_nat_refl in HD. inversion HD.
-  rewrite H4. apply omega_exp_incr.
-  apply single_nf. rewrite H4. apply (ptree_ord_nf (g m) H2).
+  rewrite H4. apply ord_succ_monot. apply ord_succ_nf. rewrite H4. apply (ptree_ord_nf (g m) H2).
 
 - rename f into A. rename f0 into D. rename p into g.
   rename n1 into d. rename o into alpha.
@@ -870,12 +868,12 @@ induction P; try intros H S Hs.
             unfold valid. fold valid. repeat split.
             { rewrite <- w_rule_simp.
               rewrite (w_rule_ptree_ord (g m) E n m H2 (lor_ind (non_target A) S2)).
-              rewrite H4. apply omega_exp_incr. 
+              rewrite H4. apply ord_succ_monot. 
               rewrite H1. simpl. rewrite HS2. rewrite (non_target_term_sub _ n0 (represent m)). rewrite non_target_fit. auto. }
             { rewrite w_rule_ptree_formula_true; try apply X; auto;
               rewrite H1; simpl; rewrite (non_target_term_sub A n0 (represent m));
               rewrite non_target_fit,HS2; auto. }
-            { rewrite H4. apply single_nf. apply ptree_ord_nf. auto. } }
+            { rewrite H4. apply ord_succ_nf. apply ptree_ord_nf. auto. } }
           { simpl. intro p.
             destruct (valid_w_rule_ad A D n0 d alpha g H p) as [[[H1 H2] H3] H4].
             repeat split; rewrite w_rule_ptree_formula_true;
@@ -906,10 +904,10 @@ induction P; try intros H S Hs.
               { simpl. repeat split.
                 { rewrite <- (w_rule_ptree_deg (g m) E n m H2 (lor_ind (non_target A) S2)). auto. }
                 { rewrite (w_rule_ptree_ord (g m) E n m H2 (lor_ind (non_target A) S2)).
-                  rewrite H4. apply omega_exp_incr. }
+                  rewrite H4. apply ord_succ_monot. }
                 { apply X. auto. rewrite H1. simpl. rewrite (non_target_term_sub A n0 (represent m)).
                   rewrite non_target_fit,HS2. auto. }
-                { rewrite H4. apply single_nf. apply ptree_ord_nf. auto. } }
+                { rewrite H4. apply ord_succ_nf. apply ptree_ord_nf. auto. } }
               { rewrite H1. simpl. rewrite (non_target_term_sub A n0 (represent m)).
                 rewrite non_target_fit,HS2. auto. } }
             { rewrite H3 in HD. rewrite eq_nat_refl in HD. inversion HD. } }

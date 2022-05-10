@@ -207,9 +207,9 @@ match P with
 
 | quantification_ad A D n t d alpha P' => ord_succ alpha
 
-| w_rule_a A n d alpha g => cons alpha 0 Zero
+| w_rule_a A n d alpha g => ord_succ alpha
 
-| w_rule_ad A D n d alpha g => cons alpha 0 Zero
+| w_rule_ad A D n d alpha g => ord_succ alpha
 
 | cut_ca E A d1 d2 alpha1 alpha2 P1 P2 => ord_succ (ord_max alpha1 alpha2)
 

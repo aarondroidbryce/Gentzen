@@ -2415,4 +2415,19 @@ intros alpha. induction alpha. intros. auto. intros. simpl. destruct alpha1. inv
   --  apply ord_mult_monot. apply ord_gt_zero_exp_gt_one. apply ord_succ_nf. apply (nf_hered_third _ _ _ H). destruct alpha2. apply zero_lt. destruct alpha2_1; apply zero_lt. apply nf_2_exp. apply ord_succ_nf. apply (nf_hered_third _ _ _ H). apply zero_lt.
 Qed.
 
+Lemma ord_max_succ_succ : forall alpha beta, ord_max (ord_succ alpha) (ord_succ beta) = ord_succ (ord_max alpha beta).
+Proof.
+intros. destruct (ord_semiconnex_bool alpha beta) as [H | [H | H]].
+- rewrite ord_max_lem1. rewrite ord_max_lem1; auto. apply ord_lt_ltb. apply ord_lt_succ. apply ord_ltb_lt. auto.
+- rewrite ord_max_lem2. rewrite ord_max_lem2; auto. rewrite ltb_asymm; auto. rewrite ltb_asymm; auto. apply ord_lt_ltb. apply ord_lt_succ. apply ord_ltb_lt. auto.
+- apply ord_eqb_eq in H. destruct H. rewrite ord_max_lem2. rewrite ord_max_lem2; auto. apply ord_ltb_irrefl. apply ord_ltb_irrefl.
+Qed.
+
+Lemma ord_max_nat : forall n m, ord_max (nat_ord n) (nat_ord m) = nat_ord (max n m).
+Proof.
+intros n. induction n.
+- destruct m; auto.
+- destruct m; auto. unfold max. fold max. repeat rewrite <- ord_succ_nat. rewrite ord_max_succ_succ. rewrite IHn. auto. 
+Qed.
+
 Close Scope cantor_scope.
