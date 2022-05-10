@@ -192,8 +192,7 @@ match P with
 
 | contraction_ad A D d alpha P' => alpha
 
-
-| weakening_ad A D d alpha P' => (ord_succ (ord_add alpha (nat_ord (num_conn A))))
+| weakening_ad A D d alpha P' => (ord_succ alpha)
 
 | demorgan_ab A B d1 d2 alpha1 alpha2 P1 P2 => ord_succ (ord_max alpha1 alpha2)
 

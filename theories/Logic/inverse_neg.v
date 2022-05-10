@@ -78,11 +78,11 @@ match P, S with
       (dub_neg_sub_ptree_fit P' E (lor_ind (lor_ind S_A S_A) S_D))
 
 | weakening_ad A D d alpha P', lor_ind S_A S_D =>
-    weakening_ad
+    (weakening_ad
       (dub_neg_sub_formula A E S_A)
       (dub_neg_sub_formula D E S_D)
       d alpha
-      (dub_neg_sub_ptree_fit P' E S_D)
+      (dub_neg_sub_ptree_fit P' E S_D))
 
 | demorgan_ab A B d1 d2 alpha1 alpha2 P1 P2, _ => P
 

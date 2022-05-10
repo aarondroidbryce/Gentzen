@@ -73,7 +73,7 @@ Inductive PA_omega_theorem : formula -> nat -> ord -> Type :=
 | weakening : forall (A D : formula) (d : nat) (alpha : ord),
     closed A = true ->
     PA_omega_theorem D d alpha ->
-    PA_omega_theorem (lor A D) d (ord_succ (ord_add alpha (nat_ord (num_conn A))))
+    PA_omega_theorem (lor A D) d (ord_succ alpha)
 
 | demorgan1 : forall (A B : formula) (d1 d2 : nat)
                      (alpha1 alpha2 : ord),
@@ -217,7 +217,6 @@ Lemma ord_nf : forall (A : formula) (d : nat) (alpha : ord),
 Proof.
 intros. induction H; try apply ord_succ_nf; try apply ord_max_nf; auto.
 - apply zero_nf.
-- apply nf_add; auto. apply nf_nat.
 Qed.
 
 Lemma ord_monot : forall (A : formula) (d : nat) (alpha beta : ord),
@@ -372,14 +371,12 @@ Qed.
 
 Lemma LEM_atomic : forall (a : atomic_formula),
   closed_a a = true ->
-  PA_omega_theorem (lor (neg (atom a)) (atom a)) 0 (ord_succ (ord_succ Zero)).
+  PA_omega_theorem (lor (neg (atom a)) (atom a)) 0 (ord_succ Zero).
 Proof.
 intros.
 destruct (correctness_decid a H) as [H0 | H0].
-- assert (ord_succ (ord_add Zero (nat_ord (num_conn (neg (atom a))))) = ord_succ (ord_succ Zero)). auto.
-  destruct H1. apply weakening; auto. apply axiom. apply H0.
-- apply exchange1. assert (ord_succ (ord_add Zero (nat_ord (num_conn (atom a)))) = ord_succ Zero). auto.
-  apply (ord_incr _ _ (ord_succ Zero)). destruct H1. apply weakening; auto. apply axiom. apply H0. apply ord_succ_monot. repeat apply ord_succ_nf. apply Zero_nf.
+- apply weakening; auto. apply axiom. apply H0.
+- apply exchange1. apply weakening; auto. apply axiom. apply H0.
 Qed.
 
 (*
@@ -395,7 +392,7 @@ by strong induction on n, the number of connectives.
 *)
 
 Definition P1 (A : formula) : Type :=
-  closed A = true -> PA_omega_theorem (lor (neg A) A) 0 (ord_succ (ord_succ (nat_ord ((num_conn A) + (num_conn A))))).
+  closed A = true -> PA_omega_theorem (lor (neg A) A) 0 (ord_succ (nat_ord ((num_conn A) + (num_conn A)))).
 
 Definition P2 (A : formula) (n : nat) : Type :=
   num_conn A = n -> P1 A.
@@ -444,7 +441,7 @@ unfold P3,P2,P1. intros.
 destruct A as [a | B | B C | m B].
 - inversion H0.
 - inversion H0. pose proof (H n (leq_refl n) B H3 H1).
-  apply (ord_incr _ _ (ord_succ (ord_succ (ord_succ (nat_ord ((num_conn B) + (num_conn B))))))).
+  apply (ord_incr _ _ (ord_succ (ord_succ (nat_ord ((num_conn B) + (num_conn B)))))).
   + apply negation2. apply exchange1. apply H2.
   + apply ord_lt_succ. unfold num_conn. fold num_conn. repeat rewrite ord_succ_nat. apply nat_ord_lt. lia.
   + repeat apply ord_succ_nf. apply nf_nat.
@@ -459,24 +456,26 @@ destruct A as [a | B | B C | m B].
   case (num_conn C) eqn:X.
   + case (num_conn B) eqn:X1.
     * unfold num_conn in *. fold num_conn in *. rewrite plus_n_0 in *. rewrite <- plus_n_Sm in *. rewrite <- ord_succ_nat in *. rewrite plus_comm. rewrite <- plus_n_Sm in *. rewrite <- ord_succ_nat in *.
-      rewrite ord_add_zero in H4. repeat rewrite ord_max_succ_succ in H4. rewrite X,X1. repeat rewrite plus_n_0 in *. rewrite ord_max_lem2 in H4. apply H4. apply ord_ltb_irrefl.
+      repeat rewrite ord_max_succ_succ in H4. rewrite X,X1. repeat rewrite plus_n_0 in *. rewrite ord_max_lem2 in H4. apply H4. apply ord_ltb_irrefl.
     * unfold num_conn in *. fold num_conn in *. rewrite X,X1. rewrite plus_n_0 in *. repeat rewrite <- plus_n_Sm in *. repeat rewrite ord_succ_nat in *.
-      repeat rewrite <- ord_add_nat in H4. rewrite plus_n_0 in *. rewrite <- ord_succ_nat in *. repeat rewrite ord_max_succ_succ in H4; try rewrite plus_n_0 in *; rewrite ord_max_lem2 in H4; try apply H4;
+      repeat rewrite <- ord_add_nat in H4. rewrite <- ord_succ_nat in *. repeat rewrite ord_max_succ_succ in H4; try rewrite plus_n_0 in *; rewrite ord_max_lem2 in H4; try apply H4;
       repeat rewrite ord_succ_nat; try apply nf_nat; apply ltb_asymm; apply ord_lt_ltb; repeat rewrite <- ord_add_nat; apply nat_ord_lt; lia.
   + case (num_conn B) eqn:X1.
     * unfold num_conn in *. fold num_conn in *. rewrite X,X1. unfold add in *. fold add in *. repeat rewrite <- plus_n_Sm in *. repeat rewrite ord_succ_nat in *.
-      repeat rewrite <- ord_add_nat in H4. rewrite plus_n_0 in *. rewrite <- ord_succ_nat in *. repeat rewrite ord_max_succ_succ in H4. rewrite ord_max_symm in H4. rewrite ord_max_lem2 in H4; try apply H4;
+      repeat rewrite <- ord_add_nat in H4. rewrite <- ord_succ_nat in *. repeat rewrite ord_max_succ_succ in H4. rewrite ord_max_symm in H4. rewrite ord_max_lem2 in H4; try apply H4;
       repeat rewrite ord_succ_nat; try apply nf_nat; apply ltb_asymm; apply ord_lt_ltb; repeat rewrite <- ord_add_nat; apply nat_ord_lt; lia.
     * unfold num_conn in *; fold num_conn in *; rewrite X,X1 in *; unfold add in *; fold add in *; repeat rewrite <- plus_n_Sm in *; repeat rewrite ord_succ_nat in *;
       repeat rewrite <- ord_add_nat in *; repeat rewrite ord_max_succ_succ in H4; repeat rewrite <- plus_n_Sm in *; rewrite plus_assoc; rewrite plus_comm;
       rewrite plus_assoc; rewrite <- plus_n_Sm; rewrite (plus_comm n0 _); rewrite plus_comm; rewrite <- plus_n_Sm; rewrite plus_assoc; rewrite plus_assoc; rewrite <- (plus_assoc _ n0 n0); rewrite plus_n_Sm; rewrite plus_n_Sm; rewrite plus_comm; repeat rewrite plus_n_Sm in *. rewrite plus_comm in H4.
-      case (ord_ltb (nat_ord (S n0 + (n1 + S (S (S (S n1)))))) (nat_ord (n0 + S (S (S (S n0))) + S n1))) eqn:X2.
+      case (ord_ltb (nat_ord (n1 + S (S (S (S n1))))) (nat_ord (n0 + S (S (S (S n0)))))) eqn:X2.
       --  rewrite ord_max_lem1 in H4; auto. apply (ord_incr _ _ _ _ H4).
           ++  repeat rewrite ord_succ_nat. apply nat_ord_lt. lia.
           ++  apply nf_nat.
+          ++  rewrite plus_comm. auto.
       --  rewrite ord_max_lem2 in H4; auto. apply (ord_incr _ _ _ _ H4).
           ++  repeat rewrite ord_succ_nat. apply nat_ord_lt. lia.
           ++  apply nf_nat.
+          ++  rewrite plus_comm. auto.
 - inversion H0. apply exchange1.
   unfold num_conn. fold num_conn. rewrite <- plus_n_Sm. rewrite <- ord_succ_nat. rewrite plus_comm. rewrite <- plus_n_Sm. rewrite <- ord_succ_nat.
   apply w_rule2. intros k. destruct H3. pose proof (H _ (leq_refl _) _ (num_conn_sub _ _ _) (closed_univ_sub _ _ H1 _ (eval_closed _ (eval_represent k)))).
@@ -499,7 +498,7 @@ Qed.
 
 Lemma LEM : forall (A : formula),
   closed A = true ->
-  PA_omega_theorem (lor (neg A) A) 0 (ord_succ (ord_succ (nat_ord ((num_conn A)+(num_conn A))))).
+  PA_omega_theorem (lor (neg A) A) 0 (ord_succ (nat_ord ((num_conn A)+(num_conn A)))).
 Proof. intros. apply (P1_lemma A H). Qed.
 
 
@@ -606,7 +605,7 @@ Lemma LEM_term_atomic :
     free_list_a a = [n] ->
     PA_omega_theorem (lor (neg (atom (substitution_a a n s)))
                           (atom (substitution_a a n t)))
-                      0 (ord_succ (ord_succ Zero)).
+                      0 (ord_succ Zero).
 Proof.
 intros a n s t H Ha.
 destruct (correctness_decid (substitution_a a n s)) as [H0 | H0].
@@ -619,12 +618,10 @@ destruct (correctness_decid (substitution_a a n s)) as [H0 | H0].
   assert (ord_succ (ord_add Zero (nat_ord (num_conn (neg (substitution (atom a) n s))))) = ord_succ (ord_succ Zero)). auto.
   destruct H2. apply weakening; auto.
 - apply exchange1. assert (ord_succ (ord_add Zero (nat_ord (num_conn (substitution (atom a) n t)))) = (ord_succ Zero)). auto.
-  apply (ord_incr _ _ (ord_succ Zero)). destruct H1. unfold substitution. apply weakening; auto.
+  destruct H1. unfold substitution. apply weakening; auto.
   + simpl. apply (incorrect_subst_closed a n s t); auto.
     apply eval_closed. destruct (correct_eval s t H). apply H2.
   + apply axiom. apply H0.
-  + apply ord_succ_monot.
-  + repeat apply ord_succ_nf. apply zero_nf.
 Qed.
 
 
@@ -637,7 +634,7 @@ Definition Q1 (A : formula) : Type := forall (n : nat) (s t : term),
   correct_a (equ s t) = true ->
   free_list A = [n] ->
   PA_omega_theorem (lor (neg (substitution A n s)) (substitution A n t))
-                   0 (ord_succ (ord_succ (nat_ord ((num_conn A)+(num_conn A))))).
+                   0 (ord_succ (nat_ord ((num_conn A)+(num_conn A)))).
 
 Definition Q2 (A : formula) (n : nat) : Type := num_conn A = n -> Q1 A.
 
@@ -680,10 +677,10 @@ unfold Q3,Q2,Q1. intros.
 destruct A as [| B | B C | m B].
 - inversion H0.
 - inversion H0. apply negation2. fold substitution. apply exchange1. unfold num_conn. fold num_conn.
-  apply (ord_incr _ _ (ord_succ (ord_succ (nat_ord ((num_conn B)+(num_conn B)))))).
+  apply (ord_incr _ _ (ord_succ (nat_ord ((num_conn B)+(num_conn B))))).
   + apply (H n (leq_refl n) B H4 n0 t s); auto. apply equ_symm,H1.
   + repeat rewrite ord_succ_nat. apply nat_ord_lt. lia.
-  + apply ord_succ_nf. apply nf_nat.
+  + apply nf_nat.
 - destruct (num_conn_lor _ _ _ H0) as [HB' HC'].
   destruct (correct_closed_t _ _ H1) as [Hs Ht].
   destruct (free_list_lor B C n0 H2) as [[HB | HB] [HC | HC]].
@@ -691,14 +688,15 @@ destruct A as [| B | B C | m B].
     apply (weakening (substitution C n0 t)) in H3. apply exchange1 in H3. apply associativity1 in H3.
     pose proof (H (num_conn C) HC' C (eq_refl (num_conn C)) _ _ _ H1 HC).
     apply (weakening (substitution B n0 t) _ _ _) in H4. apply exchange1 in H4. apply exchange2 in H4. apply associativity1 in H4.
-    case (ord_eqb (ord_succ (ord_max (ord_succ (ord_add (ord_succ (ord_succ (nat_ord (num_conn B + num_conn B)))) (nat_ord (num_conn (substitution C n0 t))))) (ord_succ (ord_add (ord_succ (ord_succ (nat_ord (num_conn C + num_conn C)))) (nat_ord (num_conn (substitution B n0 t))))))) (ord_succ (ord_succ (nat_ord (num_conn (lor B C) + num_conn (lor B C)))))) eqn:X.
+    case (ord_eqb (ord_succ (ord_max (ord_succ (ord_succ (nat_ord (num_conn B + num_conn B)))) (ord_succ (ord_succ (nat_ord (num_conn C + num_conn C)))))) (ord_succ (nat_ord (num_conn (lor B C) + num_conn (lor B C))))) eqn:X.
     * apply ord_eqb_eq in X. destruct X. unfold substitution. fold substitution. apply (demorgan2 _ _ (lor (substitution B n0 t) (substitution C n0 t)) 0 0 _ _ H3 H4).
     * unfold substitution. fold substitution. apply (ord_incr _ _ _ _ (demorgan2 _ _ (lor (substitution B n0 t) (substitution C n0 t)) 0 0 _ _ H3 H4)).
-      --  rewrite ord_max_succ_succ in *. apply ord_lt_succ. apply ord_lt_succ. repeat rewrite ord_succ_nat in *. repeat rewrite <- ord_add_nat in *.
-          rewrite ord_max_nat in *. apply nat_ord_lt. repeat rewrite num_conn_sub in *. simpl in *. destruct (num_conn B); destruct (num_conn C).
+      --  unfold num_conn. fold num_conn. repeat rewrite ord_max_succ_succ in *. rewrite <- plus_n_Sm. repeat rewrite <- ord_succ_nat. apply ord_lt_succ. apply ord_lt_succ. rewrite plus_n_Sm. rewrite (plus_comm _ (S _)). rewrite <- plus_assoc.
+          rewrite (plus_comm (S _)). rewrite <- plus_n_Sm. rewrite <- ord_succ_nat. apply ord_lt_succ. repeat rewrite ord_succ_nat in *.
+          rewrite ord_max_nat in *. apply nat_ord_lt. simpl in *. destruct (num_conn B); destruct (num_conn C).
           ++  simpl in X. inversion X.
-          ++  rewrite <- plus_n_Sm in X. rewrite plus_n_0 in *. rewrite max_split1 in X. simpl in X. rewrite plus_n_0 in *. rewrite eq_nat_refl in X. inversion X. apply lt_nat_decid_conv. lia.
-          ++  rewrite <- plus_n_Sm in X. rewrite plus_n_0 in *. rewrite max_split2 in X. simpl in X. rewrite plus_n_0 in *. rewrite eq_nat_refl in X. inversion X. apply lt_nat_decid_conv. lia.
+          ++  rewrite <- plus_n_Sm in X. rewrite plus_n_0 in *. rewrite max_split1 in X. simpl in X. repeat rewrite <- plus_n_Sm in X. rewrite eq_nat_refl in X. inversion X. apply lt_nat_decid_conv. lia.
+          ++  rewrite <- plus_n_Sm in X. rewrite plus_n_0 in *. rewrite max_split2 in X. simpl in X. repeat rewrite <- plus_n_Sm in X. repeat rewrite <- plus_n_O in X. rewrite eq_nat_refl in X. inversion X. apply lt_nat_decid_conv. lia.
           ++  lia.
       --  repeat apply ord_succ_nf. apply nf_nat.
     * apply closed_univ_sub; auto. apply free_list_closed. simpl. rewrite HB. simpl. rewrite eq_nat_refl. auto.
@@ -708,30 +706,32 @@ destruct A as [| B | B C | m B].
     pose proof (LEM C HC).
     apply (weakening (substitution B n0 t) _ _ _) in H4. apply exchange1 in H4. apply exchange2 in H4. apply associativity1 in H4.
     unfold substitution. fold substitution. repeat rewrite (closed_subst_eq _ _ _ HC).
-    case (ord_eqb (ord_succ (ord_max (ord_succ (ord_add (ord_succ (ord_succ (nat_ord (num_conn B + num_conn B)))) (nat_ord (num_conn C)))) (ord_succ (ord_add (ord_succ (ord_succ (nat_ord (num_conn C + num_conn C)))) (nat_ord (num_conn (substitution B n0 t))))))) (ord_succ (ord_succ (nat_ord (num_conn (lor B C) + num_conn (lor B C)))))) eqn:X.
+    case (ord_eqb (ord_succ (ord_max (ord_succ (ord_succ (nat_ord (num_conn B + num_conn B)))) (ord_succ (ord_succ (nat_ord (num_conn C + num_conn C)))))) (ord_succ (nat_ord (num_conn (lor B C) + num_conn (lor B C))))) eqn:X.
     * apply ord_eqb_eq in X. destruct X. apply (demorgan2 _ _ (lor (substitution B n0 t) C) 0 0 _ _ H3 H4).
     * unfold substitution. fold substitution. apply (ord_incr _ _ _ _ (demorgan2 _ _ (lor (substitution B n0 t) C) 0 0 _ _ H3 H4)).
-      --  rewrite ord_max_succ_succ in *. apply ord_lt_succ. apply ord_lt_succ. repeat rewrite ord_succ_nat in *. repeat rewrite <- ord_add_nat in *.
-          rewrite ord_max_nat in *. apply nat_ord_lt. repeat rewrite num_conn_sub in *. simpl in *. destruct (num_conn B); destruct (num_conn C).
+      --  unfold num_conn. fold num_conn. repeat rewrite ord_max_succ_succ in *. rewrite <- plus_n_Sm. repeat rewrite <- ord_succ_nat. apply ord_lt_succ. apply ord_lt_succ. rewrite plus_n_Sm. rewrite (plus_comm _ (S _)). rewrite <- plus_assoc.
+          rewrite (plus_comm (S _)). rewrite <- plus_n_Sm. rewrite <- ord_succ_nat. apply ord_lt_succ. repeat rewrite ord_succ_nat in *.
+          rewrite ord_max_nat in *. apply nat_ord_lt. simpl in *. destruct (num_conn B); destruct (num_conn C).
           ++  simpl in X. inversion X.
-          ++  rewrite <- plus_n_Sm in X. rewrite plus_n_0 in *. rewrite max_split1 in X. simpl in X. rewrite plus_n_0 in *. rewrite eq_nat_refl in X. inversion X. apply lt_nat_decid_conv. lia.
-          ++  rewrite <- plus_n_Sm in X. rewrite plus_n_0 in *. rewrite max_split2 in X. simpl in X. rewrite plus_n_0 in *. rewrite eq_nat_refl in X. inversion X. apply lt_nat_decid_conv. lia.
+          ++  rewrite <- plus_n_Sm in X. rewrite plus_n_0 in *. rewrite max_split1 in X. simpl in X. repeat rewrite <- plus_n_Sm in X. rewrite eq_nat_refl in X. inversion X. apply lt_nat_decid_conv. lia.
+          ++  rewrite <- plus_n_Sm in X. rewrite plus_n_0 in *. rewrite max_split2 in X. simpl in X. repeat rewrite <- plus_n_Sm in X. repeat rewrite <- plus_n_O in X. rewrite eq_nat_refl in X. inversion X. apply lt_nat_decid_conv. lia.
           ++  lia.
-      --  repeat apply ord_succ_nf. apply nf_nat.
+      --  repeat apply ord_succ_nf. apply nf_nat. 
     * apply closed_univ_sub; auto. apply free_list_closed. simpl. rewrite HB. simpl. rewrite eq_nat_refl. auto.
   + pose proof (LEM B HB).
     apply (weakening (substitution C n0 t) _ _ _) in H3. apply exchange1 in H3. apply associativity1 in H3.  
     pose proof (H (num_conn C) HC' C (eq_refl (num_conn C)) _ _ _ H1 HC).
     apply (weakening B _ _ _ HB) in H4. apply exchange1 in H4. apply exchange2 in H4. apply associativity1 in H4.
     unfold substitution. fold substitution. repeat rewrite (closed_subst_eq _ _ _ HB).
-    case (ord_eqb (ord_succ (ord_max (ord_succ (ord_add (ord_succ (ord_succ (nat_ord (num_conn B + num_conn B)))) (nat_ord (num_conn (substitution C n0 t))))) (ord_succ (ord_add (ord_succ (ord_succ (nat_ord (num_conn C + num_conn C)))) (nat_ord (num_conn B)))))) (ord_succ (ord_succ (nat_ord (num_conn (lor B C) + num_conn (lor B C)))))) eqn:X.
+    case (ord_eqb (ord_succ (ord_max (ord_succ (ord_succ (nat_ord (num_conn B + num_conn B)))) (ord_succ (ord_succ (nat_ord (num_conn C + num_conn C)))))) (ord_succ (nat_ord (num_conn (lor B C) + num_conn (lor B C))))) eqn:X.
     * apply ord_eqb_eq in X. destruct X. apply (demorgan2 _ _ (lor B (substitution C n0 t)) 0 0 _ _ H3 H4).
     * unfold substitution. fold substitution. apply (ord_incr _ _ _ _ (demorgan2 _ _ (lor B (substitution C n0 t)) 0 0 _ _ H3 H4)).
-      --  rewrite ord_max_succ_succ in *. apply ord_lt_succ. apply ord_lt_succ. repeat rewrite ord_succ_nat in *. repeat rewrite <- ord_add_nat in *.
-          rewrite ord_max_nat in *. apply nat_ord_lt. repeat rewrite num_conn_sub in *. simpl in *. destruct (num_conn B); destruct (num_conn C).
+      --  unfold num_conn. fold num_conn. repeat rewrite ord_max_succ_succ in *. rewrite <- plus_n_Sm. repeat rewrite <- ord_succ_nat. apply ord_lt_succ. apply ord_lt_succ. rewrite plus_n_Sm. rewrite (plus_comm _ (S _)). rewrite <- plus_assoc.
+          rewrite (plus_comm (S _)). rewrite <- plus_n_Sm. rewrite <- ord_succ_nat. apply ord_lt_succ. repeat rewrite ord_succ_nat in *.
+          rewrite ord_max_nat in *. apply nat_ord_lt. simpl in *. destruct (num_conn B); destruct (num_conn C).
           ++  simpl in X. inversion X.
-          ++  rewrite <- plus_n_Sm in X. rewrite plus_n_0 in *. rewrite max_split1 in X. simpl in X. rewrite plus_n_0 in *. rewrite eq_nat_refl in X. inversion X. apply lt_nat_decid_conv. lia.
-          ++  rewrite <- plus_n_Sm in X. rewrite plus_n_0 in *. rewrite max_split2 in X. simpl in X. rewrite plus_n_0 in *. rewrite eq_nat_refl in X. inversion X. apply lt_nat_decid_conv. lia.
+          ++  rewrite <- plus_n_Sm in X. rewrite plus_n_0 in *. rewrite max_split1 in X. simpl in X. repeat rewrite <- plus_n_Sm in X. rewrite eq_nat_refl in X. inversion X. apply lt_nat_decid_conv. lia.
+          ++  rewrite <- plus_n_Sm in X. rewrite plus_n_0 in *. rewrite max_split2 in X. simpl in X. repeat rewrite <- plus_n_Sm in X. repeat rewrite <- plus_n_O in X. rewrite eq_nat_refl in X. inversion X. apply lt_nat_decid_conv. lia.
           ++  lia.
       --  repeat apply ord_succ_nf. apply nf_nat.
     * apply closed_univ_sub; auto. apply free_list_closed. simpl. rewrite HC. simpl. rewrite eq_nat_refl. auto.  
@@ -767,10 +767,21 @@ Lemma LEM_term : forall (A : formula) (n : nat) (s t : term),
   correct_a (equ s t) = true ->
   free_list A = [n] ->
   PA_omega_theorem (lor (neg (substitution A n s)) (substitution A n t))
-                   0 (ord_succ (ord_succ (nat_ord ((num_conn A)+(num_conn A))))).
+                   0 (ord_succ (nat_ord ((num_conn A)+(num_conn A)))).
 Proof. apply Q1_lemma. Qed.
 
-Lemma LEM_lower : 
+Lemma eval_correct : forall (s t : term),
+   eval s > 0 -> eval s = eval t -> correct_a (equ s t) = true.
+Proof.
+intros s t.
+unfold correct_a.
+unfold correctness.
+intros.
+case (eval s) eqn:X; inversion H; case (eval t) eqn:X1; inversion H0.
+- simpl. destruct H2,H3. auto.
+- rewrite eq_nat_refl. auto. 
+Qed.
+
 
 (*
 Definition C1 (A : formula) : Type :=
