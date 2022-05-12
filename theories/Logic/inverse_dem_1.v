@@ -144,8 +144,8 @@ match P, S with
       A
       (demorgan1_sub_formula D E F S_D)
       n d alpha
-      (fun (n : nat) =>
-          demorgan1_sub_ptree_fit (g n) E F (lor_ind (non_target A) S_D))
+      (fun (t : c_term) =>
+          demorgan1_sub_ptree_fit (g t) E F (lor_ind (non_target A) S_D))
 
 | cut_ca C0 A d1 d2 alpha1 alpha2 P1 P2, _ =>
     cut_ca
@@ -672,18 +672,18 @@ intros P E F. induction P; try intros H S Hs.
 
 - simpl. destruct S; apply H.
 
-- simpl. destruct S; try apply H. inversion H as [[[[H0 H1] H2] H3] H4].
-  destruct S1; inversion Hs; rewrite H6; simpl.
+- simpl. destruct S; try apply H. inversion H as [[[H0 H1] H2] H3].
+  destruct S1; inversion Hs; rewrite H5; simpl.
   + repeat split; auto.
     * rewrite demorgan1_ptree_formula_true, demorgan1_ptree_formula; auto.
       { rewrite H0. unfold demorgan1_sub_formula.
         { rewrite formula_sub_ind_lor. simpl.
-          { destruct (eq_f (substitution f n t)); auto. }
-          { simpl. apply H6. } } }
-      { rewrite H0. simpl. apply H6. }
+          { destruct (eq_f (substitution f n (projT1 c))); auto. }
+          { simpl. apply H5. } } }
+      { rewrite H0. simpl. apply H5. }
     * rewrite demorgan1_ptree_formula_true.
-      { apply IHP; auto. rewrite H0. simpl. apply H6. }
-      { rewrite H0. simpl. apply H6. }
+      { apply IHP; auto. rewrite H0. simpl. apply H5. }
+      { rewrite H0. simpl. apply H5. }
     * rewrite demorgan1_ptree_formula_true.
       { rewrite demorgan1_ptree_deg; auto. }
       { rewrite H0. simpl. auto. }
@@ -694,12 +694,12 @@ intros P E F. induction P; try intros H S Hs.
     * rewrite demorgan1_ptree_formula_true, demorgan1_ptree_formula; auto.
       { rewrite H0. unfold demorgan1_sub_formula.
         { rewrite formula_sub_ind_lor. simpl.
-          { destruct (eq_f (substitution f n t)); auto. }
-          { simpl. apply H6. } } }
-      { rewrite H0. simpl. apply H6. }
+          { destruct (eq_f (substitution f n (projT1 c))); auto. }
+          { simpl. apply H5. } } }
+      { rewrite H0. simpl. apply H5. }
     * rewrite demorgan1_ptree_formula_true.
-      { apply IHP; auto. rewrite H0. simpl. apply H6. }
-      { rewrite H0. simpl. apply H6. }
+      { apply IHP; auto. rewrite H0. simpl. apply H5. }
+      { rewrite H0. simpl. apply H5. }
     * rewrite demorgan1_ptree_formula_true.
       { rewrite demorgan1_ptree_deg; auto. }
       { rewrite H0. simpl. auto. }
@@ -711,53 +711,53 @@ intros P E F. induction P; try intros H S Hs.
 
 - rename H into H0. rename X into H. rename Hs into H1.
   simpl. destruct S; try apply H0. destruct S1; inversion H1.
-  + rewrite H3. simpl. intros. destruct (valid_w_rule_ad _ _ _ _ _ _ H0 m) as [[[H4 H5] H6] H7].
+  + rewrite H3. simpl. intros. destruct (valid_w_rule_ad _ _ _ _ _ _ H0 t) as [[[H4 H5] H6] H7].
     repeat split.
     * rewrite demorgan1_ptree_formula_true, demorgan1_ptree_formula; auto.
       { rewrite H4. unfold demorgan1_sub_formula. rewrite formula_sub_ind_lor.
-        { rewrite (non_target_term_sub f n (represent m)).
+        { rewrite (non_target_term_sub f n (projT1 t)).
           rewrite non_target_sub. auto. }
-        { rewrite (non_target_term_sub f n (represent m)).
+        { rewrite (non_target_term_sub f n (projT1 t)).
           rewrite non_target_fit. apply H3. } }
-      { rewrite H4. simpl. rewrite (non_target_term_sub f n (represent m)).
+      { rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
         rewrite non_target_fit. apply H3. }
     * rewrite demorgan1_ptree_formula_true.
       { apply H. apply H5. rewrite H4. simpl.
-        rewrite (non_target_term_sub f n (represent m)).
+        rewrite (non_target_term_sub f n (projT1 t)).
         rewrite non_target_fit. apply H3. }
-      { rewrite H4. simpl. rewrite (non_target_term_sub f n (represent m)).
+      { rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
         rewrite non_target_fit. apply H3. }
     * rewrite demorgan1_ptree_formula_true.
       { rewrite demorgan1_ptree_deg; auto. }
-      { rewrite H4. simpl. rewrite (non_target_term_sub f n (represent m)).
+      { rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
         rewrite non_target_fit. rewrite H3. auto. }
     * rewrite demorgan1_ptree_formula_true.
       { rewrite demorgan1_ptree_ord; auto. }
-      { rewrite H4. simpl. rewrite (non_target_term_sub f n (represent m)).
+      { rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
         rewrite non_target_fit. rewrite H3. auto. }
-  + rewrite H3. simpl. intros. destruct (valid_w_rule_ad _ _ _ _ _ _ H0 m) as [[[H4 H5] H6] H7].
+  + rewrite H3. simpl. intros. destruct (valid_w_rule_ad _ _ _ _ _ _ H0 t) as [[[H4 H5] H6] H7].
     repeat split.
     * rewrite demorgan1_ptree_formula_true, demorgan1_ptree_formula; auto.
       { rewrite H4. unfold demorgan1_sub_formula. rewrite formula_sub_ind_lor.
-        { rewrite (non_target_term_sub f n (represent m)).
+        { rewrite (non_target_term_sub f n (projT1 t)).
           rewrite non_target_sub. auto. }
-        { rewrite (non_target_term_sub f n (represent m)).
+        { rewrite (non_target_term_sub f n (projT1 t)).
           rewrite non_target_fit. apply H3. } }
-      { rewrite H4. simpl. rewrite (non_target_term_sub f n (represent m)).
+      { rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
         rewrite non_target_fit. apply H3. }
     * rewrite demorgan1_ptree_formula_true.
       { apply H. apply H5. rewrite H4. simpl.
-        rewrite (non_target_term_sub f n (represent m)).
+        rewrite (non_target_term_sub f n (projT1 t)).
         rewrite non_target_fit. apply H3. }
-      { rewrite H4. simpl. rewrite (non_target_term_sub f n (represent m)).
+      { rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
         rewrite non_target_fit. apply H3. }
     * rewrite demorgan1_ptree_formula_true.
       { rewrite demorgan1_ptree_deg; auto. }
-      { rewrite H4. simpl. rewrite (non_target_term_sub f n (represent m)).
+      { rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
         rewrite non_target_fit. rewrite H3. auto. }
     * rewrite demorgan1_ptree_formula_true.
       { rewrite demorgan1_ptree_ord; auto. }
-      { rewrite H4. simpl. rewrite (non_target_term_sub f n (represent m)).
+      { rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
         rewrite non_target_fit. rewrite H3. auto. }
   - clear IHP2. simpl. destruct (subst_ind_fit f S) eqn:Heq; try apply H. simpl.
     inversion H as [[[[[[[H1 H2] H3] H4] H5] H6] H7] H8].

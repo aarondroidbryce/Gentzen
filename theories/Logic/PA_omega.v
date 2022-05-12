@@ -108,13 +108,13 @@ Inductive PA_omega_theorem : formula -> nat -> ord -> Type :=
     PA_omega_theorem (lor (neg (univ n A)) D) d (ord_succ alpha)
 
 | w_rule1 : forall (A : formula) (n : nat) (d : nat) (alpha : ord)
-  (g : forall (m : nat),
-      PA_omega_theorem (substitution A n (represent m)) d alpha),
+  (g : forall (t : term), closed_t t = true ->
+      PA_omega_theorem (substitution A n t) d alpha),
   PA_omega_theorem (univ n A) d (ord_succ alpha)
 
 | w_rule2 : forall (A D : formula) (n : nat) (d : nat) (alpha : ord)
-  (g : forall (m : nat),
-    PA_omega_theorem (lor (substitution A n (represent m)) D) d alpha),
+  (g : forall (t : term), closed_t t = true ->
+    PA_omega_theorem (lor (substitution A n t) D) d alpha),
   PA_omega_theorem (lor (univ n A) D) d (ord_succ alpha)
 
 | cut1 : forall (C A : formula) (d1 d2 : nat) (alpha1 alpha2 : ord),
@@ -174,7 +174,7 @@ Lemma w_rule_exmp : forall (n : nat),
   PA_omega_theorem (univ n (atom (equ (var n) (var n)))) 0 (ord_succ Zero).
 Proof.
 intros.
-apply w_rule1. simpl. rewrite eq_nat_refl. apply equ_refl.
+apply w_rule1. intros. apply axiom. simpl. rewrite eq_nat_refl. unfold correct_a. unfold correctness. pose proof (closed_eval _ H). destruct (eval t). inversion H0. rewrite eq_nat_refl. auto.
 Qed.
 
 (* Show that PA_omega proves the associativity laws *)
@@ -217,6 +217,8 @@ Lemma ord_nf : forall (A : formula) (d : nat) (alpha : ord),
 Proof.
 intros. induction H; try apply ord_succ_nf; try apply ord_max_nf; auto.
 - apply zero_nf.
+- apply (H zero). auto.
+- apply (H zero). auto.
 Qed.
 
 Lemma ord_monot : forall (A : formula) (d : nat) (alpha beta : ord),
@@ -230,108 +232,7 @@ intros. destruct H.
 Qed.
 
 
-Lemma correct_correctness : forall (a : atomic_formula),
-  correct_a a = true -> correctness a = correct.
-Proof.
-intros. unfold correct_a in H.
-case_eq (correctness a); auto; intros; rewrite H0 in H; inversion H.
-Qed.
 
-Lemma incorrect_correctness : forall (a : atomic_formula),
-  incorrect_a a = true -> correctness a = incorrect.
-Proof.
-intros. unfold incorrect_a in H.
-case_eq (correctness a); auto; intros; rewrite H0 in H; inversion H.
-Qed.
-
-Lemma correct_eval : forall (s t : term),
-  correct_a (equ s t) = true -> eval s > 0 /\ eval t > 0.
-Proof.
-intros.
-assert (correctness (equ s t) = correct).
-{ apply correct_correctness. apply H. }
-unfold correct_a in H.
-rewrite H0 in H.
-unfold correctness in H0.
-case_eq (eval s); case_eq (eval t); intros;
-rewrite H1 in H0; rewrite H2 in H0; inversion H0;
-split; lia.
-Qed.
-
-Lemma incorrect_eval : forall (s t : term),
-  incorrect_a (equ s t) = true -> eval s > 0 /\ eval t > 0.
-Proof.
-intros.
-assert (correctness (equ s t) = incorrect).
-{ apply incorrect_correctness. apply H. }
-unfold incorrect_a in H.
-rewrite H0 in H.
-unfold correctness in H0.
-case_eq (eval s); case_eq (eval t); intros;
-rewrite H1 in H0; rewrite H2 in H0; inversion H0;
-split; lia.
-Qed.
-
-Lemma correct_closed : forall (a : atomic_formula),
-  correct_a a = true -> closed_a a = true.
-Proof.
-intros. case_eq a. intros t1 t2 Ha. rewrite Ha in H. clear Ha. simpl.
-destruct (correct_eval _ _ H).
-apply eval_closed in H0. rewrite H0.
-apply eval_closed in H1. rewrite H1. auto.
-Qed.
-
-Lemma incorrect_closed : forall (a : atomic_formula),
-  incorrect_a a = true -> closed_a a = true.
-Proof.
-intros. case_eq a. intros t1 t2 Ha. rewrite Ha in H. clear Ha. simpl.
-destruct (incorrect_eval _ _ H).
-apply eval_closed in H0. rewrite H0.
-apply eval_closed in H1. rewrite H1. auto.
-Qed.
-
-Lemma subst_closed_t : forall (n : nat) (T s t : term),
-  closed_t t = true ->
-  closed_t (substitution_t T n s) = true ->
-  closed_t (substitution_t T n t) = true.
-Proof.
-intros. induction T; auto.
-- simpl. simpl in H0.
-  case_eq (closed_t (substitution_t T1 n s)); intros HT1;
-  case_eq (closed_t (substitution_t T2 n s)); intros HT2.
-  + rewrite (IHT1 HT1). rewrite (IHT2 HT2). auto.
-  + rewrite HT1 in H0. rewrite HT2 in H0. inversion H0.
-  + rewrite HT1 in H0. rewrite HT2 in H0. inversion H0.
-  + rewrite HT1 in H0. rewrite HT2 in H0. inversion H0.
-- simpl. simpl in H0.
-  case_eq (closed_t (substitution_t T1 n s)); intros HT1;
-  case_eq (closed_t (substitution_t T2 n s)); intros HT2.
-  + rewrite (IHT1 HT1). rewrite (IHT2 HT2). auto.
-  + rewrite HT1 in H0. rewrite HT2 in H0. inversion H0.
-  + rewrite HT1 in H0. rewrite HT2 in H0. inversion H0.
-  + rewrite HT1 in H0. rewrite HT2 in H0. inversion H0.
-- case_eq (eq_nat n0 n); intros; simpl; rewrite H1.
-  + apply H.
-  + simpl in H0. rewrite H1 in H0. inversion H0.
-Qed.
-
-Lemma incorrect_subst_closed :
-  forall (a : atomic_formula) (n : nat) (s t : term),
-  closed_t t = true ->
-  incorrect_a (substitution_a a n s) = true ->
-  closed_a (substitution_a a n t) = true.
-Proof.
-intros.
-case_eq a. intros t1 t2 Ha. rewrite Ha in H0. clear Ha. simpl.
-apply incorrect_closed in H0. simpl in H0.
-case_eq (closed_t (substitution_t t1 n s)); intros Ht1;
-case_eq (closed_t (substitution_t t2 n s)); intros Ht2; auto.
-- rewrite (subst_closed_t n t1 s t H Ht1).
-  rewrite (subst_closed_t n t2 s t H Ht2). auto.
-- rewrite Ht1 in H0. rewrite Ht2 in H0. inversion H0.
-- rewrite Ht1 in H0. rewrite Ht2 in H0. inversion H0.
-- rewrite Ht1 in H0. rewrite Ht2 in H0. inversion H0.
-Qed.
 
 Lemma closed_sub_theorem :
   forall (A : formula) (n d : nat) (t : term) (alpha : ord),
@@ -339,19 +240,6 @@ Lemma closed_sub_theorem :
   PA_omega_theorem A d alpha ->
   PA_omega_theorem (substitution A n t) d alpha.
 Proof. intros. rewrite closed_subst_eq. apply H0. apply H. Qed.
-
-Lemma repr_closed : forall (m : nat), closed_t (represent m) = true.
-Proof. intros. apply eval_closed, eval_represent. Qed.
-
-Lemma correct_closed_t : forall (s t : term),
-  correct_a (equ s t) = true -> closed_t s = true /\ closed_t t = true.
-Proof.
-intros.
-destruct (correct_eval _ _ H). split; apply eval_closed.
-apply H0. apply H1.
-Qed.
-
-
 
 Lemma LEM_univ : forall (B : formula) (n m d : nat) (alpha : ord),
   closed (substitution B n (represent m)) = true ->
@@ -478,8 +366,8 @@ destruct A as [a | B | B C | m B].
           ++  rewrite plus_comm. auto.
 - inversion H0. apply exchange1.
   unfold num_conn. fold num_conn. rewrite <- plus_n_Sm. rewrite <- ord_succ_nat. rewrite plus_comm. rewrite <- plus_n_Sm. rewrite <- ord_succ_nat.
-  apply w_rule2. intros k. destruct H3. pose proof (H _ (leq_refl _) _ (num_conn_sub _ _ _) (closed_univ_sub _ _ H1 _ (eval_closed _ (eval_represent k)))).
-  rewrite num_conn_sub in H2. apply exchange1. apply (quantification2 _ _ _ (represent k)). apply repr_closed. apply H2.
+  apply w_rule2. intros k Hk. destruct H3. pose proof (H _ (leq_refl _) _ (num_conn_sub _ _ _) (closed_univ_sub _ _ H1 _ Hk)).
+  rewrite num_conn_sub in H2. apply exchange1. apply (quantification2 _ _ _ k _ _ Hk H2).
 Qed.
 
 Lemma P3_lemma : forall n, P3 n.
@@ -739,14 +627,14 @@ destruct A as [| B | B C | m B].
 - apply exchange1. inversion H0.
   unfold substitution. fold substitution. pose proof (univ_free_var _ _ _ H2) as Heq. rewrite Heq.
   unfold num_conn. fold num_conn. rewrite <- plus_n_Sm. rewrite plus_comm. rewrite <- plus_n_Sm. repeat rewrite <- ord_succ_nat.
-  apply w_rule2. intros k. apply exchange1. apply (quantification2 _ _ _ (represent k)). apply repr_closed.
+  apply w_rule2. intros k Hk. apply exchange1. apply (quantification2 _ _ _ k _ _ Hk).
   destruct (correct_closed_t _ _ H1) as [Hs Ht].
-  rewrite (substitution_order B m n0 s _ Hs (repr_closed k) Heq).
-  rewrite (substitution_order B m n0 t _ Ht (repr_closed k) Heq).
-  rewrite <- (num_conn_sub B m (represent k)).
-  apply (H n (leq_refl n) (substitution B m (represent k))); auto.
+  rewrite (substitution_order B m n0 s _ Hs Hk Heq).
+  rewrite (substitution_order B m n0 t _ Ht Hk Heq).
+  rewrite <- (num_conn_sub B m k).
+  apply (H n (leq_refl n) (substitution B m k)); auto.
   + rewrite num_conn_sub. auto.
-  + apply free_list_univ_sub; auto. apply repr_closed.
+  + apply free_list_univ_sub; auto.
 Qed.
 
 Lemma Q3_lemma : forall n, Q3 n.

@@ -20,7 +20,7 @@ Definition neg_w_rule_sub_formula
 
 Lemma neg_w_rule_sub_formula_closed : forall (A : formula),
   closed A = true ->
-  forall (E F : formula) (n m : nat) (S : subst_ind), closed F = true ->
+  forall (E F : formula) (n : nat) (S : subst_ind), closed F = true ->
     closed (neg_w_rule_sub_formula A E F n S) = true.
 Proof.
 intros. unfold neg_w_rule_sub_formula. apply formula_sub_ind_closed; auto.
@@ -111,7 +111,7 @@ Fixpoint neg_w_rule_sub_ptree_fit
 
 | quantification_a A k t d alpha P', _ =>
     (match eq_f A E, eq_nat k n, S with
-    | true, true, (1) => (cut_ca F (substitution E n t) d' d beta alpha (projT1(w_rule_invertible_cut_cad Q E F n (eval t - 1) d' beta H)) P')
+    | true, true, (1) => (cut_ca F (substitution E n t) d' d beta alpha (projT1(w_rule_invertible_cut_cad Q E F n d' beta t H)) P')
     | _, _, _ => P
     end)
 

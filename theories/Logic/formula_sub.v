@@ -109,8 +109,8 @@ match P, S with
       A
       (formula_sub_ind_fit D E F S_D)
       n d alpha
-      (fun (n : nat) =>
-          formula_sub_ptree_fit (g n) E F (lor_ind (non_target A) S_D))
+      (fun (t : c_term) =>
+          formula_sub_ptree_fit (g t) E F (lor_ind (non_target A) S_D))
 
 | cut_ca C0 A d1 d2 alpha1 alpha2 P1 P2, _ =>
     cut_ca
@@ -617,14 +617,14 @@ induction P; try intros H Ha HF S Hs.
 
 - simpl. destruct S; auto.
 
-- simpl. destruct S; auto. inversion H as [[[[H0 H1] H2] H3] H4].
-  destruct S1; inversion Hs; rewrite H6; simpl.
+- simpl. destruct S; auto. inversion H as [[[H0 H1] H2] H3].
+  destruct S1; inversion Hs; rewrite H5; simpl.
   + repeat split; auto; rewrite formula_sub_ptree_formula_true.
     * rewrite formula_sub_ptree_formula_atom_fit;
       auto; rewrite H0; simpl; auto.
-    * rewrite H0. simpl. apply H6.
-    * apply IHP; auto. rewrite H0. simpl. apply H6.
-    * rewrite H0. simpl. apply H6.
+    * rewrite H0. simpl. apply H5.
+    * apply IHP; auto. rewrite H0. simpl. apply H5.
+    * rewrite H0. simpl. apply H5.
     * rewrite formula_sub_ptree_deg_atom; auto.
     * rewrite H0. simpl. auto.
     * rewrite formula_sub_ptree_ord_atom; auto.
@@ -632,9 +632,9 @@ induction P; try intros H Ha HF S Hs.
   + repeat split; auto; rewrite formula_sub_ptree_formula_true.
     * rewrite formula_sub_ptree_formula_atom_fit;
       auto; rewrite H0; simpl; auto.
-    * rewrite H0. simpl. apply H6.
-    * apply IHP; auto. rewrite H0. simpl. apply H6.
-    * rewrite H0. simpl. apply H6.
+    * rewrite H0. simpl. apply H5.
+    * apply IHP; auto. rewrite H0. simpl. apply H5.
+    * rewrite H0. simpl. apply H5.
     * rewrite formula_sub_ptree_deg_atom; auto.
     * rewrite H0. simpl. auto.
     * rewrite formula_sub_ptree_ord_atom; auto.
@@ -644,43 +644,43 @@ induction P; try intros H Ha HF S Hs.
 
 - rename H into H0. rename X into H. rename Hs into H1.
   simpl. destruct S; auto. destruct S1; inversion H1.
-  + rewrite H3. simpl. intros. destruct (valid_w_rule_ad _ _ _ _ _ _ H0 m) as [[[H4 H5] H6] H7].
+  + rewrite H3. simpl. intros. destruct (valid_w_rule_ad _ _ _ _ _ _ H0 t) as [[[H4 H5] H6] H7].
     repeat split; rewrite formula_sub_ptree_formula_true.
     * rewrite formula_sub_ptree_formula_atom_fit; auto; rewrite H4; simpl;
-      rewrite (non_target_term_sub f n (represent m)).
+      rewrite (non_target_term_sub f n (projT1 t)).
       { rewrite non_target_sub'. auto. }
       { rewrite non_target_fit. auto. }
-    * rewrite H4. simpl. rewrite (non_target_term_sub f n (represent m)).
+    * rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
       rewrite non_target_fit. apply H3.
     * apply H; auto. rewrite H4. simpl.
-      rewrite (non_target_term_sub f n (represent m)).
+      rewrite (non_target_term_sub f n (projT1 t)).
       rewrite non_target_fit. apply H3.
-    * rewrite H4. simpl. rewrite (non_target_term_sub f n (represent m)).
+    * rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
       rewrite non_target_fit. apply H3.
     * rewrite formula_sub_ptree_deg_atom; auto.
-    * rewrite H4. simpl. rewrite (non_target_term_sub f n (represent m)).
+    * rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
         rewrite non_target_fit. rewrite H3. auto.
     * rewrite formula_sub_ptree_ord_atom; auto.
-    * rewrite H4. simpl. rewrite (non_target_term_sub f n (represent m)).
+    * rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
       rewrite non_target_fit. rewrite H3. auto.
-  + rewrite H3. simpl. intros. destruct (valid_w_rule_ad _ _ _ _ _ _ H0 m) as [[[H4 H5] H6] H7].
+  + rewrite H3. simpl. intros. destruct (valid_w_rule_ad _ _ _ _ _ _ H0 t) as [[[H4 H5] H6] H7].
     repeat split; rewrite formula_sub_ptree_formula_true.
     * rewrite formula_sub_ptree_formula_atom_fit; auto; rewrite H4; simpl;
-      rewrite (non_target_term_sub f n (represent m)).
+      rewrite (non_target_term_sub f n (projT1 t)).
       { rewrite non_target_sub'. auto. }
       { rewrite non_target_fit. auto. }
-    * rewrite H4. simpl. rewrite (non_target_term_sub f n (represent m)).
+    * rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
       rewrite non_target_fit. apply H3.
     * apply H; auto. rewrite H4. simpl.
-      rewrite (non_target_term_sub f n (represent m)).
+      rewrite (non_target_term_sub f n (projT1 t)).
       rewrite non_target_fit. apply H3.
-    * rewrite H4. simpl. rewrite (non_target_term_sub f n (represent m)).
+    * rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
       rewrite non_target_fit. apply H3.
     * rewrite formula_sub_ptree_deg_atom; auto.
-    * rewrite H4. simpl. rewrite (non_target_term_sub f n (represent m)).
+    * rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
         rewrite non_target_fit. rewrite H3. auto.
     * rewrite formula_sub_ptree_ord_atom; auto.
-    * rewrite H4. simpl. rewrite (non_target_term_sub f n (represent m)).
+    * rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
       rewrite non_target_fit. rewrite H3. auto.
 - clear IHP2. simpl. destruct (subst_ind_fit f S) eqn:Heq; auto. simpl.
   inversion H as [[[[[[[H1 H2] H3] H4] H5] H6] H7] H8].
@@ -1185,24 +1185,24 @@ induction P; try intros H Ha HF S Hs.
 
 - simpl. destruct S; auto.
 
-- simpl. destruct S; auto. inversion H as [[[[H0 H1] H2] H3] H4].
-  destruct S1; inversion Hs; rewrite H6; simpl.
+- simpl. destruct S; auto. inversion H as [[[H0 H1] H2] H3].
+  destruct S1; inversion Hs; rewrite H5; simpl.
   + repeat split; auto; rewrite formula_sub_ptree_formula_true.
     * rewrite formula_sub_ptree_formula_neg_fit; auto; rewrite H0; simpl; auto.
-      case (eq_f (substitution f n t) (atom a)); auto.
-    * rewrite H0. simpl. apply H6.
-    * apply IHP; auto. rewrite H0. simpl. apply H6.
-    * rewrite H0. simpl. apply H6.
+      case (eq_f (substitution f n (projT1 c)) (atom a)); auto.
+    * rewrite H0. simpl. apply H5.
+    * apply IHP; auto. rewrite H0. simpl. apply H5.
+    * rewrite H0. simpl. apply H5.
     * rewrite formula_sub_ptree_deg_neg; auto.
     * rewrite H0. simpl. auto.
     * rewrite formula_sub_ptree_ord_neg; auto.
     * rewrite H0. simpl. auto.
   + repeat split; auto; rewrite formula_sub_ptree_formula_true.
     * rewrite formula_sub_ptree_formula_neg_fit; auto; rewrite H0; simpl; auto.
-      case (eq_f (substitution f n t) (atom a)); auto.
-    * rewrite H0. simpl. apply H6.
-    * apply IHP; auto. rewrite H0. simpl. apply H6.
-    * rewrite H0. simpl. apply H6.
+      case (eq_f (substitution f n (projT1 c)) (atom a)); auto.
+    * rewrite H0. simpl. apply H5.
+    * apply IHP; auto. rewrite H0. simpl. apply H5.
+    * rewrite H0. simpl. apply H5.
     * rewrite formula_sub_ptree_deg_neg; auto.
     * rewrite H0. simpl. auto.
     * rewrite formula_sub_ptree_ord_neg; auto.
@@ -1212,43 +1212,43 @@ induction P; try intros H Ha HF S Hs.
 
 - rename H into H0. rename X into H. rename Hs into H1.
   simpl. destruct S; auto. destruct S1; inversion H1.
-  + rewrite H3. simpl. intros. destruct (valid_w_rule_ad _ _ _ _ _ _ H0 m) as [[[H4 H5] H6] H7].
+  + rewrite H3. simpl. intros. destruct (valid_w_rule_ad _ _ _ _ _ _ H0 t) as [[[H4 H5] H6] H7].
     repeat split; rewrite formula_sub_ptree_formula_true.
     * rewrite formula_sub_ptree_formula_neg_fit; auto; rewrite H4; simpl;
-      rewrite (non_target_term_sub f n (represent m)).
+      rewrite (non_target_term_sub f n (projT1 t)).
       { rewrite non_target_sub'. auto. }
       { rewrite non_target_fit. auto. }
-    * rewrite H4. simpl. rewrite (non_target_term_sub f n (represent m)).
+    * rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
       rewrite non_target_fit. apply H3.
     * apply H; auto. rewrite H4. simpl.
-      rewrite (non_target_term_sub f n (represent m)).
+      rewrite (non_target_term_sub f n (projT1 t)).
       rewrite non_target_fit. apply H3.
-    * rewrite H4. simpl. rewrite (non_target_term_sub f n (represent m)).
+    * rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
       rewrite non_target_fit. apply H3.
     * rewrite formula_sub_ptree_deg_neg; auto.
-    * rewrite H4. simpl. rewrite (non_target_term_sub f n (represent m)).
+    * rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
         rewrite non_target_fit. rewrite H3. auto.
     * rewrite formula_sub_ptree_ord_neg; auto.
-    * rewrite H4. simpl. rewrite (non_target_term_sub f n (represent m)).
+    * rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
       rewrite non_target_fit. rewrite H3. auto.
-  + rewrite H3. simpl. intros. destruct (valid_w_rule_ad _ _ _ _ _ _ H0 m) as [[[H4 H5] H6] H7].
+  + rewrite H3. simpl. intros. destruct (valid_w_rule_ad _ _ _ _ _ _ H0 t) as [[[H4 H5] H6] H7].
     repeat split; rewrite formula_sub_ptree_formula_true.
     * rewrite formula_sub_ptree_formula_neg_fit; auto; rewrite H4; simpl;
-      rewrite (non_target_term_sub f n (represent m)).
+      rewrite (non_target_term_sub f n (projT1 t)).
       { rewrite non_target_sub'. auto. }
       { rewrite non_target_fit. auto. }
-    * rewrite H4. simpl. rewrite (non_target_term_sub f n (represent m)).
+    * rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
       rewrite non_target_fit. apply H3.
     * apply H; auto. rewrite H4. simpl.
-      rewrite (non_target_term_sub f n (represent m)).
+      rewrite (non_target_term_sub f n (projT1 t)).
       rewrite non_target_fit. apply H3.
-    * rewrite H4. simpl. rewrite (non_target_term_sub f n (represent m)).
+    * rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
       rewrite non_target_fit. apply H3.
     * rewrite formula_sub_ptree_deg_neg; auto.
-    * rewrite H4. simpl. rewrite (non_target_term_sub f n (represent m)).
+    * rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
         rewrite non_target_fit. rewrite H3. auto.
     * rewrite formula_sub_ptree_ord_neg; auto.
-    * rewrite H4. simpl. rewrite (non_target_term_sub f n (represent m)).
+    * rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
       rewrite non_target_fit. rewrite H3. auto.
 - clear IHP2. simpl. destruct (subst_ind_fit f S) eqn:Heq; auto. simpl.
   inversion H as [[[[[[[H1 H2] H3] H4] H5] H6] H7] H8].

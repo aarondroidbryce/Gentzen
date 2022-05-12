@@ -1,4 +1,4 @@
-DIGEST ed2abde9fa336655dc8198214c5b37d7
+DIGEST 2639d74abddb2fa6612dfd7f13230091
 FSystems.fol
 R121:128 Maths_Facts.naturals <> <> lib
 R163:167 Maths_Facts.lists <> <> lib
@@ -4530,3 +4530,345 @@ R53685:53685 Systems.fol <> A:366 var
 R53692:53693 Maths_Facts.lists <> :::'['_']' not
 R53724:53747 Systems.fol <> closure_type_list_remove thm
 R53724:53747 Systems.fol <> closure_type_list_remove thm
+prf 53769:53787 <> correct_correctness
+R53803:53816 Systems.fol <> atomic_formula ind
+binder 53799:53799 <> a:369
+R53840:53843 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R53833:53835 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R53822:53830 Systems.fol <> correct_a def
+R53832:53832 Systems.fol <> a:369 var
+R53836:53839 Coq.Init.Datatypes <> true constr
+R53857:53859 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R53844:53854 Systems.fol <> correctness def
+R53856:53856 Systems.fol <> a:369 var
+R53860:53866 Systems.fol <> correct constr
+R53891:53899 Systems.fol <> correct_a def
+R53916:53926 Systems.fol <> correctness def
+R53916:53926 Systems.fol <> correctness def
+prf 53988:54008 <> incorrect_correctness
+R54024:54037 Systems.fol <> atomic_formula ind
+binder 54020:54020 <> a:370
+R54063:54066 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R54056:54058 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R54043:54053 Systems.fol <> incorrect_a def
+R54055:54055 Systems.fol <> a:370 var
+R54059:54062 Coq.Init.Datatypes <> true constr
+R54080:54082 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R54067:54077 Systems.fol <> correctness def
+R54079:54079 Systems.fol <> a:370 var
+R54083:54091 Systems.fol <> incorrect constr
+R54116:54126 Systems.fol <> incorrect_a def
+R54143:54153 Systems.fol <> correctness def
+R54143:54153 Systems.fol <> correctness def
+prf 54215:54226 <> correct_eval
+R54244:54247 Systems.fol <> term ind
+binder 54238:54238 <> s:371
+binder 54240:54240 <> t:372
+R54279:54282 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R54272:54274 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R54253:54261 Systems.fol <> correct_a def
+R54264:54266 Systems.fol <> equ constr
+R54268:54268 Systems.fol <> s:371 var
+R54270:54270 Systems.fol <> t:372 var
+R54275:54278 Coq.Init.Datatypes <> true constr
+R54293:54296 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R54289:54291 Coq.Init.Peano <> ::nat_scope:x_'>'_x not
+R54283:54286 Systems.fol <> eval def
+R54288:54288 Systems.fol <> s:371 var
+R54303:54305 Coq.Init.Peano <> ::nat_scope:x_'>'_x not
+R54297:54300 Systems.fol <> eval def
+R54302:54302 Systems.fol <> t:372 var
+R54353:54355 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R54332:54342 Systems.fol <> correctness def
+R54345:54347 Systems.fol <> equ constr
+R54356:54362 Systems.fol <> correct constr
+R54353:54355 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R54332:54342 Systems.fol <> correctness def
+R54345:54347 Systems.fol <> equ constr
+R54356:54362 Systems.fol <> correct constr
+R54374:54392 Systems.fol <> correct_correctness thm
+R54374:54392 Systems.fol <> correct_correctness thm
+R54413:54421 Systems.fol <> correct_a def
+R54453:54463 Systems.fol <> correctness def
+R54481:54484 Systems.fol <> eval def
+R54499:54502 Systems.fol <> eval def
+R54481:54484 Systems.fol <> eval def
+R54499:54502 Systems.fol <> eval def
+R54499:54502 Systems.fol <> eval def
+prf 54590:54603 <> incorrect_eval
+R54621:54624 Systems.fol <> term ind
+binder 54615:54615 <> s:373
+binder 54617:54617 <> t:374
+R54658:54661 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R54651:54653 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R54630:54640 Systems.fol <> incorrect_a def
+R54643:54645 Systems.fol <> equ constr
+R54647:54647 Systems.fol <> s:373 var
+R54649:54649 Systems.fol <> t:374 var
+R54654:54657 Coq.Init.Datatypes <> true constr
+R54672:54675 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R54668:54670 Coq.Init.Peano <> ::nat_scope:x_'>'_x not
+R54662:54665 Systems.fol <> eval def
+R54667:54667 Systems.fol <> s:373 var
+R54682:54684 Coq.Init.Peano <> ::nat_scope:x_'>'_x not
+R54676:54679 Systems.fol <> eval def
+R54681:54681 Systems.fol <> t:374 var
+R54732:54734 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R54711:54721 Systems.fol <> correctness def
+R54724:54726 Systems.fol <> equ constr
+R54735:54743 Systems.fol <> incorrect constr
+R54732:54734 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R54711:54721 Systems.fol <> correctness def
+R54724:54726 Systems.fol <> equ constr
+R54735:54743 Systems.fol <> incorrect constr
+R54755:54775 Systems.fol <> incorrect_correctness thm
+R54755:54775 Systems.fol <> incorrect_correctness thm
+R54796:54806 Systems.fol <> incorrect_a def
+R54838:54848 Systems.fol <> correctness def
+R54866:54869 Systems.fol <> eval def
+R54884:54887 Systems.fol <> eval def
+R54866:54869 Systems.fol <> eval def
+R54884:54887 Systems.fol <> eval def
+R54884:54887 Systems.fol <> eval def
+prf 54975:54988 <> correct_closed
+R55004:55017 Systems.fol <> atomic_formula ind
+binder 55000:55000 <> a:375
+R55041:55044 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R55034:55036 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R55023:55031 Systems.fol <> correct_a def
+R55033:55033 Systems.fol <> a:375 var
+R55037:55040 Coq.Init.Datatypes <> true constr
+R55055:55057 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R55045:55052 Systems.fol <> closed_a def
+R55054:55054 Systems.fol <> a:375 var
+R55058:55061 Coq.Init.Datatypes <> true constr
+R55151:55162 Systems.fol <> correct_eval thm
+R55151:55162 Systems.fol <> correct_eval thm
+R55178:55188 Systems.fol <> eval_closed thm
+R55178:55188 Systems.fol <> eval_closed thm
+R55215:55225 Systems.fol <> eval_closed thm
+R55215:55225 Systems.fol <> eval_closed thm
+prf 55264:55279 <> incorrect_closed
+R55295:55308 Systems.fol <> atomic_formula ind
+binder 55291:55291 <> a:376
+R55334:55337 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R55327:55329 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R55314:55324 Systems.fol <> incorrect_a def
+R55326:55326 Systems.fol <> a:376 var
+R55330:55333 Coq.Init.Datatypes <> true constr
+R55348:55350 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R55338:55345 Systems.fol <> closed_a def
+R55347:55347 Systems.fol <> a:376 var
+R55351:55354 Coq.Init.Datatypes <> true constr
+R55444:55457 Systems.fol <> incorrect_eval thm
+R55444:55457 Systems.fol <> incorrect_eval thm
+R55473:55483 Systems.fol <> eval_closed thm
+R55473:55483 Systems.fol <> eval_closed thm
+R55510:55520 Systems.fol <> eval_closed thm
+R55510:55520 Systems.fol <> eval_closed thm
+prf 55559:55572 <> subst_closed_t
+R55588:55590 Coq.Init.Datatypes <> nat ind
+binder 55584:55584 <> n:377
+R55602:55605 Systems.fol <> term ind
+binder 55594:55594 <> T:378
+binder 55596:55596 <> s:379
+binder 55598:55598 <> t:380
+R55628:55633 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R55621:55623 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R55611:55618 Systems.fol <> closed_t def
+R55620:55620 Systems.fol <> t:380 var
+R55624:55627 Coq.Init.Datatypes <> true constr
+R55672:55677 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R55665:55667 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R55634:55641 Systems.fol <> closed_t def
+R55644:55657 Systems.fol <> substitution_t def
+R55659:55659 Systems.fol <> T:378 var
+R55661:55661 Systems.fol <> n:377 var
+R55663:55663 Systems.fol <> s:379 var
+R55668:55671 Coq.Init.Datatypes <> true constr
+R55709:55711 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R55678:55685 Systems.fol <> closed_t def
+R55688:55701 Systems.fol <> substitution_t def
+R55703:55703 Systems.fol <> T:378 var
+R55705:55705 Systems.fol <> n:377 var
+R55707:55707 Systems.fol <> t:380 var
+R55712:55715 Coq.Init.Datatypes <> true constr
+R55785:55792 Systems.fol <> closed_t def
+R55795:55808 Systems.fol <> substitution_t def
+R55843:55850 Systems.fol <> closed_t def
+R55853:55866 Systems.fol <> substitution_t def
+R55785:55792 Systems.fol <> closed_t def
+R55795:55808 Systems.fol <> substitution_t def
+R55843:55850 Systems.fol <> closed_t def
+R55853:55866 Systems.fol <> substitution_t def
+R55843:55850 Systems.fol <> closed_t def
+R55853:55866 Systems.fol <> substitution_t def
+R56141:56148 Systems.fol <> closed_t def
+R56151:56164 Systems.fol <> substitution_t def
+R56199:56206 Systems.fol <> closed_t def
+R56209:56222 Systems.fol <> substitution_t def
+R56141:56148 Systems.fol <> closed_t def
+R56151:56164 Systems.fol <> substitution_t def
+R56199:56206 Systems.fol <> closed_t def
+R56209:56222 Systems.fol <> substitution_t def
+R56199:56206 Systems.fol <> closed_t def
+R56209:56222 Systems.fol <> substitution_t def
+R56475:56480 Systems.fol <> eq_nat syndef
+R56475:56480 Systems.fol <> eq_nat syndef
+prf 56590:56611 <> incorrect_subst_closed
+R56629:56642 Systems.fol <> atomic_formula ind
+binder 56625:56625 <> a:381
+R56650:56652 Coq.Init.Datatypes <> nat ind
+binder 56646:56646 <> n:382
+R56662:56665 Systems.fol <> term ind
+binder 56656:56656 <> s:383
+binder 56658:56658 <> t:384
+R56688:56693 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R56681:56683 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R56671:56678 Systems.fol <> closed_t def
+R56680:56680 Systems.fol <> t:384 var
+R56684:56687 Coq.Init.Datatypes <> true constr
+R56735:56740 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R56728:56730 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R56694:56704 Systems.fol <> incorrect_a def
+R56707:56720 Systems.fol <> substitution_a def
+R56722:56722 Systems.fol <> a:381 var
+R56724:56724 Systems.fol <> n:382 var
+R56726:56726 Systems.fol <> s:383 var
+R56731:56734 Coq.Init.Datatypes <> true constr
+R56772:56774 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R56741:56748 Systems.fol <> closed_a def
+R56751:56764 Systems.fol <> substitution_a def
+R56766:56766 Systems.fol <> a:381 var
+R56768:56768 Systems.fol <> n:382 var
+R56770:56770 Systems.fol <> t:384 var
+R56775:56778 Coq.Init.Datatypes <> true constr
+R56865:56880 Systems.fol <> incorrect_closed thm
+R56865:56880 Systems.fol <> incorrect_closed thm
+R56911:56918 Systems.fol <> closed_t def
+R56921:56934 Systems.fol <> substitution_t def
+R56967:56974 Systems.fol <> closed_t def
+R56977:56990 Systems.fol <> substitution_t def
+R56911:56918 Systems.fol <> closed_t def
+R56921:56934 Systems.fol <> substitution_t def
+R56967:56974 Systems.fol <> closed_t def
+R56977:56990 Systems.fol <> substitution_t def
+R56967:56974 Systems.fol <> closed_t def
+R56977:56990 Systems.fol <> substitution_t def
+R57031:57044 Systems.fol <> subst_closed_t thm
+R57031:57044 Systems.fol <> subst_closed_t thm
+R57031:57044 Systems.fol <> subst_closed_t thm
+R57074:57087 Systems.fol <> subst_closed_t thm
+R57074:57087 Systems.fol <> subst_closed_t thm
+R57074:57087 Systems.fol <> subst_closed_t thm
+prf 57286:57296 <> repr_closed
+R57312:57314 Coq.Init.Datatypes <> nat ind
+binder 57308:57308 <> m:385
+R57340:57342 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R57318:57325 Systems.fol <> closed_t def
+R57328:57336 Systems.fol <> represent def
+R57338:57338 Systems.fol <> m:385 var
+R57343:57346 Coq.Init.Datatypes <> true constr
+R57370:57380 Systems.fol <> eval_closed thm
+R57383:57396 Systems.fol <> eval_represent thm
+R57370:57380 Systems.fol <> eval_closed thm
+R57383:57396 Systems.fol <> eval_represent thm
+prf 57411:57426 <> correct_closed_t
+R57444:57447 Systems.fol <> term ind
+binder 57438:57438 <> s:386
+binder 57440:57440 <> t:387
+R57479:57482 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R57472:57474 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R57453:57461 Systems.fol <> correct_a def
+R57464:57466 Systems.fol <> equ constr
+R57468:57468 Systems.fol <> s:386 var
+R57470:57470 Systems.fol <> t:387 var
+R57475:57478 Coq.Init.Datatypes <> true constr
+R57500:57503 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R57493:57495 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R57483:57490 Systems.fol <> closed_t def
+R57492:57492 Systems.fol <> s:386 var
+R57496:57499 Coq.Init.Datatypes <> true constr
+R57514:57516 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R57504:57511 Systems.fol <> closed_t def
+R57513:57513 Systems.fol <> t:387 var
+R57517:57520 Coq.Init.Datatypes <> true constr
+R57548:57559 Systems.fol <> correct_eval thm
+R57548:57559 Systems.fol <> correct_eval thm
+R57582:57592 Systems.fol <> eval_closed thm
+R57582:57592 Systems.fol <> eval_closed thm
+R57582:57592 Systems.fol <> eval_closed thm
+def 57632:57637 <> c_term
+R57649:57649 Coq.Init.Specif <> ::type_scope:'{'_x_':'_x_'&'_x_'}' not
+R57651:57653 Coq.Init.Specif <> ::type_scope:'{'_x_':'_x_'&'_x_'}' not
+R57658:57660 Coq.Init.Specif <> ::type_scope:'{'_x_':'_x_'&'_x_'}' not
+R57678:57678 Coq.Init.Specif <> ::type_scope:'{'_x_':'_x_'&'_x_'}' not
+R57654:57657 Systems.fol <> term ind
+binder 57650:57650 <> t:388
+R57671:57673 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R57661:57668 Systems.fol <> closed_t def
+R57670:57670 Systems.fol <> t:388 var
+R57674:57677 Coq.Init.Datatypes <> true constr
+def 57693:57699 <> closing
+R57706:57709 Systems.fol <> term ind
+binder 57702:57702 <> t:389
+R57728:57730 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R57718:57725 Systems.fol <> closed_t def
+R57727:57727 Systems.fol <> t:389 var
+R57731:57734 Coq.Init.Datatypes <> true constr
+binder 57713:57714 <> Ht:390
+R57739:57744 Systems.fol <> c_term def
+def 57788:57792 <> czero
+R57798:57804 Systems.fol <> closing def
+R57806:57809 Systems.fol <> zero constr
+R57812:57822 Systems.fol <> repr_closed thm
+def 57841:57845 <> value
+R57852:57857 Systems.fol <> c_term def
+binder 57848:57848 <> c:391
+R57862:57864 Coq.Init.Datatypes <> nat ind
+R57884:57886 Coq.Init.Peano <> ::nat_scope:x_'-'_x not
+R57869:57872 Systems.fol <> eval def
+R57875:57880 Coq.Init.Specif <> projT1 def
+R57882:57882 Systems.fol <> c:391 var
+def 57902:57920 <> cterm_equiv_correct
+R57935:57940 Systems.fol <> c_term def
+binder 57931:57931 <> c:392
+R57991:57993 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R57943:57951 Systems.fol <> correct_a def
+R57954:57956 Systems.fol <> equ constr
+R57959:57967 Systems.fol <> represent def
+R57970:57974 Systems.fol <> value def
+R57976:57976 Systems.fol <> c:392 var
+R57981:57986 Coq.Init.Specif <> projT1 def
+R57988:57988 Systems.fol <> c:392 var
+R57994:57997 Coq.Init.Datatypes <> true constr
+R58022:58030 Systems.fol <> correct_a def
+R58040:58050 Systems.fol <> correctness def
+R58064:58077 Systems.fol <> eval_represent thm
+R58080:58084 Systems.fol <> value def
+R58064:58077 Systems.fol <> eval_represent thm
+R58080:58084 Systems.fol <> value def
+R58096:58099 Systems.fol <> eval def
+R58102:58110 Systems.fol <> represent def
+R58113:58117 Systems.fol <> value def
+R58096:58099 Systems.fol <> eval def
+R58102:58110 Systems.fol <> represent def
+R58113:58117 Systems.fol <> value def
+R58156:58166 Systems.fol <> closed_eval thm
+R58169:58174 Coq.Init.Specif <> projT1 def
+R58180:58185 Coq.Init.Specif <> projT2 def
+R58156:58166 Systems.fol <> closed_eval thm
+R58169:58174 Coq.Init.Specif <> projT1 def
+R58180:58185 Coq.Init.Specif <> projT2 def
+R58198:58201 Systems.fol <> eval def
+R58204:58209 Coq.Init.Specif <> projT1 def
+R58198:58201 Systems.fol <> eval def
+R58204:58209 Coq.Init.Specif <> projT1 def
+R58244:58248 Systems.fol <> value def
+R58264:58277 Systems.fol <> represent_eval thm
+R58264:58277 Systems.fol <> represent_eval thm
+R58264:58277 Systems.fol <> represent_eval thm
+R58264:58277 Systems.fol <> represent_eval thm
+R58318:58328 Maths_Facts.naturals <> eq_nat_refl thm
+R58318:58328 Maths_Facts.naturals <> eq_nat_refl thm
+R58318:58328 Maths_Facts.naturals <> eq_nat_refl thm

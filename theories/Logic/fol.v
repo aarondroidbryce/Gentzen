@@ -1282,3 +1282,133 @@ Lemma free_list_univ_closure : forall (A : formula) (t : term) (n : nat), closed
 Proof.
 intros. simpl. apply closure_type_list_remove; auto.
 Qed.
+
+
+Lemma correct_correctness : forall (a : atomic_formula),
+  correct_a a = true -> correctness a = correct.
+Proof.
+intros. unfold correct_a in H.
+case_eq (correctness a); auto; intros; rewrite H0 in H; inversion H.
+Qed.
+
+Lemma incorrect_correctness : forall (a : atomic_formula),
+  incorrect_a a = true -> correctness a = incorrect.
+Proof.
+intros. unfold incorrect_a in H.
+case_eq (correctness a); auto; intros; rewrite H0 in H; inversion H.
+Qed.
+
+Lemma correct_eval : forall (s t : term),
+  correct_a (equ s t) = true -> eval s > 0 /\ eval t > 0.
+Proof.
+intros.
+assert (correctness (equ s t) = correct).
+{ apply correct_correctness. apply H. }
+unfold correct_a in H.
+rewrite H0 in H.
+unfold correctness in H0.
+case_eq (eval s); case_eq (eval t); intros;
+rewrite H1 in H0; rewrite H2 in H0; inversion H0;
+split; lia.
+Qed.
+
+Lemma incorrect_eval : forall (s t : term),
+  incorrect_a (equ s t) = true -> eval s > 0 /\ eval t > 0.
+Proof.
+intros.
+assert (correctness (equ s t) = incorrect).
+{ apply incorrect_correctness. apply H. }
+unfold incorrect_a in H.
+rewrite H0 in H.
+unfold correctness in H0.
+case_eq (eval s); case_eq (eval t); intros;
+rewrite H1 in H0; rewrite H2 in H0; inversion H0;
+split; lia.
+Qed.
+
+Lemma correct_closed : forall (a : atomic_formula),
+  correct_a a = true -> closed_a a = true.
+Proof.
+intros. case_eq a. intros t1 t2 Ha. rewrite Ha in H. clear Ha. simpl.
+destruct (correct_eval _ _ H).
+apply eval_closed in H0. rewrite H0.
+apply eval_closed in H1. rewrite H1. auto.
+Qed.
+
+Lemma incorrect_closed : forall (a : atomic_formula),
+  incorrect_a a = true -> closed_a a = true.
+Proof.
+intros. case_eq a. intros t1 t2 Ha. rewrite Ha in H. clear Ha. simpl.
+destruct (incorrect_eval _ _ H).
+apply eval_closed in H0. rewrite H0.
+apply eval_closed in H1. rewrite H1. auto.
+Qed.
+
+Lemma subst_closed_t : forall (n : nat) (T s t : term),
+  closed_t t = true ->
+  closed_t (substitution_t T n s) = true ->
+  closed_t (substitution_t T n t) = true.
+Proof.
+intros. induction T; auto.
+- simpl. simpl in H0.
+  case_eq (closed_t (substitution_t T1 n s)); intros HT1;
+  case_eq (closed_t (substitution_t T2 n s)); intros HT2.
+  + rewrite (IHT1 HT1). rewrite (IHT2 HT2). auto.
+  + rewrite HT1 in H0. rewrite HT2 in H0. inversion H0.
+  + rewrite HT1 in H0. rewrite HT2 in H0. inversion H0.
+  + rewrite HT1 in H0. rewrite HT2 in H0. inversion H0.
+- simpl. simpl in H0.
+  case_eq (closed_t (substitution_t T1 n s)); intros HT1;
+  case_eq (closed_t (substitution_t T2 n s)); intros HT2.
+  + rewrite (IHT1 HT1). rewrite (IHT2 HT2). auto.
+  + rewrite HT1 in H0. rewrite HT2 in H0. inversion H0.
+  + rewrite HT1 in H0. rewrite HT2 in H0. inversion H0.
+  + rewrite HT1 in H0. rewrite HT2 in H0. inversion H0.
+- case_eq (eq_nat n0 n); intros; simpl; rewrite H1.
+  + apply H.
+  + simpl in H0. rewrite H1 in H0. inversion H0.
+Qed.
+
+Lemma incorrect_subst_closed :
+  forall (a : atomic_formula) (n : nat) (s t : term),
+  closed_t t = true ->
+  incorrect_a (substitution_a a n s) = true ->
+  closed_a (substitution_a a n t) = true.
+Proof.
+intros.
+case_eq a. intros t1 t2 Ha. rewrite Ha in H0. clear Ha. simpl.
+apply incorrect_closed in H0. simpl in H0.
+case_eq (closed_t (substitution_t t1 n s)); intros Ht1;
+case_eq (closed_t (substitution_t t2 n s)); intros Ht2; auto.
+- rewrite (subst_closed_t n t1 s t H Ht1).
+  rewrite (subst_closed_t n t2 s t H Ht2). auto.
+- rewrite Ht1 in H0. rewrite Ht2 in H0. inversion H0.
+- rewrite Ht1 in H0. rewrite Ht2 in H0. inversion H0.
+- rewrite Ht1 in H0. rewrite Ht2 in H0. inversion H0.
+Qed.
+
+Lemma repr_closed : forall (m : nat), closed_t (represent m) = true.
+Proof. intros. apply eval_closed, eval_represent. Qed.
+
+Lemma correct_closed_t : forall (s t : term),
+  correct_a (equ s t) = true -> closed_t s = true /\ closed_t t = true.
+Proof.
+intros.
+destruct (correct_eval _ _ H). split; apply eval_closed.
+apply H0. apply H1.
+Qed.
+
+Definition c_term : Type := {t : term & closed_t t = true}.
+
+Definition closing (t : term) (Ht : closed_t t = true) : c_term. exists t. exact Ht. Defined.
+
+Definition czero := (closing zero (repr_closed 0)).
+
+Definition value (c : c_term) : nat := eval (projT1 c) - 1.
+
+Definition cterm_equiv_correct : forall c : c_term, correct_a (equ (represent (value c)) (projT1 c)) = true.
+Proof.
+intros. unfold correct_a. unfold correctness. pose proof eval_represent (value c). case (eval (represent (value c))) eqn:X. inversion H.
+pose proof (closed_eval (projT1 c) (projT2 c)). case (eval (projT1 c)) eqn:X1. inversion H0. unfold value in X. rewrite represent_eval in X.
+destruct X. destruct X1. rewrite eq_nat_refl. auto. destruct c. auto.
+Qed.
