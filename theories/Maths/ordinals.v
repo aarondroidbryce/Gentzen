@@ -2430,4 +2430,73 @@ intros n. induction n.
 - destruct m; auto. unfold max. fold max. repeat rewrite <- ord_succ_nat. rewrite ord_max_succ_succ. rewrite IHn. auto. 
 Qed.
 
+Lemma ord_trans_inv : forall alpha beta gamma, ord_ltb alpha beta = false -> ord_ltb beta gamma = false -> ord_ltb alpha gamma = false.
+Proof.
+intros. destruct (ord_semiconnex_bool alpha beta) as [X | [X | X]].
+- rewrite X in H. inversion H.
+- destruct (ord_semiconnex_bool beta gamma) as [Y | [Y | Y]].
+  + rewrite Y in H0. inversion H0.
+  + apply ltb_asymm. apply (ord_ltb_trans _ _ _ Y X).
+  + apply ord_eqb_eq in Y. destruct Y. auto.
+- apply ord_eqb_eq in X. destruct X. auto.
+Qed.
+
+Lemma ord_ltb_succ_false : forall alpha beta, ord_ltb alpha beta = false -> ord_ltb (ord_succ alpha) (ord_succ beta)= false.
+Proof.
+intros. destruct (ord_semiconnex_bool alpha beta) as [X | [X | X]].
+- rewrite X in H. inversion H.
+- apply ltb_asymm. apply ord_ltb_lt in X. apply ord_lt_ltb. apply ord_lt_succ. auto.
+- apply ord_eqb_eq in X. destruct X. apply ord_ltb_irrefl.
+Qed.
+
+Lemma ord_ltb_excp_succ_false : forall alpha, nf alpha -> ord_ltb (ord_2_exp (ord_succ alpha)) (ord_succ (ord_2_exp alpha)) = false.
+Proof.
+intros. destruct alpha. auto. apply ltb_asymm. apply ord_lt_ltb. apply ord_succ_lt_exp_succ; auto. apply zero_lt.
+Qed.
+
+Lemma exp_succ_max_false_right : forall alpha beta, nf alpha -> nf beta -> ord_ltb (ord_2_exp (ord_succ (ord_max beta alpha))) alpha = false.
+Proof.
+intros. apply ltb_asymm. apply ord_lt_ltb. apply (lt_trans _ _ _ (ord_succ_monot _)). apply ord_succ_lt_exp_succ_max_right; auto. 
+Qed.
+
+Lemma exp_succ_max_false_left : forall alpha beta, nf alpha -> nf beta -> ord_ltb (ord_2_exp (ord_succ (ord_max alpha beta))) alpha = false.
+Proof.
+intros. apply ltb_asymm. apply ord_lt_ltb. apply (lt_trans _ _ _ (ord_succ_monot _)). apply ord_succ_lt_exp_succ_max_left; auto. 
+Qed.
+
+Lemma exp_max_lt_left_succ : forall alpha beta gamma, nf beta -> nf gamma -> ord_ltb alpha (ord_2_exp (ord_succ (ord_max beta gamma))) = true -> ord_ltb alpha (ord_2_exp (ord_succ (ord_max (ord_succ beta) gamma))) = true.
+Proof.
+intros. destruct (ord_semiconnex_bool (ord_succ beta) gamma) as [X | [X | X]].
+- rewrite (ord_max_lem1 _ _ X). rewrite ord_max_lem1 in H1. auto. apply (ord_ltb_trans _ _ _ (ord_lt_ltb _ _ (ord_succ_monot _)) X).
+- destruct (ord_lt_succ_cases _ _ (ord_ltb_lt _ _ X) H0 H).
+  + destruct H2. rewrite ord_max_lem2. rewrite ord_max_lem2 in H1. apply (ord_ltb_trans _ _ _ H1). apply ord_lt_ltb. apply ord_2_exp_monot; repeat apply ord_succ_nf; auto.
+    apply ord_succ_monot. apply ord_ltb_irrefl. apply ltb_asymm. apply ord_lt_ltb. apply ord_succ_monot.
+  + rewrite (ord_max_lem2 _ _ (ltb_asymm _ _ X)). rewrite (ord_max_lem2 _ _ (ltb_asymm _ _ (ord_lt_ltb _ _ H2))) in H1. apply (ord_ltb_trans _ _ _ H1). apply ord_lt_ltb. apply ord_2_exp_monot; repeat apply ord_succ_nf; auto. apply ord_succ_monot. 
+- apply ord_eqb_eq in X. destruct X. rewrite (ord_max_lem2 _ _ (ord_ltb_irrefl _)). rewrite (ord_max_lem1 _ _ (ord_lt_ltb _ _ (ord_succ_monot _))) in H1. auto.
+Qed.
+
+Lemma exp_max_lt_right_succ : forall alpha beta gamma, nf beta -> nf gamma -> ord_ltb alpha (ord_2_exp (ord_succ (ord_max beta gamma))) = true -> ord_ltb alpha (ord_2_exp (ord_succ (ord_max beta (ord_succ gamma)))) = true.
+Proof.
+intros. rewrite ord_max_symm in H1. rewrite ord_max_symm. apply exp_max_lt_left_succ; auto.
+Qed.
+
+Lemma ord_succ_decr : forall alpha beta, ord_ltb (ord_succ alpha) beta = true -> ord_ltb alpha beta = true.
+Proof.
+intros alpha. induction alpha.
+- intros. destruct beta. inversion H. auto.
+- intros. apply ord_ltb_lt in H. destruct alpha1.
+  + simpl in H. apply ord_lt_ltb. inversion H. apply head_lt. auto. apply coeff_lt. lia. apply coeff_lt. lia.
+  + simpl in H. apply ord_lt_ltb. inversion H. apply head_lt. auto. apply coeff_lt. lia. apply tail_lt. apply ord_ltb_lt. apply IHalpha2. apply ord_lt_ltb. auto.
+Qed.
+
+Lemma ord_succ_decr_false : forall alpha beta, nf alpha -> nf beta -> ord_ltb beta (ord_succ alpha) = true -> ord_ltb alpha beta = false.
+Proof.
+intros. apply ord_ltb_lt in H1. destruct (ord_lt_succ_cases _ _ H1); auto. destruct H2. apply ord_ltb_irrefl. apply ltb_asymm. apply ord_lt_ltb. auto.
+Qed.
+
+Lemma ord_ltb_exp_succ : forall alpha, nf alpha -> ord_lt alpha (ord_2_exp (ord_succ alpha)).
+Proof.
+intros. destruct (ord_2_exp_fp alpha); auto. apply (lt_trans _ _ _ H0). apply ord_2_exp_monot. apply ord_succ_nf. auto. auto. apply ord_succ_monot. rewrite H0. apply coeff_lt. lia. 
+Qed.
+
 Close Scope cantor_scope.
