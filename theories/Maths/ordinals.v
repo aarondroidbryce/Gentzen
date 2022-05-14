@@ -2306,6 +2306,46 @@ rewrite X. apply ord_ltb_irrefl. rewrite (ltb_asymm _ _ X). rewrite ord_eqb_symm
 apply ord_eqb_eq in X. destruct X. rewrite ord_ltb_irrefl. rewrite ord_eqb_refl. apply ltb_asymm. apply ord_lt_ltb. apply coeff_lt. lia.
 Qed.
 
+Lemma add_left_lt_false : forall alpha beta gamma, ord_ltb alpha beta = false -> ord_ltb (ord_add alpha gamma) (ord_add beta gamma) = false.
+Proof.
+intros alpha. induction alpha.
+- intros. destruct beta. apply ord_ltb_irrefl. inversion H.
+- intros. destruct gamma. rewrite ord_add_zero. rewrite ord_add_zero. auto. destruct beta.
+  + simpl. destruct (ord_semiconnex_bool alpha1 gamma1) as [X | [X | X]].
+    * rewrite X. apply ord_ltb_irrefl.
+    * rewrite (ltb_asymm _ _ X). rewrite ord_eqb_symm. rewrite (ord_ltb_neb _ _ X). apply ltb_asymm. apply ord_lt_ltb. apply head_lt. apply ord_ltb_lt. auto.
+    * apply ord_eqb_eq in X. destruct X. rewrite ord_ltb_irrefl. rewrite ord_eqb_refl. apply ltb_asymm. apply ord_lt_ltb. apply coeff_lt. lia.
+  + simpl. inversion H. rewrite H1. destruct (ord_semiconnex_bool alpha1 beta1) as [Y | [Y | Y]].
+    * rewrite Y in H1. inversion H1.
+    * destruct (ord_semiconnex_bool alpha1 gamma1) as [X | [X | X]].
+      --  rewrite X. rewrite (ord_ltb_trans _ _ _ Y X). apply ord_ltb_irrefl.
+      --  rewrite (ltb_asymm _ _ X). rewrite ord_eqb_symm. rewrite (ord_ltb_neb _ _ X). destruct (ord_semiconnex_bool beta1 gamma1) as [X1 | [X1 | X1]].
+          ++  rewrite X1. simpl. rewrite (ltb_asymm _ _ X). rewrite ord_eqb_symm. rewrite (ord_ltb_neb _ _ X). auto.
+          ++  rewrite (ltb_asymm _ _ X1). rewrite ord_eqb_symm. rewrite (ord_ltb_neb _ _ X1). simpl. rewrite (ltb_asymm _ _ Y). rewrite ord_eqb_symm. rewrite (ord_ltb_neb _ _ Y). auto.
+          ++  apply ord_eqb_eq in X1. destruct X1. rewrite ord_ltb_irrefl. rewrite ord_eqb_refl. simpl. rewrite (ltb_asymm _ _ Y). rewrite ord_eqb_symm. rewrite (ord_ltb_neb _ _ Y). auto.
+      --  apply ord_eqb_eq in X. destruct X. rewrite ord_ltb_irrefl. rewrite ord_eqb_refl. rewrite Y. apply ltb_asymm. apply ord_lt_ltb. apply coeff_lt. lia.
+    * apply ord_eqb_eq in Y. destruct Y. rewrite ord_ltb_irrefl in H1. rewrite ord_eqb_refl in H1. destruct (nat_semiconnex_bool n n1) as [Y | [Y | Y]]; try rewrite Y in *. inversion H1.
+      --  destruct (ord_semiconnex_bool alpha1 gamma1) as [X | [X | X]].
+          ++  rewrite X. apply ord_ltb_irrefl.
+          ++  rewrite (ltb_asymm _ _ X). rewrite ord_eqb_symm. rewrite (ord_ltb_neb _ _ X). apply ltb_asymm. apply ord_lt_ltb. apply coeff_lt. apply lt_nat_decid. auto.
+          ++  apply ord_eqb_eq in X. destruct X. rewrite ord_ltb_irrefl. rewrite ord_eqb_refl. apply ltb_asymm. apply ord_lt_ltb. apply coeff_lt. apply lt_nat_decid in Y. lia.
+      --  apply nat_eq_decid in Y. destruct Y. destruct (ord_semiconnex_bool alpha1 gamma1) as [X | [X | X]].
+          ++  rewrite X. apply ord_ltb_irrefl.
+          ++  rewrite (ltb_asymm _ _ X). rewrite ord_eqb_symm. rewrite (ord_ltb_neb _ _ X). rewrite lt_nat_irrefl in H1. simpl. rewrite ord_ltb_irrefl. rewrite ord_eqb_refl. rewrite lt_nat_irrefl. auto. 
+          ++  apply ord_eqb_eq in X. destruct X. rewrite ord_ltb_irrefl. rewrite ord_eqb_refl. apply ord_ltb_irrefl.
+Qed.
+
+Lemma add_right_non_decr : forall alpha beta, ord_ltb (ord_add alpha beta) alpha = false.
+Proof.
+intros. destruct beta. rewrite ord_add_zero. apply ord_ltb_irrefl. induction alpha. auto. simpl. destruct (ord_semiconnex_bool alpha1 beta1) as [X | [X | X]].
+- rewrite X. apply ltb_asymm. apply ord_lt_ltb. apply head_lt. apply ord_ltb_lt. auto.
+- rewrite (ltb_asymm _ _ X). rewrite ord_eqb_symm. rewrite (ord_ltb_neb _ _ X). destruct (ord_semiconnex_bool (ord_add alpha2 (cons beta1 n beta2)) alpha2) as [X1 | [X1 | X1]].
+  + rewrite X1 in IHalpha2. inversion IHalpha2.
+  + apply ltb_asymm. apply ord_lt_ltb. apply tail_lt. apply ord_ltb_lt. auto.
+  + apply ord_eqb_eq in X1. rewrite X1. apply ord_ltb_irrefl. 
+- apply ord_eqb_eq in X. destruct X. rewrite ord_ltb_irrefl. rewrite ord_eqb_refl. apply ltb_asymm. apply ord_lt_ltb. apply coeff_lt. lia.
+Qed.
+
 Lemma ord_mult_non_decr1 : forall alpha beta, nf alpha -> ord_lt Zero beta -> ord_ltb (ord_mult alpha beta) alpha = false.
 Proof.
 intros. induction beta. inversion H0. destruct alpha. auto. simpl. destruct beta1. destruct n. rewrite minus_n_0. rewrite mult1_r. apply ord_ltb_irrefl. apply ltb_asymm. apply ord_lt_ltb. apply coeff_lt. lia.
@@ -2499,4 +2539,38 @@ Proof.
 intros. destruct (ord_2_exp_fp alpha); auto. apply (lt_trans _ _ _ H0). apply ord_2_exp_monot. apply ord_succ_nf. auto. auto. apply ord_succ_monot. rewrite H0. apply coeff_lt. lia. 
 Qed.
 
+Lemma ord_succ_add_succ : forall alpha beta, nf alpha -> nf beta -> ord_add alpha (ord_succ beta) = ord_succ (ord_add alpha beta).
+Proof.
+intros. rewrite <- ord_add_one_succ; auto. rewrite <- ord_add_assoc. rewrite ord_add_one_succ; auto. apply nf_add; auto.
+Qed.
+
+Lemma ord_max_le_add : forall alpha beta, nf alpha -> nf beta -> ord_ltb (ord_add alpha beta) (ord_max alpha beta) = false.
+Proof.
+intros. destruct (ord_semiconnex_bool alpha beta) as [X | [X | X]].
+- rewrite ord_max_lem1; auto. apply add_left_non_decr.
+- rewrite (ord_max_lem2 _ _ (ltb_asymm _ _ X)). destruct beta. rewrite ord_add_zero. apply ord_ltb_irrefl. apply ltb_asymm. apply ord_lt_ltb. apply add_right_incr_corr. apply zero_lt.
+- apply ord_eqb_eq in X. destruct X. rewrite (ord_max_lem2 _ _ (ord_ltb_irrefl _ )). destruct alpha. auto. simpl. rewrite ord_ltb_irrefl. rewrite ord_eqb_refl. apply ltb_asymm. apply ord_lt_ltb. apply coeff_lt. lia.
+Qed.
+
+Lemma ord_max_add_comm : forall alpha beta gamma, ord_add alpha (ord_max beta gamma) = ord_max (ord_add alpha beta) (ord_add alpha gamma).
+Proof.
+intros. destruct (ord_semiconnex_bool beta gamma) as [X | [X | X]].
+- rewrite (ord_max_lem1 _ _ X). rewrite (ord_max_lem1 _ _ (ord_lt_ltb _ _ (add_right_incr _ _ _ (ord_ltb_lt _ _ X)))). auto.
+- rewrite (ord_max_lem2 _ _ (ltb_asymm _ _ X)). rewrite (ord_max_lem2 _ _ (ltb_asymm _ _ (ord_lt_ltb _ _ (add_right_incr _ _ _ (ord_ltb_lt _ _ X))))). auto.
+- apply ord_eqb_eq in X. destruct X. rewrite (ord_max_lem2 _ _ (ord_ltb_irrefl _)). rewrite (ord_max_lem2 _ _ (ord_ltb_irrefl _)). auto.
+Qed.
+
+Lemma ord_max_split_false : forall alpha beta gamma delta, ord_ltb alpha gamma = false -> ord_ltb beta delta = false -> ord_ltb (ord_max alpha beta) (ord_max gamma delta) = false.
+Proof.
+intros. destruct (ord_semiconnex_bool alpha beta) as [X | [X | X]].
+- rewrite (ord_max_lem1 _ _ X). case (ord_ltb gamma delta) eqn:X1.
+  + rewrite (ord_max_lem1 _ _ X1). auto.
+  + rewrite (ord_max_lem2 _ _ X1). apply (ord_trans_inv _ _ _ (ltb_asymm _ _ X) H).
+- rewrite (ord_max_lem2 _ _ (ltb_asymm _ _ X)). case (ord_ltb gamma delta) eqn:X1.
+  + rewrite (ord_max_lem1 _ _ X1).  apply (ord_trans_inv _ _ _ (ltb_asymm _ _ X) H0).
+  + rewrite (ord_max_lem2 _ _ X1). auto.
+- apply ord_eqb_eq in X. destruct X. rewrite (ord_max_lem2 _ _ (ord_ltb_irrefl _)). case (ord_ltb gamma delta) eqn:X1.
+  + rewrite (ord_max_lem1 _ _ X1). auto.
+  + rewrite (ord_max_lem2 _ _ X1). auto.
+Qed.
 Close Scope cantor_scope.

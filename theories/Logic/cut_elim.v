@@ -942,7 +942,7 @@ intros P. induction P.
               **  apply nf_2_exp. auto.
               **  unfold ptree_deg. unfold cut_elimination. unfold ptree_ord. rewrite Y1. fold ptree_deg. simpl.
                   rewrite (nat_eq_decid _ _ E1) in X3. inversion X3. lia. simpl in H10. lia.
-      --  
+      --  admit.
 
   + assert ((S (num_conn f0)) < (max n0 n1)) as E2. apply eq_nat_symm' in E1. rewrite (nat_eq_decid _ _ (nat_max_right_not _ _ E1)). apply (max_lem2 _ _ E1).
     intros. destruct X0 as [[[X1 X2] X3] X4]. simpl in X1,X3,X4. destruct X4. destruct X2 as [[[[[[[H1 H2] H3] H4] H5] H6] H7] H8]. unfold cut_remove in X. case (eq_nat (max (max n0 n1) (S (num_conn f0))) (S d)) eqn:E.
