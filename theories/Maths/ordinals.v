@@ -2573,4 +2573,35 @@ intros. destruct (ord_semiconnex_bool alpha beta) as [X | [X | X]].
   + rewrite (ord_max_lem1 _ _ X1). auto.
   + rewrite (ord_max_lem2 _ _ X1). auto.
 Qed.
+
+Lemma ord_add_le_dub_max : forall alpha beta, nf alpha -> nf beta -> ord_ltb (ord_mult (ord_max alpha beta) (nat_ord 2)) (ord_add alpha beta) = false.
+Proof.
+intros. destruct (ord_semiconnex_bool alpha beta) as [X | [X | X]].
+- rewrite (ord_max_lem1 _ _ X). destruct beta. apply ord_ltb_lt in X. inversion X. destruct alpha.
+  + rewrite ord_zero_add. apply ltb_asymm. apply ord_lt_ltb. simpl. apply coeff_lt. lia.
+  + unfold ord_add. fold ord_add. apply ord_ltb_lt in X. inversion X.
+    * apply ord_lt_ltb in H2. rewrite H2. apply ltb_asymm. apply ord_lt_ltb. simpl. apply coeff_lt. lia.
+    * rewrite ord_ltb_irrefl. rewrite ord_eqb_refl. apply ltb_asymm. apply ord_lt_ltb. simpl. apply coeff_lt. lia.
+    * rewrite ord_ltb_irrefl. rewrite ord_eqb_refl. simpl. rewrite ord_ltb_irrefl. rewrite ord_eqb_refl. assert ((S (n * 2)) = (n + n + 1)). lia. destruct H8. rewrite lt_nat_irrefl. apply ord_ltb_irrefl.
+- rewrite (ord_max_lem2 _ _ (ltb_asymm _ _ X)). destruct alpha. apply ord_ltb_lt in X. inversion X. destruct beta.
+  + rewrite ord_add_zero. apply ltb_asymm. apply ord_lt_ltb. apply coeff_lt. lia.
+  + unfold ord_add. fold ord_add. apply ord_ltb_lt in X. inversion X.
+    * apply ord_lt_ltb in H2. rewrite (ltb_asymm _ _ H2). rewrite ord_eqb_symm. rewrite (ord_ltb_neb _ _ H2). apply ltb_asymm. apply ord_lt_ltb. simpl. apply coeff_lt. lia.
+    * rewrite ord_ltb_irrefl. rewrite ord_eqb_refl. apply ltb_asymm. apply ord_lt_ltb. simpl. apply coeff_lt. lia.
+    * rewrite ord_ltb_irrefl. rewrite ord_eqb_refl. simpl. rewrite ord_ltb_irrefl. rewrite ord_eqb_refl. assert ((S (n * 2)) = (n + n + 1)). lia. destruct H8. rewrite lt_nat_irrefl. apply ltb_asymm. apply ord_lt_ltb. auto.
+- apply ord_eqb_eq in X. destruct X. destruct alpha. auto. simpl. repeat rewrite ord_ltb_irrefl. rewrite ord_eqb_refl. rewrite lt_nat_irrefl. assert ((S (n * 2)) = (n + n + 1)). lia. destruct H1. simpl. rewrite ord_ltb_irrefl. rewrite ord_eqb_refl. rewrite lt_nat_irrefl. apply ord_ltb_irrefl.
+Qed.
+
+Lemma ord_add_le_exp : forall alpha beta, nf alpha -> nf beta -> ord_ltb (ord_2_exp (ord_succ (ord_max alpha beta))) (ord_add alpha beta) = false.
+Proof.
+intros. refine (ord_trans_inv _ _ _ _ (ord_add_le_dub_max _ _ _ _)); auto. rewrite ord_2_exp_succ_mult.
+- destruct (ord_2_exp_fp (ord_max alpha beta)).
+  + apply ord_max_nf; auto.
+  + apply ltb_asymm. apply ord_lt_ltb. destruct (ord_max alpha beta). apply zero_lt. simpl. destruct (ord_2_exp (cons o1 n o2)); inversion H1.
+    * apply head_lt. auto.
+    * apply coeff_lt. lia.
+    * apply tail_lt. auto.
+  + rewrite H1. auto.
+- apply ord_max_nf; auto.
+Qed.
 Close Scope cantor_scope.
