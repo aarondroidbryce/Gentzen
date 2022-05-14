@@ -484,3 +484,8 @@ Lemma nat_max_order : forall n m p, max (max n m) p = max (max n p) m.
 Proof.
 intros. rewrite (nat_max_symm _ p). rewrite <- (nat_max_comm p). rewrite (nat_max_symm p). auto.
 Qed.
+
+Lemma nat_2_exp_non_zero : forall n, 0 < 2^n.
+Proof.
+intros. induction n. simpl. lia. simpl. lia.
+Qed.

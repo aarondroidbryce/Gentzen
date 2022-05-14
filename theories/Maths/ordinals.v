@@ -2604,4 +2604,31 @@ intros. refine (ord_trans_inv _ _ _ _ (ord_add_le_dub_max _ _ _ _)); auto. rewri
   + rewrite H1. auto.
 - apply ord_max_nf; auto.
 Qed.
+
+Lemma ord_add_exp_le_exp_max : forall alpha beta, nf alpha -> nf beta -> ord_ltb (ord_2_exp (ord_succ (ord_max alpha beta))) (ord_add (ord_2_exp alpha) (ord_2_exp beta)) = false.
+Proof.
+intros. refine (ord_trans_inv _ _ _ _ (ord_add_le_dub_max _ _ _ _)); try apply nf_2_exp; auto.
+rewrite ord_2_exp_succ_mult; auto. rewrite ord_max_exp_equiv; auto. apply ord_ltb_irrefl. apply ord_max_nf; auto.
+Qed.
+
+(*
+Lemma dub_succ_exp_eq : forall alpha, nf alpha -> ord_ltb (ord_succ (ord_succ alpha)) (ord_2_exp (ord_succ alpha)) = false -> ord_eqb (ord_succ (ord_succ alpha)) (ord_2_exp (ord_succ alpha)) = true.
+Proof.
+intros. pose proof (ord_succ_not_exp_fp _ (ord_succ_nf _ H)). apply ord_lt_succ in H1. destruct (ord_lt_succ_cases _ _ H1).
+- repeat apply ord_succ_nf; auto.
+- apply nf_2_exp. apply ord_succ_nf. auto.
+- rewrite H2. apply ord_eqb_refl.
+- apply ord_lt_ltb in H2. rewrite H0 in H2. inversion H2.
+Qed.
+*)
+
+Lemma dub_succ_exp_eq : forall alpha, ord_lt Zero alpha -> nf alpha -> ord_ltb (ord_succ (ord_succ (ord_2_exp alpha))) (ord_2_exp (ord_succ alpha)) = false -> ord_eqb (ord_succ (ord_succ (ord_2_exp alpha))) (ord_2_exp (ord_succ alpha)) = true.
+Proof.
+intros. destruct alpha. inversion H. pose proof (ord_succ_lt_exp_succ _ H0 H). apply ord_lt_succ in H2. destruct (ord_lt_succ_cases _ _ H2).
+- repeat apply ord_succ_nf; apply nf_2_exp; auto.
+- apply nf_2_exp. apply ord_succ_nf. auto.
+- rewrite H3. apply ord_eqb_refl.
+- apply ord_lt_ltb in H3. rewrite H1 in H3. inversion H3.
+Qed.
+
 Close Scope cantor_scope.

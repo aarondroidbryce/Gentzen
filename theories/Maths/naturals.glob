@@ -1,4 +1,4 @@
-DIGEST e18bfbc805048cf20de4a11a9d226b90
+DIGEST 617ea20cba5fb1656d890cd306e84bb5
 FMaths_Facts.naturals
 R15:17 Coq.micromega.Lia <> <> lib
 R35:37 Coq.Init.Nat <> <> lib
@@ -1252,3 +1252,8 @@ R13595:13606 Maths_Facts.naturals <> nat_max_comm thm
 R13621:13632 Maths_Facts.naturals <> nat_max_symm thm
 R13621:13632 Maths_Facts.naturals <> nat_max_symm thm
 R13621:13632 Maths_Facts.naturals <> nat_max_symm thm
+prf 13656:13673 <> nat_2_exp_non_zero
+binder 13684:13684 <> n:128
+R13688:13690 Coq.Init.Peano <> ::nat_scope:x_'<'_x not
+R13692:13692 Coq.Init.Nat <> ::nat_scope:x_'^'_x not
+R13693:13693 Maths_Facts.naturals <> n:128 var

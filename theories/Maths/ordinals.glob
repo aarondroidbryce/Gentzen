@@ -1,4 +1,4 @@
-DIGEST f080fc398c0ac5fc243df6c4e072ec40
+DIGEST f38588227a6c08251867f7d93c9a69e8
 FMaths_Facts.ordinals
 R150:152 Coq.micromega.Lia <> <> lib
 R170:172 Coq.Init.Nat <> <> lib
@@ -8592,3 +8592,96 @@ R116844:116850 Maths_Facts.ordinals <> tail_lt constr
 R116844:116850 Maths_Facts.ordinals <> tail_lt constr
 R116889:116898 Maths_Facts.ordinals <> ord_max_nf thm
 R116889:116898 Maths_Facts.ordinals <> ord_max_nf thm
+prf 116919:116940 <> ord_add_exp_le_exp_max
+binder 116951:116955 <> alpha:565
+binder 116957:116960 <> beta:566
+R116971:116974 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R116963:116964 Maths_Facts.ordinals <> nf ind
+R116966:116970 Maths_Facts.ordinals <> alpha:565 var
+R116982:116985 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R116975:116976 Maths_Facts.ordinals <> nf ind
+R116978:116981 Maths_Facts.ordinals <> beta:566 var
+R117082:117084 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R116986:116992 Maths_Facts.ordinals <> ord_ltb def
+R116995:117003 Maths_Facts.ordinals <> ord_2_exp def
+R117006:117013 Maths_Facts.ordinals <> ord_succ def
+R117016:117022 Maths_Facts.ordinals <> ord_max def
+R117024:117028 Maths_Facts.ordinals <> alpha:565 var
+R117030:117033 Maths_Facts.ordinals <> beta:566 var
+R117039:117045 Maths_Facts.ordinals <> ord_add def
+R117048:117056 Maths_Facts.ordinals <> ord_2_exp def
+R117058:117062 Maths_Facts.ordinals <> alpha:565 var
+R117066:117074 Maths_Facts.ordinals <> ord_2_exp def
+R117076:117079 Maths_Facts.ordinals <> beta:566 var
+R117085:117089 Coq.Init.Datatypes <> false constr
+R117115:117127 Maths_Facts.ordinals <> ord_trans_inv thm
+R117138:117155 Maths_Facts.ordinals <> ord_add_le_dub_max thm
+R117178:117185 Maths_Facts.ordinals <> nf_2_exp thm
+R117115:117127 Maths_Facts.ordinals <> ord_trans_inv thm
+R117138:117155 Maths_Facts.ordinals <> ord_add_le_dub_max thm
+R117178:117185 Maths_Facts.ordinals <> nf_2_exp thm
+R117178:117185 Maths_Facts.ordinals <> nf_2_exp thm
+R117178:117185 Maths_Facts.ordinals <> nf_2_exp thm
+R117202:117220 Maths_Facts.ordinals <> ord_2_exp_succ_mult thm
+R117202:117220 Maths_Facts.ordinals <> ord_2_exp_succ_mult thm
+R117202:117220 Maths_Facts.ordinals <> ord_2_exp_succ_mult thm
+R117202:117220 Maths_Facts.ordinals <> ord_2_exp_succ_mult thm
+R117237:117253 Maths_Facts.ordinals <> ord_max_exp_equiv thm
+R117237:117253 Maths_Facts.ordinals <> ord_max_exp_equiv thm
+R117237:117253 Maths_Facts.ordinals <> ord_max_exp_equiv thm
+R117237:117253 Maths_Facts.ordinals <> ord_max_exp_equiv thm
+R117237:117253 Maths_Facts.ordinals <> ord_max_exp_equiv thm
+R117268:117281 Maths_Facts.ordinals <> ord_ltb_irrefl thm
+R117268:117281 Maths_Facts.ordinals <> ord_ltb_irrefl thm
+R117290:117299 Maths_Facts.ordinals <> ord_max_nf thm
+R117290:117299 Maths_Facts.ordinals <> ord_max_nf thm
+prf 117831:117845 <> dub_succ_exp_eq
+binder 117856:117860 <> alpha:567
+R117880:117883 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R117863:117868 Maths_Facts.ordinals <> ord_lt ind
+R117870:117873 Maths_Facts.ordinals <> Zero constr
+R117875:117879 Maths_Facts.ordinals <> alpha:567 var
+R117892:117895 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R117884:117885 Maths_Facts.ordinals <> nf ind
+R117887:117891 Maths_Facts.ordinals <> alpha:567 var
+R117980:117983 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R117972:117974 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R117896:117902 Maths_Facts.ordinals <> ord_ltb def
+R117905:117912 Maths_Facts.ordinals <> ord_succ def
+R117915:117922 Maths_Facts.ordinals <> ord_succ def
+R117925:117933 Maths_Facts.ordinals <> ord_2_exp def
+R117935:117939 Maths_Facts.ordinals <> alpha:567 var
+R117945:117953 Maths_Facts.ordinals <> ord_2_exp def
+R117956:117963 Maths_Facts.ordinals <> ord_succ def
+R117965:117969 Maths_Facts.ordinals <> alpha:567 var
+R117975:117979 Coq.Init.Datatypes <> false constr
+R118060:118062 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R117984:117990 Maths_Facts.ordinals <> ord_eqb def
+R117993:118000 Maths_Facts.ordinals <> ord_succ def
+R118003:118010 Maths_Facts.ordinals <> ord_succ def
+R118013:118021 Maths_Facts.ordinals <> ord_2_exp def
+R118023:118027 Maths_Facts.ordinals <> alpha:567 var
+R118033:118041 Maths_Facts.ordinals <> ord_2_exp def
+R118044:118051 Maths_Facts.ordinals <> ord_succ def
+R118053:118057 Maths_Facts.ordinals <> alpha:567 var
+R118063:118066 Coq.Init.Datatypes <> true constr
+R118125:118144 Maths_Facts.ordinals <> ord_succ_lt_exp_succ thm
+R118125:118144 Maths_Facts.ordinals <> ord_succ_lt_exp_succ thm
+R118161:118171 Maths_Facts.ordinals <> ord_lt_succ thm
+R118161:118171 Maths_Facts.ordinals <> ord_lt_succ thm
+R118190:118206 Maths_Facts.ordinals <> ord_lt_succ_cases thm
+R118190:118206 Maths_Facts.ordinals <> ord_lt_succ_cases thm
+R118232:118242 Maths_Facts.ordinals <> ord_succ_nf thm
+R118251:118258 Maths_Facts.ordinals <> nf_2_exp thm
+R118232:118242 Maths_Facts.ordinals <> ord_succ_nf thm
+R118232:118242 Maths_Facts.ordinals <> ord_succ_nf thm
+R118232:118242 Maths_Facts.ordinals <> ord_succ_nf thm
+R118251:118258 Maths_Facts.ordinals <> nf_2_exp thm
+R118275:118282 Maths_Facts.ordinals <> nf_2_exp thm
+R118275:118282 Maths_Facts.ordinals <> nf_2_exp thm
+R118291:118301 Maths_Facts.ordinals <> ord_succ_nf thm
+R118291:118301 Maths_Facts.ordinals <> ord_succ_nf thm
+R118330:118341 Maths_Facts.ordinals <> ord_eqb_refl thm
+R118330:118341 Maths_Facts.ordinals <> ord_eqb_refl thm
+R118352:118361 Maths_Facts.ordinals <> ord_lt_ltb thm
+R118352:118361 Maths_Facts.ordinals <> ord_lt_ltb thm
