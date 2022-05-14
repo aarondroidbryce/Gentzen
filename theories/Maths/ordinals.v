@@ -2631,4 +2631,24 @@ intros. destruct alpha. inversion H. pose proof (ord_succ_lt_exp_succ _ H0 H). a
 - apply ord_lt_ltb in H3. rewrite H1 in H3. inversion H3.
 Qed.
 
+Lemma ord_exp_succ_shuffle : forall alpha beta, nf alpha -> nf beta -> ord_lt Zero (ord_max alpha beta) -> ord_lt (ord_succ (ord_2_exp beta)) (ord_2_exp (ord_succ (ord_max alpha beta))).
+Proof.
+intros. rename H1 into Q.
+destruct (ord_semiconnex_bool alpha beta) as [I2 | [I2 | I2]].
+              ** rewrite (ord_max_lem1 _ _ I2). apply ord_succ_lt_exp_succ; auto. destruct beta. destruct alpha; inversion I2. apply zero_lt.
+              ** rewrite (ord_max_lem2 _ _ (ltb_asymm _ _ I2)). destruct beta.
+                  { destruct alpha. inversion I2. rewrite ord_2_exp_succ_mult; auto. pose proof (exp_geq_1 _ H). case (ord_2_exp (cons alpha1 n alpha2)) eqn:I3. inversion H1. simpl. destruct o1.
+                    { destruct n0.
+                      { unfold ord_2_exp in I3. destruct alpha1. case (2 ^ (S n)) eqn:I4. inversion I3. inversion I3. rewrite H3 in *. pose proof (nat_2_exp_succ_not_one n). apply H2 in I4. inversion I4.
+                        fold ord_2_exp in I3. destruct alpha1_1. destruct n0. destruct (ord_2_exp alpha2). inversion I3. unfold ord_mult in I3. fold ord_mult in I3.
+                        destruct o1. inversion I3. unfold ord_add in I3. destruct o1_1; inversion I3. destruct (ord_2_exp alpha2). inversion I3. unfold ord_mult in I3. fold ord_mult in I3. destruct o1. inversion I3.
+                        unfold ord_add in I3. case (ord_ltb (cons Zero n0 Zero) o1_1) eqn:I4. inversion I3. case (ord_eqb (cons Zero n0 Zero) o1_1) eqn:I5. inversion I3. inversion I3.
+                        destruct (ord_2_exp alpha2). inversion I3. unfold ord_mult in I3. fold ord_mult in I3. destruct o1. inversion I3. unfold ord_add in I3.
+                        case (ord_ltb (cons (cons alpha1_1_1 n1 alpha1_1_2) n0 alpha1_2) o1_1) eqn:I4. inversion I3. case (ord_eqb (cons (cons alpha1_1_1 n1 alpha1_1_2) n0 alpha1_2) o1_1) eqn:I5. inversion I3. inversion I3. }
+                      { apply coeff_lt. lia. } }
+                    { apply head_lt. apply zero_lt. } }
+                  { apply (lt_trans _ (ord_2_exp (ord_succ (cons beta1 n beta2)))). apply ord_succ_lt_exp_succ; auto. apply zero_lt. apply ord_2_exp_monot; try apply ord_succ_nf; auto. apply ord_lt_succ. apply ord_ltb_lt. auto. }
+              ** apply ord_eqb_eq in I2. destruct I2. rewrite (ord_max_lem2 _ _ (ord_ltb_irrefl _)). destruct alpha. simpl. inversion Q. apply ord_succ_lt_exp_succ; auto. apply zero_lt.
+Qed.
+
 Close Scope cantor_scope.
