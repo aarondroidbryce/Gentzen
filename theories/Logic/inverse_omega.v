@@ -1042,7 +1042,7 @@ exists (w_rule_sub_ptree P A n c (1)). unfold P_proves. repeat split.
 - apply w_rule_valid; auto. rewrite Ht1. auto.
 - rewrite <- (w_rule_ptree_deg P); auto.
 - rewrite w_rule_ptree_ord; auto.
-Qed.
+Defined.
 
 Lemma w_rule_invertible_cut_cad :
   forall (P : ptree) (A D : formula) (n d : nat) (alpha : ord) (c : c_term),
@@ -1060,4 +1060,4 @@ exists (exchange_ab (substitution A n (projT1 c)) D (ptree_deg P) alpha (w_rule_
 - simpl. rewrite non_target_fit. auto.
 - rewrite w_rule_ptree_ord; auto.
 - auto.
-Qed.
+Defined.

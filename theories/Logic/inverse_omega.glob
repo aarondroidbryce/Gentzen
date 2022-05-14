@@ -1,4 +1,4 @@
-DIGEST c41563c131445a39761ce61f76a8627e
+DIGEST f93106272e76daf94cf18a7042bb0857
 FSystems.inverse_omega
 R167:174 Maths_Facts.naturals <> <> lib
 R209:216 Maths_Facts.ordinals <> <> lib
@@ -3645,103 +3645,103 @@ R47056:47071 Systems.inverse_omega <> w_rule_ptree_ord thm
 R47056:47071 Systems.inverse_omega <> w_rule_ptree_ord thm
 R47056:47071 Systems.inverse_omega <> w_rule_ptree_ord thm
 R47056:47071 Systems.inverse_omega <> w_rule_ptree_ord thm
-prf 47092:47116 <> w_rule_invertible_cut_cad
-R47134:47138 Systems.proof_trees <> ptree ind
-binder 47130:47130 <> P:90
-R47148:47154 Systems.fol <> formula ind
-binder 47142:47142 <> A:91
-binder 47144:47144 <> D:92
-R47164:47166 Coq.Init.Datatypes <> nat ind
-binder 47158:47158 <> n:93
-binder 47160:47160 <> d:94
-R47178:47180 Maths_Facts.ordinals <> ord ind
-binder 47170:47174 <> alpha:95
-R47188:47193 Systems.fol <> c_term def
-binder 47184:47184 <> c:96
-R47236:47241 Coq.Init.Logic <> ::type_scope:x_'->'_x not
-R47199:47206 Systems.proof_trees <> P_proves def
-R47208:47208 Systems.inverse_omega <> P:90 var
-R47211:47213 Systems.fol <> lor constr
-R47215:47215 Systems.inverse_omega <> D:92 var
-R47218:47221 Systems.fol <> univ constr
-R47223:47223 Systems.inverse_omega <> n:93 var
-R47225:47225 Systems.inverse_omega <> A:91 var
-R47229:47229 Systems.inverse_omega <> d:94 var
-R47231:47235 Systems.inverse_omega <> alpha:95 var
-R47242:47249 Systems.proof_trees <> provable def
-R47252:47254 Systems.fol <> lor constr
-R47256:47256 Systems.inverse_omega <> D:92 var
-R47259:47270 Systems.fol <> substitution def
-R47272:47272 Systems.inverse_omega <> A:91 var
-R47274:47274 Systems.inverse_omega <> n:93 var
-R47277:47282 Coq.Init.Specif <> projT1 def
-R47284:47284 Systems.inverse_omega <> c:96 var
-R47289:47289 Systems.inverse_omega <> d:94 var
-R47291:47295 Systems.inverse_omega <> alpha:95 var
-R47312:47319 Systems.proof_trees <> provable def
-R47395:47399 Systems.proof_trees <> valid def
-R47402:47412 Systems.proof_trees <> exchange_ab constr
-R47417:47420 Systems.fol <> univ constr
-R47428:47436 Systems.proof_trees <> ptree_deg def
-R47395:47399 Systems.proof_trees <> valid def
-R47402:47412 Systems.proof_trees <> exchange_ab constr
-R47417:47420 Systems.fol <> univ constr
-R47428:47436 Systems.proof_trees <> ptree_deg def
-R47491:47506 Systems.inverse_omega <> w_rule_ptree_deg thm
-R47509:47519 Systems.proof_trees <> exchange_ab constr
-R47541:47547 Systems.substitute <> lor_ind constr
-R47549:47551 Systems.substitute <> :::'(1)' not
-R47554:47563 Systems.substitute <> non_target def
-R47491:47506 Systems.inverse_omega <> w_rule_ptree_deg thm
-R47509:47519 Systems.proof_trees <> exchange_ab constr
-R47541:47547 Systems.substitute <> lor_ind constr
-R47549:47551 Systems.substitute <> :::'(1)' not
-R47554:47563 Systems.substitute <> non_target def
-R47579:47589 Systems.proof_trees <> exchange_ab constr
-R47592:47603 Systems.fol <> substitution def
-R47610:47615 Coq.Init.Specif <> projT1 def
-R47624:47632 Systems.proof_trees <> ptree_deg def
-R47644:47659 Systems.inverse_omega <> w_rule_sub_ptree def
-R47662:47672 Systems.proof_trees <> exchange_ab constr
-R47677:47680 Systems.fol <> univ constr
-R47688:47696 Systems.proof_trees <> ptree_deg def
-R47717:47723 Systems.substitute <> lor_ind constr
-R47725:47727 Systems.substitute <> :::'(1)' not
-R47730:47739 Systems.substitute <> non_target def
-R47579:47589 Systems.proof_trees <> exchange_ab constr
-R47592:47603 Systems.fol <> substitution def
-R47610:47615 Coq.Init.Specif <> projT1 def
-R47624:47632 Systems.proof_trees <> ptree_deg def
-R47644:47659 Systems.inverse_omega <> w_rule_sub_ptree def
-R47662:47672 Systems.proof_trees <> exchange_ab constr
-R47677:47680 Systems.fol <> univ constr
-R47688:47696 Systems.proof_trees <> ptree_deg def
-R47717:47723 Systems.substitute <> lor_ind constr
-R47725:47727 Systems.substitute <> :::'(1)' not
-R47730:47739 Systems.substitute <> non_target def
-R47755:47762 Systems.proof_trees <> P_proves def
-R47796:47809 Systems.substitute <> non_target_fit thm
-R47796:47809 Systems.substitute <> non_target_fit thm
-R47796:47809 Systems.substitute <> non_target_fit thm
-R47826:47843 Systems.inverse_omega <> w_rule_sub_formula def
-R47863:47873 Maths_Facts.naturals <> eq_nat_refl thm
-R47875:47883 Systems.fol <> eq_f_refl thm
-R47863:47873 Maths_Facts.naturals <> eq_nat_refl thm
-R47863:47873 Maths_Facts.naturals <> eq_nat_refl thm
-R47875:47883 Systems.fol <> eq_f_refl thm
-R47875:47883 Systems.fol <> eq_f_refl thm
-R47901:47914 Systems.substitute <> non_target_sub thm
-R47901:47914 Systems.substitute <> non_target_sub thm
-R47901:47914 Systems.substitute <> non_target_sub thm
-R47931:47942 Systems.inverse_omega <> w_rule_valid thm
-R47931:47942 Systems.inverse_omega <> w_rule_valid thm
-R47966:47979 Systems.substitute <> non_target_fit thm
-R47966:47979 Systems.substitute <> non_target_fit thm
-R47966:47979 Systems.substitute <> non_target_fit thm
-R48005:48018 Systems.substitute <> non_target_fit thm
-R48005:48018 Systems.substitute <> non_target_fit thm
-R48005:48018 Systems.substitute <> non_target_fit thm
-R48037:48052 Systems.inverse_omega <> w_rule_ptree_ord thm
-R48037:48052 Systems.inverse_omega <> w_rule_ptree_ord thm
-R48037:48052 Systems.inverse_omega <> w_rule_ptree_ord thm
-R48037:48052 Systems.inverse_omega <> w_rule_ptree_ord thm
+prf 47096:47120 <> w_rule_invertible_cut_cad
+R47138:47142 Systems.proof_trees <> ptree ind
+binder 47134:47134 <> P:90
+R47152:47158 Systems.fol <> formula ind
+binder 47146:47146 <> A:91
+binder 47148:47148 <> D:92
+R47168:47170 Coq.Init.Datatypes <> nat ind
+binder 47162:47162 <> n:93
+binder 47164:47164 <> d:94
+R47182:47184 Maths_Facts.ordinals <> ord ind
+binder 47174:47178 <> alpha:95
+R47192:47197 Systems.fol <> c_term def
+binder 47188:47188 <> c:96
+R47240:47245 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R47203:47210 Systems.proof_trees <> P_proves def
+R47212:47212 Systems.inverse_omega <> P:90 var
+R47215:47217 Systems.fol <> lor constr
+R47219:47219 Systems.inverse_omega <> D:92 var
+R47222:47225 Systems.fol <> univ constr
+R47227:47227 Systems.inverse_omega <> n:93 var
+R47229:47229 Systems.inverse_omega <> A:91 var
+R47233:47233 Systems.inverse_omega <> d:94 var
+R47235:47239 Systems.inverse_omega <> alpha:95 var
+R47246:47253 Systems.proof_trees <> provable def
+R47256:47258 Systems.fol <> lor constr
+R47260:47260 Systems.inverse_omega <> D:92 var
+R47263:47274 Systems.fol <> substitution def
+R47276:47276 Systems.inverse_omega <> A:91 var
+R47278:47278 Systems.inverse_omega <> n:93 var
+R47281:47286 Coq.Init.Specif <> projT1 def
+R47288:47288 Systems.inverse_omega <> c:96 var
+R47293:47293 Systems.inverse_omega <> d:94 var
+R47295:47299 Systems.inverse_omega <> alpha:95 var
+R47316:47323 Systems.proof_trees <> provable def
+R47399:47403 Systems.proof_trees <> valid def
+R47406:47416 Systems.proof_trees <> exchange_ab constr
+R47421:47424 Systems.fol <> univ constr
+R47432:47440 Systems.proof_trees <> ptree_deg def
+R47399:47403 Systems.proof_trees <> valid def
+R47406:47416 Systems.proof_trees <> exchange_ab constr
+R47421:47424 Systems.fol <> univ constr
+R47432:47440 Systems.proof_trees <> ptree_deg def
+R47495:47510 Systems.inverse_omega <> w_rule_ptree_deg thm
+R47513:47523 Systems.proof_trees <> exchange_ab constr
+R47545:47551 Systems.substitute <> lor_ind constr
+R47553:47555 Systems.substitute <> :::'(1)' not
+R47558:47567 Systems.substitute <> non_target def
+R47495:47510 Systems.inverse_omega <> w_rule_ptree_deg thm
+R47513:47523 Systems.proof_trees <> exchange_ab constr
+R47545:47551 Systems.substitute <> lor_ind constr
+R47553:47555 Systems.substitute <> :::'(1)' not
+R47558:47567 Systems.substitute <> non_target def
+R47583:47593 Systems.proof_trees <> exchange_ab constr
+R47596:47607 Systems.fol <> substitution def
+R47614:47619 Coq.Init.Specif <> projT1 def
+R47628:47636 Systems.proof_trees <> ptree_deg def
+R47648:47663 Systems.inverse_omega <> w_rule_sub_ptree def
+R47666:47676 Systems.proof_trees <> exchange_ab constr
+R47681:47684 Systems.fol <> univ constr
+R47692:47700 Systems.proof_trees <> ptree_deg def
+R47721:47727 Systems.substitute <> lor_ind constr
+R47729:47731 Systems.substitute <> :::'(1)' not
+R47734:47743 Systems.substitute <> non_target def
+R47583:47593 Systems.proof_trees <> exchange_ab constr
+R47596:47607 Systems.fol <> substitution def
+R47614:47619 Coq.Init.Specif <> projT1 def
+R47628:47636 Systems.proof_trees <> ptree_deg def
+R47648:47663 Systems.inverse_omega <> w_rule_sub_ptree def
+R47666:47676 Systems.proof_trees <> exchange_ab constr
+R47681:47684 Systems.fol <> univ constr
+R47692:47700 Systems.proof_trees <> ptree_deg def
+R47721:47727 Systems.substitute <> lor_ind constr
+R47729:47731 Systems.substitute <> :::'(1)' not
+R47734:47743 Systems.substitute <> non_target def
+R47759:47766 Systems.proof_trees <> P_proves def
+R47800:47813 Systems.substitute <> non_target_fit thm
+R47800:47813 Systems.substitute <> non_target_fit thm
+R47800:47813 Systems.substitute <> non_target_fit thm
+R47830:47847 Systems.inverse_omega <> w_rule_sub_formula def
+R47867:47877 Maths_Facts.naturals <> eq_nat_refl thm
+R47879:47887 Systems.fol <> eq_f_refl thm
+R47867:47877 Maths_Facts.naturals <> eq_nat_refl thm
+R47867:47877 Maths_Facts.naturals <> eq_nat_refl thm
+R47879:47887 Systems.fol <> eq_f_refl thm
+R47879:47887 Systems.fol <> eq_f_refl thm
+R47905:47918 Systems.substitute <> non_target_sub thm
+R47905:47918 Systems.substitute <> non_target_sub thm
+R47905:47918 Systems.substitute <> non_target_sub thm
+R47935:47946 Systems.inverse_omega <> w_rule_valid thm
+R47935:47946 Systems.inverse_omega <> w_rule_valid thm
+R47970:47983 Systems.substitute <> non_target_fit thm
+R47970:47983 Systems.substitute <> non_target_fit thm
+R47970:47983 Systems.substitute <> non_target_fit thm
+R48009:48022 Systems.substitute <> non_target_fit thm
+R48009:48022 Systems.substitute <> non_target_fit thm
+R48009:48022 Systems.substitute <> non_target_fit thm
+R48041:48056 Systems.inverse_omega <> w_rule_ptree_ord thm
+R48041:48056 Systems.inverse_omega <> w_rule_ptree_ord thm
+R48041:48056 Systems.inverse_omega <> w_rule_ptree_ord thm
+R48041:48056 Systems.inverse_omega <> w_rule_ptree_ord thm
