@@ -2764,6 +2764,58 @@ intros. rename H1 into O. apply ord_lt_succ. case (ord_ltb alpha (ord_succ (ord_
 - rewrite (ord_max_lem2 _ _ I1). apply (lt_trans _ _ _ (ord_succ_monot _)). apply ord_succ_lt_exp_succ_max_left; auto.
 Qed.
 
+Lemma ord_lt_and_succ_ge_succ_eq : forall alpha beta, nf alpha -> nf beta -> ord_ltb alpha beta = true -> ord_ltb (ord_succ alpha) beta = false -> ord_eqb (ord_succ alpha) beta = true.
+Proof.
+intros alpha. induction alpha.
+- intros. destruct beta. inversion H1. destruct beta1. inversion H0. destruct n. auto. destruct H6. inversion H2. inversion H6. inversion H2.
+- intros. destruct (ord_semiconnex_bool (ord_succ (cons alpha1 n alpha2)) beta) as [X | [X | X]].
+  + rewrite X in H2. inversion H2.
+  + apply ord_ltb_lt in H1. apply ord_ltb_lt in X. destruct alpha1.
+    * unfold ord_succ in *. fold ord_succ in *. inversion H; inversion H6. symmetry in H3. destruct H3,H5,H6,H7. inversion X.
+      --  destruct H3. inversion H1.
+      --  inversion H6.
+      --  symmetry in H3,H7,H8. destruct H3,H7,H8. destruct H5. inversion H0; inversion H8. symmetry in H3. destruct H3,H7,H8,H9. inversion H1; inversion H7. simpl. rewrite eq_nat_refl. auto. destruct H13. lia.
+      -- inversion H6.
+    * unfold ord_succ in *. fold ord_succ in *. inversion X.
+      --  destruct H3. inversion H1.
+      --  destruct H4. inversion H1.
+          ++  apply lt_asymm in H8. apply H8 in H5. inversion H5.
+          ++  rewrite H11 in H5. apply lt_irrefl in H5. inversion H5.
+          ++  rewrite H11 in H5. apply lt_irrefl in H5. inversion H5.
+      --  symmetry in H3,H7. destruct H3,H6,H7. destruct H4. inversion H1.
+          ++  apply lt_irrefl in H4. inversion H4.
+          ++  lia.
+          ++  lia.
+      --  destruct H4. destruct H3,H6. simpl. rewrite ord_eqb_refl. rewrite eq_nat_refl. apply IHalpha2; auto.
+          ++  inversion H. apply zero_nf. auto.
+          ++  inversion H0. apply zero_nf. auto.
+          ++  inversion H1. 
+              **  apply lt_irrefl in H4. inversion H4.
+              **  apply lt_nat_decid_conv in H4. rewrite lt_nat_irrefl in H4. inversion H4.
+              **  apply ord_lt_ltb. auto.
+          ++ apply ltb_asymm. apply ord_lt_ltb. auto.
+  + auto.
+Qed.
 
+Lemma ord_add_succ_front : forall alpha beta gamma, nf alpha -> nf beta -> ord_ltb (ord_add alpha beta) gamma = true -> ord_ltb (ord_add (ord_succ alpha) beta) gamma = false -> ord_add (ord_succ alpha) beta = ord_succ (ord_add alpha beta).
+Proof.
+intros alpha. induction alpha.
+- intros. destruct beta; auto. unfold ord_succ in *. fold ord_succ in *. rewrite ord_zero_add in *. unfold nat_ord in H2. unfold ord_add in H2. destruct beta1.
+  + inversion H0. simpl. rewrite plus_n_1. auto. inversion H6.
+  + unfold ord_eqb in H2. rewrite (ord_lt_ltb _ _ (zero_lt _ _ _)) in H2. rewrite H2 in H1. inversion H1.
+- intros. rewrite <- ord_add_one_succ in *; auto. rewrite ord_add_assoc in *. destruct (ord_semiconnex_bool (ord_add (cons Zero 0 Zero) beta) beta) as [X | [X | X]].
+  + rewrite add_left_non_decr in X. inversion X.
+  + destruct beta.
+    * simpl. destruct alpha1; simpl; auto. rewrite plus_n_1. rewrite plus_n_0. inversion H. auto. inversion H6. rewrite ord_add_one_succ; auto. inversion H; auto.
+    * unfold ord_add in X. case (ord_ltb Zero beta1) eqn:X1. rewrite ord_ltb_irrefl in X. inversion X. destruct beta1.
+      --  inversion H0; inversion H6. destruct H6. destruct alpha1.
+          ++  simpl. repeat rewrite plus_n_1. rewrite <- plus_n_Sm. auto.
+          ++  simpl. rewrite plus_n_1. unfold ord_add in *. fold ord_add in *. unfold ord_ltb in *. fold ord_ltb in *. unfold ord_eqb in *.
+              rewrite plus_n_1 in *. rewrite plus_O_n in *. rewrite <- ord_add_one_succ; auto. rewrite ord_add_assoc. rewrite ord_add_one_succ; auto. apply nf_add; auto. inversion H; auto.
+      --  inversion X1.
+ + apply ord_eqb_eq in X. rewrite X in H2. destruct X. rewrite H2 in H1. inversion H1.
+ + inversion H; auto.
+ + inversion H; auto. apply zero_nf.
+Qed.
 
 Close Scope cantor_scope.
