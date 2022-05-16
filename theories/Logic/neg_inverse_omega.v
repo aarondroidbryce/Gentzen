@@ -618,9 +618,11 @@ intros P Q E F n d' beta HQ H. induction P; intros S.
     rewrite ord_max_add_comm. apply ord_max_split_false; auto. apply add_left_non_decr.
 - simpl. inversion H as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. inversion HQ as [[[Q1 Q2] Q3] Q4]. rewrite X7,X8. destruct Q4.
   assert (nf (ord_max (ptree_ord P1) (ptree_ord P2))). apply ord_max_nf; apply ptree_ord_nf; auto.
-  rewrite ord_succ_add_succ; try apply ptree_ord_nf; auto. case (subst_ind_fit f0 S) eqn:Y; simpl; apply ord_ltb_succ_false; try apply add_left_non_decr.
-  repeat rewrite neg_w_rule_ptree_formula_true; auto; try rewrite X1; try rewrite X3; simpl; auto.
+  rewrite ord_succ_add_succ; try apply ptree_ord_nf; auto. 
+  case (subst_ind_fit f0 S) eqn:Y; simpl; apply ord_ltb_succ_false; try apply add_left_non_decr. rewrite <- ord_add_one_succ; auto. rewrite <- ord_add_assoc. rewrite ord_add_one_succ; auto.
+  repeat rewrite neg_w_rule_ptree_formula_true; auto; try rewrite X1; try rewrite X3; simpl; auto. apply ord_ltb_succ_false.
   rewrite ord_max_add_comm. apply ord_max_split_false; auto. apply add_left_non_decr.
+  apply nf_add; auto. apply ptree_ord_nf. auto. apply ord_succ_nf. auto.
 - simpl. inversion H as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. inversion HQ as [[[Q1 Q2] Q3] Q4]. rewrite X7,X8. destruct Q4.
   assert (nf (ord_max (ptree_ord P1) (ptree_ord P2))). apply ord_max_nf; apply ptree_ord_nf; auto.
   rewrite ord_succ_add_succ; try apply ptree_ord_nf; auto. destruct S; simpl; auto; try case (subst_ind_fit f S1 && subst_ind_fit f1 S2) eqn:Y; try apply ord_ltb_succ_false; try apply add_left_non_decr;

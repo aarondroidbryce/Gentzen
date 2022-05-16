@@ -129,7 +129,7 @@ Inductive PA_omega_theorem : formula -> nat -> ord -> Type :=
     PA_omega_theorem (lor (neg A) D) d2 alpha2 ->
     PA_omega_theorem D
                      (max (max d1 d2) (num_conn (neg A)))
-                     (ord_succ (ord_max alpha1 alpha2))
+                     (ord_succ (ord_succ (ord_max alpha1 alpha2)))
 
 | cut3 : forall (C A D : formula) (d1 d2 : nat) (alpha1 alpha2 : ord),
     PA_omega_theorem (lor C A) d1 alpha1 ->
@@ -219,6 +219,7 @@ intros. induction H; try apply ord_succ_nf; try apply ord_max_nf; auto.
 - apply zero_nf.
 - apply (H zero). auto.
 - apply (H zero). auto.
+- apply ord_succ_nf. apply ord_max_nf; auto.
 Qed.
 
 Lemma ord_monot : forall (A : formula) (d : nat) (alpha beta : ord),
