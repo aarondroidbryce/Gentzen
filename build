@@ -1,5 +1,17 @@
 #!/bin/bash
 
+coqc -R theories/Casteran Ordering theories/Casteran/AccP.v
+coqc -R theories/Casteran Ordering theories/Casteran/closure.v
+coqc -R theories/Casteran Ordering theories/Casteran/decidable_set.v
+coqc -R theories/Casteran Ordering theories/Casteran/more_list.v
+coqc -R theories/Casteran Ordering theories/Casteran/list_permut.v
+coqc -R theories/Casteran Ordering theories/Casteran/list_set.v
+coqc -R theories/Casteran Ordering theories/Casteran/term.v
+coqc -R theories/Casteran Ordering theories/Casteran/dickson.v
+coqc -R theories/Casteran Ordering theories/Casteran/rpo.v
+
+coqc -R theories/Logic/ Systems theories/Logic/definitions.v
+
 coqc -R theories/Maths/ Maths_Facts theories/Maths/naturals.v
 coqc -R theories/Maths/ Maths_Facts theories/Maths/lists.v
 coqc -R theories/Maths/ Maths_Facts theories/Maths/ordinals.v

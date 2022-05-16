@@ -10,7 +10,7 @@ From Systems Require Import definitions.
 From Systems Require Import fol.
 From Systems Require Import PA_omega.
 From Systems Require Import proof_trees.
-  From Systems Require Import substitute.
+From Systems Require Import substitute.
 
 From Systems Require Import formula_sub.
 From Systems Require Import inverse_neg.
