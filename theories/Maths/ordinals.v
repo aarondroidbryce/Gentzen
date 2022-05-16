@@ -2876,4 +2876,204 @@ destruct (ord_semiconnex_bool alpha beta) as [Y | [Y | Y]].
   + apply ord_eqb_eq in X. destruct X. apply ord_succ_lt_exp_succ. apply nf_add; auto. destruct alpha. inversion H1. rewrite double_eval. apply zero_lt.
 Qed.
 
+Lemma nat_lt_exp_dub : forall n, cons Zero n Zero < nat_ord (2 ^ S (n + n + 1)).
+Proof.
+intros. induction n.
+- simpl. apply coeff_lt. lia.
+- assert (cons Zero (S n) Zero = nat_ord (S (S n))). auto.
+  assert (cons Zero n Zero = nat_ord (S n)). auto.
+  rewrite H. rewrite H0 in IHn. apply nat_ord_lt. apply ord_lt_succ in IHn. simpl in IHn. rewrite H in IHn. rewrite ord_succ_nat in IHn.
+  unfold pow in *. fold pow in *. repeat rewrite plus_n_0 in *. repeat rewrite plus_n_1 in *. repeat rewrite <- plus_n_Sm in *.
+  unfold pow in *. fold pow in *. repeat rewrite plus_n_0 in *. repeat rewrite plus_n_1 in *. repeat rewrite <- plus_n_Sm in *. 
+  destruct (nat_semiconnex (S (S n)) (S (2 * 2 ^ (n + n) + 2 * 2 ^ (n + n)))) as [X | [X | X]].
+  + simpl in *. lia.
+  + pose proof (nat_ord_lt _ _ X). apply lt_asymm in H1. apply H1 in IHn. inversion IHn.
+  + destruct X. apply lt_irrefl in IHn. inversion IHn.
+Qed.
+
+Lemma ord_lt_dub_exp : forall alpha, nf alpha -> alpha < ord_2_exp (ord_add alpha alpha).
+Proof.
+intros. destruct alpha.
+- simpl. apply zero_lt.
+- rewrite double_eval. destruct alpha1. unfold ord_2_exp. inversion H; inversion H3. apply nat_lt_exp_dub. destruct alpha1_1.
+  + destruct n0.
+    * simpl. inversion H. simpl. apply head_lt. apply coeff_lt. lia. destruct H2. pose proof (exp_geq_1 _ H5). case (ord_2_exp (cons a' n' b)) eqn:Y. inversion H2. simpl.
+      destruct o1. apply head_lt. apply coeff_lt. lia. destruct o1_1. apply head_lt. apply coeff_lt. lia. apply head_lt. apply head_lt. apply zero_lt.  
+    * simpl. inversion H. simpl. apply head_lt. apply head_lt. apply zero_lt. destruct H2. pose proof (exp_geq_1 _ H5). case (ord_2_exp (cons a' n' b)) eqn:Y. inversion H2. unfold ord_mult. fold ord_mult.
+      destruct o1. apply head_lt. apply head_lt. apply zero_lt. unfold ord_add. destruct o1_1. simpl. apply head_lt. apply head_lt. apply zero_lt.
+      destruct o1_1_1. simpl. case (lt_nat n0 n4). apply head_lt. apply head_lt. apply zero_lt. case (lt_nat n4 n0). case (eq_nat n0 n4). destruct o1_1_2. apply head_lt. apply head_lt. apply zero_lt.
+      apply head_lt. apply head_lt. apply zero_lt. apply head_lt. apply head_lt. apply zero_lt. destruct o1_1_2. case (eq_nat n0 n4). apply head_lt. apply head_lt. apply zero_lt.
+      apply head_lt. apply head_lt. apply zero_lt. apply head_lt. apply head_lt. apply zero_lt. simpl. apply head_lt. apply head_lt. apply zero_lt.
+  + simpl. inversion H. simpl. repeat apply head_lt. apply ord_lt_self. destruct H2. pose proof (exp_geq_1 _ H5). case (ord_2_exp (cons a' n' b)) eqn:Y. inversion H2. unfold ord_mult. fold ord_mult. destruct o1.
+    * repeat apply head_lt. apply ord_lt_self.
+    * unfold ord_add. destruct (ord_semiconnex_bool (cons (cons alpha1_1_1 n1 alpha1_1_2) n0 alpha1_2) o1_1) as [Y1 | [Y1 | Y1]].
+      --  rewrite Y1. apply head_lt. apply ord_lt_first. apply ord_ltb_lt in Y1. auto.
+      --  rewrite (ltb_asymm _ _ Y1). rewrite ord_eqb_symm. rewrite (ord_ltb_neb _ _ Y1). repeat apply head_lt. apply ord_lt_self.
+      --  apply ord_eqb_eq in Y1. rewrite Y1. rewrite ord_ltb_irrefl. rewrite ord_eqb_refl. apply head_lt. apply ord_lt_self.
+Qed.
+
+Lemma dub_exp_left : forall alpha beta, nf alpha -> nf beta -> Zero < ord_max alpha beta ->  ord_lt (ord_succ (ord_max alpha (ord_2_exp (ord_add beta beta)))) (ord_2_exp (ord_add (ord_succ (ord_max alpha beta)) (ord_succ (ord_max alpha beta)))).
+Proof.    
+intros. pose proof (dub_exp_max alpha beta H H0 H1).
+destruct (ord_semiconnex_bool alpha (ord_2_exp (ord_add beta beta))) as [I1 | [I1 | I1]].
+- rewrite (ord_max_lem1 _ _ I1). destruct (ord_semiconnex_bool (ord_2_exp (ord_add alpha alpha)) (ord_2_exp (ord_add beta beta))) as [I2 | [I2 | I2]].
+  + rewrite (ord_max_lem1 _ _ I2) in H2. auto.
+  + rewrite (ord_max_lem2 _ _ (ltb_asymm _ _ I2)) in H2. apply ord_ltb_lt in I2. apply ord_lt_succ in I2. apply (lt_trans _ _ _ I2 H2).
+  + apply ord_eqb_eq in I2. destruct I2. rewrite (ord_max_lem2 _ _ (ord_ltb_irrefl _)) in H2. auto.
+- rewrite (ord_max_lem2 _ _ (ltb_asymm _ _ I1)). refine (lt_trans _ _ _ _ H2). apply ord_lt_succ. rewrite ord_max_lem2. apply ord_lt_dub_exp. auto.
+  apply ltb_asymm. apply ord_lt_ltb. apply (lt_trans _ _ _ (ord_ltb_lt _ _ I1)). apply ord_lt_dub_exp. auto.
+- apply ord_eqb_eq in I1. rewrite I1. repeat rewrite ord_max_lem2. destruct beta. simpl. apply coeff_lt. lia. rewrite double_eval.
+  assert (nf (ord_succ (ord_2_exp (cons beta1 (n + n + 1) beta2)))). rewrite double_eval in I1. destruct I1. apply ord_succ_nf. auto.
+  apply (lt_trans _ _ _ (ord_succ_not_exp_fp _ H3)). apply ord_2_exp_monot; try apply nf_add; auto. apply add_right_incr_corr. destruct ((ord_2_exp (cons beta1 (n + n + 1) beta2))). apply zero_lt. destruct o1; apply zero_lt. 
+  apply ltb_asymm. apply ord_lt_ltb. apply ord_lt_dub_exp. auto. apply ord_ltb_irrefl.
+Qed.
+
+Lemma dub_exp_right : forall alpha beta, nf alpha -> nf beta -> Zero < ord_max beta alpha ->  ord_lt (ord_succ (ord_max (ord_2_exp (ord_add beta beta)) alpha)) (ord_2_exp (ord_add (ord_succ (ord_max beta alpha)) (ord_succ (ord_max beta alpha)))).
+Proof.
+intros. rewrite ord_max_symm in *. rewrite (ord_max_symm beta). apply dub_exp_left; auto.
+Qed.
+
+Lemma succ_lt_exc_dub_succ : forall alpha beta, nf alpha -> nf beta -> Zero < ord_max alpha beta -> ord_lt (ord_succ (ord_max alpha beta)) (ord_2_exp (ord_add (ord_succ (ord_max alpha beta)) (ord_succ (ord_max alpha beta)))).
+Proof.
+intros. assert (nf (ord_max alpha beta)). apply ord_max_nf; auto. pose proof (double_succ (ord_max alpha beta)). apply (lt_trans _ _ _ (ord_succ_not_exp_fp _ (ord_succ_nf _ H2))). apply ord_2_exp_monot; try apply nf_add; try apply ord_succ_nf; auto. apply add_right_incr_corr. destruct (ord_max alpha beta). apply zero_lt. destruct o1; apply zero_lt.
+Qed.
+
+Lemma succ_exp_dub : forall alpha beta, nf alpha -> nf beta -> ord_lt Zero (ord_max alpha beta) -> ord_lt (ord_succ (ord_2_exp (ord_max (ord_add alpha alpha) (ord_add beta beta)))) (ord_2_exp (ord_add (ord_succ (ord_max alpha beta)) (ord_succ (ord_max alpha beta)))).
+Proof.
+intros. rewrite <- ord_max_exp_equiv; try apply nf_add; auto. apply dub_exp_max; auto. 
+Qed.
+
+Lemma ord_add_succ_case : forall alpha beta, nf alpha -> nf beta -> (ord_lt (ord_add (ord_succ alpha) beta)) (ord_succ (ord_add alpha beta)) \/ (ord_add (ord_succ alpha) beta) = (ord_succ (ord_add alpha beta)).
+Proof.
+intros. rewrite <- ord_add_one_succ; auto. rewrite ord_add_assoc. rewrite <- ord_add_one_succ; try apply nf_add; auto. destruct beta.
+- simpl. rewrite ord_add_zero. auto.
+- destruct beta1.
+  + simpl. inversion H0; inversion H4. destruct H4. destruct alpha. simpl; rewrite plus_n_0; auto. destruct alpha1.
+    * inversion H; inversion H8. destruct H8. simpl. rewrite plus_n_0; repeat rewrite plus_n_1; repeat rewrite plus_n_Sm; auto.
+    * simpl. right. destruct alpha2. simpl. repeat rewrite plus_n_1. rewrite plus_n_0. auto. rewrite ord_add_assoc. rewrite plus_n_1. 
+      assert (ord_add (cons Zero n Zero) (cons Zero 0 Zero) = (cons Zero (S n) Zero)). simpl. rewrite plus_n_0. rewrite plus_n_1. auto. rewrite H4. auto.
+  + simpl. left. apply add_right_incr_corr. apply zero_lt.
+Qed.
+
+Lemma dubs_works : forall alpha, nf alpha -> ord_ltb (ord_succ (ord_add alpha alpha)) (ord_add (ord_succ alpha) (ord_succ alpha)) = true -> (ord_add (ord_succ alpha) (ord_succ alpha)) = ord_succ (ord_succ (ord_add alpha alpha)).
+Proof.
+intros. destruct alpha. simpl. auto. rewrite double_eval in *. destruct alpha1.
++ simpl in *. repeat rewrite <- plus_n_Sm. repeat rewrite plus_n_0. auto.
++ simpl in *. repeat rewrite ord_ltb_irrefl in *. repeat rewrite ord_eqb_refl in *. repeat rewrite lt_nat_irrefl in *. repeat rewrite eq_nat_refl in *.
+  repeat rewrite ord_ltb_irrefl in *. repeat rewrite ord_eqb_refl in *. repeat rewrite lt_nat_irrefl in *. inversion H0.
+Qed.
+
+Lemma add_succ_exp_left : forall alpha beta, nf alpha -> nf beta -> ord_lt Zero (ord_max alpha beta) -> ord_lt (ord_add (ord_succ (ord_2_exp alpha)) (ord_2_exp beta)) (ord_2_exp (ord_add (ord_succ (ord_max alpha beta)) (ord_succ (ord_max alpha beta)))).
+Proof.
+intros. destruct (ord_add_succ_case  _ _ (nf_2_exp _ H) (nf_2_exp _ H0)).
+- apply (lt_trans _ _ _ H2). destruct (ord_semiconnex_bool (ord_2_exp (ord_succ (ord_max alpha beta))) (ord_add (ord_2_exp alpha) (ord_2_exp beta))) as [Y | [Y | Y]].
+  + rewrite ord_add_exp_le_exp_max in Y; auto. inversion Y.
+  + apply ord_ltb_lt in Y. apply ord_lt_succ in Y. destruct (ord_semiconnex_bool (ord_add (ord_succ (ord_max alpha beta)) (ord_succ (ord_max alpha beta))) (ord_succ (ord_add (ord_max alpha beta) (ord_max alpha beta)))) as [Y1 | [Y1 | Y1]].
+    * rewrite (double_succ (ord_max alpha beta)) in Y1. inversion Y1.
+    * apply (lt_trans _ _ _ Y). rewrite dubs_works; try apply ord_max_nf; auto. refine (lt_trans _ _ _ (ord_succ_lt_exp_succ _ _ _) _). apply ord_succ_nf. apply ord_max_nf; auto. destruct (ord_max alpha beta); try destruct o1; apply zero_lt.
+      apply ord_2_exp_monot; try repeat apply ord_succ_nf; try apply nf_add; try apply ord_max_nf; auto. repeat apply ord_lt_succ. apply add_right_incr_corr. auto.
+    * apply (lt_trans _ _ _ Y). apply ord_eqb_eq in Y1. rewrite Y1. case (ord_eqb (ord_max alpha beta) (cons Zero 0 Zero)) eqn:Y2.
+      --  apply ord_eqb_eq in Y2. rewrite Y2. simpl. apply coeff_lt. auto.
+      --  refine (lt_trans _ _ _ (ord_succ_lt_exp_succ _ _ _) _). apply ord_succ_nf. apply ord_max_nf; auto. destruct (ord_max alpha beta); try destruct o1; apply zero_lt.
+          apply ord_2_exp_monot; try repeat apply ord_succ_nf; try apply nf_add; try apply ord_max_nf; auto. repeat apply ord_lt_succ.
+          rewrite <- ord_add_one_succ; try apply ord_max_nf; auto. apply add_right_incr. destruct (ord_max alpha beta). inversion H1. destruct o1. destruct n. destruct o2. inversion Y2. apply tail_lt. apply zero_lt. apply coeff_lt. lia. apply head_lt. apply zero_lt.
+  + apply ord_eqb_eq in Y. rewrite <- Y. destruct (ord_semiconnex_bool (ord_add (ord_succ (ord_max alpha beta)) (ord_succ (ord_max alpha beta))) (ord_succ (ord_add (ord_max alpha beta) (ord_max alpha beta)))) as [Y1 | [Y1 | Y1]].
+    * rewrite (double_succ (ord_max alpha beta)) in Y1. inversion Y1.
+    * rewrite dubs_works; try apply ord_max_nf; auto. refine (lt_trans _ _ _ (ord_succ_lt_exp_succ _ _ _) _). apply ord_succ_nf. apply ord_max_nf; auto. destruct (ord_max alpha beta); try destruct o1; apply zero_lt.
+      apply ord_2_exp_monot; try repeat apply ord_succ_nf; try apply nf_add; try apply ord_max_nf; auto. repeat apply ord_lt_succ. apply add_right_incr_corr. auto.
+    * apply ord_eqb_eq in Y1. rewrite Y1. case (ord_eqb (ord_max alpha beta) (cons Zero 0 Zero)) eqn:Y2.
+      --  apply ord_eqb_eq in Y2. rewrite Y2. simpl. apply coeff_lt. auto.
+      --  refine (lt_trans _ _ _ (ord_succ_lt_exp_succ _ _ _) _). apply ord_succ_nf. apply ord_max_nf; auto. destruct (ord_max alpha beta); try destruct o1; apply zero_lt.
+          apply ord_2_exp_monot; try repeat apply ord_succ_nf; try apply nf_add; try apply ord_max_nf; auto. repeat apply ord_lt_succ.
+          rewrite <- ord_add_one_succ; try apply ord_max_nf; auto. apply add_right_incr. destruct (ord_max alpha beta). inversion H1. destruct o1. destruct n. destruct o2. inversion Y2. apply tail_lt. apply zero_lt. apply coeff_lt. lia. apply head_lt. apply zero_lt.
+- rewrite H2. destruct (ord_semiconnex_bool (ord_2_exp (ord_succ (ord_max alpha beta))) (ord_add (ord_2_exp alpha) (ord_2_exp beta))) as [Y | [Y | Y]].
+  + rewrite ord_add_exp_le_exp_max in Y; auto. inversion Y.
+  + apply ord_ltb_lt in Y. apply ord_lt_succ in Y. destruct (ord_semiconnex_bool (ord_add (ord_succ (ord_max alpha beta)) (ord_succ (ord_max alpha beta))) (ord_succ (ord_add (ord_max alpha beta) (ord_max alpha beta)))) as [Y1 | [Y1 | Y1]].
+    * rewrite (double_succ (ord_max alpha beta)) in Y1. inversion Y1.
+    * apply (lt_trans _ _ _ Y). rewrite dubs_works; try apply ord_max_nf; auto. refine (lt_trans _ _ _ (ord_succ_lt_exp_succ _ _ _) _). apply ord_succ_nf. apply ord_max_nf; auto. destruct (ord_max alpha beta); try destruct o1; apply zero_lt.
+      apply ord_2_exp_monot; try repeat apply ord_succ_nf; try apply nf_add; try apply ord_max_nf; auto. repeat apply ord_lt_succ. apply add_right_incr_corr. auto.
+    * apply (lt_trans _ _ _ Y). apply ord_eqb_eq in Y1. rewrite Y1. case (ord_eqb (ord_max alpha beta) (cons Zero 0 Zero)) eqn:Y2.
+      --  apply ord_eqb_eq in Y2. rewrite Y2. simpl. apply coeff_lt. auto.
+      --  refine (lt_trans _ _ _ (ord_succ_lt_exp_succ _ _ _) _). apply ord_succ_nf. apply ord_max_nf; auto. destruct (ord_max alpha beta); try destruct o1; apply zero_lt.
+          apply ord_2_exp_monot; try repeat apply ord_succ_nf; try apply nf_add; try apply ord_max_nf; auto. repeat apply ord_lt_succ.
+          rewrite <- ord_add_one_succ; try apply ord_max_nf; auto. apply add_right_incr. destruct (ord_max alpha beta). inversion H1. destruct o1. destruct n. destruct o2. inversion Y2. apply tail_lt. apply zero_lt. apply coeff_lt. lia. apply head_lt. apply zero_lt.
+  + apply ord_eqb_eq in Y. rewrite <- Y. destruct (ord_semiconnex_bool (ord_add (ord_succ (ord_max alpha beta)) (ord_succ (ord_max alpha beta))) (ord_succ (ord_add (ord_max alpha beta) (ord_max alpha beta)))) as [Y1 | [Y1 | Y1]].
+    * rewrite (double_succ (ord_max alpha beta)) in Y1. inversion Y1.
+    * rewrite dubs_works; try apply ord_max_nf; auto. refine (lt_trans _ _ _ (ord_succ_lt_exp_succ _ _ _) _). apply ord_succ_nf. apply ord_max_nf; auto. destruct (ord_max alpha beta); try destruct o1; apply zero_lt.
+      apply ord_2_exp_monot; try repeat apply ord_succ_nf; try apply nf_add; try apply ord_max_nf; auto. repeat apply ord_lt_succ. apply add_right_incr_corr. auto.
+    * apply ord_eqb_eq in Y1. rewrite Y1. case (ord_eqb (ord_max alpha beta) (cons Zero 0 Zero)) eqn:Y2.
+      --  apply ord_eqb_eq in Y2. rewrite Y2. simpl. apply coeff_lt. auto.
+      --  refine (lt_trans _ _ _ (ord_succ_lt_exp_succ _ _ _) _). apply ord_succ_nf. apply ord_max_nf; auto. destruct (ord_max alpha beta); try destruct o1; apply zero_lt.
+          apply ord_2_exp_monot; try repeat apply ord_succ_nf; try apply nf_add; try apply ord_max_nf; auto. repeat apply ord_lt_succ.
+          rewrite <- ord_add_one_succ; try apply ord_max_nf; auto. apply add_right_incr. destruct (ord_max alpha beta). inversion H1. destruct o1. destruct n. destruct o2. inversion Y2. apply tail_lt. apply zero_lt. apply coeff_lt. lia. apply head_lt. apply zero_lt.
+Qed.
+
+(*
+Lemma add_succ_exp_right : forall alpha beta, nf alpha -> nf beta -> ord_lt Zero (ord_max alpha beta) -> ord_lt (ord_add (ord_succ (ord_2_exp alpha)) (ord_2_exp beta)) (ord_2_exp (ord_add (ord_succ (ord_max alpha beta)) (ord_succ (ord_max alpha beta)))).
+Proof.
+intros. destruct (ord_add_succ_case  _ _ (nf_2_exp _ H) (nf_2_exp _ H0)).
+- apply (lt_trans _ _ _ H2). destruct (ord_semiconnex_bool (ord_2_exp (ord_succ (ord_max alpha beta))) (ord_add (ord_2_exp alpha) (ord_2_exp beta))) as [Y | [Y | Y]].
+  + rewrite ord_add_exp_le_exp_max in Y; auto. inversion Y.
+  + apply ord_ltb_lt in Y. apply ord_lt_succ in Y. destruct (ord_semiconnex_bool (ord_add (ord_succ (ord_max alpha beta)) (ord_succ (ord_max alpha beta))) (ord_succ (ord_add (ord_max alpha beta) (ord_max alpha beta)))) as [Y1 | [Y1 | Y1]].
+    * rewrite (double_succ (ord_max alpha beta)) in Y1. inversion Y1.
+    * apply (lt_trans _ _ _ Y). rewrite dubs_works; try apply ord_max_nf; auto. refine (lt_trans _ _ _ (ord_succ_lt_exp_succ _ _ _) _). apply ord_succ_nf. apply ord_max_nf; auto. destruct (ord_max alpha beta); try destruct o1; apply zero_lt.
+      apply ord_2_exp_monot; try repeat apply ord_succ_nf; try apply nf_add; try apply ord_max_nf; auto. repeat apply ord_lt_succ. apply add_right_incr_corr. auto.
+    * apply (lt_trans _ _ _ Y). apply ord_eqb_eq in Y1. rewrite Y1. case (ord_eqb (ord_max alpha beta) (cons Zero 0 Zero)) eqn:Y2.
+      --  apply ord_eqb_eq in Y2. rewrite Y2. simpl. apply coeff_lt. auto.
+      --  refine (lt_trans _ _ _ (ord_succ_lt_exp_succ _ _ _) _). apply ord_succ_nf. apply ord_max_nf; auto. destruct (ord_max alpha beta); try destruct o1; apply zero_lt.
+          apply ord_2_exp_monot; try repeat apply ord_succ_nf; try apply nf_add; try apply ord_max_nf; auto. repeat apply ord_lt_succ.
+          rewrite <- ord_add_one_succ; try apply ord_max_nf; auto. apply add_right_incr. destruct (ord_max alpha beta). inversion H1. destruct o1. destruct n. destruct o2. inversion Y2. apply tail_lt. apply zero_lt. apply coeff_lt. lia. apply head_lt. apply zero_lt.
+  + apply ord_eqb_eq in Y. rewrite <- Y. destruct (ord_semiconnex_bool (ord_add (ord_succ (ord_max alpha beta)) (ord_succ (ord_max alpha beta))) (ord_succ (ord_add (ord_max alpha beta) (ord_max alpha beta)))) as [Y1 | [Y1 | Y1]].
+    * rewrite (double_succ (ord_max alpha beta)) in Y1. inversion Y1.
+    * rewrite dubs_works; try apply ord_max_nf; auto. refine (lt_trans _ _ _ (ord_succ_lt_exp_succ _ _ _) _). apply ord_succ_nf. apply ord_max_nf; auto. destruct (ord_max alpha beta); try destruct o1; apply zero_lt.
+      apply ord_2_exp_monot; try repeat apply ord_succ_nf; try apply nf_add; try apply ord_max_nf; auto. repeat apply ord_lt_succ. apply add_right_incr_corr. auto.
+    * apply ord_eqb_eq in Y1. rewrite Y1. case (ord_eqb (ord_max alpha beta) (cons Zero 0 Zero)) eqn:Y2.
+      --  apply ord_eqb_eq in Y2. rewrite Y2. simpl. apply coeff_lt. auto.
+      --  refine (lt_trans _ _ _ (ord_succ_lt_exp_succ _ _ _) _). apply ord_succ_nf. apply ord_max_nf; auto. destruct (ord_max alpha beta); try destruct o1; apply zero_lt.
+          apply ord_2_exp_monot; try repeat apply ord_succ_nf; try apply nf_add; try apply ord_max_nf; auto. repeat apply ord_lt_succ.
+          rewrite <- ord_add_one_succ; try apply ord_max_nf; auto. apply add_right_incr. destruct (ord_max alpha beta). inversion H1. destruct o1. destruct n. destruct o2. inversion Y2. apply tail_lt. apply zero_lt. apply coeff_lt. lia. apply head_lt. apply zero_lt.
+- rewrite H2. destruct (ord_semiconnex_bool (ord_2_exp (ord_succ (ord_max alpha beta))) (ord_add (ord_2_exp alpha) (ord_2_exp beta))) as [Y | [Y | Y]].
+  + rewrite ord_add_exp_le_exp_max in Y; auto. inversion Y.
+  + apply ord_ltb_lt in Y. apply ord_lt_succ in Y. destruct (ord_semiconnex_bool (ord_add (ord_succ (ord_max alpha beta)) (ord_succ (ord_max alpha beta))) (ord_succ (ord_add (ord_max alpha beta) (ord_max alpha beta)))) as [Y1 | [Y1 | Y1]].
+    * rewrite (double_succ (ord_max alpha beta)) in Y1. inversion Y1.
+    * apply (lt_trans _ _ _ Y). rewrite dubs_works; try apply ord_max_nf; auto. refine (lt_trans _ _ _ (ord_succ_lt_exp_succ _ _ _) _). apply ord_succ_nf. apply ord_max_nf; auto. destruct (ord_max alpha beta); try destruct o1; apply zero_lt.
+      apply ord_2_exp_monot; try repeat apply ord_succ_nf; try apply nf_add; try apply ord_max_nf; auto. repeat apply ord_lt_succ. apply add_right_incr_corr. auto.
+    * apply (lt_trans _ _ _ Y). apply ord_eqb_eq in Y1. rewrite Y1. case (ord_eqb (ord_max alpha beta) (cons Zero 0 Zero)) eqn:Y2.
+      --  apply ord_eqb_eq in Y2. rewrite Y2. simpl. apply coeff_lt. auto.
+      --  refine (lt_trans _ _ _ (ord_succ_lt_exp_succ _ _ _) _). apply ord_succ_nf. apply ord_max_nf; auto. destruct (ord_max alpha beta); try destruct o1; apply zero_lt.
+          apply ord_2_exp_monot; try repeat apply ord_succ_nf; try apply nf_add; try apply ord_max_nf; auto. repeat apply ord_lt_succ.
+          rewrite <- ord_add_one_succ; try apply ord_max_nf; auto. apply add_right_incr. destruct (ord_max alpha beta). inversion H1. destruct o1. destruct n. destruct o2. inversion Y2. apply tail_lt. apply zero_lt. apply coeff_lt. lia. apply head_lt. apply zero_lt.
+  + apply ord_eqb_eq in Y. rewrite <- Y. destruct (ord_semiconnex_bool (ord_add (ord_succ (ord_max alpha beta)) (ord_succ (ord_max alpha beta))) (ord_succ (ord_add (ord_max alpha beta) (ord_max alpha beta)))) as [Y1 | [Y1 | Y1]].
+    * rewrite (double_succ (ord_max alpha beta)) in Y1. inversion Y1.
+    * rewrite dubs_works; try apply ord_max_nf; auto. refine (lt_trans _ _ _ (ord_succ_lt_exp_succ _ _ _) _). apply ord_succ_nf. apply ord_max_nf; auto. destruct (ord_max alpha beta); try destruct o1; apply zero_lt.
+      apply ord_2_exp_monot; try repeat apply ord_succ_nf; try apply nf_add; try apply ord_max_nf; auto. repeat apply ord_lt_succ. apply add_right_incr_corr. auto.
+    * apply ord_eqb_eq in Y1. rewrite Y1. case (ord_eqb (ord_max alpha beta) (cons Zero 0 Zero)) eqn:Y2.
+      --  apply ord_eqb_eq in Y2. rewrite Y2. simpl. apply coeff_lt. auto.
+      --  refine (lt_trans _ _ _ (ord_succ_lt_exp_succ _ _ _) _). apply ord_succ_nf. apply ord_max_nf; auto. destruct (ord_max alpha beta); try destruct o1; apply zero_lt.
+          apply ord_2_exp_monot; try repeat apply ord_succ_nf; try apply nf_add; try apply ord_max_nf; auto. repeat apply ord_lt_succ.
+          rewrite <- ord_add_one_succ; try apply ord_max_nf; auto. apply add_right_incr. destruct (ord_max alpha beta). inversion H1. destruct o1. destruct n. destruct o2. inversion Y2. apply tail_lt. apply zero_lt. apply coeff_lt. lia. apply head_lt. apply zero_lt.
+Qed.
+*)
+
+Lemma nf_mult_2 : forall alpha, nf alpha -> nf (ord_mult (nat_ord 2) alpha).
+Proof.
+intros. apply nf_mult; auto. apply nf_nat.
+Qed.
+
+Lemma mult_2_mont : forall alpha beta, nf alpha -> nf beta -> alpha < beta -> (ord_mult (nat_ord 2) alpha) < (ord_mult (nat_ord 2) beta).
+Proof.
+intros.  apply mult_right_incr; auto. apply zero_lt.
+Qed.
+
+Lemma mult_2_succ : forall alpha, nf alpha -> ord_succ (ord_mult (nat_ord 2) alpha) < (ord_mult (nat_ord 2) (ord_succ alpha)).
+Proof.
+intros. induction alpha. apply coeff_lt. lia. destruct alpha1. apply coeff_lt. lia. apply tail_lt. apply IHalpha2. inversion H; auto. apply zero_nf.
+Qed.
+
+Lemma mult_2_succ_succ : forall alpha, nf alpha -> (ord_succ (ord_succ (ord_mult (nat_ord 2) alpha))) = (ord_mult (nat_ord 2) (ord_succ alpha)).
+Proof.
+intros. induction alpha. auto. destruct alpha1. simpl. rewrite minus_n_0. rewrite plus_n_Sm. auto. unfold ord_mult. fold ord_mult. unfold nat_ord.
+rewrite ord_zero_add. unfold ord_succ. fold ord_succ. simpl in IHalpha2. rewrite IHalpha2; auto. inversion H; auto. apply zero_nf.
+Qed.
+
 Close Scope cantor_scope.
