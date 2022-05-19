@@ -24,157 +24,157 @@ Definition demorgan2_sub_formula (A E F : formula) (S : subst_ind) : formula :=
   simpl. intros. destruct (and_bool_prop _ _ H0). auto.
   Qed.
   
-  Fixpoint demorgan2_sub_ptree_fit
-    (P : ptree) (E F : formula) (S : subst_ind) : ptree :=
-  match P, S with
-  | deg_up d P', _ => deg_up d (demorgan2_sub_ptree_fit P' E F S)
-  
-  | ord_up alpha P', _ => ord_up alpha (demorgan2_sub_ptree_fit P' E F S)
-  
-  | node A, _ => P
-  
-  | exchange_ab A B d alpha P', lor_ind S_B S_A =>
-      exchange_ab
-        (demorgan2_sub_formula A E F S_A)
-        (demorgan2_sub_formula B E F S_B)
-        d alpha
-        (demorgan2_sub_ptree_fit P' E F (lor_ind S_A S_B))
-  
-  | exchange_cab C0 A B d alpha P', lor_ind (lor_ind S_C S_B) S_A =>
-      exchange_cab
-        (demorgan2_sub_formula C0 E F S_C)
-        (demorgan2_sub_formula A E F S_A)
-        (demorgan2_sub_formula B E F S_B)
-        d alpha
-        (demorgan2_sub_ptree_fit P' E F (lor_ind (lor_ind S_C S_A) S_B))
-  
-  | exchange_abd A B D d alpha P', lor_ind (lor_ind S_B S_A) S_D =>
-      exchange_abd
-        (demorgan2_sub_formula A E F S_A)
-        (demorgan2_sub_formula B E F S_B)
-        (demorgan2_sub_formula D E F S_D)
-        d alpha
-        (demorgan2_sub_ptree_fit P' E F (lor_ind (lor_ind S_A S_B) S_D))
-  
-  | exchange_cabd C0 A B D d alpha P', lor_ind (lor_ind (lor_ind S_C S_B) S_A) S_D =>
-      exchange_cabd
-        (demorgan2_sub_formula C0 E F S_C)
-        (demorgan2_sub_formula A E F S_A)
-        (demorgan2_sub_formula B E F S_B)
-        (demorgan2_sub_formula D E F S_D)
-        d alpha
-        (demorgan2_sub_ptree_fit P' E F (lor_ind (lor_ind (lor_ind S_C S_A) S_B) S_D))
-  
-  | contraction_a A d alpha P', _ =>
-      contraction_a
-        (demorgan2_sub_formula A E F S)
-        d alpha
-        (demorgan2_sub_ptree_fit P' E F (lor_ind S S))
-  
-  | contraction_ad A D d alpha P', lor_ind S_A S_D =>
-      contraction_ad
-        (demorgan2_sub_formula A E F S_A)
-        (demorgan2_sub_formula D E F S_D)
-        d alpha
-        (demorgan2_sub_ptree_fit P' E F (lor_ind (lor_ind S_A S_A) S_D))
-  
-  | weakening_ad A D d alpha P', lor_ind S_A S_D =>
-      weakening_ad
-        (demorgan2_sub_formula A E F S_A)
-        (demorgan2_sub_formula D E F S_D)
-        d alpha
-        (demorgan2_sub_ptree_fit P' E F S_D)
-  
-  | demorgan_ab A B d1 d2 alpha1 alpha2 P1 P2, _ =>
-      (match eq_f A E, eq_f B F, S with
-      | true, true, (1) =>
-        (match eq_nat d2 (ptree_deg P) with
-        | true => ord_up (ptree_ord P) P2
-        | false => deg_up (ptree_deg P) (ord_up (ptree_ord P) P2)
-        end)
-      | _, _, _ => P
+Fixpoint demorgan2_sub_ptree_fit
+  (P : ptree) (E F : formula) (S : subst_ind) : ptree :=
+match P, S with
+| deg_up d P', _ => deg_up d (demorgan2_sub_ptree_fit P' E F S)
+
+| ord_up alpha P', _ => ord_up alpha (demorgan2_sub_ptree_fit P' E F S)
+
+| node A, _ => P
+
+| exchange_ab A B d alpha P', lor_ind S_B S_A =>
+    exchange_ab
+      (demorgan2_sub_formula A E F S_A)
+      (demorgan2_sub_formula B E F S_B)
+      d alpha
+      (demorgan2_sub_ptree_fit P' E F (lor_ind S_A S_B))
+
+| exchange_cab C0 A B d alpha P', lor_ind (lor_ind S_C S_B) S_A =>
+    exchange_cab
+      (demorgan2_sub_formula C0 E F S_C)
+      (demorgan2_sub_formula A E F S_A)
+      (demorgan2_sub_formula B E F S_B)
+      d alpha
+      (demorgan2_sub_ptree_fit P' E F (lor_ind (lor_ind S_C S_A) S_B))
+
+| exchange_abd A B D d alpha P', lor_ind (lor_ind S_B S_A) S_D =>
+    exchange_abd
+      (demorgan2_sub_formula A E F S_A)
+      (demorgan2_sub_formula B E F S_B)
+      (demorgan2_sub_formula D E F S_D)
+      d alpha
+      (demorgan2_sub_ptree_fit P' E F (lor_ind (lor_ind S_A S_B) S_D))
+
+| exchange_cabd C0 A B D d alpha P', lor_ind (lor_ind (lor_ind S_C S_B) S_A) S_D =>
+    exchange_cabd
+      (demorgan2_sub_formula C0 E F S_C)
+      (demorgan2_sub_formula A E F S_A)
+      (demorgan2_sub_formula B E F S_B)
+      (demorgan2_sub_formula D E F S_D)
+      d alpha
+      (demorgan2_sub_ptree_fit P' E F (lor_ind (lor_ind (lor_ind S_C S_A) S_B) S_D))
+
+| contraction_a A d alpha P', _ =>
+    contraction_a
+      (demorgan2_sub_formula A E F S)
+      d alpha
+      (demorgan2_sub_ptree_fit P' E F (lor_ind S S))
+
+| contraction_ad A D d alpha P', lor_ind S_A S_D =>
+    contraction_ad
+      (demorgan2_sub_formula A E F S_A)
+      (demorgan2_sub_formula D E F S_D)
+      d alpha
+      (demorgan2_sub_ptree_fit P' E F (lor_ind (lor_ind S_A S_A) S_D))
+
+| weakening_ad A D d alpha P', lor_ind S_A S_D =>
+    weakening_ad
+      (demorgan2_sub_formula A E F S_A)
+      (demorgan2_sub_formula D E F S_D)
+      d alpha
+      (demorgan2_sub_ptree_fit P' E F S_D)
+
+| demorgan_ab A B d1 d2 alpha1 alpha2 P1 P2, _ =>
+    (match eq_f A E, eq_f B F, S with
+    | true, true, (1) =>
+      (match eq_nat d2 (ptree_deg P) with
+      | true => ord_up (ptree_ord P) P2
+      | false => deg_up (ptree_deg P) (ord_up (ptree_ord P) P2)
       end)
-  
-  | demorgan_abd A B D d1 d2 alpha1 alpha2 P1 P2, lor_ind S_AB S_D =>
-      (match eq_f A E, eq_f B F, S_AB with
-      | true, true, (1) =>
-        (match eq_nat d2 (ptree_deg P) with
-        | true =>
-            ord_up
-              (ptree_ord P)
-              (demorgan2_sub_ptree_fit P2 E F (lor_ind (non_target (neg A)) S_D))
-        | false =>
-            deg_up
-              (ptree_deg P)
-                (ord_up
-                  (ptree_ord P)
-                  (demorgan2_sub_ptree_fit
-                    P2 E F
-                    (lor_ind (non_target (neg A)) S_D)))
-        end)
-      | _, _, _ =>
-          demorgan_abd
-            A B
-            (demorgan2_sub_formula D E F S_D)
-            d1 d2 alpha1 alpha2
-            (demorgan2_sub_ptree_fit P1 E F (lor_ind (non_target (neg A)) S_D))
-            (demorgan2_sub_ptree_fit P2 E F (lor_ind (non_target (neg B)) S_D))
+    | _, _, _ => P
+    end)
+
+| demorgan_abd A B D d1 d2 alpha1 alpha2 P1 P2, lor_ind S_AB S_D =>
+    (match eq_f A E, eq_f B F, S_AB with
+    | true, true, (1) =>
+      (match eq_nat d2 (ptree_deg P) with
+      | true =>
+          ord_up
+            (ptree_ord P)
+            (demorgan2_sub_ptree_fit P2 E F (lor_ind (non_target (neg A)) S_D))
+      | false =>
+          deg_up
+            (ptree_deg P)
+              (ord_up
+                (ptree_ord P)
+                (demorgan2_sub_ptree_fit
+                  P2 E F
+                  (lor_ind (non_target (neg A)) S_D)))
       end)
-  
-  | negation_a A d alpha P', _ => P
-  
-  | negation_ad A D d alpha P', lor_ind S_A S_D =>
-      negation_ad
-        A
-        (demorgan2_sub_formula D E F S_D)
-        d alpha
-        (demorgan2_sub_ptree_fit P' E F (lor_ind (non_target A) S_D))
-  
-  | quantification_a A n t d alpha P', _ => P
-  
-  | quantification_ad A D n t d alpha P', lor_ind S_A S_D =>
-      quantification_ad
-        A
-        (demorgan2_sub_formula D E F S_D)
-        n t d alpha
-        (demorgan2_sub_ptree_fit P' E F (lor_ind (0) S_D))
-  
-  | w_rule_a A n d alpha g, _ => P
-  
-  | w_rule_ad A D n d alpha g, lor_ind S_A S_D =>
-      w_rule_ad
-        A
-        (demorgan2_sub_formula D E F S_D)
-        n d alpha
-        (fun (t : c_term) =>
-            demorgan2_sub_ptree_fit (g t) E F (lor_ind (non_target A) S_D))
-  
-  | cut_ca C0 A d1 d2 alpha1 alpha2 P1 P2, _ =>
-      cut_ca
-        (demorgan2_sub_formula C0 E F S)
-        A d1 d2 alpha1 alpha2
-        (demorgan2_sub_ptree_fit P1 E F (lor_ind S (non_target A)))
-        P2
-  
-  | cut_ad A D d1 d2 alpha1 alpha2 P1 P2, _ =>
-      cut_ad
-        A
-        (demorgan2_sub_formula D E F S)
-        d1 d2 alpha1 alpha2
-        P1
-        (demorgan2_sub_ptree_fit P2 E F (lor_ind (0) S))
-  
-  | cut_cad C0 A D d1 d2 alpha1 alpha2 P1 P2, lor_ind S_C S_D =>
-      cut_cad
-        (demorgan2_sub_formula C0 E F S_C)
-        A
-        (demorgan2_sub_formula D E F S_D)
-        d1 d2 alpha1 alpha2
-        (demorgan2_sub_ptree_fit P1 E F (lor_ind S_C (non_target A)))
-        (demorgan2_sub_ptree_fit P2 E F (lor_ind (0) S_D))
-  
-  | _, _ => P
-  end.
+    | _, _, _ =>
+        demorgan_abd
+          A B
+          (demorgan2_sub_formula D E F S_D)
+          d1 d2 alpha1 alpha2
+          (demorgan2_sub_ptree_fit P1 E F (lor_ind (non_target (neg A)) S_D))
+          (demorgan2_sub_ptree_fit P2 E F (lor_ind (non_target (neg B)) S_D))
+    end)
+
+| negation_a A d alpha P', _ => P
+
+| negation_ad A D d alpha P', lor_ind S_A S_D =>
+    negation_ad
+      A
+      (demorgan2_sub_formula D E F S_D)
+      d alpha
+      (demorgan2_sub_ptree_fit P' E F (lor_ind (non_target A) S_D))
+
+| quantification_a A n t d alpha P', _ => P
+
+| quantification_ad A D n t d alpha P', lor_ind S_A S_D =>
+    quantification_ad
+      A
+      (demorgan2_sub_formula D E F S_D)
+      n t d alpha
+      (demorgan2_sub_ptree_fit P' E F (lor_ind (0) S_D))
+
+| w_rule_a A n d alpha g, _ => P
+
+| w_rule_ad A D n d alpha g, lor_ind S_A S_D =>
+    w_rule_ad
+      A
+      (demorgan2_sub_formula D E F S_D)
+      n d alpha
+      (fun (t : c_term) =>
+          demorgan2_sub_ptree_fit (g t) E F (lor_ind (non_target A) S_D))
+
+| cut_ca C0 A d1 d2 alpha1 alpha2 P1 P2, _ =>
+    cut_ca
+      (demorgan2_sub_formula C0 E F S)
+      A d1 d2 alpha1 alpha2
+      (demorgan2_sub_ptree_fit P1 E F (lor_ind S (non_target A)))
+      P2
+
+| cut_ad A D d1 d2 alpha1 alpha2 P1 P2, _ =>
+    cut_ad
+      A
+      (demorgan2_sub_formula D E F S)
+      d1 d2 alpha1 alpha2
+      P1
+      (demorgan2_sub_ptree_fit P2 E F (lor_ind (0) S))
+
+| cut_cad C0 A D d1 d2 alpha1 alpha2 P1 P2, lor_ind S_C S_D =>
+    cut_cad
+      (demorgan2_sub_formula C0 E F S_C)
+      A
+      (demorgan2_sub_formula D E F S_D)
+      d1 d2 alpha1 alpha2
+      (demorgan2_sub_ptree_fit P1 E F (lor_ind S_C (non_target A)))
+      (demorgan2_sub_ptree_fit P2 E F (lor_ind (0) S_D))
+
+| _, _ => P
+end.
   
   Fixpoint demorgan2_sub_ptree
     (P : ptree) (E F : formula) (S : subst_ind) : ptree :=
