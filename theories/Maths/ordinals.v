@@ -866,25 +866,6 @@ inversion H.
   + apply H5.
 Qed.
 
-(*Lemma nf_hered_third : forall (a b : ord) (n : nat),
-  nf (cons a n b) -> nf b.
-Proof.
-intros a b n H.
-destruct b as [Zero | a' n' b'].
-- apply Zero_nf.
-- destruct b' as [Zero | a'' n'' b''].
-  + apply single_nf. inversion H. inversion H7. apply H9.
-  + inversion H. apply H7.
-Qed.
-
-Lemma nf_hered_first : forall (a b : ord) (n : nat),
-  nf (cons a n b) -> nf a.
-Proof.
-intros a b n H.
-destruct b as [Zero | a' n' b'].
-- inversion H. apply H1.
-- inversion H. apply H6.
-Qed.*)
 
 Lemma zero_minimal : forall (alpha : ord), ~ (alpha < Zero).
 intros alpha.
@@ -2636,16 +2617,6 @@ intros. refine (ord_trans_inv _ _ _ _ (ord_add_le_dub_max _ _ _ _)); try apply n
 rewrite ord_2_exp_succ_mult; auto. rewrite ord_max_exp_equiv; auto. apply ord_ltb_irrefl. apply ord_max_nf; auto.
 Qed.
 
-(*
-Lemma dub_succ_exp_eq : forall alpha, nf alpha -> ord_ltb (ord_succ (ord_succ alpha)) (ord_2_exp (ord_succ alpha)) = false -> ord_eqb (ord_succ (ord_succ alpha)) (ord_2_exp (ord_succ alpha)) = true.
-Proof.
-intros. pose proof (ord_succ_not_exp_fp _ (ord_succ_nf _ H)). apply ord_lt_succ in H1. destruct (ord_lt_succ_cases _ _ H1).
-- repeat apply ord_succ_nf; auto.
-- apply nf_2_exp. apply ord_succ_nf. auto.
-- rewrite H2. apply ord_eqb_refl.
-- apply ord_lt_ltb in H2. rewrite H0 in H2. inversion H2.
-Qed.
-*)
 
 Lemma dub_succ_exp_eq : forall alpha, ord_lt Zero alpha -> nf alpha -> ord_ltb (ord_succ (ord_succ (ord_2_exp alpha))) (ord_2_exp (ord_succ alpha)) = false -> ord_eqb (ord_succ (ord_succ (ord_2_exp alpha))) (ord_2_exp (ord_succ alpha)) = true.
 Proof.

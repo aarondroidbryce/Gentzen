@@ -29,9 +29,9 @@ match P, S with
       d alpha
       (formula_sub_ptree_fit P' E F (lor_ind S_A S_B))
 
-| exchange_cab C0 A B d alpha P', lor_ind (lor_ind S_C S_B) S_A =>
+| exchange_cab C A B d alpha P', lor_ind (lor_ind S_C S_B) S_A =>
     exchange_cab
-      (formula_sub_ind_fit C0 E F S_C)
+      (formula_sub_ind_fit C E F S_C)
       (formula_sub_ind_fit A E F S_A)
       (formula_sub_ind_fit B E F S_B)
       d alpha
@@ -45,9 +45,9 @@ match P, S with
       d alpha
       (formula_sub_ptree_fit P' E F (lor_ind (lor_ind S_A S_B) S_D))
 
-| exchange_cabd C0 A B D d alpha P', lor_ind (lor_ind (lor_ind S_C S_B) S_A) S_D =>
+| exchange_cabd C A B D d alpha P', lor_ind (lor_ind (lor_ind S_C S_B) S_A) S_D =>
     exchange_cabd
-      (formula_sub_ind_fit C0 E F S_C)
+      (formula_sub_ind_fit C E F S_C)
       (formula_sub_ind_fit A E F S_A)
       (formula_sub_ind_fit B E F S_B)
       (formula_sub_ind_fit D E F S_D)
@@ -112,9 +112,9 @@ match P, S with
       (fun (t : c_term) =>
           formula_sub_ptree_fit (g t) E F (lor_ind (non_target A) S_D))
 
-| cut_ca C0 A d1 d2 alpha1 alpha2 P1 P2, _ =>
+| cut_ca C A d1 d2 alpha1 alpha2 P1 P2, _ =>
     cut_ca
-      (formula_sub_ind_fit C0 E F S)
+      (formula_sub_ind_fit C E F S)
       A d1 d2 alpha1 alpha2
       (formula_sub_ptree_fit P1 E F (lor_ind S (non_target A)))
       P2
@@ -127,9 +127,9 @@ match P, S with
       P1
       (formula_sub_ptree_fit P2 E F (lor_ind (0) S))
 
-| cut_cad C0 A D d1 d2 alpha1 alpha2 P1 P2, lor_ind S_C S_D =>
+| cut_cad C A D d1 d2 alpha1 alpha2 P1 P2, lor_ind S_C S_D =>
     cut_cad
-      (formula_sub_ind_fit C0 E F S_C)
+      (formula_sub_ind_fit C E F S_C)
       A
       (formula_sub_ind_fit D E F S_D)
       d1 d2 alpha1 alpha2

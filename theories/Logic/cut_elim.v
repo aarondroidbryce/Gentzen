@@ -232,66 +232,6 @@ match P with
 | _ => P
 end.
 
-(*
-(* Defining cut_elimination_univ, the case where the cut formula is univ n E *)
-(* *)
-Fixpoint cut_elimination_univ (P : ptree) : ptree :=
-match P with
-| cut_ca C (univ n F) d1 d2 alpha1 alpha2 P1 P2 =>
-    cut_ca
-      C (substitution F n (represent 0)) 
-      (max (max d1 d2) (num_conn F))
-      d2
-      (ord_succ (ord_max alpha1 alpha2))
-      alpha2
-      (w_rule_sub_ptree P1 F n 0 (lor_ind (non_target C) (1)))
-      (w_rule_sub_ptree P2 (neg (univ n F)) n 0 (1))
-
-| cut_ad (lor E F) D d1 d2 alpha1 alpha2 P1 P2 =>
-    contraction_a
-      D
-      (max (max d1 d2) (max (num_conn E) (num_conn F)))
-      (ord_succ (ord_succ (ord_max alpha1 alpha2)))
-      (cut_cad
-        D E D
-        (max (max d1 d2) (num_conn F))
-        d2
-        (ord_succ (ord_max alpha1 alpha2))
-        alpha2
-        (exchange_ab
-          E D
-          (max (max d1 d2) (num_conn F))
-          (ord_succ (ord_max alpha1 alpha2))
-          (cut_cad
-            E F D d1 d2 alpha1 alpha2 P1
-            (demorgan2_sub_ptree P2 E F (lor_ind (1) (non_target D)))))
-        (demorgan1_sub_ptree P2 E F (lor_ind (1) (non_target D))))
-
-| cut_cad C (lor E F) D d1 d2 alpha1 alpha2 P1 P2 =>
-    contraction_help
-      (cut_cad
-        (lor C D) E D
-        (max (max d1 d2) (max (num_conn E) (num_conn F)))
-        d2
-        (ord_succ (ord_succ (ord_max alpha1 alpha2)))
-        alpha2
-        (exchange_cab
-          C E D
-          (max (max d1 d2) (num_conn F))
-          (ord_succ (ord_max alpha1 alpha2))
-          (cut_cad (lor C E) F D d1 d2 alpha1 alpha2
-            (associativity_2' P1)
-            (demorgan2_sub_ptree P2 E F (lor_ind (1) (non_target D)))))
-        (demorgan1_sub_ptree P2 E F (lor_ind (1) (non_target D))))
-
-| deg_up d P' => cut_elimination_univ P'
-| ord_up alpha P' => cut_elimination_univ P'
-        
-
-| _ => P
-end.
-*)
-
 (* Define cut_elimination, an operation on ptrees *)
 (* *)
 Fixpoint cut_elimination (P : ptree) : ptree :=
