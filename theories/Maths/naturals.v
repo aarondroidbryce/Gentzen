@@ -264,6 +264,18 @@ induction n as [| n' IH].
 - simpl. rewrite IH. auto.
 Qed.
 
+Lemma mult_n_Sm : forall (n m : nat), n * S (m) = n * m + n.
+Proof.
+intros.
+induction n.
+- rewrite plus_n_0. unfold mul. reflexivity.
+- unfold mul. fold mul. rewrite IHn. rewrite plus_comm.
+  rewrite <- plus_n_Sm. rewrite <- plus_assoc.
+  rewrite plus_n_Sm. rewrite plus_comm. rewrite (plus_comm n).
+  rewrite plus_n_Sm. rewrite plus_comm. rewrite plus_assoc.
+  rewrite (plus_comm m). reflexivity.
+Qed.
+
 Lemma nat_semiconnex : forall (m n : nat), m < n \/ n < m \/ m = n.
 Proof. intros. lia. Qed.
 
