@@ -5,12 +5,15 @@ Add LoadPath "theories/Logic" as Systems.
 Require Import Lia.
 Require Import Nat.
 Require Import Wellfounded.
+
 From Maths_Facts Require Import naturals.
 From Maths_Facts Require Import lists.
 From Maths_Facts Require Import ordinals.
+
 From Systems Require Import definitions.
 From Systems Require Import fol.
 From Systems Require Import PA_omega.
+
 Notation "b1 && b2" := (andb b1 b2).
 Notation "b1 || b2" := (orb b1 b2).
 Notation eq_nat := Nat.eqb.
@@ -164,14 +167,47 @@ intros. pose proof (inductive_implication_theorem _ _  c H). destruct (value c) 
   + apply single_nf. apply nf_nat. 
 Qed.
 
-Lemma induction_aux' : forall A n (c : c_term), closed A = true -> PA_omega_theorem (lor (substitution A n (projT1 c)) (lor (neg (substitution A n zero)) (neg (univ n (lor (neg A) (substitution A n (succ (var n)))))))) 0 (ord_succ (ord_add (nat_ord (S (num_conn A + num_conn A))) (nat_ord (3 * (S (value c)))))).
+Lemma induction_aux' :
+  forall A n (c : c_term),
+    closed A = true ->
+      PA_omega_theorem (lor (substitution A n (projT1 c))
+                            (lor (neg (substitution A n zero))
+                                 (neg (univ n (lor (neg A)
+                                                   (substitution A n (succ (var n))))))))
+                        0 (ord_succ (ord_add (nat_ord (S (num_conn A + num_conn A))) (nat_ord (3 * (S (value c)))))).
 Proof.
-intros. pose proof (inductive_implication_theorem' _ n c H). destruct (value c).
-- apply exchange1. apply exchange3. apply associativity2. apply weakening; auto. simpl. rewrite closed_subst_eq; auto. rewrite H. simpl. auto.
-  unfold inductive_implication in H0. repeat rewrite closed_subst_eq; auto. rewrite closed_subst_eq in H0; auto. apply exchange1. auto.
-- repeat rewrite closed_subst_eq; auto. apply associativity1. apply exchange1. apply weakening. simpl. rewrite H. auto.
-    apply exchange1. apply (ord_incr _ _ _ _ (LEM _ H)). rewrite ord_succ_nat.
-    rewrite <- ord_add_nat. apply nat_ord_lt. lia. apply single_nf. apply zero_nf.
+intros.
+pose proof (inductive_implication_theorem' _ n c H) as Y1.
+unfold inductive_implication in Y1.
+repeat rewrite (closed_subst_eq _ _ _ H) in Y1.
+repeat rewrite (closed_subst_eq _ _ _ H).
+destruct (value c).
+- apply exchange1.
+  apply exchange3.
+  apply associativity2.
+  apply weakening.
+  + unfold closed. fold closed.
+    rewrite H.
+    unfold "&&".
+    reflexivity.
+  + apply exchange1.
+    apply Y1.
+
+- apply associativity1.
+  apply exchange1.
+  apply weakening.
+  + unfold closed. fold closed.
+    rewrite H.
+    unfold "&&".
+    reflexivity.
+  + apply exchange1.
+    apply (ord_incr _ _ _ _ (LEM _ H)).
+    * rewrite ord_succ_nat.
+      rewrite <- ord_add_nat.
+      apply nat_ord_lt.
+      lia.
+    * apply single_nf.
+      apply zero_nf.
 Qed.
 
 Lemma PA_closed_PA_omega :

@@ -3,8 +3,10 @@ Add LoadPath "theories/Logic" as Systems.
 
 Require Import Lia.
 Require Import Nat.
+
 From Maths_Facts Require Import naturals.
 From Systems Require Import definitions.
+
 Notation "b1 && b2" := (andb b1 b2).
 Notation "b1 || b2" := (orb b1 b2).
 Notation eq_nat := Nat.eqb.
@@ -36,39 +38,95 @@ match l1,l2 with
 | m :: l1', n :: l2' => eq_nat m n && eq_list l1' l2'
 end.
 
-Lemma eq_list_symm : forall l1 l2, eq_list l1 l2 = eq_list l2 l1.
+Lemma eq_list_symm :
+  forall l1 l2, eq_list l1 l2 = eq_list l2 l1.
 Proof.
-intros l1. induction l1.
-- intros. destruct l2; auto.
-- intros. destruct l2; simpl; auto. rewrite IHl1. case (eq_nat x n) eqn:X. rewrite eq_nat_symm; auto. rewrite eq_nat_symm'; auto.
+induction l1.
+- destruct l2;
+  reflexivity.
+- destruct l2.
+  + reflexivity.
+  + unfold eq_list. fold eq_list.
+    rewrite IHl1. 
+    rewrite eq_nat_symm.
+    reflexivity.
 Qed.
 
 Definition eq_list_decid_nice (l1 : list nat) :=
   forall (l2 : list nat), eq_list l1 l2 = true -> l1 = l2.
 
-Lemma eq_list_decid' : forall (l1 : list nat), eq_list_decid_nice l1.
+Lemma eq_list_decid' :
+  forall (l1 : list nat), eq_list_decid_nice l1.
 Proof.
-intros. induction l1.
-- unfold eq_list_decid_nice. intros. destruct l2; auto. inversion H.
-- unfold eq_list_decid_nice. intros. destruct l2.
-  + inversion H.
-  + simpl in H. destruct (and_bool_prop _ _ H).
-    unfold eq_list_decid_nice in IHl1. rewrite (IHl1 l2 H1).
-    rewrite (nat_eq_decid _ _ H0). auto.
+intros l1. induction l1.
+- unfold eq_list_decid_nice.
+  intros l2 EQ.
+  destruct l2.
+  + reflexivity. 
+  + inversion EQ.
+- unfold eq_list_decid_nice.
+  intros l2 EQ.
+  destruct l2.
+  + inversion EQ.
+  + unfold eq_list in EQ. fold eq_list in EQ.
+    destruct (and_bool_prop _ _ EQ) as [EQ1 EQ2].
+    unfold eq_list_decid_nice in IHl1.
+    rewrite (IHl1 l2 EQ2).
+    rewrite (nat_eq_decid _ _ EQ1).
+    reflexivity.
 Qed.
 
-Lemma eq_list_decid : forall (l1 l2 : list nat),
-  eq_list l1 l2 = true -> l1 = l2.
-Proof. intros. apply (eq_list_decid' l1). auto. Qed.
+Lemma eq_list_decid :
+  forall (l1 l2 : list nat),
+    eq_list l1 l2 = true -> l1 = l2.
+Proof.
+intros.
+apply (eq_list_decid' l1).
+apply H.
+Qed.
 
 Lemma list_ne_symm : forall (l1 l2 : list nat), l1 <> l2 -> l2 <> l1. auto. Qed.
 
 Lemma list_ne_cons : forall (l1 : list nat) (n : nat), eq_list l1 (n :: l1) = false.
-Proof. intros. induction l1. auto. simpl. case (eq_nat x n) eqn:X. apply nat_eq_decid in X. destruct X. auto. auto. Qed.
+Proof.
+intros l1 n.
+induction l1.
+- unfold eq_list.
+  reflexivity.
+- unfold eq_list. fold eq_list.
+  case (eq_nat x n) eqn:X1.
+  + apply nat_eq_decid in X1.
+    destruct X1.
+    rewrite IHl1.
+    unfold "&&".
+    reflexivity.
+  + unfold "&&".
+    reflexivity.
+Qed.
 
-Lemma eq_list_decid_conv : forall (l1 l2 : list nat),
-  eq_list l1 l2 = false -> l1 <> l2.
-Proof.  unfold "<>". intros. destruct H0. induction l1; inversion H. rewrite eq_nat_refl in H1. auto. Qed.
+Lemma eq_list_refl :
+  forall (l : list nat), eq_list l l = true.
+Proof.
+intros l.
+induction l.
+- reflexivity.
+- unfold eq_list. fold eq_list.
+  rewrite eq_nat_refl.
+  rewrite IHl.
+  unfold "&&".
+  reflexivity.
+Qed.
+
+Lemma eq_list_decid_conv :
+  forall (l1 l2 : list nat),
+    eq_list l1 l2 = false -> l1 <> l2.
+Proof.
+unfold "<>".
+intros l1 l2 NEQ EQ.
+destruct EQ.
+rewrite eq_list_refl in NEQ.
+inversion NEQ.
+Qed.
 
 Fixpoint remove (n : nat) (l : list nat) : list nat :=
 match l with
@@ -96,50 +154,91 @@ match l with
 | n :: l' => n :: (remove n (remove_dups l'))
 end.
 
-Lemma remove_concat : forall (n : nat) (l1 l2 : list nat),
-  remove n (concat l1 l2) = concat (remove n l1) (remove n l2).
+Lemma remove_concat :
+  forall (n : nat) (l1 l2 : list nat),
+    remove n (concat l1 l2) = concat (remove n l1) (remove n l2).
 Proof.
-intros.
-induction l1; auto.
-simpl. case_eq (eq_nat x n); intros.
-- apply IHl1.
-- rewrite IHl1. auto.
+intros n l1 l2.
+induction l1.
+- unfold remove.
+  unfold concat.
+  fold remove.
+  reflexivity.
+- unfold concat.
+  unfold remove.
+  fold @concat.
+  fold remove.
+  case (eq_nat x n) eqn:EQ.
+  + apply IHl1.
+  + rewrite IHl1.
+    unfold concat.
+    reflexivity.
 Qed.
 
-Lemma concat_empty : forall (X : Type) (l1 l2 : list X),
-  concat l1 l2 = [] -> l1 = [] /\ l2 = [].
+Lemma concat_empty :
+  forall (X : Type) (l1 l2 : list X),
+    concat l1 l2 = [] -> l1 = [] /\ l2 = [].
 Proof.
-intros. split.
-- destruct l1; auto. inversion H.
-- destruct l2; auto. destruct l1; inversion H.
+intros X l1 l2 CL. split.
+- destruct l1.
+  + reflexivity.
+  + inversion CL.
+- destruct l2.
+  + reflexivity.
+  + destruct l1;
+    inversion CL.
 Qed.
 
-Lemma remove_dups_empty : forall (l : list nat), remove_dups l = [] -> l = [].
-Proof. intros. destruct l. auto. inversion H. Qed.
-
-Lemma remove_order : forall (l : list nat) (n m : nat),
-  remove n (remove m l) = remove m (remove n l).
+Lemma remove_dups_empty :
+  forall (l : list nat),
+    remove_dups l = [] -> l = [].
 Proof.
-intros. induction l; auto.
-destruct (eq_nat x n) eqn:Hn; destruct (eq_nat x m) eqn:Hm; simpl;
-rewrite Hn; rewrite Hm; auto; simpl.
-- rewrite Hn. apply IHl.
-- rewrite Hm. apply IHl.
-- rewrite Hn, Hm. rewrite IHl. auto.
+intros l EMPTY.
+destruct l.
+- reflexivity.
+- inversion EMPTY.
 Qed.
 
-Lemma remove_twice : forall (l : list nat) (n : nat),
-  remove n (remove n l) = remove n l.
+Lemma remove_order :
+  forall (l : list nat) (n m : nat),
+    remove n (remove m l) = remove m (remove n l).
 Proof.
-intros. induction l; auto.
-destruct (eq_nat x n) eqn:Hn; simpl; rewrite Hn; auto.
-simpl. rewrite Hn. rewrite IHl. auto.
+intros l n m.
+induction l.
+- unfold remove.
+  reflexivity.
+- destruct (eq_nat x n) eqn:EQn;
+  destruct (eq_nat x m) eqn:EQm;
+  unfold remove;
+  rewrite EQn;
+  rewrite EQm;
+  try rewrite EQn;
+  fold remove;
+  rewrite IHl;
+  reflexivity.
 Qed.
 
-Lemma remove_dups_order : forall (l : list nat) (n : nat),
-  remove n (remove_dups l) = remove_dups (remove n l).
+Lemma remove_twice :
+  forall (l : list nat) (n : nat),
+    remove n (remove n l) = remove n l.
 Proof.
-intros. induction l; auto.
+intros l n.
+induction l.
+- unfold remove.
+  reflexivity.
+- unfold remove.
+  case (eq_nat x n) eqn:EQn;
+  try rewrite EQn;
+  fold remove;
+  rewrite IHl;
+  reflexivity.
+Qed.
+
+Lemma remove_dups_order :
+  forall (l : list nat) (n : nat),
+    remove n (remove_dups l) = remove_dups (remove n l).
+Proof.
+intros l n. induction l; auto.
 case_eq (eq_nat x n); intros.
 - assert (remove n (x :: l) = remove n l). { simpl. rewrite H. auto. }
   rewrite H0. rewrite <- IHl. pose proof (nat_eq_decid x n H).
@@ -191,7 +290,7 @@ Proof.
 intros.
 induction l; auto.
 inversion H0. case_eq (eq_nat x n); intros.
-- apply nat_eq_decid in H1. rewrite H1. simpl. apply eq_nat_symm' in H.
+- apply nat_eq_decid in H1. rewrite H1. simpl. rewrite eq_nat_symm in H.
   rewrite H. simpl. rewrite eq_nat_refl. auto.
 - rewrite H1 in H2. simpl. rewrite H2. apply IHl in H2.
   case_eq (eq_nat x m); intros.

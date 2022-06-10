@@ -726,7 +726,8 @@ intros T m n s t Hs Ht Hmn. induction T; auto; simpl.
 - rewrite IHT1, IHT2. auto.
 - rewrite IHT1, IHT2. auto.
 - destruct (eq_nat n0 n) eqn:Hn.
-  + rewrite <- (nat_eq_decid _ _ Hn) in Hmn. rewrite (eq_nat_symm' _ _ Hmn).
+  + rewrite <- (nat_eq_decid _ _ Hn) in Hmn. rewrite eq_nat_symm.
+    rewrite Hmn.
     simpl. rewrite Hn. apply closed_subst_eq_t, Hs.
   + destruct (eq_nat n0 m) eqn:Hm; simpl; rewrite Hm.
     * symmetry. apply closed_subst_eq_t, Ht.
@@ -759,8 +760,8 @@ intros B m n s t Hs Ht Hmn. induction B; simpl.
 - rewrite IHB1, IHB2. auto.
 - destruct (eq_nat n0 n) eqn:Hn.
   + apply nat_eq_decid in Hn. rewrite Hn.
-    rewrite (eq_nat_symm' _ _ Hmn). simpl.
-    rewrite (eq_nat_symm' _ _ Hmn). rewrite eq_nat_refl. auto.
+    rewrite eq_nat_symm. rewrite Hmn. simpl.
+    rewrite eq_nat_symm. rewrite Hmn. rewrite eq_nat_refl. auto.
   + destruct (eq_nat n0 m) eqn:Hm; simpl; rewrite Hm, Hn; auto.
     rewrite IHB. auto.
 Qed.
@@ -1066,8 +1067,8 @@ Qed.
 Lemma closure_univ_list : forall L A t n, closed_t t = true -> closure_type (univ n A) t L = univ n (closure_type A t (remove n L)).
 Proof.
 intros L. induction L. auto. intros. simpl. case (eq_nat n x) eqn:X.
-- apply eq_nat_symm in X. rewrite X. auto.
-- rewrite IHL; auto. apply eq_nat_symm' in X. rewrite X. auto.
+- rewrite eq_nat_symm. rewrite X. auto.
+- rewrite IHL; auto. rewrite eq_nat_symm. rewrite X. auto.
 Qed.
 
 Lemma closure_neg : forall A t, closed_t t = true -> closure (neg A) t = neg (closure A t).
@@ -1094,7 +1095,7 @@ Lemma closure_subst_list :  forall (L : list nat) (A : formula) (t s : term) (n 
 Proof.
 intros L. induction L. auto. intros. simpl. case (eq_nat x n) eqn:X.
 - apply nat_eq_decid in X. destruct X. rewrite IHL; auto. rewrite (closed_subst_eq_aux (substitution A x s)). auto. rewrite subst_remove; auto. apply remove_not_member.
-- simpl. rewrite IHL; auto. apply eq_nat_symm' in X. rewrite substitution_order; auto.
+- simpl. rewrite IHL; auto. rewrite eq_nat_symm in X. rewrite substitution_order; auto.
 Qed.
 
 Lemma closure_subst :  forall (A : formula) (t s : term) (n : nat), closed_t t = true -> closed_t s = true -> (substitution (closure_type A t (free_list (univ n A))) n s) = (closure (substitution A n s) t).
@@ -1216,7 +1217,7 @@ intros T m n s t Hs Ht Hmn. induction T; auto; simpl.
 - rewrite IHT1, IHT2. auto.
 - rewrite IHT1, IHT2. auto.
 - destruct (eq_nat n0 n) eqn:Hn.
-  + rewrite <- (nat_eq_decid _ _ Hn) in Hmn. rewrite (eq_nat_symm' _ _ Hmn).
+  + rewrite <- (nat_eq_decid _ _ Hn) in Hmn. rewrite eq_nat_symm. rewrite Hmn.
     simpl. rewrite Hn. rewrite closed_subst_eq_aux_t; auto.
   + destruct (eq_nat n0 m) eqn:Hm; simpl; rewrite Hm.
     * rewrite closed_subst_eq_aux_t; auto.
@@ -1249,15 +1250,15 @@ intros B m n s t Hs Ht Hmn. induction B; simpl.
 - rewrite IHB1, IHB2. auto.
 - destruct (eq_nat n0 n) eqn:Hn.
   + apply nat_eq_decid in Hn. rewrite Hn.
-    rewrite (eq_nat_symm' _ _ Hmn). simpl.
-    rewrite (eq_nat_symm' _ _ Hmn). rewrite eq_nat_refl. auto.
+    rewrite eq_nat_symm. rewrite Hmn. simpl.
+    rewrite eq_nat_symm. rewrite Hmn. rewrite eq_nat_refl. auto.
   + destruct (eq_nat n0 m) eqn:Hm; simpl; rewrite Hm, Hn; auto.
     rewrite IHB. auto.
 Qed.
 
 Lemma closure_type_sub_remove_list : forall (L : list nat) (A : formula) (t : term) (n : nat), closed_t t = true -> (closure_type (substitution A n (succ (var n))) t (remove n L)) = substitution (closure_type A t (remove n L)) n (succ (var n)).
 Proof.
-intros L. induction L. auto. intros. simpl. case (eq_nat x n) eqn:X. rewrite IHL; auto. simpl. rewrite <- IHL; auto. rewrite weak_substitution_order; simpl; auto. apply eq_nat_symm' in X. rewrite X. auto. rewrite closed_free_list_t; auto.
+intros L. induction L. auto. intros. simpl. case (eq_nat x n) eqn:X. rewrite IHL; auto. simpl. rewrite <- IHL; auto. rewrite weak_substitution_order; simpl; auto. rewrite eq_nat_symm in X. rewrite X. auto. rewrite closed_free_list_t; auto.
 Qed.
 
 Lemma closure_type_sub_remove : forall (A : formula) (t : term) (n : nat), closed_t t = true -> (closure_type (substitution A n (succ (var n))) t (free_list (univ n (lor (neg A) (substitution A n (succ (var n))))))) = substitution (closure_type A t (free_list (univ n A))) n (succ (var n)).
@@ -1411,4 +1412,94 @@ Proof.
 intros. unfold correct_a. unfold correctness. pose proof eval_represent (value c). case (eval (represent (value c))) eqn:X. inversion H.
 pose proof (closed_eval (projT1 c) (projT2 c)). case (eval (projT1 c)) eqn:X1. inversion H0. unfold value in X. rewrite represent_eval in X.
 destruct X. destruct X1. rewrite eq_nat_refl. auto. destruct c. auto.
+Qed.
+
+
+Lemma eval_eq_subst_eq :
+  forall (T s t : term) (n : nat),
+    eval s = eval t ->
+      eval (substitution_t T n s) = eval (substitution_t T n t).
+Proof.
+intros T s t n EQ.
+induction T;
+unfold substitution_t; fold substitution_t;
+unfold eval; fold eval.
+
+- reflexivity.
+
+- rewrite IHT.
+  reflexivity. 
+
+- rewrite IHT1,IHT2.
+  reflexivity.
+
+- rewrite IHT1,IHT2.
+  reflexivity.
+
+- case (eq_nat n0 n).
+  + apply EQ.
+  + reflexivity.
+Qed.
+
+Lemma eval_eq_subst_cor :
+  forall (a : atomic_formula) (s t : term) (n : nat),
+    eval s = eval t ->
+      correctness (substitution_a a n s) = correct ->
+        correctness (substitution_a a n t) = correct.
+Proof.
+intros [t1 t2] s t n EQ COR.
+unfold substitution_a in *.
+unfold correctness in *.
+destruct (eval_eq_subst_eq t1 s t n EQ).
+destruct (eval_eq_subst_eq t2 s t n EQ).
+apply COR.
+Qed.
+
+Lemma equ_cor_eval_eq :
+  forall (s t : term),
+    correct_a (equ s t) = true ->
+      eval s = eval t.
+Proof.
+intros s t COR.
+unfold correct_a in *.
+unfold correctness in *.
+destruct (eval s);
+destruct (eval t);
+inversion COR.
+case (eq_nat (S n) (S n0)) eqn:EQ.
+- apply (nat_eq_decid _ _ EQ).
+- inversion COR.
+Qed.
+
+Lemma equ_symm : forall (s t : term),
+  correct_a (equ s t) = true -> correct_a (equ t s) = true.
+Proof.
+intros s t COR.
+unfold correct_a in *.
+unfold correctness in *.
+destruct (eval s);
+destruct (eval t);
+inversion COR as [COR1].
+rewrite eq_nat_symm.
+unfold eq_nat. fold eq_nat.
+repeat rewrite COR1.
+reflexivity.
+Qed.
+
+Lemma eval_correct : forall (s t : term),
+   eval s > 0 ->
+    eval s = eval t ->
+      correct_a (equ s t) = true.
+Proof.
+unfold correct_a.
+unfold correctness.
+unfold ">".
+intros s t I EQ.
+case (eval s) eqn:X1;
+inversion I as [EQ1 | EQ1];
+case (eval t) eqn:X2;
+inversion EQ as [EQ2];
+destruct EQ1,EQ2;
+rewrite eq_nat_refl;
+reflexivity.
 Qed.

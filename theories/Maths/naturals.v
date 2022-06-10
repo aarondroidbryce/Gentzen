@@ -445,14 +445,13 @@ intros n. induction n. intros. rewrite eq_nat_refl in H. inversion H. intros. de
 Qed.
 
 Lemma eq_nat_symm : forall (n m : nat),
-  eq_nat m n = true -> eq_nat n m = true.
-Proof. intros. apply nat_eq_decid in H. rewrite H. apply eq_nat_refl. Qed.
-
-Lemma eq_nat_symm' : forall (n m : nat),
-  eq_nat m n = false -> eq_nat n m = false.
+  eq_nat m n = eq_nat n m.
 Proof.
-intros. case_eq (eq_nat n m); intros; auto.
-apply eq_nat_symm in H0. rewrite H0 in H. inversion H.
+induction n;
+destruct m;
+try reflexivity.
+unfold eq_nat. fold eq_nat.
+apply IHn.
 Qed.
 
 Lemma nat_2_exp_help : forall n m, 2 ^ S (S n) = S m -> S (S n) < m.
