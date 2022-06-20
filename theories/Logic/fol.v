@@ -251,6 +251,13 @@ match A with
   end)
 end.
 
+Definition c_term : Type := {t : term & closed_t t = true}.
+
+Definition closing (t : term) (Ht : closed_t t = true) : c_term. exists t. exact Ht. Defined.
+
+Definition value (c : c_term) : nat := eval (projT1 c) - 1.
+
+
 Lemma closed_univ' : forall (B : formula) (n : nat),
   closed (univ n B) = true -> closed B = false -> free_list B = [n].
 Proof.
@@ -968,157 +975,157 @@ Qed.
 Lemma f_eq_decid : forall (A B : formula), eq_f A B = true -> A = B.
 Proof. intros. apply f_eq_decid'. apply H. Qed.
 
-Fixpoint closure_type (A : formula) (t : term) (L : list nat) : formula :=
+Fixpoint closure_type (A : formula) (c : c_term) (L : list nat) : formula :=
 match L with
 | [] => A
-| x :: L' => closure_type (substitution A x t) t L'
+| x :: L' => closure_type (substitution A x (projT1 c)) c L'
 end.
 
-Definition closure (A : formula) (t : term) := closure_type A t (free_list A).
+Definition closure (A : formula) (c : c_term) := closure_type A c (free_list A).
 
-Lemma closure_closed' : forall (L : list nat) (A : formula) (t : term), closed_t t = true -> free_list A = L -> closed (closure_type A t L) = true.
+Lemma closure_closed' : forall (L : list nat) (A : formula) (c : c_term), free_list A = L -> closed (closure_type A c L) = true.
 Proof.
-intros L. induction L; intros.
+intros L. induction L; intros A [c Hc] FREE.
 - simpl. apply free_list_closed. auto.
-- simpl. rewrite IHL; auto. rewrite subst_remove; auto. rewrite H0. rewrite remove_dups_idem_remove_triv. auto. destruct H0. rewrite <- free_list_remove_dups. auto.
+- simpl. rewrite IHL; auto. rewrite subst_remove; auto. rewrite FREE. apply remove_dups_idem_remove_triv. destruct FREE. symmetry. apply free_list_remove_dups.
 Qed.
 
-Lemma closure_closed : forall (A : formula) (t : term), closed_t t = true -> closed (closure A t) = true.
+Lemma closure_closed : forall (A : formula) (c : c_term), closed (closure A c) = true.
 Proof.
-intros. unfold closure. rewrite closure_closed'; auto.
+intros. apply closure_closed'; auto.
 Qed.
 
-Lemma closure_type_lor : forall (L : list nat) (A B : formula) (t : term), closed_t t = true -> closure_type (lor A B) t L = lor (closure_type A t L) (closure_type B t L).
+Lemma closure_type_lor : forall (L : list nat) (A B : formula) (c : c_term), closure_type (lor A B) c L = lor (closure_type A c L) (closure_type B c L).
 Proof.
-intros L. induction L. auto. intros. simpl. apply IHL. auto.
+induction L; intros; simpl; auto.
 Qed.
 
-Lemma closure_closed_id : forall (A : formula) (t : term), closed A = true -> closure A t = A.
+Lemma closure_closed_id : forall (A : formula) (c : c_term), closed A = true -> closure A c = A.
 intros. unfold closure. rewrite closed_free_list; auto.
 Qed.
 
-Lemma closure_closed_list_id : forall (L : list nat) (A : formula) (t : term), closed A = true -> closure_type A t L = A.
+Lemma closure_closed_list_id : forall (L : list nat) (A : formula) (c : c_term), closed A = true -> closure_type A c L = A.
 intros L. induction L; auto. intros. simpl. rewrite closed_subst_eq; auto. 
 Qed.
 
-Lemma closure_type_symm : forall (A : formula) (t : term) (n m : nat) (L : list nat), closed_t t = true -> closure_type A t (n :: m :: L) = closure_type A t (m :: n :: L).
+Lemma closure_type_symm : forall (A : formula) (c : c_term) (n m : nat) (L : list nat), closure_type A c (n :: m :: L) = closure_type A c (m :: n :: L).
 Proof.
-intros. case (eq_nat m n) eqn:X.
+intros A [c Hc] n m L. case (eq_nat m n) eqn:X.
 - apply nat_eq_decid in X. destruct X. auto.
 - simpl. rewrite substitution_order; auto.
 Qed.
 
-Lemma closure_type_concat_symm : forall (L1 L2 : list nat) (A : formula) (t : term), closed_t t = true -> closure_type A t (concat L1 L2) = closure_type A t (concat L2 L1).
+Lemma closure_type_concat_symm : forall (L1 L2 : list nat) (A : formula) (c : c_term), closure_type A c (concat L1 L2) = closure_type A c (concat L2 L1).
 Proof.
-intros L1. induction L1.
+induction L1.
 - intros. simpl. rewrite concat_empty_right. auto.
-- intros L2. simpl. induction L2; intros.
+- intros L2. simpl. induction L2; intros A [c Hc].
   + simpl. rewrite concat_empty_right. auto.
   + rewrite IHL1; auto. simpl. rewrite <- IHL2; auto. rewrite IHL1; auto. case (eq_nat x0 x) eqn:X.
    * apply nat_eq_decid in X. destruct X. auto.
    * rewrite substitution_order; auto.
 Qed.
 
-Lemma closure_type_concat : forall (L1 L2 : list nat) (A : formula) (t : term), closed_t t = true -> closure_type A t (concat L1 L2) = closure_type (closure_type A t L1) t L2.
+Lemma closure_type_concat : forall (L1 L2 : list nat) (A : formula) (c : c_term), closure_type A c (concat L1 L2) = closure_type (closure_type A c L1) c L2.
 Proof.
 intros L1. induction L1. auto. intros. simpl. rewrite IHL1; auto.
 Qed.
 
 
-Lemma closure_type_not_used : forall (L : list nat) (A : formula) (t : term) (n : nat), closed_t t = true -> member n (free_list A) = false -> closure_type A t (n :: L) = closure_type A t L.
+Lemma closure_type_not_used : forall (L : list nat) (A : formula) (c : c_term) (n : nat), member n (free_list A) = false -> closure_type A c (n :: L) = closure_type A c L.
 Proof.
 intros L. induction L.
 - intros. simpl. apply closed_subst_eq_aux. auto.
-- intros. simpl. case (eq_nat x n) eqn:X.
-  + apply nat_eq_decid in X. destruct X. repeat rewrite (closed_subst_eq_aux _ _ _ H0). auto.
+- intros A [ Hc] n LIST. simpl. case (eq_nat x n) eqn:X.
+  + apply nat_eq_decid in X. destruct X. repeat rewrite (closed_subst_eq_aux _ _ _ LIST). auto.
   + rewrite substitution_order; auto. rewrite closed_subst_eq_aux. auto. rewrite subst_remove; auto. apply remove_member_false. auto.
 Qed.
 
-Lemma closure_type_not_used_any : forall (L1 L2 : list nat) (A : formula) (t : term) (n : nat), closed_t t = true -> member n (free_list A) = false -> closure_type A t (concat L1 (n :: L2)) = closure_type A t (concat L1 L2).
+Lemma closure_type_not_used_any : forall (L1 L2 : list nat) (A : formula) (c : c_term) (n : nat), member n (free_list A) = false -> closure_type A c (concat L1 (n :: L2)) = closure_type A c (concat L1 L2).
 Proof.
 intros. rewrite (closure_type_concat_symm _ L2); auto. rewrite closure_type_concat_symm; auto. apply closure_type_not_used; auto.
 Qed.
 
-Lemma closure_type_not_used_remove : forall (L : list nat) (A : formula) (t : term) (n : nat), closed_t t = true -> member n (free_list A) = false -> closure_type A t (remove n L) = closure_type A t L.
+Lemma closure_type_not_used_remove : forall (L : list nat) (A : formula) (c : c_term) (n : nat), member n (free_list A) = false -> closure_type A c (remove n L) = closure_type A c L.
 Proof.
-intros L. induction L. auto. intros. simpl. case (eq_nat x n) eqn:X.
+intros L. induction L. auto. intros A [c Hc] n LIST. simpl. case (eq_nat x n) eqn:X.
 - apply nat_eq_decid in X. destruct X. rewrite IHL; auto. rewrite closed_subst_eq_aux; auto.
 - simpl. rewrite IHL; auto. rewrite subst_remove; auto. apply remove_member_false. auto.
 Qed.
 
-Lemma closure_type_dupes : forall (L : list nat) (A : formula) (t : term), closed_t t = true -> closure_type A t L = closure_type A t (remove_dups L).
+Lemma closure_type_dupes : forall (L : list nat) (A : formula) (c : c_term), closure_type A c L = closure_type A c (remove_dups L).
 Proof.
-intros L. induction L. auto. intros. simpl. rewrite IHL; auto. rewrite closure_type_not_used_remove; auto. rewrite subst_remove; auto. apply remove_not_member.
+intros L. induction L. auto. intros A [c Hc]. simpl. rewrite IHL; auto. rewrite closure_type_not_used_remove; auto. rewrite subst_remove; auto. apply remove_not_member.
 Qed.
 
-Lemma closure_lor : forall A B t, closed_t t = true -> closure (lor A B) t = lor (closure A t) (closure B t).
+Lemma closure_lor : forall A B c, closure (lor A B) c = lor (closure A c) (closure B c).
 Proof.
 intros A. unfold closure. simpl. induction (free_list A) eqn:X.
 - intros. simpl. rewrite <- free_list_remove_dups. rewrite closure_type_lor; auto. rewrite closure_closed_list_id; auto. apply free_list_closed. auto.
 - intros. rewrite <- closure_type_dupes; auto. rewrite closure_type_lor; auto. rewrite closure_type_concat; auto. rewrite closure_type_concat_symm; auto. rewrite closure_type_concat; auto.
-  destruct X. rewrite closure_closed_list_id. rewrite (closure_closed_list_id (free_list A) (closure_type B t (free_list B))). auto. apply closure_closed; auto. apply closure_closed; auto.
+  destruct X. rewrite closure_closed_list_id. rewrite (closure_closed_list_id (free_list A) (closure_type B c (free_list B))). auto. apply closure_closed; auto. apply closure_closed; auto.
 Qed.
 
-Lemma closure_neg_list : forall L A t, closed_t t = true -> closure_type (neg A) t L = neg (closure_type A t L).
+Lemma closure_neg_list : forall L A c, closure_type (neg A) c L = neg (closure_type A c L).
 Proof.
 intros L. induction L. auto. intros. simpl. rewrite IHL; auto.
 Qed.
 
-Lemma closure_univ_list : forall L A t n, closed_t t = true -> closure_type (univ n A) t L = univ n (closure_type A t (remove n L)).
+Lemma closure_univ_list : forall L A c n, closure_type (univ n A) c L = univ n (closure_type A c (remove n L)).
 Proof.
 intros L. induction L. auto. intros. simpl. case (eq_nat n x) eqn:X.
 - rewrite eq_nat_symm. rewrite X. auto.
 - rewrite IHL; auto. rewrite eq_nat_symm. rewrite X. auto.
 Qed.
 
-Lemma closure_neg : forall A t, closed_t t = true -> closure (neg A) t = neg (closure A t).
+Lemma closure_neg : forall A c, closure (neg A) c = neg (closure A c).
 Proof.
-intros. apply closure_neg_list. auto.
+intros. apply closure_neg_list.
 Qed.
 
-Lemma closure_univ : forall A t n, closed_t t = true -> closure (univ n A) t = univ n (closure_type A t (free_list (univ n A))).
+Lemma closure_univ : forall A c n, closure (univ n A) c = univ n (closure_type A c (free_list (univ n A))).
 Proof.
-intros. unfold closure. simpl. rewrite <- remove_twice at 2. apply closure_univ_list. auto.
+intros. unfold closure. simpl. rewrite <- remove_twice at 2. apply closure_univ_list.
 Qed.
 
-Lemma num_conn_closure_eq_list : forall (L : list nat) (A : formula) (t : term), num_conn A = num_conn (closure_type A t L).
+Lemma num_conn_closure_eq_list : forall (L : list nat) (A : formula) (c : c_term), num_conn A = num_conn (closure_type A c L).
 Proof.
 intros L. induction L. auto. intros. simpl. rewrite <- IHL. rewrite num_conn_sub. auto.
 Qed.
 
-Lemma num_conn_closure_eq : forall (A : formula) (t : term), num_conn A = num_conn (closure A t).
+Lemma num_conn_closure_eq : forall (A : formula) (c : c_term), num_conn A = num_conn (closure A c).
 Proof.
 intros. apply num_conn_closure_eq_list.
 Qed.
 
-Lemma closure_subst_list :  forall (L : list nat) (A : formula) (t s : term) (n : nat), closed_t t = true -> closed_t s = true -> (substitution (closure_type A t (remove n L)) n s) = (closure_type (substitution A n s) t L).
+Lemma closure_subst_list :  forall (L : list nat) (A : formula) (c1 c2 : c_term) (n : nat), (substitution (closure_type A c1 (remove n L)) n (projT1 c2)) = (closure_type (substitution A n (projT1 c2)) c1 L).
 Proof.
-intros L. induction L. auto. intros. simpl. case (eq_nat x n) eqn:X.
-- apply nat_eq_decid in X. destruct X. rewrite IHL; auto. rewrite (closed_subst_eq_aux (substitution A x s)). auto. rewrite subst_remove; auto. apply remove_not_member.
-- simpl. rewrite IHL; auto. rewrite eq_nat_symm in X. rewrite substitution_order; auto.
+intros L. induction L. auto. intros A c1 c2 n. simpl. case (eq_nat x n) eqn:X.
+- apply nat_eq_decid in X. destruct X. rewrite IHL; auto. rewrite (closed_subst_eq_aux (substitution A x (projT1 c2))). auto. rewrite subst_remove; auto. apply remove_not_member. destruct c2 as [c2 Hc2]. auto.
+- simpl. rewrite IHL; auto. rewrite eq_nat_symm in X. rewrite substitution_order; destruct c1 as [c1 Hc1]; destruct c2 as [c2 Hc2]; auto. 
 Qed.
 
-Lemma closure_subst :  forall (A : formula) (t s : term) (n : nat), closed_t t = true -> closed_t s = true -> (substitution (closure_type A t (free_list (univ n A))) n s) = (closure (substitution A n s) t).
+Lemma closure_subst :  forall (A : formula) (c1 c2 : c_term) (n : nat), (substitution (closure_type A c1 (free_list (univ n A))) n (projT1 c2)) = (closure (substitution A n (projT1 c2)) c1).
 Proof.
-intros. unfold closure. rewrite <- closure_subst_list; auto. rewrite remove_not_mem_idem. rewrite (free_list_univ_sub _ _ _ (free_list (univ n A))); auto. rewrite subst_remove; auto. apply remove_not_member.
+intros. unfold closure. rewrite <- closure_subst_list; auto. rewrite remove_not_mem_idem. rewrite (free_list_univ_sub _ _ _ (free_list (univ n A))); auto. destruct c2 as [c2 Hc2]. auto. rewrite subst_remove; auto. apply remove_not_member. destruct c2 as [c2 Hc2]. auto.
 Qed.
 
-Fixpoint closure_type_t (t s : term) (L : list nat) : term :=
+Fixpoint closure_type_t (t : term) (c : c_term) (L : list nat) : term :=
 match L with
 | [] => t
-| x :: L' => closure_type_t (substitution_t t x s) s L'
+| x :: L' => closure_type_t (substitution_t t x (projT1 c)) c L'
 end.
 
-Definition closure_t (t s : term) := closure_type_t t s (free_list_t t).
+Definition closure_t (t : term) (c : c_term) := closure_type_t t c (free_list_t t).
 
-Lemma closure_closed_t' : forall (L : list nat) (t s : term), closed_t s = true -> free_list_t t = L -> closed_t (closure_type_t t s L) = true.
+Lemma closure_closed_t' : forall (L : list nat) (t : term) (c : c_term), free_list_t t = L -> closed_t (closure_type_t t c L) = true.
 Proof.
-intros L. induction L; intros.
+intros L. induction L; intros t [c Hc] LIST.
 - simpl. apply free_list_closed_t. auto.
-- simpl. rewrite IHL; auto. rewrite subst_remove_t; auto. rewrite H0. rewrite remove_dups_idem_remove_triv. auto. destruct H0. rewrite <- free_list_remove_dups_t. auto.
+- simpl. rewrite IHL; auto. rewrite subst_remove_t; auto. rewrite LIST. rewrite remove_dups_idem_remove_triv. auto. destruct LIST. rewrite <- free_list_remove_dups_t. auto.
 Qed.
 
-Lemma closure_closed_t : forall (t s : term), closed_t s = true -> closed_t (closure_t t s) = true.
+Lemma closure_closed_t : forall (t : term) (c : c_term), closed_t (closure_t t c) = true.
 Proof.
 intros. unfold closure_t. rewrite closure_closed_t'; auto.
 Qed.
@@ -1128,12 +1135,12 @@ Proof.
 intros L. induction L; simpl; auto.
 Qed.
 
-Lemma closure_type_concat_t : forall (L1 L2 : list nat) (t s : term), closed_t s = true -> closure_type_t t s (concat L1 L2) = closure_type_t (closure_type_t t s L1) s L2.
+Lemma closure_type_concat_t : forall (L1 L2 : list nat) (t : term) (c : c_term), closure_type_t t c (concat L1 L2) = closure_type_t (closure_type_t t c L1) c L2.
 Proof.
 intros L1. induction L1. auto. intros. simpl. rewrite IHL1; auto.
 Qed.
 
-Lemma closure_type_concat_symm_t : forall (L1 L2 : list nat) (t s : term), closed_t s = true -> closure_type_t t s (concat L1 L2) = closure_type_t t s (concat L2 L1).
+Lemma closure_type_concat_symm_t : forall (L1 L2 : list nat) (t : term) (c : c_term), closure_type_t t c (concat L1 L2) = closure_type_t t c (concat L2 L1).
 Proof.
 intros L1. induction L1.
 - intros. simpl. rewrite concat_empty_right. auto.
@@ -1141,34 +1148,34 @@ intros L1. induction L1.
   + simpl. rewrite concat_empty_right. auto.
   + rewrite IHL1; auto. simpl. rewrite <- IHL2; auto. rewrite IHL1; auto. case (eq_nat x0 x) eqn:X.
    * apply nat_eq_decid in X. destruct X. auto.
-   * rewrite substitution_order_t; auto.
+   * rewrite substitution_order_t; destruct c; auto.
 Qed.
 
-Lemma closure_closed_id_t : forall (t s : term), closed_t t = true -> closure_t t s = t.
+Lemma closure_closed_id_t : forall (t : term) (c : c_term), closed_t t = true -> closure_t t c = t.
 intros. unfold closure_t. rewrite closed_free_list_t; auto.
 Qed.
 
-Lemma closure_closed_list_id_t : forall (L : list nat) (t s : term), closed_t t = true -> closure_type_t t s L = t.
+Lemma closure_closed_list_id_t : forall (L : list nat) (t : term) (c : c_term), closed_t t = true -> closure_type_t t c L = t.
 intros L. induction L; auto. intros. simpl. rewrite closed_subst_eq_t; auto. 
 Qed.
 
-Lemma closure_type_not_used_remove_t : forall (L : list nat) (t s : term) (n : nat), closed_t s = true -> member n (free_list_t t) = false -> closure_type_t t s (remove n L) = closure_type_t t s L.
+Lemma closure_type_not_used_remove_t : forall (L : list nat) (t : term) (c : c_term) (n : nat), member n (free_list_t t) = false -> closure_type_t t c (remove n L) = closure_type_t t c L.
 Proof.
 intros L. induction L. auto. intros. simpl. case (eq_nat x n) eqn:X.
 - apply nat_eq_decid in X. destruct X. rewrite IHL; auto. rewrite closed_subst_eq_aux_t; auto.
-- simpl. rewrite IHL; auto. rewrite subst_remove_t; auto. apply remove_member_false. auto.
+- simpl. rewrite IHL; auto. rewrite subst_remove_t; auto. apply remove_member_false. auto. destruct c; auto.
 Qed.
 
-Lemma closure_type_dupes_t : forall (L : list nat) (t s : term), closed_t s = true -> closure_type_t t s L = closure_type_t t s (remove_dups L).
+Lemma closure_type_dupes_t : forall (L : list nat) (t : term) (c : c_term), closure_type_t t c L = closure_type_t t c (remove_dups L).
 Proof.
-intros L. induction L. auto. intros. simpl. rewrite IHL; auto. rewrite closure_type_not_used_remove_t; auto. rewrite subst_remove_t; auto. apply remove_not_member.
+intros L. induction L. auto. intros. simpl. rewrite IHL; auto. rewrite closure_type_not_used_remove_t; auto. rewrite subst_remove_t; auto. apply remove_not_member. destruct c; auto.
 Qed.
 
-Lemma closure_type_equiv : forall t1 t2 s, closed_t s = true -> closure (atom (equ t1 t2)) s = atom (equ (closure_t t1 s) (closure_t t2 s)).
+Lemma closure_type_equiv : forall t1 t2 c, closure (atom (equ t1 t2)) c = atom (equ (closure_t t1 c) (closure_t t2 c)).
 Proof.
 intros. unfold closure. rewrite closure_type_equiv_list. simpl. rewrite <- closure_type_dupes_t; auto. rewrite <- closure_type_dupes_t; auto.
 rewrite closure_type_concat_t; auto. rewrite closure_type_concat_symm_t; auto. rewrite closure_type_concat_t; auto.
-rewrite (closure_closed_list_id_t (free_list_t t2)). rewrite (closure_closed_list_id_t (free_list_t t1) (closure_type_t t2 s _)); auto. apply closure_closed_t; auto. apply closure_closed_t; auto.
+rewrite (closure_closed_list_id_t (free_list_t t2)). rewrite (closure_closed_list_id_t (free_list_t t1) (closure_type_t t2 c _)); auto. apply closure_closed_t; auto. apply closure_closed_t; auto.
 Qed.
 
 Lemma closure_t_succ_list : forall L t s, closure_type_t (succ t) s L = succ (closure_type_t t s L).
@@ -1186,11 +1193,11 @@ Proof.
 intros L. induction L. auto. intros. simpl. rewrite IHL. auto.
 Qed.
 
-Lemma closure_t_plus : forall t1 t2 s, closed_t s = true -> closure_t (plus t1 t2) s = plus (closure_t t1 s) (closure_t t2 s).
+Lemma closure_t_plus : forall t1 t2 c, closure_t (plus t1 t2) c = plus (closure_t t1 c) (closure_t t2 c).
 Proof.
 intros. unfold closure_t. rewrite closure_t_plus_list. simpl. rewrite <- closure_type_dupes_t; auto. rewrite <- closure_type_dupes_t; auto.
 rewrite closure_type_concat_t; auto. rewrite closure_type_concat_symm_t; auto. rewrite closure_type_concat_t; auto.
-rewrite (closure_closed_list_id_t (free_list_t t2)). rewrite (closure_closed_list_id_t (free_list_t t1) (closure_type_t t2 s _)); auto. apply closure_closed_t; auto. apply closure_closed_t; auto.
+rewrite (closure_closed_list_id_t (free_list_t t2)). rewrite (closure_closed_list_id_t (free_list_t t1) (closure_type_t t2 c _)); auto. apply closure_closed_t; auto. apply closure_closed_t; auto.
 Qed.
 
 Lemma closure_t_times_list : forall L t1 t2 s, closure_type_t (times t1 t2) s L = times (closure_type_t t1 s L) (closure_type_t t2 s L).
@@ -1198,7 +1205,7 @@ Proof.
 intros L. induction L. auto. intros. simpl. rewrite IHL. auto.
 Qed.
 
-Lemma closure_t_times : forall t1 t2 s, closed_t s = true -> closure_t (times t1 t2) s = times (closure_t t1 s) (closure_t t2 s).
+Lemma closure_t_times : forall t1 t2 s, closure_t (times t1 t2) s = times (closure_t t1 s) (closure_t t2 s).
 Proof.
 intros. unfold closure_t. rewrite closure_t_times_list. simpl. rewrite <- closure_type_dupes_t; auto. rewrite <- closure_type_dupes_t; auto.
 rewrite closure_type_concat_t; auto. rewrite closure_type_concat_symm_t; auto. rewrite closure_type_concat_t; auto.
@@ -1256,30 +1263,30 @@ intros B m n s t Hs Ht Hmn. induction B; simpl.
     rewrite IHB. auto.
 Qed.
 
-Lemma closure_type_sub_remove_list : forall (L : list nat) (A : formula) (t : term) (n : nat), closed_t t = true -> (closure_type (substitution A n (succ (var n))) t (remove n L)) = substitution (closure_type A t (remove n L)) n (succ (var n)).
+Lemma closure_type_sub_remove_list : forall (L : list nat) (A : formula) (c : c_term) (n : nat), (closure_type (substitution A n (succ (var n))) c (remove n L)) = substitution (closure_type A c (remove n L)) n (succ (var n)).
 Proof.
-intros L. induction L. auto. intros. simpl. case (eq_nat x n) eqn:X. rewrite IHL; auto. simpl. rewrite <- IHL; auto. rewrite weak_substitution_order; simpl; auto. rewrite eq_nat_symm in X. rewrite X. auto. rewrite closed_free_list_t; auto.
+intros L. induction L. auto. intros. simpl. case (eq_nat x n) eqn:X. rewrite IHL; auto. simpl. rewrite <- IHL; auto. rewrite weak_substitution_order; simpl; auto. rewrite eq_nat_symm in X. rewrite X. auto. rewrite closed_free_list_t; auto. destruct c. auto.
 Qed.
 
-Lemma closure_type_sub_remove : forall (A : formula) (t : term) (n : nat), closed_t t = true -> (closure_type (substitution A n (succ (var n))) t (free_list (univ n (lor (neg A) (substitution A n (succ (var n))))))) = substitution (closure_type A t (free_list (univ n A))) n (succ (var n)).
+Lemma closure_type_sub_remove : forall (A : formula) (c : c_term) (n : nat), (closure_type (substitution A n (succ (var n))) c (free_list (univ n (lor (neg A) (substitution A n (succ (var n))))))) = substitution (closure_type A c (free_list (univ n A))) n (succ (var n)).
 Proof.
-intros. case (member n (free_list A)) eqn:X.
+intros A [c Hc] n. case (member n (free_list A)) eqn:X.
 - simpl. rewrite free_list_sub_self; auto. rewrite remove_dups_concat_self. rewrite <- free_list_remove_dups. rewrite closure_type_sub_remove_list; auto.
 - simpl. rewrite closed_subst_eq_aux; auto. rewrite remove_dups_concat_self. rewrite <- free_list_remove_dups. rewrite <- closure_type_sub_remove_list; auto. rewrite closed_subst_eq_aux; auto.
 Qed.
 
-Lemma closure_type_list_remove : forall (L : list nat) (A : formula) (t : term) (n : nat), closed_t t = true -> L = free_list A -> free_list (closure_type A t (remove n L)) = [n] \/ free_list (closure_type A t (remove n L)) = [].
+Lemma closure_type_list_remove : forall (L : list nat) (A : formula) (c : c_term) (n : nat), L = free_list A -> free_list (closure_type A c (remove n L)) = [n] \/ free_list (closure_type A c (remove n L)) = [].
 Proof.
-intros L. induction L. auto. intros. simpl. assert (L = free_list (substitution A x t)) as Y. rewrite subst_remove; auto. rewrite <- H0. rewrite remove_dups_idem_remove_triv; auto. rewrite H0. rewrite <- free_list_remove_dups. auto. case (eq_nat x n) eqn:X. 
-- apply nat_eq_decid in X. destruct X. destruct (IHL (substitution A x t) _ x H Y).
-  + rewrite closure_type_not_used_remove in H1; auto.
-    * rewrite <- closure_subst_list in H1; auto. rewrite subst_remove in H1; auto. pose proof (remove_not_member (free_list (closure_type A t (remove x L))) x). rewrite H1 in H2. simpl in H2. rewrite eq_nat_refl in H2. inversion H2.
-    * rewrite subst_remove; auto. apply remove_not_member.
-  + rewrite <- closure_subst_list in H1; auto. rewrite subst_remove in H1; auto. rewrite remove_twice in H1. rewrite free_list_remove_dups in H1. rewrite free_list_remove_dups. destruct (remove_n_dups_empty _ _ H1); auto.
+intros L. induction L. auto. intros. simpl. assert (L = free_list (substitution A x (projT1 c))) as Y. rewrite subst_remove; auto. rewrite <- H. rewrite remove_dups_idem_remove_triv; auto. rewrite H. rewrite <- free_list_remove_dups. auto. destruct c. auto. case (eq_nat x n) eqn:X. 
+- apply nat_eq_decid in X. destruct X. destruct (IHL (substitution A x (projT1 c)) c x Y).
+  + rewrite closure_type_not_used_remove in H0; auto.
+    * rewrite <- closure_subst_list in H0; auto. rewrite subst_remove in H0; auto. pose proof (remove_not_member (free_list (closure_type A c (remove x L))) x). rewrite H0 in H1. simpl in H1. rewrite eq_nat_refl in H1. inversion H1. destruct c. auto.
+    * rewrite subst_remove; auto. apply remove_not_member. destruct c. auto.
+  + rewrite <- closure_subst_list in H0; auto. rewrite subst_remove in H0; auto. rewrite remove_twice in H0. rewrite free_list_remove_dups in H0. rewrite free_list_remove_dups. destruct (remove_n_dups_empty _ _ H0); auto. destruct c; auto.
 - simpl. apply IHL; auto. 
 Qed.
 
-Lemma free_list_univ_closure : forall (A : formula) (t : term) (n : nat), closed_t t = true -> free_list (closure_type A t (free_list (univ n A))) = [n] \/ free_list (closure_type A t (free_list (univ n A))) = [].
+Lemma free_list_univ_closure : forall (A : formula) (c : c_term) (n : nat), free_list (closure_type A c (free_list (univ n A))) = [n] \/ free_list (closure_type A c (free_list (univ n A))) = [].
 Proof.
 intros. simpl. apply closure_type_list_remove; auto.
 Qed.
@@ -1399,13 +1406,7 @@ destruct (correct_eval _ _ H). split; apply eval_closed.
 apply H0. apply H1.
 Qed.
 
-Definition c_term : Type := {t : term & closed_t t = true}.
-
-Definition closing (t : term) (Ht : closed_t t = true) : c_term. exists t. exact Ht. Defined.
-
 Definition czero := (closing zero (repr_closed 0)).
-
-Definition value (c : c_term) : nat := eval (projT1 c) - 1.
 
 Definition cterm_equiv_correct : forall c : c_term, correct_a (equ (represent (value c)) (projT1 c)) = true.
 Proof.

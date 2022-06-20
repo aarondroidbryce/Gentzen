@@ -119,15 +119,15 @@ Qed.
 
 Lemma danger_not_theorem : forall A, dangerous_disjunct A = true -> forall n alpha, PA_omega_theorem A n alpha -> False.
 Proof.
-intros. apply (danger_not_provable _ H _ _ _ (projT2(provable_theorem _ _ _ H0))). 
+intros. apply (danger_not_provable _ H _ _ _ (projT2(provable_theorem _ _ _ X))). 
 Qed.
 
 Lemma inconsistent_danger : forall A n1 n2 alpha1 alpha2, PA_omega_theorem A n1 alpha1 -> PA_omega_theorem (neg A) n2 alpha2 -> False.
 Proof.
-intros. assert (closed danger = true). auto. assert (dangerous_disjunct danger = true). auto. apply (danger_not_theorem _ H2 _ _ (cut2 _ _ _ _ _ _ H (exchange1 _ _ _ _ (weakening (danger) _ _ _ H1 H0)))).
+intros. assert (closed danger = true). auto. assert (dangerous_disjunct danger = true). auto. apply (danger_not_theorem _ H0 _ _ (cut2 _ _ _ _ _ _ X (exchange1 _ _ _ _ (weakening (danger) _ _ _ H X0)))).
 Qed.
 
 Lemma PA_Consistent : forall A n1 n2 alpha1 alpha2, Peano_Theorems_Base A n1 alpha1 -> Peano_Theorems_Base (neg A) n2 alpha2 -> False.
 Proof.
-intros. pose proof (PA_Base_closed_PA_omega _ _ _  H (represent 0) (repr_closed _)). pose proof (PA_Base_closed_PA_omega _ _ _  H0 (represent 0) (repr_closed _)). rewrite closure_neg in H2; auto. apply (inconsistent_danger _ _ _ _ _ H1 H2). 
+intros. pose proof (PA_Base_closed_PA_omega _ _ _  H czero). pose proof (PA_Base_closed_PA_omega _ _ _  H0 czero). rewrite closure_neg in X0; auto. apply (inconsistent_danger _ _ _ _ _ X X0). 
 Qed.
