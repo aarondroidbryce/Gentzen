@@ -23,22 +23,64 @@ Notation "A1 ~> A2" := (impl A1 A2) (at level 60).
 Notation "t # s" := (atom (equ t s)) (at level 80).
 
 Inductive Peano_Theorems_Base : formula -> nat -> ord -> Type :=
-| FOL1 : forall (A B : formula), Peano_Theorems_Base (A ~> (B ~> A)) 0 (ord_succ (ord_succ (nat_ord (num_conn A + num_conn A))))
-| FOL2 : forall (A B C : formula), Peano_Theorems_Base ((A ~> (B ~> C)) ~> ((A ~> B) ~> (A ~> C))) (num_conn (neg B)) (ord_succ (ord_max (ord_succ (nat_ord (num_conn (lor (neg A) B) + num_conn (lor (neg A) B)))) ((ord_succ (nat_ord (num_conn (lor (neg A) (lor (neg B) C)) + num_conn (lor (neg A) (lor (neg B) C))))))))
-| FOL3 : forall (A B : formula), Peano_Theorems_Base ((neg A ~> neg B) ~> ((neg A ~> B) ~> A)) 0 (ord_succ (ord_max (ord_succ (ord_succ (ord_succ (nat_ord (num_conn (A) + num_conn (A)))))) ((ord_succ (ord_max (ord_succ (ord_succ (ord_succ (nat_ord (num_conn A + num_conn A))))) (ord_succ (ord_succ (nat_ord (num_conn (neg B) + num_conn (neg B))))))))))
-| FOL4 : forall (A : formula) (n : nat) (t : term), closed_t t = true -> Peano_Theorems_Base (lor (neg(univ n A)) (substitution A n t)) 0 (ord_succ (ord_succ (nat_ord (num_conn (substitution A n t) + num_conn (substitution A n t)))))
-| FOL5 : forall (A B : formula) (n : nat), member n (free_list A) = false -> Peano_Theorems_Base ((univ n (A ~> B)) ~> (A ~> (univ n B))) 0 (ord_succ (ord_succ (ord_succ (nat_ord (num_conn (lor (neg A) B) + num_conn (lor (neg A) B))))))
-| MP : forall (A B : formula) (n m : nat) (alpha beta : ord), Peano_Theorems_Base (A ~> B) n alpha -> Peano_Theorems_Base A m beta -> Peano_Theorems_Base B (max (max m n) (num_conn (neg A))) (ord_succ (ord_succ (ord_max beta alpha)))
-| UG : forall (A : formula) (n m : nat) (alpha : ord), Peano_Theorems_Base A m alpha -> Peano_Theorems_Base (univ n A) m (ord_succ alpha) 
-| equ_trans : Peano_Theorems_Base  (univ 0 (univ 1 (univ 2 ((var 0 # var 1) ~> ((var 1 # var 2) ~> (var 0 # var 2)))))) 0 (ord_succ (ord_succ (ord_succ (ord_succ (ord_succ Zero)))))
-| equ_succ : Peano_Theorems_Base (univ 0 (univ 1 ((var 0 # var 1) ~> ((succ (var 0)) # (succ (var 1)))))) 0 (ord_succ (ord_succ (ord_succ Zero)))
-| non_zero : Peano_Theorems_Base (univ 0 (neg (zero # (succ (var 0))))) 0 (ord_succ Zero)
-| succ_equ : Peano_Theorems_Base (univ 0 (univ 1 ((succ (var 0) # succ (var 1)) ~> (var 0 # var 1)))) 0 (ord_succ (ord_succ (ord_succ Zero)))
-| pl0 : Peano_Theorems_Base (univ 0 ((plus (var 0) zero) # (var 0))) 0 (ord_succ Zero)
-| plS : Peano_Theorems_Base (univ 0 (univ 1 ((plus (var 0) (succ (var 1))) # (succ (plus (var 0) (var 1)))))) 0 (ord_succ (ord_succ Zero))
-| ml0 : Peano_Theorems_Base (univ 0 ((times (var 0) zero) # zero)) 0 (ord_succ Zero)
-| mlS : Peano_Theorems_Base (univ 0 (univ 1 ((times (var 0) (succ (var 1))) # (plus (times (var 0) (var 1)) (var 0))))) 0 (ord_succ (ord_succ Zero))
-| induct : forall (A : formula) (n : nat), Peano_Theorems_Base (substitution A n zero ~> ((univ n (A ~> (substitution A n (succ (var n))))) ~> (univ n A))) (num_conn A + 1) (ord_succ (ord_succ (cons (nat_ord 1) 0 Zero))).
+| FOL1 : forall (A B : formula),
+            Peano_Theorems_Base (A ~> (B ~> A))
+                0 (ord_succ (ord_succ (nat_ord (num_conn A + num_conn A))))
+
+| FOL2 : forall (A B C : formula),
+            Peano_Theorems_Base ((A ~> (B ~> C)) ~> ((A ~> B) ~> (A ~> C)))
+                (num_conn (neg B)) (ord_succ (ord_max (ord_succ (nat_ord (num_conn (lor (neg A) B) + num_conn (lor (neg A) B)))) ((ord_succ (nat_ord (num_conn (lor (neg A) (lor (neg B) C)) + num_conn (lor (neg A) (lor (neg B) C))))))))
+
+| FOL3 : forall (A B : formula),
+            Peano_Theorems_Base ((neg A ~> neg B) ~> ((neg A ~> B) ~> A))
+                0 (ord_succ (ord_max (ord_succ (ord_succ (ord_succ (nat_ord (num_conn (A) + num_conn (A)))))) ((ord_succ (ord_max (ord_succ (ord_succ (ord_succ (nat_ord (num_conn A + num_conn A))))) (ord_succ (ord_succ (nat_ord (num_conn (neg B) + num_conn (neg B))))))))))
+
+| FOL4 : forall (A : formula) (n : nat) (t : term),
+            closed_t t = true ->
+                Peano_Theorems_Base (lor (neg(univ n A)) (substitution A n t))
+                    0 (ord_succ (ord_succ (nat_ord (num_conn (substitution A n t) + num_conn (substitution A n t)))))
+| FOL5 : forall (A B : formula) (n : nat),
+            member n (free_list A) = false ->
+                Peano_Theorems_Base ((univ n (A ~> B)) ~> (A ~> (univ n B)))
+                    0 (ord_succ (ord_succ (ord_succ (nat_ord (num_conn (lor (neg A) B) + num_conn (lor (neg A) B))))))
+
+| MP : forall (A B : formula) (n m : nat) (alpha beta : ord),
+          Peano_Theorems_Base (A ~> B) n alpha ->
+              Peano_Theorems_Base A m beta ->
+                  Peano_Theorems_Base B
+                      (max (max m n) (num_conn (neg A))) (ord_succ (ord_succ (ord_max beta alpha)))
+
+| UG : forall (A : formula) (n m : nat) (alpha : ord),
+          Peano_Theorems_Base A m alpha ->
+              Peano_Theorems_Base (univ n A) m (ord_succ alpha)
+
+| equ_trans : Peano_Theorems_Base  (univ 0 (univ 1 (univ 2 ((var 0 # var 1) ~> ((var 1 # var 2) ~> (var 0 # var 2))))))
+                0 (ord_succ (ord_succ (ord_succ (ord_succ (ord_succ Zero)))))
+
+| equ_succ : Peano_Theorems_Base (univ 0 (univ 1 ((var 0 # var 1) ~> ((succ (var 0)) # (succ (var 1))))))
+                0 (ord_succ (ord_succ (ord_succ Zero)))
+
+| non_zero : Peano_Theorems_Base (univ 0 (neg (zero # (succ (var 0)))))
+                0 (ord_succ Zero)
+
+| succ_equ : Peano_Theorems_Base (univ 0 (univ 1 ((succ (var 0) # succ (var 1)) ~> (var 0 # var 1))))
+                0 (ord_succ (ord_succ (ord_succ Zero)))
+
+| pl0 : Peano_Theorems_Base (univ 0 ((plus (var 0) zero) # (var 0)))
+                0 (ord_succ Zero)
+
+| plS : Peano_Theorems_Base (univ 0 (univ 1 ((plus (var 0) (succ (var 1))) # (succ (plus (var 0) (var 1))))))
+                0 (ord_succ (ord_succ Zero))
+
+| ml0 : Peano_Theorems_Base (univ 0 ((times (var 0) zero) # zero))
+                0 (ord_succ Zero)
+
+| mlS : Peano_Theorems_Base (univ 0 (univ 1 ((times (var 0) (succ (var 1))) # (plus (times (var 0) (var 1)) (var 0)))))
+                0 (ord_succ (ord_succ Zero))
+
+| induct : forall (A : formula) (n : nat),
+              Peano_Theorems_Base (substitution A n zero ~> ((univ n (A ~> (substitution A n (succ (var n))))) ~> (univ n A)))
+                  (num_conn A + 1) (ord_succ (ord_succ (cons (nat_ord 1) 0 Zero))).
 
 Inductive Peano_Theorems_Implication : formula -> nat -> ord -> Type :=
 | I_FOL1 : forall (A B : formula), Peano_Theorems_Implication (A ~> (B ~> A)) 0 (ord_succ (ord_succ (nat_ord (num_conn A + num_conn A))))
@@ -140,35 +182,128 @@ intros A n m. induction m; intros c alpha T1.
 - pose proof (IHm _ _ (induction_iterate_general _ _ _ _ _ T1)). rewrite ord_add_succ_nat_succ_add. auto. apply (ord_nf _ _ _ T1).
 Qed.
 
-Lemma induction_final : forall (A : formula) (n m : nat) (t : term) (alpha : ord),
-    PA_omega_theorem (lor (lor (lor (inductive_chain A n m) (substitution A n t)) (neg (substitution A n zero))) (neg (univ n (lor (neg A) (substitution A n (succ (var n))))))) 0 alpha ->
-        PA_omega_theorem (lor (lor (substitution A n t) (neg (substitution A n zero))) (neg (univ n (lor (neg A) (substitution A n (succ (var n))))))) 0 (ord_succ (ord_add alpha (nat_ord m))).
+Lemma induction_final :
+  forall (A : formula) (n m : nat) (t : term) (alpha : ord),
+    PA_omega_theorem (lor (lor  (lor  (inductive_chain A n m)
+                                      (substitution A n t))
+                                (neg (substitution A n zero)))
+                          (neg (univ n (lor (neg A) (substitution A n (succ (var n)))))))
+                      0 alpha ->
+        PA_omega_theorem (lor (lor  (substitution A n t)
+                                    (neg (substitution A n zero)))
+                              (neg (univ n (lor (neg A) (substitution A n (succ (var n)))))))
+                          0 (ord_succ (ord_add alpha (nat_ord m))).
 Proof.
-intros A n m t alpha T1. pose proof (induction_terminate _ _ _ _ _ T1) as T2. unfold inductive_chain in T2. unfold "~>" in T2. apply exchange1. apply contraction2. apply associativity2. apply (quantification2 _ _ _ (closing (represent 0) (repr_closed _))).  simpl.
-rewrite sub_succ_self. apply associativity1. apply associativity1. apply exchange4. apply exchange2. auto.
+intros A n m t alpha T1.
+apply exchange1.
+apply contraction2.
+apply associativity2.
+apply (quantification2 _ _ _ (closing (represent 0) (repr_closed _))).
+apply associativity1.
+apply associativity1.
+apply exchange4.
+apply exchange2.
+unfold substitution; fold substitution.
+rewrite sub_succ_self.
+apply (induction_terminate _ _ _ _ _ T1). 
 Qed.
 
 
-Lemma induction_aux : forall A n (c : c_term), free_list A = [n] -> PA_omega_theorem (lor (lor (substitution A n (represent (value c))) (neg (substitution A n zero))) (neg (univ n (lor (neg A) (substitution A n (succ (var n))))))) 0 (cons (nat_ord 1) 0 Zero).
+Lemma induction_aux :
+  forall (A : formula) (n : nat) (c : c_term),
+    free_list A = [n] ->
+      PA_omega_theorem (lor (lor  (substitution A n (represent (value c)))
+                                  (neg (substitution A n zero)))
+                            (neg (univ n (lor (neg A) (substitution A n (succ (var n)))))))
+                        0 (cons (nat_ord 1) 0 Zero).
 Proof.
-intros A n c FREE. pose proof (inductive_implication_theorem _ _  c FREE) as IND. destruct (value c) eqn:V.
+intros A n c FREE.
+pose proof (inductive_implication_theorem _ _  c FREE) as Y1.
+destruct (value c) eqn:V.
+
 - apply (ord_incr _ _  (ord_succ (ord_add (ord_succ (ord_succ (nat_ord (S (S (num_conn A + num_conn A)))))) (nat_ord (S 0))))).
-  +  apply exchange1. apply weakening; auto. simpl. case (closed A) eqn:X; auto.
-    * rewrite closed_free_list in FREE; auto. inversion FREE.
-    * simpl. rewrite FREE. rewrite (free_list_sub_self_eq _ _ (var n)); auto. simpl. rewrite eq_nat_refl. auto.
-    * apply exchange1. apply (ord_incr _ _ (ord_succ (nat_ord (num_conn A + num_conn A)))). rewrite <- (num_conn_sub _ n zero). apply LEM. apply closed_univ_sub. simpl. rewrite FREE. rewrite eq_nat_refl. destruct (closed A); auto. auto. rewrite ord_add_one_succ. repeat rewrite ord_succ_nat. apply nat_ord_lt. lia. repeat apply ord_succ_nf. apply nf_nat. apply nf_add; repeat apply ord_succ_nf; apply nf_nat. 
-  + simpl. apply head_lt. apply ord_lt_self.
-  + apply single_nf. apply nf_nat.
+  + apply exchange1.
+    apply weakening.
+    * unfold closed; fold closed.
+      case (closed A) eqn:CA.
+      --  rewrite (closed_free_list _ CA) in FREE.
+          inversion FREE.
+      --  unfold "&&".
+          unfold free_list; fold free_list.
+          rewrite FREE.
+          rewrite (free_list_sub_self_eq _ _ (var n) FREE).
+          unfold concat.
+          unfold remove_dups.
+          unfold remove.
+          rewrite eq_nat_refl.
+          apply eq_list_refl.
+    * apply exchange1.
+      apply (ord_incr _ _ (ord_succ (nat_ord (num_conn A + num_conn A)))).
+      --  rewrite <- (num_conn_sub _ n zero).
+          apply LEM.
+          apply (closed_univ_sub _ _).
+          ++  unfold closed; fold closed.
+              rewrite FREE.
+              rewrite eq_nat_refl.
+              rewrite eq_list_refl.
+              unfold "&&".
+              destruct (closed A);
+              reflexivity.
+          ++  unfold closed_t.
+              reflexivity.
+      --  rewrite ord_add_one_succ.
+          ++  repeat rewrite ord_succ_nat.
+              apply nat_ord_lt.
+              lia.
+          ++  repeat apply ord_succ_nf.
+              apply nf_nat.
+      --  refine (nf_add _ _ _ (nf_nat _)).
+          repeat apply ord_succ_nf.
+          apply nf_nat. 
+  + unfold nat_ord.
+    unfold ord_succ.
+    unfold ord_add.
+    rewrite ord_ltb_irrefl.
+    rewrite ord_eqb_refl.
+    apply head_lt.
+    apply ord_lt_self.
+  + apply single_nf.
+    apply nf_nat.
+
 - apply (ord_incr _ _  (ord_succ (ord_add (ord_succ (ord_add (nat_ord (S (num_conn A + num_conn A))) (nat_ord (3 * (S (S n0)))))) (nat_ord n0)))).
-  + unfold inductive_implication in *. apply induction_final. apply exchange1. apply weakening; auto.
-    simpl. rewrite (free_list_sub_self _ _ (var n)). rewrite FREE. simpl. rewrite eq_nat_refl. case (closed A);
-    case (closed (substitution A n (succ (var n)))); auto. rewrite FREE. simpl. rewrite eq_nat_refl. auto.
-  + destruct n0; simpl; apply head_lt; apply zero_lt. 
-  + apply single_nf. apply nf_nat. 
+  + unfold inductive_implication in *.
+    apply induction_final.
+    apply exchange1.
+    refine (weakening _ _ _ _ _ Y1).
+    unfold closed; fold closed.
+    unfold free_list; fold free_list.
+    rewrite (free_list_sub_self _ _ (var n));
+    rewrite FREE.
+    * unfold concat.
+      unfold remove_dups.
+      unfold remove.
+      rewrite eq_nat_refl.
+      rewrite eq_list_refl.
+      unfold "&&".
+      case (closed A);
+      case (closed (substitution A n (succ (var n))));
+      reflexivity.
+    * unfold member.
+      rewrite eq_nat_refl.
+      reflexivity.
+  + rewrite <- ord_add_succ_nat_succ_add.
+    * repeat rewrite <- ord_add_nat.
+      rewrite ord_succ_nat.
+      apply nat_lt_omega.
+      apply zero_lt.
+    * apply nf_add;
+      apply nf_nat.
+  + apply single_nf.
+    apply nf_nat. 
 Qed.
 
 Lemma induction_aux' :
-  forall A n (c : c_term),
+  forall (A : formula) (n : nat) (c : c_term),
     closed A = true ->
       PA_omega_theorem (lor (substitution A n (projT1 c))
                             (lor (neg (substitution A n zero))
@@ -903,7 +1038,11 @@ induction H0; unfold "~>" in *.
     * apply X.
 Qed.
 
-Lemma PA_Implication_equiv : forall (A : formula) (d n : nat) (alpha : ord) (t : term), closed_t t = true -> Peano_Theorems_Implication A d alpha -> Peano_Theorems_Implication (substitution A n t) d alpha.
+Lemma PA_Implication_equiv :
+  forall (A : formula) (d n : nat) (alpha : ord) (t : term),
+    closed_t t = true ->
+      Peano_Theorems_Implication A d alpha ->
+        Peano_Theorems_Implication (substitution A n t) d alpha.
 Proof.
 intros A d n alpha c HC H0.
 induction H0; unfold "~>" in *;
@@ -1115,4 +1254,50 @@ Proof.
 intros A d alpha T c.
 refine (PA_closed_PA_omega _ _ _ _ c).
 apply (PA_Base_equiv_PA_Implication _ _ _ T).
+Qed.
+
+Lemma PA_Base_nf :
+  forall (A : formula) (d : nat) (alpha : ord),
+    Peano_Theorems_Base A d alpha ->
+      nf alpha.
+Proof.
+intros A d alpha T.
+apply (ord_nf (closure A czero) d).
+apply (PA_Base_closed_PA_omega _ _ _ T).
+Qed.
+
+Lemma PA_Base_less_2_omega :
+  forall (A : formula) (d : nat) (alpha : ord),
+    Peano_Theorems_Base A d alpha ->
+      ord_lt alpha (cons (cons Zero 0 Zero) 1 Zero).
+Proof.
+intros A d alpha T.
+induction T.
+16 : unfold nat_ord.
+16 : apply coeff_lt.
+16 : lia.
+
+all : repeat rewrite <- ord_max_succ_succ;
+      repeat rewrite ord_succ_nat;
+      repeat rewrite ord_max_nat;
+      unfold nat_ord;
+      try apply head_lt;
+      try apply zero_lt.
+
+- repeat rewrite ord_max_succ_succ.
+  pose proof (max_cases _ _ _ _ IHT2 IHT1) as IE.
+  rewrite <- ord_max_self in IE.
+  pose proof (ord_max_nf _ _ (PA_Base_nf _ _ _ T2) (PA_Base_nf _ _ _ T1)) as NM.
+  assert (nf (cons (cons Zero 0 Zero) 1 Zero)) as NO.
+  { repeat apply single_nf. apply zero_nf. }
+  assert (is_succ (cons (cons Zero 0 Zero) 1 Zero) = false) as SO.
+  { unfold is_succ. reflexivity. }
+  apply (ord_lt_not_succ_ord_succ_lt _ _ (ord_succ_nf _ NM) NO SO).
+  apply (ord_lt_not_succ_ord_succ_lt _ _ NM NO SO IE).
+
+- assert (nf (cons (cons Zero 0 Zero) 1 Zero)) as NO.
+  { repeat apply single_nf. apply zero_nf. }
+  assert (is_succ (cons (cons Zero 0 Zero) 1 Zero) = false) as SO.
+  { unfold is_succ. reflexivity. }
+  apply (ord_lt_not_succ_ord_succ_lt _ _ (PA_Base_nf _ _ _ T) NO SO IHT).
 Qed.

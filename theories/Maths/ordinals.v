@@ -2838,9 +2838,7 @@ intros n. induction n. intros. destruct m. inversion H. simpl. pose proof (nat_2
 intros. induction m. inversion H. inversion H. rewrite H1. pose proof (nat_2_exp_non_zero (m)). simpl. destruct (2^m). inversion H0. lia.
 destruct H0. simpl. pose proof (IHn m0). simpl in *. lia. 
 Qed.
-(*
-Lemma mul_2_add
-*)
+
 
 Lemma max_cases : forall alpha beta gamma delta, alpha < beta -> gamma < delta -> ord_max alpha gamma < ord_max beta delta.
 Proof.
@@ -2900,4 +2898,36 @@ Proof.
 intros. refine (lt_trans _ _ _ _ (ord_succ_lt_exp_succ _ _ _)); auto. apply ord_lt_succ. apply ord_succ_lt_exp_succ; auto. apply ord_succ_nf. auto. apply (lt_trans _ _ _ H0). apply ord_succ_monot.
 Qed.
 
+Lemma ord_max_self : forall (alpha : ord), alpha = ord_max alpha alpha.
+Proof.
+intros alpha.
+rewrite <- (ord_max_lem2 _ _ (ord_ltb_irrefl alpha)) at 1.
+reflexivity.
+Qed.
+
+Lemma ord_lt_not_succ_ord_succ_lt :
+    forall (alpha beta : ord),
+      nf alpha -> nf beta ->
+        is_succ beta = false ->
+          ord_lt alpha beta ->
+            ord_lt (ord_succ alpha) beta.
+Proof.
+intros alpha beta NA NB SB IE.
+apply ord_lt_succ in IE.
+apply ord_lt_ltb in IE.
+apply ord_succ_decr_false in IE.
++ apply ord_ltb_lt.
+  destruct (ord_semiconnex_bool beta (ord_succ alpha)) as [LT | [GT | EQ]].
+  * rewrite LT in IE.
+    inversion IE.
+  * apply GT.
+  * apply ord_eqb_eq in EQ.
+    pose proof (ord_succ_is_succ _ NA) as SA.
+    destruct EQ.
+    rewrite SA in SB.
+    inversion SB.
++ apply NB.
++ apply ord_succ_nf.
+  apply NA.
+Qed.
 Close Scope cantor_scope.
