@@ -22,51 +22,69 @@ Definition impl (A B : formula) := (lor (neg A) B).
 Notation "A1 ~> A2" := (impl A1 A2) (at level 60).
 Notation "t # s" := (atom (equ t s)) (at level 80).
 
-Inductive Peano_Theorems_Base : formula -> Type :=
+Inductive Peano_Theorems_Base : formula -> nat -> ord -> Type :=
 | FOL1 : forall (A B : formula),
             Peano_Theorems_Base (A ~> (B ~> A))
+                0 (ord_succ (ord_succ (nat_ord (num_conn A + num_conn A))))
 
 | FOL2 : forall (A B C : formula),
             Peano_Theorems_Base ((A ~> (B ~> C)) ~> ((A ~> B) ~> (A ~> C)))
+                (num_conn (neg B)) (ord_succ (ord_max (ord_succ (nat_ord (num_conn (lor (neg A) B) + num_conn (lor (neg A) B))))
+                                                      ((ord_succ (nat_ord (num_conn (lor (neg A) (lor (neg B) C)) + num_conn (lor (neg A) (lor (neg B) C))))))))
 
 | FOL3 : forall (A B : formula),
             Peano_Theorems_Base ((neg A ~> neg B) ~> ((neg A ~> B) ~> A))
+                0 (ord_succ (ord_max (ord_succ (ord_succ (ord_succ (nat_ord (num_conn (A) + num_conn (A))))))
+                                      ((ord_succ (ord_max (ord_succ (ord_succ (ord_succ (nat_ord (num_conn A + num_conn A)))))
+                                                          (ord_succ (ord_succ (nat_ord (num_conn (neg B) + num_conn (neg B))))))))))
 
 | FOL4 : forall (A : formula) (n : nat) (t : term),
             closed_t t = true ->
                 Peano_Theorems_Base (lor (neg(univ n A)) (substitution A n t))
+                    0 (ord_succ (ord_succ (nat_ord (num_conn (substitution A n t) + num_conn (substitution A n t)))))
 
 | FOL5 : forall (A B : formula) (n : nat),
             member n (free_list A) = false ->
                 Peano_Theorems_Base ((univ n (A ~> B)) ~> (A ~> (univ n B)))
+                    0 (ord_succ (ord_succ (ord_succ (nat_ord (num_conn (lor (neg A) B) + num_conn (lor (neg A) B))))))
 
-| MP : forall (A B : formula),
-          Peano_Theorems_Base (A ~> B) ->
-              Peano_Theorems_Base A ->
+| MP : forall (A B : formula) (n m : nat) (alpha beta : ord),
+          Peano_Theorems_Base (A ~> B) n alpha ->
+              Peano_Theorems_Base A m beta ->
                   Peano_Theorems_Base B
+                      (max (max m n) (num_conn (neg A))) (ord_succ (ord_succ (ord_max beta alpha)))
 
-| UG : forall (A : formula) (n : nat),
-          Peano_Theorems_Base A ->
-              Peano_Theorems_Base (univ n A)
+| UG : forall (A : formula) (n m : nat) (alpha : ord),
+          Peano_Theorems_Base A m alpha ->
+              Peano_Theorems_Base (univ n A) m (ord_succ alpha)
 
 | equ_trans : Peano_Theorems_Base  (univ 0 (univ 1 (univ 2 ((var 0 # var 1) ~> ((var 1 # var 2) ~> (var 0 # var 2))))))
+                0 (ord_succ (ord_succ (ord_succ (ord_succ (ord_succ Zero)))))
 
 | equ_succ : Peano_Theorems_Base (univ 0 (univ 1 ((var 0 # var 1) ~> ((succ (var 0)) # (succ (var 1))))))
+                0 (ord_succ (ord_succ (ord_succ Zero)))
 
 | non_zero : Peano_Theorems_Base (univ 0 (neg (zero # (succ (var 0)))))
+                0 (ord_succ Zero)
 
 | succ_equ : Peano_Theorems_Base (univ 0 (univ 1 ((succ (var 0) # succ (var 1)) ~> (var 0 # var 1))))
+                0 (ord_succ (ord_succ (ord_succ Zero)))
 
 | pl0 : Peano_Theorems_Base (univ 0 ((plus (var 0) zero) # (var 0)))
+                0 (ord_succ Zero)
 
 | plS : Peano_Theorems_Base (univ 0 (univ 1 ((plus (var 0) (succ (var 1))) # (succ (plus (var 0) (var 1))))))
+                0 (ord_succ (ord_succ Zero))
 
 | ml0 : Peano_Theorems_Base (univ 0 ((times (var 0) zero) # zero))
+                0 (ord_succ Zero)
 
 | mlS : Peano_Theorems_Base (univ 0 (univ 1 ((times (var 0) (succ (var 1))) # (plus (times (var 0) (var 1)) (var 0)))))
+                0 (ord_succ (ord_succ Zero))
 
 | induct : forall (A : formula) (n : nat),
-              Peano_Theorems_Base (substitution A n zero ~> ((univ n (A ~> (substitution A n (succ (var n))))) ~> (univ n A))).
+              Peano_Theorems_Base (substitution A n zero ~> ((univ n (A ~> (substitution A n (succ (var n))))) ~> (univ n A)))
+                  (num_conn A + 1) (ord_succ (ord_succ (cons (nat_ord 1) 0 Zero))).
 
 Inductive Peano_Theorems_Implication : formula -> nat -> ord -> Type :=
 | I_FOL1 : forall (A B : formula),
@@ -977,30 +995,39 @@ Qed.
 
 
 Lemma PA_Base_equiv :
-  forall (A : formula) (n : nat) (t : term),
+  forall (A : formula) (d n : nat) (alpha : ord) (t : term),
     closed_t t = true ->
-      Peano_Theorems_Base A ->
-        Peano_Theorems_Base (substitution A n t).
+      Peano_Theorems_Base A d alpha ->
+        Peano_Theorems_Base (substitution A n t) d alpha.
 Proof.
-intros A n c HC H0.
+intros A d n alpha c HC H0.
 induction H0; unfold "~>" in *.
   
 - unfold substitution in *;
   fold substitution in *;
+  unfold num_conn; fold num_conn.
+  rewrite <- (num_conn_sub _ n c).
   apply FOL1.
 
 - unfold substitution in *;
   fold substitution in *;
+  unfold num_conn; fold num_conn.
+  rewrite <- (num_conn_sub A n c).
+  rewrite <- (num_conn_sub B n c).
+  rewrite <- (num_conn_sub C n c).
   apply FOL2.
 
 - unfold substitution in *;
   fold substitution in *;
   unfold num_conn; fold num_conn.
+  rewrite <- (num_conn_sub A n c).
+  rewrite <- (num_conn_sub B n c).
   apply FOL3.
 
 - rename e into Ht.
   unfold substitution in *;
-  fold substitution in *.
+  fold substitution in *;
+  unfold num_conn; fold num_conn.
   case (eq_nat n0 n) eqn:X.
   + apply nat_eq_decid in X.
     destruct X.
@@ -1010,33 +1037,42 @@ induction H0; unfold "~>" in *.
     apply remove_not_member.
   + rewrite eq_nat_symm in X.
     rewrite (substitution_order _ _ _ _ _ Ht HC X).
+    rewrite num_conn_sub.
+    rewrite <- (num_conn_sub A n c).
+    rewrite <- (num_conn_sub (substitution A n c) n0 t).
     apply (FOL4 _ _ _ Ht).
 
 - rename e into LIST.
   unfold substitution in *;
-  fold substitution in *.
+  fold substitution in *;
+  unfold num_conn; fold num_conn.
   case (eq_nat n0 n) eqn:X.
   + apply nat_eq_decid in X.
     destruct X.
     rewrite (closed_subst_eq_aux _ _ _ LIST). 
     apply (FOL5 _ _ _ LIST).
-  + apply FOL5.
+  + rewrite <- (num_conn_sub A n c).
+    rewrite <- (num_conn_sub B n c).
+    apply FOL5.
     rewrite (subst_remove _ _ _ HC).
     apply (remove_member_false _ _ _ LIST).
 
 - unfold substitution in *;
-  fold substitution in *.
-  apply (MP (substitution A n c)).
+  fold substitution in *;
+  unfold num_conn; fold num_conn.
+  rewrite <- (num_conn_sub A n c).
+  apply MP.
   + apply IHPeano_Theorems_Base1.
   + apply IHPeano_Theorems_Base2.
   
 - unfold substitution in *;
-  fold substitution in *.
+  fold substitution in *;
+  unfold num_conn; fold num_conn.
   case (eq_nat n0 n) eqn:X.
   + apply nat_eq_decid in X.
     destruct X.
-    apply (UG _ _ H0).
-  + apply (UG _ _ IHPeano_Theorems_Base).
+    apply (UG _ _ _ _ H0).
+  + apply (UG _ _ _ _ IHPeano_Theorems_Base).
 
 - rewrite closed_subst_eq.
   + apply equ_trans.
@@ -1179,7 +1215,8 @@ induction H0; unfold "~>" in *.
   + rewrite eq_nat_symm in X.
     rewrite (substitution_order _ _ _ _ _ (repr_closed 0) HC X).
     rewrite (weak_substitution_order _ _ _ (succ (var n0))).
-    * apply induct.
+    * rewrite <- (num_conn_sub A n c).
+      apply induct.
     * unfold free_list_t.
       unfold member.
       rewrite eq_nat_symm in X.
@@ -1302,54 +1339,32 @@ unfold num_conn; fold num_conn.
 Qed.
 
 Lemma PA_Base_equiv_PA_Implication :
-  forall (A : formula),
-    Peano_Theorems_Base A ->
-      {d : nat & {alpha : ord & Peano_Theorems_Implication A d alpha}}.
+  forall (A : formula) (d : nat) (alpha : ord),
+    Peano_Theorems_Base A d alpha ->
+      Peano_Theorems_Implication A d alpha.
 Proof.
-intros A T. induction T.
+intros A d alpha T. induction T.
 
-- exists 0.
-  exists (ord_succ (ord_succ (nat_ord (num_conn A + num_conn A)))).
-  apply I_FOL1.
+- apply I_FOL1.
 
-- exists (num_conn (neg B)).
-  exists (ord_succ (ord_max (ord_succ (nat_ord (num_conn (lor (neg A) B) + num_conn (lor (neg A) B))))
-                            ((ord_succ (nat_ord (num_conn (lor (neg A) (lor (neg B) C)) + num_conn (lor (neg A) (lor (neg B) C)))))))).
-  apply I_FOL2.
+- apply I_FOL2.
 
-- exists 0.
-  exists (ord_succ (ord_max (ord_succ (ord_succ (ord_succ (nat_ord (num_conn (A) + num_conn (A))))))
-                            ((ord_succ (ord_max (ord_succ (ord_succ (ord_succ (nat_ord (num_conn A + num_conn A)))))
-                                                (ord_succ (ord_succ (nat_ord (num_conn (neg B) + num_conn (neg B)))))))))).
-  apply I_FOL3.
+- apply I_FOL3.
 
-- exists 0.
-  exists (ord_succ (ord_succ (nat_ord (num_conn (substitution A n t) + num_conn (substitution A n t))))).
-  apply (I_FOL4 _ _ _ e).
+- apply (I_FOL4 _ _ _ e).
 
-- exists 0.
-  exists (ord_succ (ord_succ (ord_succ (nat_ord (num_conn (lor (neg A) B) + num_conn (lor (neg A) B)))))).
-  apply (I_FOL5 _ _ _ e).
+- apply (I_FOL5 _ _ _ e).
 
-- destruct IHT1 as [d1 [alpha1 IHT1]].
-  destruct IHT2 as [d2 [alpha2 IHT2]].
-  exists (max (max d2 d1) (num_conn (neg A))).
-  exists (ord_succ (ord_succ (ord_max alpha2 alpha1))).
-  apply I_MP.
+- apply I_MP.
   + apply IHT1.
   + apply IHT2.
 
-- destruct IHT as [d [alpha IHT]].
-  exists d.
-  exists (ord_succ alpha).    
-  apply I_UG.
+  - apply I_UG.
   + apply IHT.
   + intros t Ht.
     apply (PA_Implication_equiv _ _ _ _ _ Ht IHT). 
 
-- exists 0.
-  exists (ord_succ (ord_succ (ord_succ (ord_succ (ord_succ (nat_ord 0)))))).
-  apply I_UG; intros;
+- apply I_UG; intros;
     unfold substitution;
     fold substitution;
     unfold eq_nat;
@@ -1360,9 +1375,7 @@ intros A T. induction T.
       apply I_UG; intros;
   apply I_equ_trans.
 
-- exists 0.
-  exists (ord_succ (ord_succ (ord_succ (nat_ord 0)))).
-  apply I_UG; intros;
+- apply I_UG; intros;
     unfold substitution;
     fold substitution;
     unfold eq_nat;
@@ -1372,17 +1385,13 @@ intros A T. induction T.
       unfold eq_nat;
   apply I_equ_succ.
 
-- exists 0.
-  exists (ord_succ (nat_ord 0)).
-  apply I_UG; intros;
+- apply I_UG; intros;
     unfold substitution;
     fold substitution;
     unfold eq_nat;
   apply I_non_zero.
 
-- exists 0.
-  exists (ord_succ (ord_succ (ord_succ (nat_ord 0)))).
-  apply I_UG; intros;
+- apply I_UG; intros;
     unfold substitution;
     fold substitution;
     unfold eq_nat;
@@ -1392,17 +1401,13 @@ intros A T. induction T.
       unfold eq_nat;
   apply I_succ_equ.
 
-- exists 0.
-  exists (ord_succ (nat_ord 0)).
-  apply I_UG; intros;
+- apply I_UG; intros;
     unfold substitution;
     fold substitution;
     unfold eq_nat;
   apply I_pl0.
 
-- exists 0.
-  exists (ord_succ (ord_succ (nat_ord 0))).
-  apply I_UG; intros;
+- apply I_UG; intros;
     unfold substitution;
     fold substitution;
     unfold eq_nat;
@@ -1412,17 +1417,13 @@ intros A T. induction T.
       unfold eq_nat;
   apply I_plS.
 
-- exists 0.
-  exists (ord_succ (nat_ord 0)).
-  apply I_UG; intros;
+- apply I_UG; intros;
     unfold substitution;
     fold substitution;
     unfold eq_nat;
   apply I_ml0.
 
-- exists 0.
-  exists (ord_succ (ord_succ (nat_ord 0))).
-  apply I_UG; intros;
+- apply I_UG; intros;
     unfold substitution;
     fold substitution;
     unfold eq_nat;
@@ -1432,37 +1433,32 @@ intros A T. induction T.
       unfold eq_nat;
   apply I_mlS.
 
-- exists (num_conn A + 1).
-  exists (ord_succ (ord_succ (cons (nat_ord 1) 0 Zero))).
-  apply I_induct.
+- apply I_induct.
 Qed.
 
 Lemma PA_Base_closed_PA_omega :
-  forall (A : formula),
-    Peano_Theorems_Base A ->
-      (forall (c : c_term), {d : nat & {alpha : ord & PA_omega_theorem (closure A c) d alpha}}).
+  forall (A : formula) (d : nat) (alpha : ord),
+    Peano_Theorems_Base A d alpha ->
+      (forall (c : c_term), PA_omega_theorem (closure A c) d alpha).
 Proof.
-intros A T c.
-destruct (PA_Base_equiv_PA_Implication _ T) as [d [alpha TI]].
-exists d.
-exists alpha.
-apply (PA_closed_PA_omega _ _ _ TI c).
+intros A d alpha T c.
+refine (PA_closed_PA_omega _ _ _ _ c).
+apply (PA_Base_equiv_PA_Implication _ _ _ T).
 Qed.
 
-(*Not important, just interesting*)
-Lemma PA_Imp_nf :
+Lemma PA_Base_nf :
   forall (A : formula) (d : nat) (alpha : ord),
-    Peano_Theorems_Implication A d alpha ->
+    Peano_Theorems_Base A d alpha ->
       nf alpha.
 Proof.
 intros A d alpha T.
 apply (ord_nf (closure A czero) d).
-apply (PA_closed_PA_omega _ _ _ T).
+apply (PA_Base_closed_PA_omega _ _ _ T).
 Qed.
 
-Lemma PA_Imp_less_2_omega :
+Lemma PA_Base_less_2_omega :
   forall (A : formula) (d : nat) (alpha : ord),
-    Peano_Theorems_Implication A d alpha ->
+    Peano_Theorems_Base A d alpha ->
       ord_lt alpha (cons (cons Zero 0 Zero) 1 Zero).
 Proof.
 intros A d alpha T.
@@ -1481,7 +1477,7 @@ all : repeat rewrite <- ord_max_succ_succ;
 - repeat rewrite ord_max_succ_succ.
   pose proof (max_cases _ _ _ _ IHT2 IHT1) as IE.
   rewrite <- ord_max_self in IE.
-  pose proof (ord_max_nf _ _ (PA_Imp_nf _ _ _ T2) (PA_Imp_nf _ _ _ T1)) as NM.
+  pose proof (ord_max_nf _ _ (PA_Base_nf _ _ _ T2) (PA_Base_nf _ _ _ T1)) as NM.
   assert (nf (cons (cons Zero 0 Zero) 1 Zero)) as NO.
   { repeat apply single_nf. apply zero_nf. }
   assert (is_succ (cons (cons Zero 0 Zero) 1 Zero) = false) as SO.
@@ -1493,5 +1489,5 @@ all : repeat rewrite <- ord_max_succ_succ;
   { repeat apply single_nf. apply zero_nf. }
   assert (is_succ (cons (cons Zero 0 Zero) 1 Zero) = false) as SO.
   { unfold is_succ. reflexivity. }
-  apply (ord_lt_not_succ_ord_succ_lt _ _ (PA_Imp_nf _ _ _ T) NO SO IHT).
+  apply (ord_lt_not_succ_ord_succ_lt _ _ (PA_Base_nf _ _ _ T) NO SO IHT).
 Qed.

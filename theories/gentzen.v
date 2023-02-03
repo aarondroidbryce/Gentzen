@@ -127,7 +127,11 @@ Proof.
 intros. assert (closed danger = true). auto. assert (dangerous_disjunct danger = true). auto. apply (danger_not_theorem _ H0 _ _ (cut2 _ _ _ _ _ _ X (exchange1 _ _ _ _ (weakening (danger) _ _ _ H X0)))).
 Qed.
 
-Lemma PA_Consistent : forall A n1 n2 alpha1 alpha2, Peano_Theorems_Base A n1 alpha1 -> Peano_Theorems_Base (neg A) n2 alpha2 -> False.
+Lemma PA_Consistent : forall A, Peano_Theorems_Base A -> Peano_Theorems_Base (neg A) -> False.
 Proof.
-intros. pose proof (PA_Base_closed_PA_omega _ _ _  H czero). pose proof (PA_Base_closed_PA_omega _ _ _  H0 czero). rewrite closure_neg in X0; auto. apply (inconsistent_danger _ _ _ _ _ X X0). 
+intros A T1 T2.
+destruct (PA_Base_closed_PA_omega _  T1 czero) as [d1 [alpha1 T3]].
+destruct (PA_Base_closed_PA_omega _  T2 czero) as [d2 [alpha2 T4]].
+rewrite closure_neg in T4.
+apply (inconsistent_danger _ _ _ _ _ T3 T4).
 Qed.

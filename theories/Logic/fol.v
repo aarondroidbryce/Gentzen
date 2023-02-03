@@ -125,6 +125,12 @@ match n with
 | S n' => succ (represent n')
 end.
 
+Lemma succ_repr : forall (n : nat), succ (represent n) = represent (S n).
+Proof.
+intros n.
+unfold represent.
+reflexivity.
+Qed.
 
 (* Given some atomic formula a, returns whether the statement is correct,
 incorrect, or undefined (i.e. not closed) *)
@@ -649,6 +655,44 @@ intros.
 apply closed_subst_eq_aux.
 apply closed_free_list in H.
 rewrite H. auto.
+Qed.
+
+Lemma closed_subst_closed_t : forall (s t : term) (n : nat), closed_t s = true -> closed_t (substitution_t s n t) = true.
+Proof.
+intros s t n CS.
+induction s;
+unfold substitution_t; fold substitution_t.
+3, 4: unfold closed_t in *; fold closed_t in *;
+      destruct (and_bool_prop _ _ CS) as [CS1 CS2];
+      rewrite (IHs1 CS1);
+      rewrite (IHs2 CS2);
+      unfold "&&";
+      reflexivity.
+- apply CS.
+- unfold closed_t in *; fold closed_t in *.
+  apply (IHs CS).
+- unfold closed_t in CS; fold closed_t in CS.
+  inversion CS.
+Qed.
+
+Lemma closed_subst_closed_a : forall (a : atomic_formula) (n : nat) (t : term), closed_a a = true -> closed_a (substitution_a a n t) = true.
+Proof.
+intros a n t CA.
+destruct a.
+unfold closed_a in *.
+unfold substitution_a.
+destruct (and_bool_prop _ _ CA) as [CA1 CA2].
+rewrite (closed_subst_closed_t _ _ _ CA1).
+rewrite (closed_subst_closed_t _ _ _ CA2).
+unfold "&&".
+reflexivity.
+Qed.
+
+Lemma closed_subst_closed : forall (A : formula) (n : nat) (t : term), closed A = true -> closed (substitution A n t) = true.
+Proof.
+intros A n t CA.
+rewrite (closed_subst_eq _ _ _ CA).
+apply CA.
 Qed.
 
 Lemma closed_univ_sub : forall (B : formula) (n : nat),
@@ -1414,7 +1458,6 @@ intros. unfold correct_a. unfold correctness. pose proof eval_represent (value c
 pose proof (closed_eval (projT1 c) (projT2 c)). case (eval (projT1 c)) eqn:X1. inversion H0. unfold value in X. rewrite represent_eval in X.
 destruct X. destruct X1. rewrite eq_nat_refl. auto. destruct c. auto.
 Qed.
-
 
 Lemma eval_eq_subst_eq :
   forall (T s t : term) (n : nat),
