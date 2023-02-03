@@ -45,86 +45,256 @@ Definition danger : formula := atom (equ zero (succ zero)).
 
 Definition dangerous_disjunct (A : formula) : bool := disjunction_of A danger.
 
-Lemma danger_swap : forall (A B : formula), dangerous_disjunct (lor A B) = dangerous_disjunct (lor B A). intros. unfold dangerous_disjunct. unfold disjunction_of. fold disjunction_of. case (eq_f A danger) eqn:X; case (eq_f B danger) eqn:X1; auto; case (disjunction_of A danger) eqn:X2; case (disjunction_of B danger) eqn:X3; auto. Qed.
-
-Lemma danger_split : forall (A B : formula), dangerous_disjunct (lor A B) = dangerous_disjunct A && dangerous_disjunct B.
+Lemma danger_swap :
+    forall (A B : formula),
+        dangerous_disjunct (lor A B) = dangerous_disjunct (lor B A).
 Proof.
-intros.
-unfold dangerous_disjunct. unfold disjunction_of. fold disjunction_of. case (eq_f A danger) eqn:X.
-- case (eq_f B danger) eqn:X1; destruct A; destruct B; unfold disjunction_of; fold disjunction_of; try rewrite X; try rewrite X1; auto; inversion X1; inversion X.
-- case (eq_f B danger) eqn:X1; destruct B; unfold disjunction_of; fold disjunction_of; try rewrite X1; try rewrite X; auto; inversion X; inversion X1; try rewrite H1; case (disjunction_of A danger); auto.
+intros A B.
+unfold dangerous_disjunct.
+unfold disjunction_of; fold disjunction_of.
+case (eq_f A danger) eqn:X;
+case (eq_f B danger) eqn:X1;
+case (disjunction_of A danger) eqn:X2;
+case (disjunction_of B danger) eqn:X3;
+unfold danger, "&&", eq_f;
+fold eq_f;
+reflexivity.
 Qed.
 
-Lemma danger_closed : forall A, dangerous_disjunct A = true -> closed A = true.
+Lemma danger_split :
+    forall (A B : formula),
+        dangerous_disjunct (lor A B) = dangerous_disjunct A && dangerous_disjunct B.
 Proof.
-intros. unfold dangerous_disjunct in H. induction A; inversion H.
-- case (eq_f (atom a) danger) eqn:X. apply f_eq_decid in X. rewrite X. auto. simpl in X. rewrite X in H1. inversion H1.
-- rewrite H1. simpl. case (eq_f A1 danger) eqn:X; case (eq_f A2 danger) eqn:X1; rewrite IHA1,IHA2; auto; try apply f_eq_decid in X; try rewrite X; try apply f_eq_decid in X1; try rewrite X1; auto; apply and_bool_prop in H1; destruct H1; auto.
+intros A B.
+unfold dangerous_disjunct.
+unfold disjunction_of; fold disjunction_of.
+unfold danger. 
+unfold eq_f; fold eq_f.
+fold danger.
+case (eq_f A danger) eqn:X;
+case (eq_f B danger) eqn:X1;
+try apply f_eq_decid in X;
+try apply f_eq_decid in X1;
+try rewrite X;
+try rewrite X1;
+unfold danger;
+unfold disjunction_of; fold disjunction_of;
+try rewrite eq_f_refl;
+unfold "&&";
+try reflexivity.
+case (disjunction_of A (zero # succ zero));
+reflexivity.
 Qed.
 
-Lemma closed_danger : forall A, closed A = false -> dangerous_disjunct A = false.
+Lemma danger_closed :
+    forall A,
+        dangerous_disjunct A = true ->
+            closed A = true.
 Proof.
-intros. case (dangerous_disjunct A) eqn:X; auto. rewrite danger_closed in H. inversion H. auto.
+intros A DA.
+induction A.
+2,4 : inversion DA.
+- case (eq_f (atom a) danger) eqn:X.
+  + apply f_eq_decid in X.
+    rewrite X.
+    unfold danger.
+    unfold closed.
+    unfold closed_a.
+    unfold closed_t.
+    unfold "&&".
+    reflexivity.
+  + unfold dangerous_disjunct in DA.
+    unfold disjunction_of in DA.
+    rewrite X in DA.
+    inversion DA.
+- rewrite danger_split in DA.
+  destruct (and_bool_prop _ _ DA) as [DA1 DA2].
+  unfold closed; fold closed.
+  rewrite (IHA1 DA1).
+  rewrite (IHA2 DA2).
+  unfold "&&".
+  reflexivity.
 Qed.
 
-Lemma danger_not_deg_0 : forall P A d alpha, P_proves P A d alpha -> dangerous_disjunct A = true -> 0 < d.
+Lemma not_closed_not_danger :
+    forall A,
+        closed A = false ->
+            dangerous_disjunct A = false.
 Proof.
-intros P. induction P.
-- intros. destruct X as [[[HP1 HP2] HP3] HP4]. simpl in HP1,HP3,HP4. destruct HP2 as [HP2a HP2b]. apply (IHP A _ alpha); auto. repeat split; auto. lia.
-- intros. destruct X as [[[HP1 HP2] HP3] HP4]. simpl in HP1,HP3,HP4. destruct HP2 as [[HP2a HP2b] HP2c]. apply (IHP A _ (ptree_ord P)); auto. repeat split; auto.
-- intros A. induction A.
-  + intros. destruct X as [[[HP1 HP2] HP3] HP4]. simpl in HP1,HP3,HP4. rewrite HP1 in HP2. inversion HP2. unfold dangerous_disjunct in H. unfold disjunction_of in H. case (eq_f (atom a) danger) eqn:X; inversion H.
-    simpl in X. apply atom_beq_eq in X. symmetry in X. destruct X. unfold correct_a in H1. unfold correctness in H1. inversion H1.
-  + intros. unfold dangerous_disjunct in H. unfold disjunction_of in H. case (eq_f (neg A) danger) eqn:Y; inversion H; inversion Y.
-  + intros. destruct X as [[[HP1 HP2] HP3] HP4]. simpl in HP1,HP3,HP4. rewrite HP1 in HP2. inversion HP2.
-  + intros. destruct X as [[[HP1 HP2] HP3] HP4]. simpl in HP1,HP3,HP4. rewrite HP1 in HP2. inversion HP2.
-- intros. destruct X as [[[HP1 HP2] HP3] HP4]. simpl in HP1,HP3,HP4. destruct HP2 as [[[HP2a HP2b] HP2c] HP2d]. apply (IHP (ptree_formula P) _ (ptree_ord P)); auto. repeat split; auto. lia. rewrite HP2a. rewrite danger_swap. rewrite HP1. auto.
-- intros. destruct X as [[[HP1 HP2] HP3] HP4]. simpl in HP1,HP3,HP4. destruct HP2 as [[[HP2a HP2b] HP2c] HP2d]. apply (IHP (ptree_formula P) _ (ptree_ord P)); auto. repeat split; auto. lia. rewrite <- HP1 in H. repeat rewrite danger_split in H. rewrite HP2a. rewrite danger_swap. repeat rewrite danger_split.
-  apply and_bool_prop in H. destruct H as [H Y]. apply and_bool_prop in H. destruct H. rewrite H,H0,Y. auto.
-- intros. destruct X as [[[HP1 HP2] HP3] HP4]. simpl in HP1,HP3,HP4. destruct HP2 as [[[HP2a HP2b] HP2c] HP2d]. apply (IHP (ptree_formula P) _ (ptree_ord P)); auto. repeat split; auto. lia. rewrite <- HP1 in H. repeat rewrite danger_split in H. rewrite HP2a. rewrite danger_swap. repeat rewrite danger_split.
-  apply and_bool_prop in H. destruct H as [H Y]. apply and_bool_prop in H. destruct H. rewrite H,H0,Y. auto.
-- intros. destruct X as [[[HP1 HP2] HP3] HP4]. simpl in HP1,HP3,HP4. destruct HP2 as [[[HP2a HP2b] HP2c] HP2d]. apply (IHP (ptree_formula P) _ (ptree_ord P)); auto. repeat split; auto. lia. rewrite <- HP1 in H. repeat rewrite danger_split in H. rewrite HP2a. rewrite danger_swap. repeat rewrite danger_split.
-  apply and_bool_prop in H. destruct H. apply and_bool_prop in H. destruct H. apply and_bool_prop in H. destruct H. rewrite H,H0,H1,H2. auto.
-- intros. destruct X as [[[HP1 HP2] HP3] HP4]. simpl in HP1,HP3,HP4. destruct HP2 as [[[HP2a HP2b] HP2c] HP2d]. apply (IHP (ptree_formula P) _ (ptree_ord P)); auto. repeat split; auto. lia. rewrite <- HP1 in H. repeat rewrite danger_split in H. rewrite HP2a. rewrite danger_split. rewrite H. auto.
-- intros. destruct X as [[[HP1 HP2] HP3] HP4]. simpl in HP1,HP3,HP4. destruct HP2 as [[[HP2a HP2b] HP2c] HP2d]. apply (IHP (ptree_formula P) _ (ptree_ord P)); auto. repeat split; auto. lia. rewrite <- HP1 in H. repeat rewrite danger_split in H. rewrite HP2a. rewrite danger_split. rewrite danger_split. apply and_bool_prop in H. destruct H. rewrite H,H0. auto.
-- intros. destruct X as [[[HP1 HP2] HP3] HP4]. simpl in HP1,HP3,HP4. destruct HP2 as [[[[HP2a HP2b] HP2c] HP2d] HP2e]. apply (IHP (ptree_formula P) _ (ptree_ord P)); auto. repeat split; auto. lia. rewrite <- HP1 in H. repeat rewrite danger_split in H. rewrite HP2a. apply and_bool_prop in H. destruct H. auto.
-- intros. destruct X as [[[HP1 HP2] HP3] HP4]. simpl in HP1,HP3,HP4. rewrite <- HP1 in H. unfold dangerous_disjunct in H. unfold disjunction_of in H. inversion H.
-- intros. destruct X as [[[HP1 HP2] HP3] HP4]. simpl in HP1,HP3,HP4. rewrite <- HP1 in H. rewrite danger_split in H. apply and_bool_prop in H. destruct H. unfold dangerous_disjunct in H. unfold disjunction_of in H. inversion H.
-- intros. destruct X as [[[HP1 HP2] HP3] HP4]. simpl in HP1,HP3,HP4. rewrite <- HP1 in H. unfold dangerous_disjunct in H. unfold disjunction_of in H. inversion H.
-- intros. destruct X as [[[HP1 HP2] HP3] HP4]. simpl in HP1,HP3,HP4. rewrite <- HP1 in H. rewrite danger_split in H. apply and_bool_prop in H. destruct H. unfold dangerous_disjunct in H. unfold disjunction_of in H. inversion H.
-- intros. destruct X as [[[HP1 HP2] HP3] HP4]. simpl in HP1,HP3,HP4. rewrite <- HP1 in H. unfold dangerous_disjunct in H. unfold disjunction_of in H. inversion H.
-- intros. destruct X as [[[HP1 HP2] HP3] HP4]. simpl in HP1,HP3,HP4. rewrite <- HP1 in H. rewrite danger_split in H. apply and_bool_prop in H. destruct H. unfold dangerous_disjunct in H. unfold disjunction_of in H. inversion H.
-- intros. destruct X as [[[HP1 HP2] HP3] HP4]. simpl in HP1,HP3,HP4. rewrite <- HP1 in H0. unfold dangerous_disjunct in H0. unfold disjunction_of in H0. inversion H0.
-- intros. destruct X as [[[HP1 HP2] HP3] HP4]. simpl in HP1,HP3,HP4. rewrite <- HP1 in H0. rewrite danger_split in H0. apply and_bool_prop in H0. destruct H0. unfold dangerous_disjunct in H0. unfold disjunction_of in H0. inversion H0.
-- intros. destruct X as [[[HP1 HP2] HP3] HP4]. simpl in HP1,HP3,HP4. destruct HP2 as [[[[[[[HP2a HP2b] HP2c] HP2d] HP2e] HP2f] HP2g] HP2h]. lia.
-- intros. destruct X as [[[HP1 HP2] HP3] HP4]. simpl in HP1,HP3,HP4. destruct HP2 as [[[[[[[HP2a HP2b] HP2c] HP2d] HP2e] HP2f] HP2g] HP2h]. lia.
-- intros. destruct X as [[[HP1 HP2] HP3] HP4]. simpl in HP1,HP3,HP4. destruct HP2 as [[[[[[[HP2a HP2b] HP2c] HP2d] HP2e] HP2f] HP2g] HP2h]. lia.
+intros A CA.
+case (dangerous_disjunct A) eqn:DA.
+2 : reflexivity. 
+rewrite (danger_closed _ DA) in CA.
+inversion CA.
 Qed.
 
-Lemma provable_not_danger : forall A d alpha, provable A d alpha -> dangerous_disjunct A = false.
+Lemma danger_not_deg_0 :
+    forall P A d alpha,
+        P_proves P A d alpha ->
+            dangerous_disjunct A = true ->
+                0 < d.
 Proof.
-intros. case (dangerous_disjunct A) eqn:Y; auto. destruct (cut_elim_aux3 _ _ _ X) as [beta [P HP]]. pose proof (danger_not_deg_0 P A 0 beta HP Y) as Deg. inversion Deg.
+intros P.
+induction P.
+3 : { intros A.
+      induction A;
+      intros d alpha [[[HP1 HP2] HP3] HP4] DA;
+      unfold dangerous_disjunct in DA;
+      unfold disjunction_of in DA;
+      unfold ptree_formula,ptree_deg,ptree_ord in *;
+      rewrite HP1 in HP2;
+      inversion HP2 as [RA].
+      - case (eq_f (atom a) danger) eqn:X; inversion DA.
+        unfold eq_f, danger in X.
+        apply atom_beq_eq in X.
+        symmetry in X.
+        destruct X.
+        inversion RA.
+      - case (eq_f (neg A) danger) eqn:Y.
+        inversion Y.
+        inversion DA. }
+
+all : intros A d alpha [[[HP1 HP2] HP3] HP4] DA;
+      unfold ptree_formula,ptree_deg,ptree_ord,num_conn in *;
+      fold ptree_formula ptree_deg ptree_ord num_conn in *.
+
+18,19,20 : destruct HP2 as [[[[[[[HP2a HP2b] HP2c] HP2d] HP2e] HP2f] HP2g] HP2h]; lia.
+
+10-17 : rewrite <- HP1 in DA.
+
+11,13,15,17 : rewrite danger_split in DA;
+              apply and_bool_prop in DA;
+              destruct DA as [DA].
+
+10-17 : unfold dangerous_disjunct in DA;
+        unfold disjunction_of in DA;
+        inversion DA.
+
+1 : destruct HP2 as [ID PV].
+2 : destruct HP2 as [[IO PV] NO].
+3-8 : destruct HP2 as [[[PF PV] PD] PO].
+9 : destruct HP2 as [[[[PF FC] PV] PD] PO].
+
+all : apply (IHP (ptree_formula P) _ (ptree_ord P));
+      repeat split;
+      try apply PV;
+      try lia;
+      rewrite <- HP1 in DA;
+      repeat rewrite danger_split in DA;
+      try rewrite PF;
+      try rewrite danger_swap;
+      repeat rewrite danger_split.
+
+8 : rewrite DA;
+    unfold "&&";
+    reflexivity.
+  
+1,3 : apply DA.
+
+1 : apply HP3.
+
+all : apply and_bool_prop in DA;
+      destruct DA as [DA DA1].
+
+- rewrite DA,DA1;
+  unfold "&&";
+  reflexivity.
+
+- apply and_bool_prop in DA.
+  destruct DA as [DA2 DA3].
+  rewrite DA1,DA2,DA3.
+  unfold "&&".
+  reflexivity.
+
+- apply and_bool_prop in DA.
+  destruct DA as [DA2 DA3].
+  rewrite DA1,DA2,DA3.
+  unfold "&&".
+  reflexivity.
+
+- apply and_bool_prop in DA.
+  destruct DA as [DA2 DA3].
+  apply and_bool_prop in DA2. destruct DA2 as [DA2 DA4].
+  rewrite DA1,DA2,DA3,DA4;
+  unfold "&&";
+  reflexivity.
+
+- rewrite DA,DA1;
+  unfold "&&";
+  reflexivity.
+
+- apply DA1.
 Qed.
 
-Lemma danger_not_provable' : forall A P, dangerous_disjunct A = true -> valid P -> eq_f (ptree_formula P) A = false.
+Lemma provable_not_danger :
+    forall A d alpha,
+        provable A d alpha ->
+            dangerous_disjunct A = false.
 Proof.
-intros. case (eq_f (ptree_formula P) A) eqn:Y; auto. intros. assert (provable (ptree_formula P) (ptree_deg P) (ptree_ord P)) as HP. exists P. repeat split; simpl; auto.
-pose (provable_not_danger _ _ _ HP) as Danger. apply f_eq_decid in Y. destruct Y. rewrite H in Danger. inversion Danger.
+intros A d alpha X.
+case (dangerous_disjunct A) eqn:Y.
+- destruct (cut_elim_aux3 _ _ _ X) as [beta [P HP]].
+  pose proof (danger_not_deg_0 P A 0 beta HP Y) as Deg.
+  inversion Deg.
+- reflexivity.
 Qed.
 
-Lemma danger_not_provable : forall A, dangerous_disjunct A = true -> forall P d alpha, P_proves P A d alpha -> False.
+Lemma danger_not_provable' :
+    forall A P,
+        dangerous_disjunct A = true ->
+            valid P ->
+                eq_f (ptree_formula P) A = false.
 Proof.
-intros. destruct X as [[[X1 X2] X3] X4]. pose proof (danger_not_provable' _ _ H X2) as Danger. destruct X1. rewrite eq_f_refl in Danger. inversion Danger.
+intros A P DA PV.
+case (eq_f (ptree_formula P) A) eqn:Y.
+- assert (provable (ptree_formula P) (ptree_deg P) (ptree_ord P)) as HP.
+  { exists P. repeat split. apply PV. lia. }
+  pose (provable_not_danger _ _ _ HP) as Danger.
+  apply f_eq_decid in Y.
+  destruct Y.
+  rewrite DA in Danger.
+  inversion Danger.
+- reflexivity.
 Qed.
 
-Lemma danger_not_theorem : forall A, dangerous_disjunct A = true -> forall n alpha, PA_omega_theorem A n alpha -> False.
+Lemma danger_not_provable :
+    forall A,
+        dangerous_disjunct A = true ->
+            forall P d alpha, P_proves P A d alpha ->
+                False.
 Proof.
-intros. apply (danger_not_provable _ H _ _ _ (projT2(provable_theorem _ _ _ X))). 
+intros A DA P d alpha [[[PF PV] PD] PO].
+pose proof (danger_not_provable' _ _ DA PV) as Danger.
+destruct PF.
+rewrite eq_f_refl in Danger.
+inversion Danger.
 Qed.
 
-Lemma inconsistent_danger : forall A n1 n2 alpha1 alpha2, PA_omega_theorem A n1 alpha1 -> PA_omega_theorem (neg A) n2 alpha2 -> False.
+Lemma danger_not_theorem :
+    forall A,
+        dangerous_disjunct A = true ->
+            forall n alpha, PA_omega_theorem A n alpha ->
+                False.
 Proof.
-intros. assert (closed danger = true). auto. assert (dangerous_disjunct danger = true). auto. apply (danger_not_theorem _ H0 _ _ (cut2 _ _ _ _ _ _ X (exchange1 _ _ _ _ (weakening (danger) _ _ _ H X0)))).
+intros A DA n alpha T.
+apply (danger_not_provable _ DA _ _ _ (projT2(provable_theorem _ _ _ T))). 
+Qed.
+
+Lemma inconsistent_danger :
+    forall A n1 n2 alpha1 alpha2,
+        PA_omega_theorem A n1 alpha1 ->
+            PA_omega_theorem (neg A) n2 alpha2 ->
+                False.
+Proof.
+intros A n1 n2 alpha1 alpha2 T1 T2.
+assert (closed danger = true) as CD.
+{ unfold danger,closed, closed_a, closed_t, "&&".
+  reflexivity. }
+assert (dangerous_disjunct danger = true) as DD.
+{ unfold dangerous_disjunct, disjunction_of, danger.
+  rewrite eq_f_refl.
+  reflexivity. }
+apply (danger_not_theorem _ DD _ _ (cut2 _ _ _ _ _ _ T1 (exchange1 _ _ _ _ (weakening (danger) _ _ _ CD T2)))).
 Qed.
 
 Lemma PA_Consistent : forall A, Peano_Theorems_Base A -> Peano_Theorems_Base (neg A) -> False.
