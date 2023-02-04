@@ -26,13 +26,13 @@ Notation "( x y )" := (lor_ind x y).
 
 Fixpoint non_target (A : formula) : subst_ind :=
 match A with
-| lor B E => lor_ind (non_target B) (non_target E)
+| lor B C => lor_ind (non_target B) (non_target C)
 | _ => (0)
 end.
 
 Fixpoint target (A : formula) : subst_ind :=
 match A with
-| lor B E => lor_ind (target B) (target E)
+| lor B C => lor_ind (target B) (target C)
 | _ => (1)
 end.
 
@@ -41,131 +41,193 @@ end.
 (* *)
 Fixpoint subst_ind_fit (A : formula) (S : subst_ind) : bool :=
 match A, S with
-| lor B E, lor_ind S_B S_C =>
-    subst_ind_fit B S_B && subst_ind_fit E S_C
+| lor B C, lor_ind S_B S_C =>
+    subst_ind_fit B S_B && subst_ind_fit C S_C
 | _, lor_ind _ _ => false
 | lor _ _, _ => false
 | _, _ => true
 end.
 
-Fixpoint formula_sub_ind_fit (A E F : formula) (S : subst_ind) : formula :=
+Fixpoint formula_sub_ind_fit (A D E : formula) (S : subst_ind) : formula :=
 match A with
-| lor B G =>
+| lor B C =>
   (match S with
-  | lor_ind S1 S2 => lor (formula_sub_ind_fit B E F S1)
-                         (formula_sub_ind_fit G E F S2)
+  | lor_ind S1 S2 => lor (formula_sub_ind_fit B D E S1)
+                         (formula_sub_ind_fit C D E S2)
   | _ => A
   end)
 | _ =>
-  (match eq_f A E, S with
-  | true, (1) => F
+  (match eq_f A D, S with
+  | true, (1) => E
   | _, _ => A
   end)
 end.
 
-Fixpoint formula_sub_ind (A E F : formula) (S : subst_ind) : formula :=
+Definition formula_sub_ind (A D E : formula) (S : subst_ind) : formula :=
 match subst_ind_fit A S with
 | false => A
-| true => formula_sub_ind_fit A E F S
+| true => formula_sub_ind_fit A D E S
 end.
 
 (* Some miscellaneous lemmas about formula substitution we will need *)
 (* *)
-Lemma sub_fit_true : forall (A E F : formula) (S : subst_ind),
-  subst_ind_fit A S = true ->
-  formula_sub_ind A E F S = formula_sub_ind_fit A E F S.
-Proof. intros. unfold formula_sub_ind. destruct A; rewrite H; auto. Qed.
-
-Lemma sub_fit_false : forall (A E F : formula) (S : subst_ind),
-  subst_ind_fit A S = false ->
-  formula_sub_ind A E F S = A.
-Proof. intros. unfold formula_sub_ind. destruct A; rewrite H; auto. Qed.
-
-Lemma formula_sub_ind_fit_0 : forall (A B C : formula),
-  formula_sub_ind_fit A B C (0) = A.
+Lemma sub_fit_true :
+    forall (A D E : formula) (S : subst_ind),
+        subst_ind_fit A S = true ->
+            formula_sub_ind A D E S = formula_sub_ind_fit A D E S.
 Proof.
-intros.
-destruct A.
-- simpl. destruct B; auto. destruct (eq_atom a a0); auto.
-- simpl. destruct B; auto. destruct (eq_f A B); auto.
-- auto.
-- simpl. destruct B; auto. destruct (eq_nat n n0 && eq_f A B); auto.
+intros A D E S FS.
+unfold formula_sub_ind.
+destruct A;
+rewrite FS;
+reflexivity.
 Qed.
 
-Lemma formula_sub_ind_0 : forall (A B C : formula),
-  formula_sub_ind A B C (0) = A.
+Lemma sub_fit_false :
+    forall (A D E : formula) (S : subst_ind),
+        subst_ind_fit A S = false ->
+            formula_sub_ind A D E S = A.
 Proof.
-intros. case (subst_ind_fit A (0)) eqn:HA.
-- unfold formula_sub_ind.
-  destruct A; rewrite HA; rewrite formula_sub_ind_fit_0; auto.
-- apply sub_fit_false. apply HA.
+intros A D E S FS.
+unfold formula_sub_ind.
+destruct A;
+rewrite FS;
+reflexivity.
 Qed.
 
-Lemma formula_sub_ind_lor : forall (A B C D : formula) (S_A S_B : subst_ind),
-  subst_ind_fit A S_A && subst_ind_fit B S_B = true ->
-  formula_sub_ind (lor A B) C D (lor_ind S_A S_B) = 
-  lor (formula_sub_ind A C D S_A) (formula_sub_ind B C D S_B).
+Lemma formula_sub_ind_fit_0 :
+    forall (A D E : formula),
+        formula_sub_ind_fit A D E (0) = A.
 Proof.
-intros. simpl. rewrite H. unfold formula_sub_ind.
-destruct (and_bool_prop _ _ H) as [HA HB].
-destruct A; destruct B; rewrite HA, HB; auto.
+intros A D E.
+destruct A;
+unfold formula_sub_ind_fit.
+4 : case (eq_f (univ n A) D).
+2 : case (eq_f (neg A) D).
+1 : case (eq_f (atom a) D).
+all : reflexivity.
 Qed.
 
-Lemma subst_ind_fit_lor : forall (B C : formula) (S_B S_C : subst_ind),
-  subst_ind_fit (lor B C) (lor_ind S_B S_C) = true ->
-  subst_ind_fit B S_B && subst_ind_fit C S_C = true.
-Proof. intros. apply H. Qed.
-
-Lemma non_target_fit : forall (A : formula),
-  subst_ind_fit A (non_target A) = true.
-Proof. intros. induction A; auto. simpl. rewrite IHA1, IHA2. auto. Qed.
-
-Lemma non_target_sub' : forall (A C D : formula),
-  formula_sub_ind_fit A C D (non_target A) = A.
+Lemma formula_sub_ind_0 :
+    forall (A D E : formula),
+        formula_sub_ind A D E (0) = A.
 Proof.
-intros. induction A.
-- unfold non_target. unfold formula_sub_ind_fit.
-  destruct (eq_f (atom a) C); auto.
-- unfold non_target. unfold formula_sub_ind_fit.
-  destruct (eq_f (neg A) C); auto.
-- simpl. rewrite IHA1, IHA2. auto.
-- simpl. destruct C; auto. destruct (eq_nat n n0 && eq_f A C); auto.
+intros A D E.
+case (subst_ind_fit A (0)) eqn:HA;
+unfold formula_sub_ind;
+rewrite HA.
+- rewrite formula_sub_ind_fit_0.
+  reflexivity.
+- reflexivity.
 Qed.
 
-Lemma non_target_sub : forall (A C D : formula),
-  formula_sub_ind A C D (non_target A) = A.
+Lemma formula_sub_ind_lor :
+    forall (A B D E : formula) (S_A S_B : subst_ind),
+        subst_ind_fit A S_A && subst_ind_fit B S_B = true ->
+            formula_sub_ind (lor A B) D E (lor_ind S_A S_B) = 
+                lor (formula_sub_ind A D E S_A) (formula_sub_ind B D E S_B).
 Proof.
-intros. induction A.
-- unfold non_target. apply formula_sub_ind_0.
-- unfold non_target. apply formula_sub_ind_0.
-- simpl. rewrite non_target_fit, non_target_fit. simpl.
-  repeat rewrite non_target_sub'. auto.
-- unfold non_target. apply formula_sub_ind_0.
+intros A B D E S_A S_B FS.
+unfold formula_sub_ind.
+destruct (and_bool_prop _ _ FS) as [FSA FSB].
+rewrite FSA,FSB.
+unfold subst_ind_fit; fold subst_ind_fit.
+rewrite FS.
+unfold formula_sub_ind_fit; fold formula_sub_ind_fit.
+reflexivity.
 Qed.
 
-Lemma non_target_sub_lor : forall (A B C D : formula) (S : subst_ind),
-  formula_sub_ind (lor A B) C D (lor_ind (non_target A) S) =
-  lor A (formula_sub_ind B C D S).
+(*
+Lemma subst_ind_fit_lor :
+    forall (A B : formula) (S_A S_B : subst_ind),
+        subst_ind_fit (lor A B) (lor_ind S_A S_B) = true ->
+            subst_ind_fit A S_A && subst_ind_fit B S_B = true.
 Proof.
-intros. simpl.
-destruct (subst_ind_fit B S) eqn:HB; rewrite non_target_fit; simpl.
-- rewrite non_target_sub', sub_fit_true. auto. apply HB.
-- rewrite sub_fit_false. auto. apply HB.
+intros A B S_A S_B FAB.
+apply FAB.
+Qed.
+*)
+
+Lemma non_target_fit :
+    forall (A : formula),
+        subst_ind_fit A (non_target A) = true.
+Proof.
+intros A.
+unfold subst_ind_fit, non_target.
+induction A.
+3 : rewrite IHA1, IHA2;
+    unfold "&&".
+all : reflexivity.
 Qed.
 
-Lemma non_target_term_sub : forall (A : formula) (n : nat) (t : term),
-  non_target A = non_target (substitution A n t).
+Lemma non_target_sub' :
+    forall (A D E : formula),
+        formula_sub_ind_fit A D E (non_target A) = A.
 Proof.
-intros. induction A; auto; simpl.
-- rewrite IHA1, IHA2. auto.
-- destruct (eq_nat n0 n); auto.
+intros A D E.
+induction A;
+unfold non_target, formula_sub_ind_fit;
+fold non_target formula_sub_ind_fit.
+4 : case (eq_f (univ n A) D).
+3 : rewrite IHA1, IHA2.
+2 : case (eq_f (neg A) D).
+1 : case (eq_f (atom a) D).
+all : reflexivity.
 Qed.
 
-Lemma target_fit : forall f, subst_ind_fit f (target f) = true.
+Lemma non_target_sub :
+    forall (A C D : formula),
+        formula_sub_ind A C D (non_target A) = A.
 Proof.
-intros f. induction f; simpl; auto. rewrite IHf1,IHf2. auto.
+intros A C D.
+unfold formula_sub_ind.
+rewrite non_target_fit.
+apply non_target_sub'.
 Qed.
 
+Lemma non_target_sub_lor :
+    forall (A B D E : formula) (S : subst_ind),
+        formula_sub_ind (lor A B) D E (lor_ind (non_target A) S) =
+            lor A (formula_sub_ind B D E S).
+Proof.
+intros A B D E S.
+unfold formula_sub_ind, subst_ind_fit, formula_sub_ind_fit;
+fold subst_ind_fit formula_sub_ind_fit.
+rewrite non_target_fit, non_target_sub'.
+unfold "&&".
+case (subst_ind_fit B S) eqn:HB;
+reflexivity.
+Qed.
+
+Lemma non_target_term_sub :
+    forall (A : formula) (n : nat) (t : term),
+        non_target A = non_target (substitution A n t).
+Proof.
+intros A n t.
+induction A;
+unfold non_target, substitution;
+fold non_target substitution.
+3 : rewrite IHA1,IHA2.
+4 : case (eq_nat n0 n).
+all : reflexivity.
+Qed.
+
+(*
+Lemma target_fit :
+    forall (A : formula),
+        subst_ind_fit A (target A) = true.
+Proof.
+intros A.
+induction A;
+unfold subst_ind_fit, target;
+fold subst_ind_fit target.
+3 : rewrite IHA1,IHA2;
+    unfold "&&".
+all : reflexivity.
+Qed.
+*)
+
+(*
 Lemma target_term_sub : forall (A : formula) (n : nat) (t : term),
   target A = target (substitution A n t).
 Proof.
@@ -173,62 +235,88 @@ intros. induction A; auto; simpl.
 - rewrite IHA1, IHA2. auto.
 - destruct (eq_nat n0 n); auto.
 Qed.
+*)
 
-Lemma formula_sub_ind_closed : forall (A B C : formula),
-  closed A = true -> (closed B = true -> closed C = true) ->
-  forall (S : subst_ind), closed (formula_sub_ind A B C S) = true.
+Lemma formula_sub_ind_closed :
+    forall (A B C : formula),
+        closed A = true ->
+            (closed B = true -> closed C = true) ->
+                forall (S : subst_ind),
+                    closed (formula_sub_ind A B C S) = true.
 Proof.
-intros A B C. induction A; intros; unfold formula_sub_ind.
-- destruct (subst_ind_fit (atom a) S); try apply H.
-  simpl. destruct B; try apply H.
-  destruct (eq_atom a a0) eqn:Ha; try apply H.
-  destruct S; try apply H. apply H0.
-  apply atom_beq_eq in Ha. rewrite <- Ha. auto.
-- destruct (subst_ind_fit (neg A) S); try apply H.
-  simpl. destruct B; try apply H.
-  destruct (eq_f A B) eqn:HA; try apply H.
-  destruct S; try apply H. apply H0.
-  apply f_eq_decid in HA. rewrite <- HA. auto.
-- destruct (subst_ind_fit (lor A1 A2) S) eqn:Hs; try apply H. simpl.
-  destruct S; try apply H. simpl.
-  inversion H. destruct (and_bool_prop _ _ H2).
-  inversion Hs. destruct (and_bool_prop _ _ H5).
-  clear H. clear Hs. clear H2. clear H5.
-  rewrite <- (sub_fit_true _ _ _ _ H4).
-  rewrite <- (sub_fit_true _ _ _ _ H6).
-  rewrite (IHA1 H1 H0 S1). rewrite (IHA2 H3 H0 S2).
-  rewrite H1, H3. auto.
-- destruct (subst_ind_fit (univ n A) S); try apply H.
-  simpl. destruct B; try apply H.
-  destruct (eq_nat n n0) eqn:Hn; destruct (eq_f A B) eqn:HA; try apply H.
-  destruct S; try apply H. apply H0.
-  apply f_eq_decid in HA. rewrite <- HA.
-  apply nat_eq_decid in Hn. rewrite <- Hn. auto.
+intros A B C.
+induction A;
+intros CA CBC S;
+unfold formula_sub_ind.
+4 : case (subst_ind_fit (univ n A) S).
+3 : case (subst_ind_fit (lor A1 A2) S) eqn:FS.
+2 : case (subst_ind_fit (neg A) S).
+1 : case (subst_ind_fit (atom a) S).
+all : try apply CA;
+      unfold formula_sub_ind_fit;
+      fold formula_sub_ind_fit;
+      destruct S;
+      try apply CA.
+7 : { unfold formula_sub_ind, formula_sub_ind_fit, subst_ind_fit, closed in *;
+      fold formula_sub_ind formula_sub_ind_fit subst_ind_fit closed in *.
+      destruct (and_bool_prop _ _ CA) as [CA1 CA2].
+      destruct (and_bool_prop _ _ FS) as [FS1 FS2].
+      pose proof (IHA1 CA1 CBC S1) as CFA1.
+      rewrite FS1 in CFA1.
+      rewrite CFA1.
+      pose proof (IHA2 CA2 CBC S2) as CFA2.
+      rewrite FS2 in CFA2.
+      rewrite CFA2.
+      unfold "&&".
+      reflexivity. }
+7-9 : case (eq_f (univ n A) B) eqn:EQ.
+4-6 : case (eq_f (neg A) B) eqn:EQ.
+1-3 : case (eq_f (atom a) B) eqn:EQ.
+all : try apply CA;
+      apply f_eq_decid in EQ;
+      destruct EQ;
+      apply (CBC CA).
 Qed.
 
-Lemma formula_sub_ind_1 : forall (A B : formula),
-(subst_ind_fit A (1) = true) -> formula_sub_ind A A B (1) = B.
+Lemma formula_sub_ind_1 :
+    forall (A B : formula),
+        (subst_ind_fit A (1) = true) ->
+            formula_sub_ind A A B (1) = B.
 Proof.
-intros.
-destruct A.
-- simpl. rewrite eq_atom_refl. auto.
-- simpl. rewrite eq_f_refl. auto.
-- inversion H.
-- simpl. rewrite eq_f_refl. rewrite eq_nat_refl. auto.
+intros A B FS.
+destruct A;
+unfold formula_sub_ind, subst_ind_fit, formula_sub_ind_fit.
+3 : inversion FS.
+all : rewrite eq_f_refl;
+      reflexivity.
 Qed.
 
-Theorem lor_sub_right: forall f g r , (subst_ind_fit r (1) = true) -> formula_sub_ind (lor f r) r g (lor_ind (non_target f) (1)) = lor f g.
+Theorem lor_sub_right:
+    forall C A E,
+        (subst_ind_fit A (1) = true) ->
+            formula_sub_ind (lor C A) A E (lor_ind (non_target C) (1)) = lor C E.
 Proof.
-intros.
+intros C A E FS.
 rewrite formula_sub_ind_lor.
-- rewrite (formula_sub_ind_1 _ g H). rewrite non_target_sub. auto.
-- rewrite non_target_fit. auto.
+- rewrite (formula_sub_ind_1 _ E FS).
+  rewrite non_target_sub.
+  reflexivity.
+- rewrite non_target_fit.
+  unfold "&&".
+  apply FS.
 Qed.
 
-Theorem lor_sub_left: forall f g r, (subst_ind_fit r (1) = true) -> formula_sub_ind (lor r f) r g (lor_ind (1) (non_target f)) = lor g f.
+Theorem lor_sub_left:
+    forall A D E,
+        (subst_ind_fit A (1) = true) ->
+            formula_sub_ind (lor A D) A E (lor_ind (1) (non_target D)) = lor E D.
 Proof.
-intros.
+intros A D E FS.
 rewrite formula_sub_ind_lor.
-- rewrite (formula_sub_ind_1 _ g H). rewrite non_target_sub. auto.
-- rewrite non_target_fit. rewrite H. auto.
+- rewrite (formula_sub_ind_1 _ E FS).
+  rewrite non_target_sub.
+  reflexivity.
+- rewrite FS.
+  unfold "&&".
+  apply non_target_fit.
 Qed.

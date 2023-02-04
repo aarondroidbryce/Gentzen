@@ -158,7 +158,7 @@ all : intros A d alpha [[[HP1 HP2] HP3] HP4] DA;
       unfold ptree_formula,ptree_deg,ptree_ord,num_conn in *;
       fold ptree_formula ptree_deg ptree_ord num_conn in *.
 
-18,19,20 : destruct HP2 as [[[[[[[HP2a HP2b] HP2c] HP2d] HP2e] HP2f] HP2g] HP2h]; lia.
+18,19,20 : lia.
 
 10-17 : rewrite <- HP1 in DA.
 
