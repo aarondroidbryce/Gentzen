@@ -496,6 +496,31 @@ Proof.
 intros. rewrite (nat_max_symm _ p). rewrite <- (nat_max_comm p). rewrite (nat_max_symm p). auto.
 Qed.
 
+Lemma nat_lt_max_shuffle_l : forall (s l r e b : nat), (max s (max (max l r) e)) < b -> max s l < b.
+Proof.
+lia.
+Qed.
+
+Lemma nat_lt_max_shuffle_r : forall (s l r e b : nat), (max s (max (max l r) e)) < b -> max s r < b.
+Proof.
+lia.
+Qed.
+
+Lemma nat_lt_max_suffle_e : forall (s l r e b : nat), (max s (max (max l r) e)) < b -> e < b.
+Proof.
+lia.
+Qed.
+
+Lemma nat_lt_max_max_l : forall (s l r b : nat), (max s (max l r)) < b -> max s l < b.
+Proof.
+lia.
+Qed.
+
+Lemma nat_lt_max_max_r : forall (s l r b : nat), (max s (max l r)) < b -> max s r < b.
+Proof.
+lia.
+Qed.
+
 Lemma nat_2_exp_non_zero : forall n, 0 < 2^n.
 Proof.
 intros. induction n. simpl. lia. simpl. lia.

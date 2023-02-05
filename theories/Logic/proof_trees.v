@@ -465,6 +465,14 @@ pose proof (theorem_provable' _ X).
 apply (ord_nf _ _ _ X0).
 Qed.
 
+Lemma ptree_ord_nf_hyp : forall (alpha : ord) (P : ptree), ptree_ord P = alpha -> valid P -> nf alpha.
+Proof.
+intros.
+destruct H.
+apply ptree_ord_nf.
+apply X.
+Qed.
+
 (* Show that PA_omega proves the associativity laws *)
 (* *)
 Lemma associativity_1 : forall (C A B : formula) (d : nat) (alpha : ord),

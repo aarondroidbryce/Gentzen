@@ -160,6 +160,19 @@ induction A.
 all : reflexivity.
 Qed.
 
+Lemma non_target_sub_fit :
+    forall (A : formula) (n : nat) (t : term),
+        subst_ind_fit (substitution A n t) (non_target A) = true.
+Proof.
+intros A n t.
+unfold subst_ind_fit, non_target, substitution.
+induction A.
+3 : rewrite IHA1, IHA2;
+    unfold "&&".
+4 : case (eq_nat n0 n).
+all : reflexivity.
+Qed.
+
 Lemma non_target_sub' :
     forall (A D E : formula),
         formula_sub_ind_fit A D E (non_target A) = A.

@@ -458,8 +458,7 @@ all : try apply PV.
           destruct (PV t) as [[[PF PVt] PD] PO].
           rewrite PF.
           unfold subst_ind_fit; fold subst_ind_fit.
-          rewrite (non_target_term_sub _ n (projT1 t)).
-          rewrite non_target_fit.
+          rewrite non_target_sub_fit.
           unfold "&&".
           apply FS2. }
 

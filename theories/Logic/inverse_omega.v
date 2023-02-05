@@ -16,13 +16,19 @@ Definition w_rule_sub_formula
   (A E : formula) (n : nat) (c : c_term) (S : subst_ind) : formula :=
   formula_sub_ind A (univ n E) (substitution E n (projT1 c)) S.
 
-Lemma w_rule_sub_formula_closed : forall (A : formula),
-  closed A = true ->
-  forall (E : formula) (n : nat) (c : c_term) (S : subst_ind),
-    closed (w_rule_sub_formula A E n c S) = true.
+Lemma w_rule_sub_formula_closed :
+    forall (A : formula),
+        closed A = true ->
+            forall (E : formula) (n : nat) (c : c_term) (S : subst_ind),
+                closed (w_rule_sub_formula A E n c S) = true.
 Proof.
-intros. unfold w_rule_sub_formula. apply formula_sub_ind_closed; auto.
-intros. apply (closed_univ_sub E n H0 (projT1 c)). destruct c. auto.
+intros A CA E n c S.
+unfold w_rule_sub_formula.
+apply (formula_sub_ind_closed _ _ _ CA).
+intros CuE.
+apply (closed_univ_sub E n CuE (projT1 c)).
+destruct c as [t Ct].
+apply Ct.
 Qed.
 
 
@@ -167,7 +173,7 @@ match P, S with
 | _, _ => P
 end.
 
-Fixpoint w_rule_sub_ptree
+Definition w_rule_sub_ptree
   (P : ptree) (E : formula) (n : nat) (c : c_term) (S : subst_ind) : ptree :=
 match subst_ind_fit (ptree_formula P) S with
 | false => P
@@ -175,14 +181,18 @@ match subst_ind_fit (ptree_formula P) S with
 end.
 
 
-Lemma w_rule_simp : forall (P : ptree) (E : formula) (n : nat) (c : c_term) (S : subst_ind), subst_ind_fit (ptree_formula P) S = true -> w_rule_sub_ptree P E n c S = w_rule_sub_ptree_fit P E n c S .
+(*
+Lemma w_rule_simp :
+    forall (P : ptree) (E : formula) (n : nat) (c : c_term) (S : subst_ind),
+          subst_ind_fit (ptree_formula P) S = true ->
+              w_rule_sub_ptree P E n c S = w_rule_sub_ptree_fit P E n c S .
 Proof.
 intros.
 destruct P; simpl; simpl in H; rewrite H; auto.
 Qed.
-(* First, we must prove that w_rule_sub_ptree simply changes the base formula
-of an ptree the way we expect with w_rule_sub_formula *)
-(* *)
+*)
+
+(*
 Lemma w_rule_ptree_formula_aux' :
   forall (P : ptree) (E : formula) (n : nat) (c : c_term) (S : subst_ind),
     subst_ind_fit (ptree_formula P) S = false ->
@@ -199,800 +209,411 @@ intros. rewrite w_rule_ptree_formula_aux'.
 - unfold w_rule_sub_formula. rewrite sub_fit_false. auto. apply H.
 - apply H.
 Qed.
+*)
 
 Lemma w_rule_ptree_formula_true :
-  forall (P : ptree) (E : formula) (n : nat) (c : c_term) (S : subst_ind),
-    subst_ind_fit (ptree_formula P) S = true ->
-    w_rule_sub_ptree_fit P E n c S = w_rule_sub_ptree P E n c S.
-Proof. intros. unfold w_rule_sub_ptree. destruct P; rewrite H; auto. Qed.
+    forall (P : ptree) (E : formula) (n : nat) (c : c_term) (S : subst_ind),
+        subst_ind_fit (ptree_formula P) S = true ->
+            w_rule_sub_ptree_fit P E n c S = w_rule_sub_ptree P E n c S.
+Proof.
+intros P E n c S FS.
+unfold w_rule_sub_ptree.
+rewrite FS.
+reflexivity.
+Qed.
 
-Lemma w_rule_ptree_formula' : forall (P : ptree) (E : formula) (n : nat) (c : c_term),
-  valid P ->
-  forall (S : subst_ind),
-    subst_ind_fit (ptree_formula P) S = true ->
-    ptree_formula (w_rule_sub_ptree P E n c S) =
-    w_rule_sub_formula (ptree_formula P) E n c S.
+Lemma w_rule_ptree_formula' :
+    forall (P : ptree) (E : formula) (n : nat) (c : c_term),
+        valid P ->
+            forall (S : subst_ind),
+                subst_ind_fit (ptree_formula P) S = true ->
+                    ptree_formula (w_rule_sub_ptree P E n c S) =
+                        w_rule_sub_formula (ptree_formula P) E n c S.
 Proof.
 intros P E n c.
-induction P; try intros H S Hs.
+induction P; try intros PV S FS;
+unfold w_rule_sub_ptree;
+rewrite FS;
+unfold ptree_formula in *; fold ptree_formula in *;
+unfold w_rule_sub_ptree_fit; fold w_rule_sub_ptree_fit.
+  
+1 : destruct PV as [ID PV].
+2 : destruct PV as [[IO PV] NO].
 
-- simpl in Hs. simpl. rewrite Hs. simpl.
-  rewrite (w_rule_ptree_formula_true _ _ _ _ _ Hs).
-  destruct H as [H1 H2]. apply (IHP H2). auto.
+1-2 : rewrite (w_rule_ptree_formula_true _ _ _ _ _ FS);
+      unfold ptree_formula; fold ptree_formula;
+      apply (IHP PV _ FS).
 
-- simpl in Hs. simpl. rewrite Hs. simpl.
-  rewrite (w_rule_ptree_formula_true _ _ _ _ _ Hs).
-  destruct H as [[H1 H2] H3]. apply (IHP H2). auto.
+1 : { inversion PV as [PX].
+      unfold w_rule_sub_ptree, w_rule_sub_formula, formula_sub_ind.
+      rewrite FS.
+      unfold ptree_formula; fold ptree_formula.
+      destruct (axiom_atomic _ PX) as [[a fa] | [a fa]];
+      rewrite fa;
+      unfold formula_sub_ind_fit; fold formula_sub_ind_fit;
+      unfold eq_f;
+      reflexivity. }
 
-- simpl. inversion H.
-  destruct (axiom_atomic _ H1); destruct H0; rewrite H0;
-  unfold w_rule_sub_formula; simpl; destruct S; auto.
+all : destruct S; inversion FS as [FS'];
+      try reflexivity.
 
-- simpl.
-  destruct S; inversion Hs; rewrite H1; simpl; unfold w_rule_sub_formula.
-  rewrite formula_sub_ind_lor; auto.
+1,5,6,13 :  apply and_bool_prop in FS';
+            destruct FS' as [FS1 FS2];
+            unfold ptree_formula, w_rule_sub_formula, formula_sub_ind, formula_sub_ind_fit;
+            fold formula_sub_ind_fit;
+            rewrite FS,FS1,FS2;
+            reflexivity.
 
-- simpl.
-  destruct S; try destruct S1; inversion Hs; rewrite H1;
-  simpl; unfold w_rule_sub_formula.
-  rewrite formula_sub_ind_lor, formula_sub_ind_lor; auto.
-  apply (and_bool_prop _ _ H1).
+9 : destruct (PV c) as [[[PF PCV ] PD] PO];
+    assert (subst_ind_fit (ptree_formula (p c)) (lor_ind (non_target f) S2) = true) as FSP.
+9 : { rewrite PF.
+      unfold subst_ind_fit; fold subst_ind_fit.
+      rewrite non_target_sub_fit.
+      unfold "&&".
+      destruct S1;
+      try inversion FS' as [FS''];
+      reflexivity. }
 
-- simpl.
-  destruct S; try destruct S1; inversion Hs; rewrite H1;
-  simpl; unfold w_rule_sub_formula.
-  rewrite formula_sub_ind_lor, formula_sub_ind_lor; auto.
-  apply (and_bool_prop _ _ H1).
 
-- simpl. destruct S; simpl.
-  + unfold w_rule_sub_formula. auto.
-  + unfold w_rule_sub_formula. auto.
-  + destruct S1; try destruct S1_1; inversion Hs.
-    rewrite H1. simpl. unfold w_rule_sub_formula.
-    destruct (and_bool_prop _ _ H1). destruct (and_bool_prop _ _ H0).
-    repeat rewrite formula_sub_ind_lor; auto.
+8 : { destruct (PV c) as [[[PF PCV ] PD] PO].
+      case (eq_f f E) eqn:EQ1;
+      case (eq_nat n0 n) eqn:EQ2;
+      case (eq_nat n1 (ptree_deg (p c))) eqn:E3;
+      unfold ptree_formula, w_rule_sub_formula;
+      fold ptree_formula;
+      try rewrite PF;
+      try apply f_eq_decid in EQ1;
+      try rewrite EQ1;
+      try apply nat_eq_decid in EQ2;
+      try rewrite EQ2;
+      try rewrite (formula_sub_ind_1 _ _ FS);
+      unfold formula_sub_ind, subst_ind_fit, formula_sub_ind_fit, eq_f;
+      fold eq_f;
+      try rewrite eq_nat_refl;
+      try rewrite eq_f_refl;
+      try rewrite EQ1;
+      try rewrite EQ2;
+      unfold "&&";
+      try reflexivity. }
 
-- simpl. inversion Hs. rewrite H1. auto.
+7 : { case (eq_f f E) eqn:EQ1;
+      case (eq_nat n0 n) eqn:EQ2;
+      case (eq_nat n1 (ptree_deg (p c))) eqn:E3;
+      unfold ptree_formula, w_rule_sub_formula;
+      fold ptree_formula;
+      try rewrite formula_sub_ind_0;
+      try reflexivity. }
 
-- simpl. destruct S; inversion Hs.
-  rewrite H1. simpl. unfold w_rule_sub_formula.
-  rewrite formula_sub_ind_lor. auto. apply H1.
+all : destruct S1; inversion FS' as [FS''].
 
-- simpl. destruct S; auto. inversion Hs. rewrite H1. simpl.
-  unfold w_rule_sub_formula. rewrite formula_sub_ind_lor. auto. apply H1.
+1-3 : apply and_bool_prop in FS';
+      destruct FS' as [FS1 FS2];
+      apply and_bool_prop in FS1;
+      destruct FS1 as [FS1_1 FS1_2].
 
-- simpl. destruct S; auto.
+3 : destruct S1_1; inversion FS'' as [FS'''];
+    apply and_bool_prop in FS1_1;
+    destruct FS1_1 as [FS1_1_1 FS1_1_2].
+  
 
-- simpl. destruct S.
-  + inversion Hs.
-  + inversion Hs.
-  + destruct S1; inversion Hs; rewrite H1; simpl; unfold w_rule_sub_formula;
-    rewrite formula_sub_ind_lor; auto; apply H1.
+10,11 : case (eq_f f E) eqn:EQ1;
+        case (eq_nat n0 n) eqn:EQ2;
+        case (eq_nat n1 (ptree_deg (p c))) eqn:E3.
 
-- simpl. destruct (eq_f f E) eqn:Heq; destruct S.
-  + simpl. unfold w_rule_sub_formula. rewrite formula_sub_ind_0. auto.
-  + unfold w_rule_sub_formula. simpl. inversion H as [[[H1 H2] H3] H4]. auto.
-  + inversion Hs.
-  + simpl. unfold w_rule_sub_formula. rewrite formula_sub_ind_0. auto.
-  + unfold w_rule_sub_formula. simpl. auto.
-  + inversion Hs.
+all : unfold ptree_formula, w_rule_sub_formula, formula_sub_ind, formula_sub_ind_fit, eq_f;
+      fold ptree_formula eq_f formula_sub_ind_fit;
+      try rewrite FS;
+      try rewrite FS'';
+      try rewrite EQ1;
+      try rewrite EQ2;
+      try rewrite FS1_1,FS1_2,FS2;
+      try rewrite FS1_1_1,FS1_1_2,FS1_2,FS2;      
+      unfold "&&";
+      try reflexivity.
 
-- simpl. destruct (eq_f f E) eqn:Heq; destruct S.
-  + inversion Hs.
-  + inversion Hs.
-  + destruct S1.
-    * apply (subst_ind_fit_lor) in Hs. destruct (and_bool_prop _ _ Hs).
-      rewrite H1. simpl. unfold w_rule_sub_formula.
-      rewrite formula_sub_ind_lor, formula_sub_ind_0. auto. apply Hs.
-    * inversion Hs. rewrite H1. simpl. inversion H as [[[H2 H3] H4] H5].
-      unfold w_rule_sub_formula. simpl. rewrite H1. rewrite sub_fit_true; auto.
-    * simpl. inversion Hs.
-  + inversion Hs.
-  + inversion Hs.
-  + destruct S1.
-    * apply (subst_ind_fit_lor) in Hs. destruct (and_bool_prop _ _ Hs).
-      rewrite H1. simpl. unfold w_rule_sub_formula.
-      rewrite formula_sub_ind_lor, formula_sub_ind_0. auto. apply Hs.
-    * inversion Hs. rewrite H1. simpl. unfold w_rule_sub_formula.
-      rewrite formula_sub_ind_lor; auto.
-    * simpl. inversion Hs.
-
-- simpl. destruct S; simpl; unfold w_rule_sub_formula; auto.
-
-- simpl. destruct S.
-  + simpl. unfold w_rule_sub_formula. simpl. auto.
-  + simpl. unfold w_rule_sub_formula. simpl. auto.
-  + destruct S1; inversion Hs; rewrite H1; simpl; unfold w_rule_sub_formula.
-    * rewrite formula_sub_ind_lor; auto.
-    * simpl. rewrite H1. rewrite sub_fit_true; auto.
-
-- intros. simpl. destruct S; auto.
-  + destruct (eq_f f E) eqn:HE; destruct (eq_nat n0 n) eqn:Hn; simpl;
-    unfold w_rule_sub_formula; simpl; rewrite Hn,HE; auto;
-    simpl; case_eq (eq_nat n1 (ptree_deg (p c))); intros; simpl; auto.
-  + case_eq (eq_nat n1 (ptree_deg (p c)));
-    destruct (eq_f f E) eqn:HE; destruct (eq_nat n0 n) eqn:Hn; simpl;
-    try unfold w_rule_sub_formula; simpl; try rewrite Hn,HE; auto;
-    rename f into A; rename p into g; rename n1 into d; rename o into alpha;
-    simpl; destruct (valid_w_rule_a A n0 d alpha g X c) as [[[Hg1 Hg2] Hg3] Hg4];
-    unfold w_rule_sub_formula; simpl; rewrite Hg1;
-    rewrite (f_eq_decid _ _ HE),(nat_eq_decid _ _ Hn); auto.
-
-- intros. simpl. destruct S; auto. destruct S1; auto.
-  + destruct (eq_nat n1 (ptree_deg (p c))) eqn:HD.
-    * destruct (subst_ind_fit f0 S2) eqn:HS2; simpl.
-      { destruct (eq_f f E) eqn:HE.
-        { destruct (eq_nat n0 n) eqn:Hn.
-          { simpl. unfold w_rule_sub_formula. simpl. rewrite HS2,Hn,HE. simpl.
-            rewrite sub_fit_true; auto. }
-          { simpl. unfold w_rule_sub_formula. simpl. rewrite HS2,Hn,HE. simpl.
-            rewrite sub_fit_true; auto. } }
-        { destruct (eq_nat n0 n) eqn:Hn.
-          { simpl. unfold w_rule_sub_formula. simpl. rewrite HS2,Hn,HE. simpl.
-            rewrite sub_fit_true; auto. }
-          { simpl. unfold w_rule_sub_formula. simpl. rewrite HS2,Hn,HE. simpl.
-            rewrite sub_fit_true; auto. } } }
-      { destruct (eq_f f E) eqn:HE.
-        { destruct (eq_nat n0 n) eqn:Hn.
-          { simpl. unfold w_rule_sub_formula. simpl. rewrite HS2. auto. }
-          { simpl. unfold w_rule_sub_formula. simpl. rewrite HS2. auto. } }
-        { destruct (eq_nat n0 n) eqn:Hn.
-          { simpl. unfold w_rule_sub_formula. simpl. rewrite HS2. auto. }
-          { simpl. unfold w_rule_sub_formula. simpl. rewrite HS2. auto. } } }
-    * destruct (subst_ind_fit f0 S2) eqn:HS2; simpl.
-    { destruct (eq_f f E) eqn:HE.
-      { destruct (eq_nat n0 n) eqn:Hn.
-        { simpl. unfold w_rule_sub_formula. simpl. rewrite HS2,Hn,HE. simpl.
-          rewrite sub_fit_true; auto. }
-        { simpl. unfold w_rule_sub_formula. simpl. rewrite HS2,Hn,HE. simpl.
-          rewrite sub_fit_true; auto. } }
-      { destruct (eq_nat n0 n) eqn:Hn.
-        { simpl. unfold w_rule_sub_formula. simpl. rewrite HS2,Hn,HE. simpl.
-          rewrite sub_fit_true; auto. }
-        { simpl. unfold w_rule_sub_formula. simpl. rewrite HS2,Hn,HE. simpl.
-          rewrite sub_fit_true; auto. } } }
-    { destruct (eq_f f E) eqn:HE.
-      { destruct (eq_nat n0 n) eqn:Hn.
-        { simpl. unfold w_rule_sub_formula. simpl. rewrite HS2. auto. }
-        { simpl. unfold w_rule_sub_formula. simpl. rewrite HS2. auto. } }
-      { destruct (eq_nat n0 n) eqn:Hn.
-        { simpl. unfold w_rule_sub_formula. simpl. rewrite HS2. auto. }
-        { simpl. unfold w_rule_sub_formula. simpl. rewrite HS2. auto. } } }
-  + destruct (eq_nat n1 (ptree_deg (p c))) eqn:HD.
-    * rename f into A. rename f0 into D. rename p into g.
-      rename n1 into d. rename o into alpha. simpl.
-      destruct (valid_w_rule_ad A D n0 d alpha g X c) as [[[Hg1 Hg2] Hg3] Hg4].
-      destruct (subst_ind_fit D S2) eqn:HS2; simpl;
-      destruct (eq_f A E) eqn:HE; destruct (eq_nat n0 n) eqn:Hn; simpl;
-      unfold w_rule_sub_formula; simpl; rewrite HS2; auto;
-      rewrite Hn,HE; simpl; try rewrite sub_fit_true; auto.
-      rewrite w_rule_ptree_formula_true.
-      { rewrite (H c Hg2 (lor_ind (non_target A) S2)).
-        { rewrite Hg1. unfold w_rule_sub_formula. rewrite formula_sub_ind_lor.
-          { rewrite <- sub_fit_true; auto.
-            rewrite (f_eq_decid _ _ HE),(nat_eq_decid _ _ Hn). simpl.
-            rewrite (non_target_term_sub E n (projT1 c)).
-            rewrite non_target_sub. auto. }
-          { rewrite (non_target_term_sub A n0 (projT1 c)).
-            rewrite non_target_fit,HS2. auto. } }
-        { rewrite Hg1. rewrite (non_target_term_sub A n0 (projT1 c)).
-          simpl. rewrite non_target_fit,HS2. auto. } }
-      { rewrite Hg1. rewrite (non_target_term_sub A n0 (projT1 c)).
-        simpl. rewrite non_target_fit,HS2. auto. }
-    * rename f into A. rename f0 into D. rename p into g.
-      rename n1 into d. rename o into alpha. simpl.
-      destruct (valid_w_rule_ad A D n0 d alpha g X c) as [[[Hg1 Hg2] Hg3] Hg4].
-      destruct (subst_ind_fit D S2) eqn:HS2; simpl;
-      destruct (eq_f A E) eqn:HE; destruct (eq_nat n0 n) eqn:Hn; simpl;
-      unfold w_rule_sub_formula; simpl; rewrite HS2; auto;
-      rewrite Hn,HE; simpl; try rewrite sub_fit_true; auto.
-      rewrite w_rule_ptree_formula_true.
-      { rewrite (H c Hg2 (lor_ind (non_target A) S2)).
-        { rewrite Hg1. unfold w_rule_sub_formula. rewrite formula_sub_ind_lor.
-          { rewrite <- sub_fit_true; auto.
-            rewrite (f_eq_decid _ _ HE),(nat_eq_decid _ _ Hn). simpl.
-            rewrite (non_target_term_sub E n (projT1 c)).
-            rewrite non_target_sub. auto. }
-          { rewrite (non_target_term_sub A n0 (projT1 c)).
-            rewrite non_target_fit,HS2. auto. } }
-        { rewrite Hg1. rewrite (non_target_term_sub A n0 (projT1 c)).
-          simpl. rewrite non_target_fit,HS2. auto. } }
-      { rewrite Hg1. rewrite (non_target_term_sub A n0 (projT1 c)).
-        simpl. rewrite non_target_fit,HS2. auto. }
-
-- simpl. inversion Hs. rewrite H1. auto.
-
-- simpl. inversion Hs. rewrite H1. auto.
-
-- simpl. destruct S; inversion Hs.
-  rewrite H1. simpl. unfold w_rule_sub_formula.
-  rewrite formula_sub_ind_lor; auto.
+all : apply f_eq_decid in EQ1;
+      destruct EQ1;
+      apply nat_eq_decid in EQ2;
+      destruct EQ2;
+      rewrite (w_rule_ptree_formula_true _ _ _ _ _ FSP);
+      rewrite (H _ PCV _ FSP);
+      rewrite PF in *;
+      unfold w_rule_sub_formula, formula_sub_ind, formula_sub_ind_fit;
+      fold formula_sub_ind_fit;
+      rewrite FSP;
+      rewrite (non_target_term_sub _ n0 (projT1 c));
+      rewrite non_target_sub';
+      reflexivity.
 Qed.
 
-
-Lemma w_rule_ptree_formula : forall (P : ptree) (E : formula) (n : nat) (c : c_term),
-  valid P ->
-  forall (S : subst_ind),
-    ptree_formula (w_rule_sub_ptree P E n c S) =
-    w_rule_sub_formula (ptree_formula P) E n c S.
+Lemma w_rule_ptree_formula :
+    forall (P : ptree) (E : formula) (n : nat) (c : c_term),
+        valid P ->
+            forall (S : subst_ind),
+                ptree_formula (w_rule_sub_ptree P E n c S) =
+                    w_rule_sub_formula (ptree_formula P) E n c S.
 Proof.
-intros. destruct (subst_ind_fit (ptree_formula P) S) eqn:Hs.
-- apply w_rule_ptree_formula'. apply X. apply Hs.
-- apply w_rule_ptree_formula_aux. apply Hs.
+intros P E n c VP S.
+destruct (subst_ind_fit (ptree_formula P) S) eqn:FS.
+- apply (w_rule_ptree_formula' _ _ _ _ VP _ FS).
+- unfold w_rule_sub_ptree, w_rule_sub_formula, formula_sub_ind.
+  rewrite FS.
+  reflexivity.
 Qed.
 
+Lemma w_rule_ptree_deg :
+    forall (P : ptree) (E : formula) (n : nat) (c : c_term),
+        valid P ->
+            forall (S : subst_ind),
+                ptree_deg (w_rule_sub_ptree P E n c S) = ptree_deg P.
+Proof.
+intros P E n c PV.
+unfold w_rule_sub_ptree.
+pose (ptree_formula P) as A.
+induction P; intros S;
+case (subst_ind_fit A S) eqn:FS;
+unfold A in FS;
+try rewrite FS;
+unfold w_rule_sub_ptree_fit; fold w_rule_sub_ptree_fit;
+unfold ptree_deg in *; fold ptree_deg in *;
+try reflexivity.
 
+1 : destruct PV as [[IO PV] NO].
 
+11,12 : destruct (PV c) as [[[PF PCV] PD] PO].
 
+1 : unfold ptree_formula in FS; fold ptree_formula in FS.
+    pose proof (IHP PV S) as IHPS.
+    rewrite FS in IHPS.
+    apply IHPS.
 
-(* Second, we must prove that w_rule_sub_ptree does not change the degree
-of an ptree. *)
+all : destruct S; inversion FS as [FS'];
+      try reflexivity.
+
+4-6 : case (eq_f f E) eqn:EQ1;
+      case (eq_nat n0 n) eqn:EQ2;
+      case (eq_nat n1 (ptree_deg (p c))) eqn:EQ3;
+      unfold ptree_deg; fold ptree_deg;
+      try apply f_eq_decid in EQ1;
+      try destruct EQ1;
+      try apply nat_eq_decid in EQ2,EQ3;
+      try rewrite EQ3;
+      try reflexivity.
+
+all : destruct S1; inversion FS' as [FS''].
+
+3 : destruct S1_1; inversion FS'' as [FS'''].
+
+all : unfold ptree_deg; fold ptree_deg;
+      try reflexivity.
+
+- assert (subst_ind_fit (ptree_formula (p c)) (lor_ind (non_target f) S2) = true) as FSP.
+  { rewrite PF.
+    unfold subst_ind_fit; fold subst_ind_fit.
+    rewrite non_target_sub_fit.
+    unfold "&&".
+    apply FS''. }
+  pose proof (H _ PCV (lor_ind (non_target f) S2)) as IHPS.
+  rewrite FSP in IHPS.
+  apply IHPS.
+Qed.
+
 (* *)
-Lemma w_rule_ptree_deg : forall (P : ptree) (E : formula) (n : nat) (c : c_term),
-  valid P ->
-  forall (S : subst_ind), ptree_deg P = ptree_deg (w_rule_sub_ptree P E n c S).
+Lemma w_rule_ptree_ord :
+    forall (P : ptree) (E : formula) (n : nat) (c : c_term),
+        valid P ->
+            forall (S : subst_ind),
+                ptree_ord (w_rule_sub_ptree P E n c S) = ptree_ord P.
 Proof.
-intros P E n c H. induction P; intros S.
-- simpl. case (subst_ind_fit (ptree_formula P) S); auto.
-- simpl. case (subst_ind_fit (ptree_formula P) S) eqn:Hfit; auto. simpl.
-  rewrite (w_rule_ptree_formula_true _ _ _ _ _ Hfit).
-  apply IHP. inversion H. destruct X. auto.
-- simpl. case (subst_ind_fit f S); auto.
-- simpl.
-  destruct S; auto. case (subst_ind_fit f0 S1 && subst_ind_fit f S2); auto.
-- simpl. destruct S; auto. destruct S1; auto.
-  case (subst_ind_fit f S1_1 && subst_ind_fit f1 S1_2 && subst_ind_fit f0 S2);
-  auto.
-- simpl. destruct S; auto. destruct S1; auto.
-  case (subst_ind_fit f0 S1_1 && subst_ind_fit f S1_2 && subst_ind_fit f1 S2);
-  auto.
-- simpl. destruct S; auto. destruct S1; auto. destruct S1_1; auto.
-  case (subst_ind_fit f S1_1_1 && subst_ind_fit f1 S1_1_2 &&
-        subst_ind_fit f0 S1_2 && subst_ind_fit f2 S2); auto.
-- simpl. destruct (subst_ind_fit f S); auto.
-- simpl.
-  destruct S; auto. destruct (subst_ind_fit f S1 && subst_ind_fit f0 S2); auto.
-- simpl.
-  destruct S; auto. destruct (subst_ind_fit f S1 && subst_ind_fit f0 S2); auto.
-- simpl. destruct S; auto.
-- simpl. destruct S; auto. destruct S1; destruct (subst_ind_fit f1 S2); auto.
-- simpl. destruct S; auto.
-- simpl. destruct S; auto.
-  destruct S1; auto; destruct (subst_ind_fit f0 S2) eqn:HS2; auto.
-- simpl. destruct S; auto.
-- simpl.
-  destruct S; auto; destruct S1; auto; destruct (subst_ind_fit f0 S2); auto.
-- simpl. destruct S; destruct (eq_f f E) eqn:HE; destruct (eq_nat n0 n); auto;
-  rename f into A; rename p into g; rename n1 into d; rename o into alpha;
-  destruct (eq_nat d (ptree_deg (g c))) eqn:X1; intros; auto. apply nat_eq_decid. auto. 
-- simpl. destruct S; auto.
-  destruct S1; auto; destruct (subst_ind_fit f0 S2) eqn:HS2; simpl;
-  destruct (eq_f f E) eqn:HE; destruct (eq_nat n0 n) eqn:Hn; auto;
-  destruct (eq_nat n1 (ptree_deg (p c))) eqn:X1; auto.
-  rename f into A. rename f0 into D. rename p into g.
-  rename n1 into d. rename o into alpha.
-  simpl. destruct (valid_w_rule_ad A D n0 d alpha g H c) as [[[Hg1 Hg2] Hg3] Hg4].
-  rewrite w_rule_ptree_formula_true.
-  + pose proof (H0 c Hg2 (lor_ind (non_target A) S2)). rewrite <- H1. apply nat_eq_decid. auto.
-  + rewrite Hg1. simpl. rewrite (non_target_term_sub A n0 (projT1 c)).
-    rewrite non_target_fit,HS2. auto.
-- simpl. destruct (subst_ind_fit f S); auto.
-- simpl. destruct (subst_ind_fit f0 S); auto.
-- simpl.
-  destruct S; auto. destruct (subst_ind_fit f S1 && subst_ind_fit f1 S2); auto.
+intros P E n c PV.
+unfold w_rule_sub_ptree.
+pose (ptree_formula P) as A.
+induction P; intros S;
+case (subst_ind_fit A S) eqn:FS;
+unfold A in FS;
+try rewrite FS;
+unfold w_rule_sub_ptree_fit; fold w_rule_sub_ptree_fit;
+unfold ptree_ord in *; fold ptree_ord in *;
+try reflexivity.
+
+1 : destruct PV as [ID PV].
+
+11,12 : destruct (PV c) as [[[PF PCV] PD] PO].
+
+1 : unfold ptree_formula in FS; fold ptree_formula in FS.
+    pose proof (IHP PV S) as IHPS.
+    rewrite FS in IHPS.
+    apply IHPS.
+
+all : destruct S; inversion FS as [FS'];
+      try reflexivity.
+
+4-6 : case (eq_f f E) eqn:EQ1;
+      case (eq_nat n0 n) eqn:EQ2;
+      case (eq_nat n1 (ptree_deg (p c))) eqn:EQ3;
+      unfold ptree_deg; fold ptree_deg;
+      try apply f_eq_decid in EQ1;
+      try destruct EQ1;
+      try apply nat_eq_decid in EQ2,EQ3;
+      try apply EQ3;
+      try reflexivity.
+
+all : destruct S1; inversion FS' as [FS''].
+
+3 : destruct S1_1; inversion FS'' as [FS'''].
+
+all : unfold ptree_deg; fold ptree_deg;
+      try reflexivity.
 Qed.
 
-
-(* Third, we must prove that w_rule_sub_ptree does not change the ordinal
-of an ptree. *)
 (* *)
-Lemma w_rule_ptree_ord : forall (P : ptree) (E : formula) (n : nat) (c : c_term),
-  valid P ->
-  forall (S : subst_ind), ptree_ord (w_rule_sub_ptree P E n c S) = ptree_ord P.
+Lemma w_rule_valid :
+    forall (P : ptree) (E : formula) (n : nat) (c : c_term),
+        valid P ->
+            forall (S : subst_ind),
+                subst_ind_fit (ptree_formula P) S = true ->
+                    valid (w_rule_sub_ptree P E n c S).
 Proof.
-intros P E n c H. induction P; intros S.
-- simpl. case (subst_ind_fit (ptree_formula P) S) eqn:Hfit; auto. simpl.
-  rewrite (w_rule_ptree_formula_true _ _ _ _ _ Hfit).
-  apply IHP. inversion H. auto.
-- simpl. case (subst_ind_fit (ptree_formula P) S); auto.
-- simpl. case (subst_ind_fit f S); auto.
-- simpl.
-  destruct S; auto. case (subst_ind_fit f0 S1 && subst_ind_fit f S2); auto.
-- simpl. destruct S; auto. destruct S1; auto.
-  case (subst_ind_fit f S1_1 && subst_ind_fit f1 S1_2 && subst_ind_fit f0 S2);
-  auto.
-- simpl. destruct S; auto. destruct S1; auto.
-  case (subst_ind_fit f0 S1_1 && subst_ind_fit f S1_2 && subst_ind_fit f1 S2);
-  auto.
-- simpl. destruct S; auto. destruct S1; auto. destruct S1_1; auto.
-  case (subst_ind_fit f S1_1_1 && subst_ind_fit f1 S1_1_2 &&
-        subst_ind_fit f0 S1_2 && subst_ind_fit f2 S2); auto.
-- simpl. destruct (subst_ind_fit f S); auto.
-- simpl.
-  destruct S; auto. destruct (subst_ind_fit f S1 && subst_ind_fit f0 S2); auto.
-- simpl.
-  destruct S; auto. destruct (subst_ind_fit f S1 && subst_ind_fit f0 S2); auto.
-- simpl. destruct S; auto.
-- simpl. destruct S; auto. destruct S1; destruct (subst_ind_fit f1 S2); auto.
-- simpl. destruct S; auto.
-- simpl. destruct S; auto.
-  destruct S1; destruct (subst_ind_fit f0 S2) eqn:HS2; auto.
-- simpl. destruct S; auto.
-- simpl.
-  destruct S; auto; destruct S1; auto; destruct (subst_ind_fit f0 S2); auto.
-- simpl. destruct S; destruct (eq_f f E) eqn:HE; destruct (eq_nat n0 n); auto;
-  destruct (eq_nat n1 (ptree_deg (p c))) eqn:X1; auto;
-  rename f into A; rename p into g; rename n1 into d; rename o into alpha;
-  simpl; destruct (valid_w_rule_a A n0 d alpha g H m) as [[[Hg1 Hg2] Hg3] Hg4]; auto.
-- simpl. destruct S; auto.
-  destruct S1; auto; destruct (subst_ind_fit f0 S2) eqn:HS2; simpl;
-  destruct (eq_f f E) eqn:HE; destruct (eq_nat n0 n) eqn:Hn; auto;
-  destruct (eq_nat n1 (ptree_deg (p c))) eqn:X1; auto;
-  rename f into A; rename f0 into D; rename p into g;
-  rename n1 into d; rename o into alpha;
-  simpl; destruct (valid_w_rule_ad A D n0 d alpha g H m) as [[[Hg1 Hg2] Hg3] Hg4];
-  rewrite w_rule_ptree_formula_true.
-- simpl. destruct (subst_ind_fit f S); auto.
-- simpl. destruct (subst_ind_fit f0 S); auto.
-- simpl. destruct S; auto. destruct (subst_ind_fit f S1 && subst_ind_fit f1 S2); auto.
+intros P E n c PV.
+induction P; try intros S FS;
+unfold w_rule_sub_ptree;
+rewrite FS;
+unfold ptree_formula in *; fold ptree_formula in *;
+unfold w_rule_sub_ptree_fit; fold w_rule_sub_ptree_fit.
+
+all : try apply PV.
+
+1 : destruct PV as [ID PV].
+2 : destruct PV as [[IO PV] NO].
+3-8 : destruct PV as [[[PF PV] PD] PO].
+9 : destruct PV as [[[[PF FC] PV] PD] PO].
+11-12 : destruct PV as [[[PF PV] PD] PO].
+10,15,16,17: destruct PV as [[[[[[[P1F P1V] P2F] P2V] P1D] P2D] P1O] P2O].
+
+3,4,5,6,8,9,10,13,14,15,16,17 : destruct S; inversion FS as [FS'];
+                                try destruct (and_bool_prop _ _ FS') as [FS1 FS2].
+
+15 :  assert (valid (w_rule_ad f (w_rule_sub_formula f0 E n c S2) n0 n1 o (fun t : c_term => w_rule_sub_ptree_fit (p t) E n c (lor_ind (non_target f) S2)))) as VSC.
+15 :  { assert (forall t, subst_ind_fit (ptree_formula (p t)) (lor_ind (non_target f) S2) = true) as FSt.
+        { intros t.
+          destruct (PV t) as [[[PF PTV] PD] PO].
+          rewrite PF.
+          unfold subst_ind_fit; fold subst_ind_fit.
+          rewrite non_target_sub_fit.
+          unfold "&&".
+          apply FS2. }
+        repeat split;
+        destruct (PV t) as [[[PF PTV] PD] PO];
+        rewrite (w_rule_ptree_formula_true _ _ _ _ _ (FSt t)).
+        - rewrite (w_rule_ptree_formula _ _ _ _ PTV).
+          rewrite PF.
+          unfold w_rule_sub_formula.
+          rewrite (non_target_term_sub _ n0 (projT1 t)).
+          rewrite non_target_sub_lor.
+          reflexivity.
+        - apply (X _ PTV _ (FSt t)).
+        - rewrite (w_rule_ptree_deg _ _ _ _ PTV).
+          apply PD.
+        - rewrite (w_rule_ptree_ord _ _ _ _ PTV).
+          apply PO. }
+
+4,5,6,15 :  destruct S1; inversion FS' as [FS''];
+            try destruct (and_bool_prop _ _ FS1) as [FS1_1 FS1_2].
+
+6 : destruct S1_1; inversion FS'' as [FS'''];
+    destruct (and_bool_prop _ _ FS1_1) as [FS1_1_1 FS1_1_2].
+
+10 :  assert (closed (univ n E) = true -> closed (substitution E n (projT1 c)) = true) as CIMP.
+10 :  { intros CE.
+        apply (closed_univ_sub _ _ CE).
+        destruct c as [t Ct].
+        apply Ct. }
+
+7,8,15,16 : destruct (PV c) as [[[PF PCV] PD] PO].
+
+9,10 :  case (eq_f f E) eqn:EQ1;
+        case (eq_nat n0 n) eqn:EQ2;
+        case (eq_nat n1 (ptree_deg (p c))) eqn:EQ3;
+        try apply PV;
+        repeat split;
+        try rewrite PO;
+        unfold ptree_deg;fold ptree_deg;
+        try apply ord_succ_monot;
+        try apply ord_succ_nf;
+        try apply ptree_ord_nf;
+        try apply PCV;
+        inversion PD as [EQ4 | ];
+        try destruct EQ4;
+        try rewrite eq_nat_refl in EQ3;
+        inversion EQ3;
+        try lia.
+
+7,8 : case (eq_f f E) eqn:EQ1;
+      case (eq_nat n0 n) eqn:EQ2;
+      case (eq_nat n1 (ptree_deg (p c))) eqn:EQ3;
+      try apply VSC.
+
+all : try apply f_eq_decid in EQ1;
+      try destruct EQ1;
+      repeat rewrite w_rule_ptree_formula_true;
+      repeat split;
+      try apply IHP;
+      try apply IHP1;
+      try apply IHP2;
+      unfold ptree_deg; fold ptree_deg;
+      try rewrite w_rule_ptree_deg;
+      try rewrite w_rule_ptree_ord;
+      try rewrite w_rule_ptree_formula;
+      try rewrite PF;
+      try rewrite P1F;
+      try rewrite P2F;
+      unfold w_rule_sub_formula, formula_sub_ind;
+      try apply PV;
+      try rewrite PD;
+      try rewrite PO;
+      try apply P1V;
+      try rewrite P1D;
+      try rewrite P1O;
+      try apply P2V;
+      try rewrite P2D;
+      try rewrite P2O;
+      try apply ID;
+      try apply IO;
+      try apply NO;
+      try apply (X _ PCV);
+      try rewrite PF;
+      unfold subst_ind_fit; fold subst_ind_fit;
+      try rewrite non_target_fit;
+      try rewrite non_target_sub_fit;
+      try rewrite FS;
+      try rewrite FS';
+      try rewrite FS'';
+      try rewrite FS1;
+      try rewrite FS1_1;
+      try rewrite FS1_2;
+      try rewrite FS1_1_1;
+      try rewrite FS1_1_2;
+      try rewrite FS2;
+      unfold "&&";
+      unfold formula_sub_ind_fit; fold formula_sub_ind_fit;
+      unfold eq_f; fold eq_f;
+      try rewrite non_target_sub';
+      try rewrite <- (sub_fit_true _ _ _ _ FS1);
+      try apply (formula_sub_ind_closed _ _ _ FC CIMP);
+      try apply ord_succ_monot;
+      try apply ord_succ_nf;
+      try apply ptree_ord_nf;
+      try apply PCV;
+      unfold subst_ind_fit; fold subst_ind_fit;
+      try reflexivity.
+      inversion PD as [EQ4 | ];
+      try destruct EQ4;
+      try rewrite eq_nat_refl in EQ3;
+      try lia.
 Qed.
 
 
-(* Now we prove that if we have a valid ptree, performing our
-w_rule substitution on it results in a valid ptree *)
-(* *)
-Lemma w_rule_valid : forall (P : ptree) (E : formula) (n : nat) (c : c_term),
-  valid P ->
-  forall (S : subst_ind),
-    subst_ind_fit (ptree_formula P) S = true ->
-    valid (w_rule_sub_ptree P E n c S).
-Proof.
-intros P E n c.
-induction P; try intros H S Hs.
-
-- simpl. inversion H as [H1 H2]. inversion Hs. rewrite H3.
-  rewrite w_rule_ptree_formula_true; auto. split.
-  + pose proof (w_rule_ptree_deg P E n c H2 S). lia.
-  + apply (IHP H2 S H3).
-
-- simpl. inversion H as [[H1 H2] H3]. inversion Hs. rewrite H4.
-  rewrite w_rule_ptree_formula_true; auto. split.
-  + rewrite w_rule_ptree_ord; auto.
-  + auto.
-
-- simpl. destruct (subst_ind_fit f S); apply H.
-
-- simpl. destruct S; inversion Hs. rewrite H1. simpl.
-  inversion H as [[[H2 H3] H4] H5].
-  repeat split; rewrite w_rule_ptree_formula_true.
-  + rewrite w_rule_ptree_formula; auto.
-    rewrite H2. unfold w_rule_sub_formula.
-    rewrite formula_sub_ind_lor; auto. apply (and_bool_symm _ _ H1).
-  + rewrite H2. simpl. apply (and_bool_symm _ _ H1).
-  + apply IHP. apply H. rewrite H2. simpl. apply (and_bool_symm _ _ H1).
-  + rewrite H2. simpl. apply (and_bool_symm _ _ H1).
-  + rewrite H4. apply (w_rule_ptree_deg P E n c H3 ( lor_ind S2 S1 )).
-  + rewrite H2. simpl. apply (and_bool_symm _ _ H1).
-  + rewrite w_rule_ptree_ord; auto.
-  + rewrite H2. simpl. apply (and_bool_symm _ _ H1).
-
-- simpl. destruct S; try destruct S1; inversion Hs.
-  rewrite H1. simpl. inversion H as [[[H4 H5] H6] H7].
-  destruct (and_bool_prop _ _ H1). clear H1.
-  destruct (and_bool_prop _ _ H0). clear H0.
-  repeat split; rewrite w_rule_ptree_formula_true.
-  + rewrite w_rule_ptree_formula; auto.
-    rewrite H4. unfold w_rule_sub_formula.
-    repeat rewrite formula_sub_ind_lor; auto.
-    * rewrite H1, H2. auto.
-    * simpl. rewrite H1, H2, H3. auto.
-  + rewrite H4. simpl. rewrite H1, H2, H3. auto.
-  + apply IHP; auto. rewrite H4. simpl. rewrite H1, H2, H3. auto.
-  + rewrite H4. simpl. rewrite H1, H2, H3. auto.
-  + rewrite H6. apply w_rule_ptree_deg; auto.
-  + rewrite H4. simpl. rewrite H1, H2, H3. auto.
-  + rewrite w_rule_ptree_ord; auto.
-  + rewrite H4. simpl. rewrite H1, H2, H3. auto.
-
-- simpl. destruct S; try destruct S1; inversion Hs.
-  rewrite H1. simpl. inversion H as [[[H4 H5] H6] H7].
-  destruct (and_bool_prop _ _ H1). clear H1.
-  destruct (and_bool_prop _ _ H0). clear H0.
-  repeat split; rewrite w_rule_ptree_formula_true.
-  + rewrite w_rule_ptree_formula; auto.
-    rewrite H4. unfold w_rule_sub_formula.
-    repeat rewrite formula_sub_ind_lor; auto.
-    * rewrite H1, H3. auto.
-    * simpl. rewrite H1, H2, H3. auto.
-  + rewrite H4. simpl. rewrite H1, H2, H3. auto.
-  + apply IHP; auto. rewrite H4. simpl. rewrite H1, H2, H3. auto.
-  + rewrite H4. simpl. rewrite H1, H2, H3. auto.
-  + rewrite H6. apply w_rule_ptree_deg; auto.
-  + rewrite H4. simpl. rewrite H1, H2, H3. auto.
-  + rewrite w_rule_ptree_ord; auto.
-  + rewrite H4. simpl. rewrite H1, H2, H3. auto.
-
-- simpl. destruct S; try destruct S1; try destruct S1_1; inversion Hs.
-  rewrite H1. simpl. inversion H as [[[H5 H6] H7] H8].
-  destruct (and_bool_prop _ _ H1). clear H1.
-  destruct (and_bool_prop _ _ H0). clear H0.
-  destruct (and_bool_prop _ _ H1). clear H1.
-  repeat split; rewrite w_rule_ptree_formula_true.
-  + rewrite w_rule_ptree_formula; auto.
-    rewrite H5. unfold w_rule_sub_formula.
-    repeat rewrite formula_sub_ind_lor; auto.
-    * rewrite H0,H3. auto.
-    * simpl. rewrite H0, H3, H4. auto.
-    * simpl. rewrite H0, H2, H3, H4. auto.
-  + rewrite H5. simpl. rewrite H0, H2, H3, H4. auto.
-  + apply IHP; auto. rewrite H5. simpl. rewrite H0, H2, H3, H4. auto.
-  + rewrite H5. simpl. rewrite H0, H2, H3, H4. auto.
-  + rewrite H7. apply w_rule_ptree_deg; auto.
-  + rewrite H5. simpl. rewrite H0, H2, H3, H4. auto.
-  + rewrite w_rule_ptree_ord; auto.
-  + rewrite H5. simpl. rewrite H0, H2, H3, H4. auto.
-
-- simpl. inversion Hs. rewrite H1. inversion H as [[[H2 H3] H4] H5].
-  repeat split; rewrite w_rule_ptree_formula_true.
-  + rewrite w_rule_ptree_formula; auto.
-    unfold w_rule_sub_formula. rewrite H2.
-    rewrite formula_sub_ind_lor; auto. rewrite H1. auto.
-  + rewrite H2. simpl. rewrite H1. auto.
-  + apply IHP. apply H. rewrite H2. simpl. rewrite H1. auto.
-  + rewrite H2. simpl. rewrite H1. auto.
-  + rewrite H4. apply w_rule_ptree_deg; auto.
-  + rewrite H2. simpl. rewrite H1. auto.
-  + rewrite w_rule_ptree_ord; auto.
-  + rewrite H2. simpl. rewrite H1. auto.
-
-- simpl. destruct S; inversion Hs. rewrite H1.
-  inversion H as [[[H2 H3] H4] H5]. destruct (and_bool_prop _ _ H1).
-  repeat split; rewrite w_rule_ptree_formula_true.
-  + rewrite w_rule_ptree_formula; auto.
-    unfold w_rule_sub_formula. rewrite H2.
-    repeat rewrite formula_sub_ind_lor; auto.
-    * rewrite H0. auto.
-    * simpl. rewrite H0, H6. auto.
-  + rewrite H2. simpl. rewrite H0, H6. auto.
-  + apply IHP. apply H. rewrite H2. simpl. rewrite H0, H6. auto.
-  + rewrite H2. simpl. rewrite H0, H6. auto.
-  + rewrite H4. apply w_rule_ptree_deg; auto.
-  + rewrite H2. simpl. rewrite H0, H6. auto.
-  + rewrite w_rule_ptree_ord; auto.
-  + rewrite H2. simpl. rewrite H0, H6. auto.
-
-- simpl. destruct S; inversion Hs. rewrite H1. simpl.
-  inversion H as [[[[H2 H3] H4] H5] H6]. destruct (and_bool_prop _ _ H1).
-  repeat split.
-  + rewrite w_rule_ptree_formula_true.
-    * rewrite w_rule_ptree_formula; auto. rewrite H2. auto.
-    * rewrite H2. auto.
-  + apply w_rule_sub_formula_closed. auto.
-  + rewrite w_rule_ptree_formula_true.
-    * apply IHP; auto. rewrite H2. auto.
-    * rewrite H2. auto.
-  + rewrite w_rule_ptree_formula_true.
-    * rewrite H5. apply w_rule_ptree_deg; auto.
-    * rewrite H2. auto.
-  + rewrite w_rule_ptree_formula_true.
-    * rewrite w_rule_ptree_ord; auto.
-    * rewrite H2. auto.
-
-- simpl. destruct S; apply H.
-
-- simpl. destruct S; try apply H.
-  destruct S1; inversion Hs; rewrite H1; simpl.
-  + destruct H as [[[[[[[H2 H3] H4] H5] H6] H7] H8] H9].
-    repeat split; rewrite w_rule_ptree_formula_true.
-    * rewrite w_rule_ptree_formula; auto.
-      rewrite H2. unfold w_rule_sub_formula. rewrite formula_sub_ind_lor.
-      { simpl. destruct (eq_f f (neg E)); auto. }
-      { rewrite H1. auto. }
-    * rewrite H2. simpl. apply H1.
-    * apply IHP1; auto. rewrite H2. apply H1.
-    * rewrite H2. simpl. apply H1.
-    * rewrite w_rule_ptree_formula; auto.
-      rewrite H4. unfold w_rule_sub_formula. rewrite formula_sub_ind_lor.
-      { simpl. destruct (eq_f f0 (neg E)); auto. }
-      { rewrite H1. auto. }
-    * rewrite H4. simpl. apply H1.
-    * apply IHP2; auto. rewrite H4. simpl. apply H1.
-    * rewrite H4. simpl. apply H1.
-    * rewrite H6. apply w_rule_ptree_deg; auto.
-    * rewrite H2. simpl. apply H1.
-    * rewrite H7. apply w_rule_ptree_deg; auto.
-    * rewrite H4. simpl. apply H1.
-    * rewrite w_rule_ptree_ord; auto.
-    * rewrite H2. simpl. apply H1.
-    * rewrite w_rule_ptree_ord; auto.
-    * rewrite H4. simpl. apply H1.
-  + destruct H as [[[[[[[H2 H3] H4] H5] H6] H7] H8] H9].
-    repeat split; rewrite w_rule_ptree_formula_true.
-    * rewrite w_rule_ptree_formula; auto.
-      rewrite H2. unfold w_rule_sub_formula. rewrite formula_sub_ind_lor.
-      { simpl. destruct (eq_f f (neg E)); auto. }
-      { rewrite H1. auto. }
-    * rewrite H2. simpl. apply H1.
-    * apply IHP1; auto. rewrite H2. apply H1.
-    * rewrite H2. simpl. apply H1.
-    * rewrite w_rule_ptree_formula; auto.
-      rewrite H4. unfold w_rule_sub_formula. rewrite formula_sub_ind_lor.
-      { simpl. destruct (eq_f f0 (neg E)); auto. }
-      { rewrite H1. auto. }
-    * rewrite H4. simpl. apply H1.
-    * apply IHP2; auto. rewrite H4. simpl. apply H1.
-    * rewrite H4. simpl. apply H1.
-    * rewrite H6. apply w_rule_ptree_deg; auto.
-    * rewrite H2. simpl. apply H1.
-    * rewrite H7. apply w_rule_ptree_deg; auto.
-    * rewrite H4. simpl. apply H1.
-    * rewrite w_rule_ptree_ord; auto.
-    * rewrite H2. simpl. apply H1.
-    * rewrite w_rule_ptree_ord; auto.
-    * rewrite H4. simpl. apply H1.
-
-- simpl. destruct S; destruct (eq_f f E); apply H.
-
-- simpl. inversion H as [[[H1 H2] H3] H4]. destruct S; auto.
-  destruct S1; auto; destruct (subst_ind_fit f0 S2) eqn:HS2; simpl;
-  repeat split; auto; rewrite w_rule_ptree_formula_true;
-  try apply IHP; auto; try rewrite H1; simpl; try rewrite non_target_fit,HS2;
-  try rewrite w_rule_ptree_deg; try rewrite w_rule_ptree_ord; auto.
-  + rewrite w_rule_ptree_formula; auto. rewrite H1.
-    unfold w_rule_sub_formula. simpl. rewrite non_target_fit,HS2.
-    simpl. rewrite <- sub_fit_true; auto.
-    * rewrite non_target_sub. rewrite <- sub_fit_true; auto.
-    * apply non_target_fit.
-  + rewrite H3. apply w_rule_ptree_deg; auto.
-  + rewrite w_rule_ptree_formula; auto. rewrite H1.
-    unfold w_rule_sub_formula. simpl. rewrite non_target_fit,HS2.
-    simpl. rewrite <- sub_fit_true; auto.
-    * rewrite non_target_sub. rewrite <- sub_fit_true; auto.
-    * apply non_target_fit.
-  + rewrite H3. apply w_rule_ptree_deg; auto.
-
-- simpl. destruct S; auto.
-
-- simpl. destruct S; try apply H. inversion H as [[[H0 H1] H2] H3].
-  destruct S1; inversion Hs; rewrite H5; simpl.
-  + repeat split; auto.
-    * rewrite w_rule_ptree_formula_true, w_rule_ptree_formula; auto.
-      { rewrite H0. unfold w_rule_sub_formula.
-        { rewrite formula_sub_ind_lor. simpl.
-          { destruct (eq_f (substitution f n (projT1 c))); auto. }
-          { simpl. apply H5. } } }
-      { rewrite H0. simpl. apply H5. }
-    * rewrite w_rule_ptree_formula_true.
-      { apply IHP; auto. rewrite H0. simpl. apply H5. }
-      { rewrite H0. simpl. apply H5. }
-    * rewrite w_rule_ptree_formula_true.
-      { rewrite H2. apply w_rule_ptree_deg; auto. }
-      { rewrite H0. simpl. auto. }
-    * rewrite w_rule_ptree_formula_true.
-      { rewrite w_rule_ptree_ord; auto. }
-      { rewrite H0. simpl. auto. }
-  + repeat split; auto.
-    * rewrite w_rule_ptree_formula_true, w_rule_ptree_formula; auto.
-      { rewrite H0. unfold w_rule_sub_formula.
-        { rewrite formula_sub_ind_lor. simpl.
-          { destruct (eq_f (substitution f n (projT1 c))); auto. }
-          { simpl. apply H5. } } }
-      { rewrite H0. simpl. apply H5. }
-    * rewrite w_rule_ptree_formula_true.
-      { apply IHP; auto. rewrite H0. simpl. apply H5. }
-      { rewrite H0. simpl. apply H5. }
-    * rewrite w_rule_ptree_formula_true.
-      { rewrite H2. apply w_rule_ptree_deg; auto. }
-      { rewrite H0. simpl. auto. }
-    * rewrite w_rule_ptree_formula_true.
-      { rewrite w_rule_ptree_ord; auto. }
-      { rewrite H0. simpl. auto. }
-
-- rename f into A. rename p into g. rename n1 into d. rename o into alpha.
-  destruct (valid_w_rule_a A n0 d alpha g H c) as [[[H1 H2] H3] H4].
-  simpl. destruct S; auto;
-  destruct (eq_nat d (ptree_deg (g c))) eqn:HD; destruct (eq_f A E) eqn:HE; auto; destruct (eq_nat n0 n) eqn:Hn; simpl; auto; repeat split; auto.
-  rewrite H4. apply ord_succ_monot. apply ord_succ_nf. rewrite H4. apply (ptree_ord_nf (g c) H2).
-  apply leq_type in H3. destruct H3 as [H3 | H3]. auto. rewrite H3 in HD. rewrite eq_nat_refl in HD. inversion HD.
-  rewrite H4. apply ord_succ_monot. apply ord_succ_nf. rewrite H4. apply (ptree_ord_nf (g c) H2).
-
-- rename f into A. rename f0 into D. rename p into g.
-  rename n1 into d. rename o into alpha.
-  simpl. destruct S; auto. destruct S1; auto.
-  + destruct (eq_nat d (ptree_deg (g c))) eqn:HD.
-    * destruct (eq_f A E) eqn:HE.
-      { destruct (subst_ind_fit D S2) eqn:HS2; simpl.
-        { destruct (eq_nat n0 n) eqn:Hn; simpl; intros p;
-          destruct (valid_w_rule_ad A D n0 d alpha g H p) as [[[H1 H2] H3] H4].
-          { repeat split; rewrite w_rule_ptree_formula_true;
-            try rewrite w_rule_ptree_deg; try rewrite w_rule_ptree_ord; auto;
-            try rewrite w_rule_ptree_formula; try apply X; auto;
-            try rewrite H1; simpl; try rewrite (non_target_term_sub A n0 (projT1 p));
-            try rewrite non_target_fit,HS2; auto;
-            unfold w_rule_sub_formula; try rewrite non_target_sub_lor; auto.
-            pose proof (w_rule_ptree_deg (g p) E n c H2 (lor_ind (non_target (substitution A n0 (projT1 p))) S2 )). lia. }
-          { repeat split; rewrite w_rule_ptree_formula_true;
-          try rewrite w_rule_ptree_deg; try rewrite w_rule_ptree_ord; auto;
-          try rewrite w_rule_ptree_formula; try apply X; auto;
-          try rewrite H1; simpl; try rewrite (non_target_term_sub A n0 (projT1 p));
-          try rewrite non_target_fit,HS2; auto;
-          unfold w_rule_sub_formula; try rewrite non_target_sub_lor; auto.
-          pose proof (w_rule_ptree_deg (g p) E n c H2 (lor_ind (non_target (substitution A n0 (projT1 p))) S2 )). lia. } }
-        { destruct (eq_nat n0 n) eqn:Hn; simpl; intros p;
-          destruct (valid_w_rule_ad A D n0 d alpha g H p) as [[[H1 H2] H3] H4];
-          repeat split; auto. } }
-      { destruct (subst_ind_fit D S2) eqn:HS2; simpl; intro p;
-        destruct (valid_w_rule_ad A D n0 d alpha g H p) as [[[H1 H2] H3] H4];
-        repeat split; auto; rewrite w_rule_ptree_formula_true;
-        try rewrite w_rule_ptree_deg; try rewrite w_rule_ptree_ord; auto;
-        try rewrite w_rule_ptree_formula; try apply X; auto;
-        try rewrite H1; simpl; rewrite (non_target_term_sub A n0 (projT1 p));
-        try rewrite non_target_fit,HS2; auto.
-        unfold w_rule_sub_formula. rewrite non_target_sub_lor. auto.
-        pose proof (w_rule_ptree_deg (g p) E n c H2 (lor_ind (non_target (substitution A n0 (projT1 p))) S2 )). lia. }
-    * destruct (eq_f A E) eqn:HE.
-      { destruct (subst_ind_fit D S2) eqn:HS2; simpl.
-        { destruct (eq_nat n0 n) eqn:Hn; simpl; intros p;
-          destruct (valid_w_rule_ad A D n0 d alpha g H p) as [[[H1 H2] H3] H4].
-          { repeat split; rewrite w_rule_ptree_formula_true;
-            try rewrite w_rule_ptree_deg; try rewrite w_rule_ptree_ord; auto;
-            try rewrite w_rule_ptree_formula; try apply X; auto;
-            try rewrite H1; simpl; try rewrite (non_target_term_sub A n0 (projT1 p));
-            try rewrite non_target_fit,HS2; auto;
-            unfold w_rule_sub_formula; try rewrite non_target_sub_lor; auto.
-            pose proof (w_rule_ptree_deg (g p) E n c H2 (lor_ind (non_target (substitution A n0 (projT1 p))) S2 )). lia. }
-          { repeat split; rewrite w_rule_ptree_formula_true;
-          try rewrite w_rule_ptree_deg; try rewrite w_rule_ptree_ord; auto;
-          try rewrite w_rule_ptree_formula; try apply X; auto;
-          try rewrite H1; simpl; try rewrite (non_target_term_sub A n0 (projT1 p));
-          try rewrite non_target_fit,HS2; auto;
-          unfold w_rule_sub_formula; try rewrite non_target_sub_lor; auto.
-          pose proof (w_rule_ptree_deg (g p) E n c H2 (lor_ind (non_target (substitution A n0 (projT1 p))) S2 )). lia. } }
-        { destruct (eq_nat n0 n) eqn:Hn; simpl; intros p;
-          destruct (valid_w_rule_ad A D n0 d alpha g H p) as [[[H1 H2] H3] H4];
-          repeat split; auto. } }
-      { destruct (subst_ind_fit D S2) eqn:HS2; simpl; intro p;
-        destruct (valid_w_rule_ad A D n0 d alpha g H p) as [[[H1 H2] H3] H4];
-        repeat split; auto; rewrite w_rule_ptree_formula_true;
-        try rewrite w_rule_ptree_deg; try rewrite w_rule_ptree_ord; auto;
-        try rewrite w_rule_ptree_formula; try apply X; auto;
-        try rewrite H1; simpl; rewrite (non_target_term_sub A n0 (projT1 p));
-        try rewrite non_target_fit,HS2; auto.
-        unfold w_rule_sub_formula. rewrite non_target_sub_lor. auto.
-        pose proof (w_rule_ptree_deg (g p) E n c H2 (lor_ind (non_target (substitution A n0 (projT1 p))) S2 )). lia. }
-  + destruct (eq_nat d (ptree_deg (g c))) eqn:HD.
-    * destruct (eq_f A E) eqn:HE.
-      { destruct (subst_ind_fit D S2) eqn:HS2.
-        { simpl. destruct (eq_nat n0 n) eqn:Hn.
-          { destruct (valid_w_rule_ad A D n0 d alpha g H c) as [[[H1 H2] H3] H4].
-            unfold valid. fold valid. repeat split.
-            { rewrite <- w_rule_simp.
-              rewrite (w_rule_ptree_ord (g c) E n c H2 (lor_ind (non_target A) S2)).
-              rewrite H4. apply ord_succ_monot. 
-              rewrite H1. simpl. rewrite HS2. rewrite (non_target_term_sub _ n0 (projT1 c)). rewrite non_target_fit. auto. }
-            { rewrite w_rule_ptree_formula_true; try apply X; auto;
-              rewrite H1; simpl; rewrite (non_target_term_sub A n0 (projT1 c));
-              rewrite non_target_fit,HS2; auto. }
-            { rewrite H4. apply ord_succ_nf. apply ptree_ord_nf. auto. } }
-          { simpl. intro p.
-            destruct (valid_w_rule_ad A D n0 d alpha g H p) as [[[H1 H2] H3] H4].
-            repeat split; rewrite w_rule_ptree_formula_true;
-            try rewrite w_rule_ptree_deg; try rewrite w_rule_ptree_ord; auto;
-            try rewrite w_rule_ptree_formula; try apply X; auto;
-            try rewrite H1; simpl; rewrite (non_target_term_sub A n0 (projT1 p));
-            try rewrite non_target_fit,HS2; auto.
-            unfold w_rule_sub_formula. rewrite non_target_sub_lor. auto. 
-            pose proof (w_rule_ptree_deg (g p) E n c H2 (lor_ind (non_target (substitution A n0 (projT1 p))) S2 )). lia. } }
-        { simpl. intro p.
-          destruct (valid_w_rule_ad A D n0 d alpha g H p) as [[[H1 H2] H3] H4].
-          repeat split; auto. } }
-      { destruct (subst_ind_fit D S2) eqn:HS2; simpl; intro p;
-        destruct (valid_w_rule_ad A D n0 d alpha g H p) as [[[H1 H2] H3] H4];
-        repeat split; auto; rewrite w_rule_ptree_formula_true;
-        try rewrite w_rule_ptree_deg; try rewrite w_rule_ptree_ord; auto;
-        try rewrite w_rule_ptree_formula; try apply X; auto;
-        try rewrite H1; simpl; rewrite (non_target_term_sub A n0 (projT1 p));
-        try rewrite non_target_fit,HS2; auto.
-        unfold w_rule_sub_formula. rewrite non_target_sub_lor. auto.
-        pose proof (w_rule_ptree_deg (g p) E n c H2 (lor_ind (non_target (substitution A n0 (projT1 p))) S2 )). lia. }
-    * destruct (eq_f A E) eqn:HE.
-      { destruct (subst_ind_fit D S2) eqn:HS2.
-        { simpl. destruct (eq_nat n0 n) eqn:Hn.
-          { destruct (valid_w_rule_ad A D n0 d alpha g H c) as [[[H1 H2] H3] H4].
-            apply leq_type in H3. destruct H3 as [H3 | H3].
-            { rewrite w_rule_ptree_formula_true.
-              { simpl. repeat split.
-                { rewrite <- (w_rule_ptree_deg (g c) E n c H2 (lor_ind (non_target A) S2)). auto. }
-                { rewrite (w_rule_ptree_ord (g c) E n c H2 (lor_ind (non_target A) S2)).
-                  rewrite H4. apply ord_succ_monot. }
-                { apply X. auto. rewrite H1. simpl. rewrite (non_target_term_sub A n0 (projT1 c)).
-                  rewrite non_target_fit,HS2. auto. }
-                { rewrite H4. apply ord_succ_nf. apply ptree_ord_nf. auto. } }
-              { rewrite H1. simpl. rewrite (non_target_term_sub A n0 (projT1 c)).
-                rewrite non_target_fit,HS2. auto. } }
-            { rewrite H3 in HD. rewrite eq_nat_refl in HD. inversion HD. } }
-          { simpl. intro p.
-            destruct (valid_w_rule_ad A D n0 d alpha g H p) as [[[H1 H2] H3] H4].
-            repeat split; rewrite w_rule_ptree_formula_true;
-            try rewrite w_rule_ptree_deg; try rewrite w_rule_ptree_ord; auto;
-            try rewrite w_rule_ptree_formula; try apply X; auto;
-            try rewrite H1; simpl; rewrite (non_target_term_sub A n0 (projT1 p));
-            try rewrite non_target_fit,HS2; auto.
-            unfold w_rule_sub_formula. rewrite non_target_sub_lor. auto. 
-            pose proof (w_rule_ptree_deg (g p) E n c H2 (lor_ind (non_target (substitution A n0 (projT1 p))) S2 )). lia. } }
-        { simpl. intro p.
-          destruct (valid_w_rule_ad A D n0 d alpha g H p) as [[[H1 H2] H3] H4].
-          repeat split; auto. } }
-      { destruct (subst_ind_fit D S2) eqn:HS2; simpl; intro p;
-        destruct (valid_w_rule_ad A D n0 d alpha g H p) as [[[H1 H2] H3] H4];
-        repeat split; auto; rewrite w_rule_ptree_formula_true;
-        try rewrite w_rule_ptree_deg; try rewrite w_rule_ptree_ord; auto;
-        try rewrite w_rule_ptree_formula; try apply X; auto;
-        try rewrite H1; simpl; rewrite (non_target_term_sub A n0 (projT1 p));
-        try rewrite non_target_fit,HS2; auto.
-        unfold w_rule_sub_formula. rewrite non_target_sub_lor. auto.
-        pose proof (w_rule_ptree_deg (g p) E n c H2 (lor_ind (non_target (substitution A n0 (projT1 p))) S2 )). lia. }
-
-- clear IHP2. simpl. destruct (subst_ind_fit f S) eqn:Heq; try apply H. simpl.
-  inversion H as [[[[[[[H1 H2] H3] H4] H5] H6] H7] H8].
-  repeat split; auto; rewrite w_rule_ptree_formula_true.
-  + rewrite w_rule_ptree_formula; auto.
-    rewrite H1. unfold w_rule_sub_formula. rewrite formula_sub_ind_lor.
-    * rewrite non_target_sub. auto.
-    * rewrite Heq, non_target_fit. auto.
-  + rewrite H1. simpl. rewrite Heq, non_target_fit. auto.
-  + apply IHP1; auto. rewrite H1. simpl. rewrite Heq, non_target_fit. auto.
-  + rewrite H1. simpl. rewrite Heq, non_target_fit. auto.
-  + rewrite H5. apply w_rule_ptree_deg; auto.
-  + rewrite H1. simpl. rewrite Heq, non_target_fit. auto.
-  + rewrite w_rule_ptree_ord; auto.
-  + rewrite H1. simpl. rewrite Heq, non_target_fit. auto.
-
-- clear IHP1. simpl. destruct (subst_ind_fit f0 S) eqn:Heq; try apply H. simpl.
-  inversion H as [[[[[[[H1 H2] H3] H4] H5] H6] H7] H8].
-  repeat split; auto; rewrite w_rule_ptree_formula_true.
-  + rewrite w_rule_ptree_formula; auto.
-    rewrite H3. unfold w_rule_sub_formula. rewrite formula_sub_ind_lor.
-    * rewrite non_target_sub. auto.
-    * rewrite Heq, non_target_fit. auto.
-  + rewrite H3. simpl. auto.
-  + apply IHP2; auto. rewrite H3. simpl. auto.
-  + rewrite H3. simpl. auto.
-  + rewrite H6. apply w_rule_ptree_deg; auto.
-  + rewrite H3. simpl. auto.
-  + rewrite w_rule_ptree_ord; auto.
-  + rewrite H3. simpl. auto.
-
-- simpl. inversion H as [[[[[[[H1 H2] H3] H4] H5] H6] H7] H8].
-  destruct S; try inversion Hs. rewrite H9.
-  destruct (and_bool_prop _ _ H9) as [H10 H11].
-  simpl. repeat split; rewrite w_rule_ptree_formula_true.
-  + rewrite w_rule_ptree_formula; auto.
-    rewrite H1. unfold w_rule_sub_formula. rewrite formula_sub_ind_lor.
-    * rewrite non_target_sub. auto.
-    * rewrite H10, non_target_fit. auto.
-  + rewrite H1. simpl. rewrite H10, non_target_fit. auto.
-  + apply IHP1; auto. rewrite H1. simpl. rewrite H10, non_target_fit. auto.
-  + rewrite H1. simpl. rewrite H10, non_target_fit. auto.
-  + rewrite w_rule_ptree_formula; auto.
-    rewrite H3. unfold w_rule_sub_formula. rewrite formula_sub_ind_lor.
-    * rewrite non_target_sub. auto.
-    * rewrite H11, non_target_fit. auto.
-  + rewrite H3. simpl. auto.
-  + apply IHP2; auto. rewrite H3. simpl. auto.
-  + rewrite H3. simpl. auto.
-  + rewrite H5. apply w_rule_ptree_deg; auto.
-  + rewrite H1. simpl. rewrite H10, non_target_fit. auto.
-  + rewrite H6. apply w_rule_ptree_deg; auto.
-  + rewrite H3. simpl. auto.
-  + rewrite w_rule_ptree_ord; auto.
-  + rewrite H1. simpl. rewrite H10, non_target_fit. auto.
-  + rewrite w_rule_ptree_ord; auto.
-  + rewrite H3. simpl. auto.
-Qed.
-
-
-
+(*
 
 (* We finally show that if the formulas (univ n E) and/or (univ n E) \/ D are provable,
 so are the formulas E(m) and/or E(m) \/ D for any c *)
@@ -1027,37 +648,60 @@ exists (w_rule_sub_ptree t A n c (lor_ind (1) (non_target D))). unfold P_proves.
 - apply w_rule_valid; auto. rewrite Ht1. simpl. rewrite non_target_fit. auto.
 - rewrite <- (w_rule_ptree_deg t); auto.
 - rewrite w_rule_ptree_ord; auto.
-Qed.
+Qed. *)
 
 Lemma w_rule_invertible_cut_ad :
-  forall (P : ptree) (A : formula) (n d : nat) (alpha : ord) (c : c_term),
-  P_proves P (univ n A) d alpha ->
-  provable (substitution A n (projT1 c)) d alpha.
+    forall (P : ptree) (A : formula) (n d : nat) (alpha : ord) (c : c_term),
+        P_proves P (univ n A) d alpha ->
+            provable (substitution A n (projT1 c)) d alpha.
 Proof.
-unfold provable. intros P A n d alpha c H.
-destruct H as [[[Ht1 Ht2] Ht3] Ht4].
-exists (w_rule_sub_ptree P A n c (1)). unfold P_proves. repeat split.
-- rewrite w_rule_ptree_formula; auto. rewrite Ht1. unfold w_rule_sub_formula.
-  simpl. rewrite eq_nat_refl,eq_f_refl. auto.
-- apply w_rule_valid; auto. rewrite Ht1. auto.
-- rewrite <- (w_rule_ptree_deg P); auto.
-- rewrite w_rule_ptree_ord; auto.
+unfold provable.
+intros P A n d alpha c [[[PF PV] PD] PO].
+exists (w_rule_sub_ptree P A n c (1)).
+repeat split.
+- rewrite (w_rule_ptree_formula _ _ _ _ PV).
+  rewrite PF.
+  unfold w_rule_sub_formula, formula_sub_ind, formula_sub_ind_fit, subst_ind_fit.
+  rewrite eq_f_refl.
+  reflexivity.
+- apply (w_rule_valid _ _ _ _ PV).
+  rewrite PF.
+  unfold subst_ind_fit.
+  reflexivity.
+- rewrite ((w_rule_ptree_deg P) _ _ _ PV).
+  apply PD.
+- rewrite ((w_rule_ptree_ord P) _ _ _ PV).
+  apply PO.
 Defined.
 
 Lemma w_rule_invertible_cut_cad :
-  forall (P : ptree) (A D : formula) (n d : nat) (alpha : ord) (c : c_term),
-  P_proves P (lor D (univ n A)) d alpha ->
-  provable (lor D (substitution A n (projT1 c))) d alpha.
+    forall (P : ptree) (A D : formula) (n d : nat) (alpha : ord) (c : c_term),
+        P_proves P (lor D (univ n A)) d alpha ->
+            provable (lor D (substitution A n (projT1 c))) d alpha.
 Proof.
-unfold provable. intros P A D n d alpha c H.
-destruct H as [[[Ht1 Ht2] Ht3] Ht4].
-assert (valid (exchange_ab D (univ n A) (ptree_deg P) alpha P)). repeat split; simpl; auto.
-pose proof (w_rule_ptree_deg (exchange_ab _ _ _ _ P) A n c X (lor_ind (1) (non_target D))).
-exists (exchange_ab (substitution A n (projT1 c)) D (ptree_deg P) alpha (w_rule_sub_ptree (exchange_ab D (univ n A) (ptree_deg P) alpha P) A n c (lor_ind (1) (non_target D)))). unfold P_proves. repeat split.
-- simpl. rewrite non_target_fit. simpl. unfold w_rule_sub_formula.
-  simpl. rewrite eq_nat_refl,eq_f_refl. simpl. rewrite non_target_sub. auto.
-- apply w_rule_valid; auto. simpl. rewrite non_target_fit. auto.
-- simpl. rewrite non_target_fit. auto.
-- rewrite w_rule_ptree_ord; auto.
-- auto.
+unfold provable.
+intros P A D n d alpha c [[[PF PV] PD] PO].
+assert (valid (exchange_ab D (univ n A) (ptree_deg P) alpha P)).
+{ repeat split. apply PF. apply PV. symmetry. apply PO. }
+exists (exchange_ab (substitution A n (projT1 c)) D (ptree_deg P) alpha (w_rule_sub_ptree (exchange_ab D (univ n A) (ptree_deg P) alpha P) A n c (lor_ind (1) (non_target D)))).
+repeat split.
+- unfold w_rule_sub_ptree, subst_ind_fit, ptree_formula, w_rule_sub_ptree_fit;
+  fold subst_ind_fit w_rule_sub_ptree_fit.
+  unfold w_rule_sub_formula, "&&".
+  rewrite non_target_sub, non_target_fit.
+  unfold formula_sub_ind, formula_sub_ind_fit, subst_ind_fit.
+  rewrite eq_f_refl.
+  reflexivity.
+- apply (w_rule_valid _ _ _ _ X).
+  unfold ptree_formula, subst_ind_fit.
+  fold subst_ind_fit.
+  unfold "&&".
+  apply non_target_fit.
+- rewrite (w_rule_ptree_deg _ _ _ _ X).
+  unfold ptree_deg.
+  reflexivity.
+- rewrite (w_rule_ptree_ord _ _ _ _ X).
+  unfold ptree_ord.
+  reflexivity.
+- apply PD.
 Defined.
