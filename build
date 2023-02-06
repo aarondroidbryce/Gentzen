@@ -24,7 +24,7 @@ coqc -R theories/Logic/ Systems theories/Logic/inverse_neg.v
 coqc -R theories/Logic/ Systems theories/Logic/inverse_dem_1.v
 coqc -R theories/Logic/ Systems theories/Logic/inverse_dem_2.v
 coqc -R theories/Logic/ Systems theories/Logic/inverse_omega.v
-coqc -R theories/Logic/ Systems theories/Logic/neg_inverse_omega.v
+coqc -R theories/Logic/ Systems theories/Logic/inverse_quantif.v
 coqc -R theories/Logic/ Systems theories/Logic/formula_sub.v
 coqc -R theories/Logic/ Systems theories/Logic/Peano.v
 coqc -R theories/Logic/ Systems theories/Logic/cut_elim.v

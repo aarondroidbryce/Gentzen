@@ -550,17 +550,17 @@ try apply add_left_non_decr.
     rewrite <- PO in IHP;
     try apply (IHP PV).
 
-9 : { rewrite neg_w_rule_ptree_formula_true;
-    rewrite <- P1O in IHP1.
-    rewrite ord_succ_add_succ. admit. apply (ptree_ord_nf_hyp _ _ QO QV).
-    apply (ord_max_nf _ _ (ptree_ord_nf_hyp _ _ P1O P1V) (ptree_ord_nf_hyp _ _ P2O P2V)).
-    pose (IHP1 P1V (lor_ind S (non_target f0))).
-    try lia.
-
-10 :  rewrite neg_w_rule_ptree_formula_true;
-      rewrite <- P2D in IHP2;
-      pose proof (IHP2 P2V (nat_lt_max_shuffle_r _ _ _ _ _ IE) (lor_ind (0) S));
-      try lia.
+9-10 :  rewrite neg_w_rule_ptree_formula_true;
+        rewrite <- P1O in IHP1;
+        rewrite <- P2O in IHP2;
+        pose (IHP1 P1V (lor_ind S (non_target f0))) as IHnP1;
+        pose (IHP2 P2V (lor_ind (0) S)) as IHnP2;
+        try rewrite (ord_succ_add_succ _ _ (ptree_ord_nf_hyp _ _ QO QV) (ord_succ_nf _ (ord_max_nf _ _ (ptree_ord_nf_hyp _ _ P1O P1V) (ptree_ord_nf_hyp _ _ P2O P2V))));
+        try rewrite (ord_succ_add_succ _ _ (ptree_ord_nf_hyp _ _ QO QV) (ord_max_nf _ _ (ptree_ord_nf_hyp _ _ P1O P1V) (ptree_ord_nf_hyp _ _ P2O P2V)));
+        try rewrite ord_max_add_comm;
+        repeat apply ord_ltb_succ_false;
+        try apply (ord_max_split_false _ _ _ _ IHnP1 (add_left_non_decr _ _));
+        try apply (ord_max_split_false _ _ _ _ (add_left_non_decr _ _) IHnP2).
 
 5,9,10 :  try rewrite PF;
           try rewrite P1F;
@@ -573,56 +573,44 @@ try apply add_left_non_decr.
 
 all : destruct S; inversion FS as [FS'];
       try destruct (and_bool_prop _ _ FS') as [FS1 FS2];
-      try reflexivity.
+      unfold ptree_ord; fold ptree_ord.
+
+13 : { destruct (PV czero) as [[[PF PcV] PD] PO].
+       rewrite (ord_succ_add_succ _ _ (ptree_ord_nf_hyp _ _ QO QV) (ptree_ord_nf_hyp _ _ PO PcV)).
+       apply ord_ltb_irrefl. }
 
 10-12 : case (eq_f f E) eqn:EQ1;
         case (eq_nat n0 n) eqn:EQ2;
-        unfold ptree_deg; fold ptree_deg;
-        try lia;
-        try rewrite (w_rule_ptree_deg _ _ _ _ QV);
-        try destruct S1; inversion FS' as [FS''];
-        unfold ptree_deg; fold ptree_deg;
-        try rewrite neg_w_rule_ptree_formula_true;
-        rewrite <- PD in IHP;
-        try pose proof (IHP PV IE (lor_ind (0) S2));
-        try lia;
-        try rewrite PF;
-        unfold subst_ind_fit; fold subst_ind_fit;
-        try apply FS';
-        unfold w_rule_invertible_cut_cad;
-        destruct QP; repeat destruct p;
-        unfold projT1;
-        unfold ptree_deg; fold ptree_deg;
-        unfold num_conn; fold num_conn;
-        rewrite num_conn_sub;
-        try lia.
+        unfold ptree_ord; fold ptree_ord;
+        try apply add_left_non_decr.
 
-2,3,4,7,9 : destruct S1; inversion FS' as [FS''];
+10 :  { rewrite (ord_succ_add_succ _ _ (ptree_ord_nf_hyp _ _ QO QV) (ptree_ord_nf_hyp _ _ PO PV)).
+        apply ord_ltb_succ_false.  
+        apply (ord_max_le_add _ _ (ptree_ord_nf_hyp _ _ QO QV) (ptree_ord_nf_hyp _ _ PO PV)). }
+
+2,3,4,10 :  destruct S1; inversion FS' as [FS''];
             try destruct (and_bool_prop _ _ FS1) as [FS1_1 FS1_2].
 
 4 : destruct S1_1; inversion FS'' as [FS'''];
     try destruct (and_bool_prop _ _ FS1_1) as [FS1_1_1 FS1_1_2].
 
-all : unfold ptree_deg; fold ptree_deg;
-      try rewrite <- PD in IHP;
-      try rewrite <- P1D in IHP1;
-      try rewrite <- P2D in IHP2;
-      try pose proof (IHP PV IE (lor_ind S2 S1));
-      try pose proof (IHP PV IE (lor_ind (lor_ind S1_1 S2) S1_2));
-      try pose proof (IHP PV IE (lor_ind (lor_ind S1_2 S1_1) S2));
-      try pose proof (IHP PV IE (lor_ind (lor_ind (lor_ind S1_1_1 S1_2) S1_1_2) S2));
-      try pose proof (IHP1 P1V (nat_lt_max_max_l _ _ _ _ IE) (lor_ind (0) S2));
-      try pose proof (IHP2 P2V (nat_lt_max_max_r _ _ _ _ IE) (lor_ind (0) S2));
-      try pose proof (IHP PV IE (lor_ind (non_target f) S2));
-      try pose proof (IHP PV IE (lor_ind (lor_ind S1 S1) S2));
-      try pose proof (IHP PV IE (S2));
-      try pose proof (IHP1 P1V (nat_lt_max_shuffle_l _ _ _ _ _ IE) (lor_ind S1 (non_target f0)));
-      try pose proof (IHP2 P2V (nat_lt_max_shuffle_r _ _ _ _ _ IE) (lor_ind (0) S2));
+all : unfold ptree_ord; fold ptree_ord;
+      try rewrite <- PO in IHP;
+      try rewrite <- P1O in IHP1;
+      try rewrite <- P2O in IHP2;
       repeat rewrite neg_w_rule_ptree_formula_true;
+      try rewrite (ord_succ_add_succ _ _ (ptree_ord_nf_hyp _ _ QO QV) (ptree_ord_nf_hyp _ _ PO PV));
+      try rewrite (ord_succ_add_succ _ _ (ptree_ord_nf_hyp _ _ QO QV) (ord_succ_nf _ (ord_max_nf _ _ (ptree_ord_nf_hyp _ _ P1O P1V) (ptree_ord_nf_hyp _ _ P2O P2V))));
+      try rewrite (ord_succ_add_succ _ _ (ptree_ord_nf_hyp _ _ QO QV) (ord_max_nf _ _ (ptree_ord_nf_hyp _ _ P1O P1V) (ptree_ord_nf_hyp _ _ P2O P2V)));
+      try rewrite ord_max_add_comm;
+      repeat apply ord_ltb_succ_false;
+      try apply ord_max_split_false;
+      try apply (IHP PV);
+      try apply (IHP1 P1V);
+      try apply (IHP2 P2V);
       try rewrite PF;
       try rewrite P1F;
       try rewrite P2F;
-      try lia;
       unfold subst_ind_fit; fold subst_ind_fit;
       try rewrite non_target_fit;
       try rewrite FS;
@@ -636,138 +624,158 @@ all : unfold ptree_deg; fold ptree_deg;
       unfold "&&";
       try reflexivity.
 
-
-1 : { admit. }
-
-1 : { admit. }
-
-
-
-intros P Q E F n dQ beta HQ H. induction P; intros S.
-- simpl. inversion H as [X1 X2]. case (subst_ind_fit (ptree_formula P) S) eqn:Hfit; simpl; auto. case (lt_nat (ptree_deg (neg_w_rule_sub_ptree_fit P Q E F n dQ beta HQ S)) n0) eqn:X; simpl; auto.
-  + rewrite neg_w_rule_ptree_formula_true; auto.
-  + rewrite neg_w_rule_ptree_formula_true; auto.
-  + apply add_left_non_decr.
-- simpl. inversion H as [[X1 X2] X3]. case (subst_ind_fit (ptree_formula P) S) eqn:Hfit; simpl; auto. case (ord_ltb (ptree_ord (neg_w_rule_sub_ptree_fit P Q E F n dQ beta HQ S)) o) eqn:X; simpl; auto.
-  + apply add_left_non_decr.
-  + rewrite neg_w_rule_ptree_formula_true; auto. apply (ord_trans_inv _ (ord_add beta (ptree_ord P))); auto. apply ltb_asymm. apply ord_lt_ltb. apply add_right_incr. auto.
-  + apply add_left_non_decr.
-- simpl. destruct beta; case (subst_ind_fit f S); auto.
-- simpl. inversion H as [[[X1 X2] X3] X4]. destruct S; simpl; auto.
-  + apply add_left_non_decr.
-  + apply add_left_non_decr.
-  + case (subst_ind_fit f0 S1 && subst_ind_fit f S2) eqn:Y.
-    * rewrite neg_w_rule_ptree_formula_true. simpl. destruct X4. auto. rewrite X1. simpl. destruct (and_bool_prop _ _ Y) as [Y1 Y2]. rewrite Y1,Y2. auto.
-    * apply add_left_non_decr.
-- simpl. inversion H as [[[X1 X2] X3] X4]. destruct S; simpl; auto.
-  + apply add_left_non_decr.
-  + apply add_left_non_decr.
-  + destruct S1; simpl; auto.
-    * apply add_left_non_decr.
-    * apply add_left_non_decr.
-    * case (subst_ind_fit f S1_1 && subst_ind_fit f1 S1_2 && subst_ind_fit f0 S2) eqn:Y.
-      --  rewrite neg_w_rule_ptree_formula_true. simpl. destruct X4. auto. rewrite X1. simpl. destruct (and_bool_prop _ _ Y) as [Y1 Y2]. destruct (and_bool_prop _ _ Y1) as [Y3 Y4]. rewrite Y2,Y3,Y4. auto.
-      --  apply add_left_non_decr.
-- simpl. inversion H as [[[X1 X2] X3] X4]. destruct S; simpl; auto.
-  + apply add_left_non_decr.
-  + apply add_left_non_decr.
-  + destruct S1; simpl; auto.
-    * apply add_left_non_decr.
-    * apply add_left_non_decr.
-    * case (subst_ind_fit f0 S1_1 && subst_ind_fit f S1_2 && subst_ind_fit f1 S2) eqn:Y.
-      --  rewrite neg_w_rule_ptree_formula_true. simpl. destruct X4. auto. rewrite X1. simpl. destruct (and_bool_prop _ _ Y) as [Y1 Y2]. destruct (and_bool_prop _ _ Y1) as [Y3 Y4]. rewrite Y2,Y3,Y4. auto.
-      --  apply add_left_non_decr.
-- simpl. inversion H as [[[X1 X2] X3] X4]. destruct S; simpl; auto.
-  + apply add_left_non_decr.
-  + apply add_left_non_decr.
-  + destruct S1; simpl; auto.
-    * apply add_left_non_decr.
-    * apply add_left_non_decr.
-    * destruct S1_1.
-      --  apply add_left_non_decr.
-      --  apply add_left_non_decr.
-      --  case (subst_ind_fit f S1_1_1 && subst_ind_fit f1 S1_1_2 && subst_ind_fit f0 S1_2 && subst_ind_fit f2 S2) eqn:Y.
-          ++  rewrite neg_w_rule_ptree_formula_true. simpl. destruct X4. auto. rewrite X1. simpl. destruct (and_bool_prop _ _ Y) as [Y1 Y3]. destruct (and_bool_prop _ _ Y1) as [Y2 Y4]. destruct (and_bool_prop _ _ Y2) as [Y5 Y6]. rewrite Y3,Y4,Y5,Y6. auto.
-          ++  apply add_left_non_decr.
-- simpl. inversion H as [[[X1 X2] X3] X4]. case (subst_ind_fit f S) eqn:Y.
-  + simpl. rewrite neg_w_rule_ptree_formula_true. destruct X4. auto. rewrite X1. simpl. rewrite Y. auto.
-  + apply add_left_non_decr.
-- simpl. inversion H as [[[X1 X2] X3] X4]. destruct S; simpl; auto.
-  + apply add_left_non_decr.
-  + apply add_left_non_decr.
-  + case (subst_ind_fit f S1 && subst_ind_fit f0 S2) eqn:Y.
-    * simpl. rewrite neg_w_rule_ptree_formula_true. destruct X4. auto. rewrite X1. simpl. destruct (and_bool_prop _ _ Y) as [Y1 Y2]. rewrite Y1,Y2. auto.
-    * apply add_left_non_decr.
-- simpl. inversion H as [[[[X0 X1] X2] X3] X4]. destruct S; simpl; auto.
-  + apply add_left_non_decr.
-  + apply add_left_non_decr.
-  + case (subst_ind_fit f S1 && subst_ind_fit f0 S2) eqn:Y.
-    * simpl. rewrite neg_w_rule_ptree_formula_true. rewrite X4. auto. rewrite ord_succ_add_succ.
-      --  apply ord_ltb_succ_false. auto.
-      --  destruct HQ as [[[Q1 Q2] Q3] Q4]. destruct Q4. apply ptree_ord_nf. auto.
-      --  apply ptree_ord_nf. auto.
-      --  rewrite X0. destruct (and_bool_prop _ _ Y) as [Y1 Y2]. rewrite Y2. auto.
-    * apply add_left_non_decr.
-- simpl. inversion H as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. inversion HQ as [[[Q1 Q2] Q3] Q4]. rewrite X7,X8. destruct Q4.
-  assert (nf (ord_max (ptree_ord P1) (ptree_ord P2))). apply ord_max_nf; apply ptree_ord_nf; auto.
-  rewrite ord_succ_add_succ; try apply ptree_ord_nf; auto. destruct S; simpl; auto; apply ord_ltb_succ_false; apply add_left_non_decr.
-- simpl. inversion H as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. inversion HQ as [[[Q1 Q2] Q3] Q4]. rewrite X7,X8. destruct Q4.
-  assert (nf (ord_max (ptree_ord P1) (ptree_ord P2))). apply ord_max_nf; apply ptree_ord_nf; auto.
-  rewrite ord_succ_add_succ; try apply ptree_ord_nf; auto. destruct S; simpl; auto; try destruct S1; simpl; try case (subst_ind_fit f1 S2) eqn:Y; try apply ord_ltb_succ_false; try apply add_left_non_decr;
-  repeat rewrite neg_w_rule_ptree_formula_true; auto; try rewrite X1; try rewrite X3; simpl; auto.
-  + rewrite ord_max_add_comm. apply ord_max_split_false; auto.
-  + rewrite ord_max_add_comm. apply ord_max_split_false; auto.
-- simpl. inversion H as [[[X1 X2] X3] X4]. inversion HQ as [[[Q1 Q2] Q3] Q4]. rewrite X4. destruct Q4. destruct S; simpl; auto; rewrite ord_succ_add_succ; try apply ord_ltb_succ_false; try apply add_left_non_decr; apply ptree_ord_nf; auto.
-- simpl. inversion H as [[[X1 X2] X3] X4]. destruct S; simpl; auto.
-  + apply add_left_non_decr.
-  + apply add_left_non_decr.
-  + destruct HQ as [[[Q1 Q2] Q3] Q4]. destruct Q4. rewrite X4. rewrite ord_succ_add_succ; try apply ptree_ord_nf; auto.
-    destruct S1; simpl; case (subst_ind_fit f0 S2) eqn:Y; simpl; auto; apply ord_ltb_succ_false; try apply add_left_non_decr;
-    rewrite neg_w_rule_ptree_formula_true; auto; rewrite X1; simpl; rewrite non_target_fit; auto.
-- simpl. inversion H as [[[X1 X2] X3] X4]. inversion HQ as [[[Q1 Q2] Q3] Q4]. rewrite X4. destruct Q4. rewrite ord_succ_add_succ; try apply ptree_ord_nf; auto.
-  destruct S; simpl; case (eq_f f E); simpl; case (eq_nat n0 n); simpl; auto; apply ord_ltb_succ_false; try apply add_left_non_decr. apply ord_max_le_add; apply ptree_ord_nf; auto.
-- simpl. inversion H as [[[X1 X2] X3] X4]. inversion HQ as [[[Q1 Q2] Q3] Q4]. rewrite X4. destruct Q4. rewrite ord_succ_add_succ; try apply ptree_ord_nf; auto.
-  destruct S; simpl; try destruct S1; simpl; case (eq_f f E); simpl; try case (subst_ind_fit f0 S2) eqn:Y; simpl; case (eq_nat n0 n); simpl; auto; apply ord_ltb_succ_false; try apply add_left_non_decr; rewrite neg_w_rule_ptree_formula_true; auto; try rewrite X1; simpl; auto.
-  destruct (ord_semiconnex_bool (ptree_ord Q) (ptree_ord (neg_w_rule_sub_ptree P Q E F n dQ (ptree_ord Q) HQ (lor_ind (0) S2)))) as [Y1 | [Y1 |Y1]].
-  + rewrite ord_max_lem1; auto.
-  + rewrite (ord_max_lem2 _ _ (ltb_asymm _ _ Y1)); auto. apply add_right_non_decr.
-  + apply ord_eqb_eq in Y1. destruct Y1. rewrite (ord_max_lem2 _ _ (ord_ltb_irrefl _)); auto. apply add_right_non_decr.
-- simpl. destruct (H czero) as [[[X1 X2] X3] X4]. inversion HQ as [[[Q1 Q2] Q3] Q4]. fold valid in *. rewrite X4. destruct Q4. destruct S; simpl; auto; rewrite ord_succ_add_succ; try apply ord_ltb_succ_false; try apply add_left_non_decr; apply ptree_ord_nf; auto.
-- simpl. destruct (H czero) as [[[X1 X2] X3] X4]. fold valid in *. destruct S; simpl; auto.
-  + apply add_left_non_decr.
-  + apply add_left_non_decr.
-  + destruct HQ as [[[Q1 Q2] Q3] Q4]. destruct Q4. rewrite X4. rewrite ord_succ_add_succ; try apply ptree_ord_nf; auto.
-    destruct S1; simpl; case (subst_ind_fit f0 S2) eqn:Y; simpl; auto; apply ord_ltb_succ_false; try apply add_left_non_decr; apply ord_ltb_irrefl.
-- simpl. inversion H as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. inversion HQ as [[[Q1 Q2] Q3] Q4]. rewrite X7,X8. destruct Q4.
-    assert (nf (ord_max (ptree_ord P1) (ptree_ord P2))). apply ord_max_nf; apply ptree_ord_nf; auto.
-    rewrite ord_succ_add_succ; try apply ptree_ord_nf; auto. case (subst_ind_fit f S) eqn:Y; simpl; apply ord_ltb_succ_false; try apply add_left_non_decr.
-    repeat rewrite neg_w_rule_ptree_formula_true; auto; try rewrite X1; try rewrite X3; simpl; try rewrite Y; try apply non_target_fit.
-    rewrite ord_max_add_comm. apply ord_max_split_false; auto. apply add_left_non_decr.
-- simpl. inversion H as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. inversion HQ as [[[Q1 Q2] Q3] Q4]. rewrite X7,X8. destruct Q4.
-  assert (nf (ord_max (ptree_ord P1) (ptree_ord P2))). apply ord_max_nf; apply ptree_ord_nf; auto.
-  rewrite ord_succ_add_succ; try apply ptree_ord_nf; auto. 
-  case (subst_ind_fit f0 S) eqn:Y; simpl; apply ord_ltb_succ_false; try apply add_left_non_decr. rewrite <- ord_add_one_succ; auto. rewrite <- ord_add_assoc. rewrite ord_add_one_succ; auto.
-  repeat rewrite neg_w_rule_ptree_formula_true; auto; try rewrite X1; try rewrite X3; simpl; auto. apply ord_ltb_succ_false.
-  rewrite ord_max_add_comm. apply ord_max_split_false; auto. apply add_left_non_decr.
-  apply nf_add; auto. apply ptree_ord_nf. auto. apply ord_succ_nf. auto.
-- simpl. inversion H as [[[[[[[X1 X2] X3] X4] X5] X6] X7] X8]. inversion HQ as [[[Q1 Q2] Q3] Q4]. rewrite X7,X8. destruct Q4.
-  assert (nf (ord_max (ptree_ord P1) (ptree_ord P2))). apply ord_max_nf; apply ptree_ord_nf; auto.
-  rewrite ord_succ_add_succ; try apply ptree_ord_nf; auto. destruct S; simpl; auto; try case (subst_ind_fit f S1 && subst_ind_fit f1 S2) eqn:Y; try apply ord_ltb_succ_false; try apply add_left_non_decr;
-  repeat rewrite neg_w_rule_ptree_formula_true; auto; try rewrite X1; try rewrite X3; simpl; auto; try destruct (and_bool_prop _ _ Y) as [Y1 Y2]; try rewrite Y1; auto; try apply non_target_fit.
-  rewrite ord_max_add_comm. apply ord_max_split_false; auto.
+1 : { rewrite (ord_max_self (ord_add beta o)).
+      apply ord_max_split_false.
+      apply add_right_non_decr.
+      apply (IHP PV). }
 Qed.
-
 
 (* Now we prove that if we have a valid ptree, performing our
 w_rule substitution on it results in a valid ptree *)
 (* *)
-Lemma neg_w_rule_valid : forall (P Q : ptree) (E F : formula) (n dQ : nat) (beta : ord) (H : P_proves Q (lor F (univ n E)) dQ beta),
-  valid P -> closed F = true -> Nat.max dQ (ptree_deg P) < (num_conn E + 2) ->
-  forall (S : subst_ind),
-    subst_ind_fit (ptree_formula P) S = true ->
-    valid (neg_w_rule_sub_ptree P Q E F n dQ beta H S).
+Lemma neg_w_rule_valid :
+    forall (P Q : ptree) (E F : formula) (n dQ : nat) (beta : ord) (QP : P_proves Q (lor F (univ n E)) dQ beta),
+        valid P ->
+            closed F = true ->
+                Nat.max dQ (ptree_deg P) < (num_conn E + 2) ->
+                    forall (S : subst_ind),
+                        subst_ind_fit (ptree_formula P) S = true ->
+                            valid (neg_w_rule_sub_ptree P Q E F n dQ beta QP S).
 Proof.
-intros P Q E F n dQ beta HQ.
+intros P Q E F n dQ beta QP PV CF IE.
+inversion QP as [[[QF QV] QD] QO].
+pose (ptree_formula P) as A.
+induction P; intros S FS;
+unfold neg_w_rule_sub_ptree;
+rewrite FS;
+unfold neg_w_rule_sub_ptree_fit; fold neg_w_rule_sub_ptree_fit;
+unfold ptree_formula in *; fold ptree_formula in *;
+try apply PV.
+(*intros P Q E F n dQ beta QP*)
+
+1 : destruct PV as [ID PV].
+2 : destruct PV as [[IO PV] NO].
+3-8 : destruct PV as [[[PF PV] PD] PO].
+9 : destruct PV as [[[[PF FC] PV] PD] PO].
+11-13 : destruct PV as [[[PF PV] PD] PO].
+10,15,16,17: destruct PV as [[[[[[[P1F P1V] P2F] P2V] P1D] P2D] P1O] P2O].
+
+1 : { admit. }
+
+1 : { admit. }
+
+1-4,6-8,11-15 : destruct S; inversion FS as [FS'];
+                try destruct (and_bool_prop _ _ FS') as [FS1 FS2].
+
+2-4,12 :  destruct S1; inversion FS' as [FS''];
+          try destruct (and_bool_prop _ _ FS1) as [FS1_1 FS1_2].
+
+4 : destruct S1_1; inversion FS'' as [FS'''];
+    try destruct (and_bool_prop _ _ FS1_1) as [FS1_1_1 FS1_1_2].
+
+14 : { admit. }
+
+5,6,12,13 : case (eq_f f E) eqn:EQ1;
+            case (eq_nat n0 n) eqn:EQ2.
+
+17 :  { try apply f_eq_decid in EQ1;
+        try apply nat_eq_decid in EQ2;
+        try destruct EQ1;
+        try destruct EQ2.
+        repeat split.
+        rewrite (w_rule_ptree_formula _ _ _ _ QV).
+        rewrite QF.
+        unfold w_rule_sub_formula.
+        rewrite formula_sub_ind_lor.
+        rewrite non_target_sub.
+        unfold formula_sub_ind, formula_sub_ind_fit, subst_ind_fit.
+        rewrite eq_f_refl.
+        reflexivity.
+        admit.
+        apply (w_rule_valid _ _ _ _ QV).
+        admit.
+        apply PF.
+        apply PV.
+        apply PD.
+        rewrite (w_rule_ptree_ord _ _ _ _ QV).
+        apply QO.
+        apply PO. }
+
+9 : { try apply f_eq_decid in EQ1;
+      try apply nat_eq_decid in EQ2;
+      try destruct EQ1;
+      try destruct EQ2.
+      repeat split.
+      rewrite (w_rule_ptree_formula _ _ _ _ QV).
+      rewrite QF.
+      unfold w_rule_sub_formula.
+      rewrite formula_sub_ind_lor.
+      rewrite non_target_sub.
+      unfold formula_sub_ind, formula_sub_ind_fit, subst_ind_fit.
+      rewrite eq_f_refl.
+      reflexivity.
+      admit.
+      apply (w_rule_valid _ _ _ _ QV).
+      admit.
+      apply PF.
+      apply PV.
+      apply PD.
+      rewrite (w_rule_ptree_ord _ _ _ _ QV).
+      apply QO.
+      apply PO. }
+
+
+all : repeat rewrite neg_w_rule_ptree_formula_true;
+      try apply f_eq_decid in EQ1;
+      try apply nat_eq_decid in EQ2;
+      try destruct EQ1;
+      try destruct EQ2;
+      repeat split;
+      try rewrite (neg_w_rule_ptree_formula _ _ _ _ _ _ _ _ PV);
+      try rewrite (neg_w_rule_ptree_formula _ _ _ _ _ _ _ _ P1V);
+      try rewrite (neg_w_rule_ptree_formula _ _ _ _ _ _ _ _ P2V);
+      try rewrite PF;
+      try rewrite P1F;
+      try rewrite P2F;
+      unfold neg_w_rule_sub_formula;
+      try apply non_target_sub_lor;
+      repeat rewrite formula_sub_ind_lor;
+      try rewrite non_target_sub;
+      try apply IHP;
+      try apply IHP1;
+      try apply IHP2;
+      try apply PV;
+      try apply P1V;
+      try apply P2V;
+      try unfold ptree_deg in IE;
+      try lia;
+      try rewrite PF;
+      try rewrite P1F;
+      try rewrite P2F;
+      unfold subst_ind_fit; 
+      fold subst_ind_fit;
+      try rewrite non_target_fit;
+      try rewrite FS;
+      try rewrite FS1;
+      try rewrite FS1_1;
+      try rewrite FS1_2;
+      try rewrite FS1_1_1;
+      try rewrite FS1_1_2;
+      try rewrite FS2;
+      try apply PO;
+      try apply P1O;
+      try apply P2O;
+      unfold "&&";
+      try reflexivity.
+
+1 : { apply formula_sub_ind_closed.
+      apply FC.
+      intros CnuE.
+      apply CF. }
+Admitted.
+
+9,10,16,17
+
 induction P; try intros H HF HD S Hs.
 
 - simpl. inversion H as [H1 H2]. inversion Hs. rewrite H3. assert (Nat.max dQ (ptree_deg P) < num_conn E + 2). simpl in HD. lia.

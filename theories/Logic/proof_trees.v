@@ -319,7 +319,7 @@ end.
 (* *)
 Definition P_proves (P : ptree) (A : formula) (d : nat) (alpha : ord) : Type :=
   (ptree_formula P = A) * (valid P) *
-  (d >= ptree_deg P) * (ptree_ord P = alpha).
+  (d >= ptree_deg P) * (alpha = ptree_ord P).
 
 Definition provable (A : formula) (d : nat) (alpha : ord) : Type :=
   {P : ptree & P_proves P A d alpha}.
@@ -328,9 +328,9 @@ Lemma provable_theorem : forall (A : formula) (d : nat) (alpha : ord),
   PA_omega_theorem A d alpha -> provable A d alpha.
 Proof.
 intros A d alpha T. unfold provable.
-induction T; try destruct IHT as [P [[[PF PV] PD] PH]].
+induction T; try destruct IHT as [P [[[PF PV] PD] PO]].
 - exists (deg_up d' P). repeat split; auto. lia.
-- exists (ord_up beta P). repeat split; auto. rewrite PH. auto.
+- exists (ord_up beta P). repeat split; auto. rewrite <- PO. auto.
 - exists (node A). repeat split. apply e. auto.
 - exists (exchange_ab A B (ptree_deg P) alpha P). repeat split; auto.
 - exists (exchange_cab C A B (ptree_deg P) alpha P). repeat split; auto.
@@ -454,7 +454,7 @@ apply leq_type in H3. destruct H3 as [H3 | H3].
   assert (ptree_deg (deg_up d t) = d) as X3. auto.
   rewrite <- X1, <- X2, <- X3.
   apply theorem_provable'. auto.
-- rewrite <- H1, <- H4. rewrite H3.
+- rewrite <- H1, H4. rewrite H3.
   apply theorem_provable'. auto.
 Qed.
 
@@ -465,10 +465,10 @@ pose proof (theorem_provable' _ X).
 apply (ord_nf _ _ _ X0).
 Qed.
 
-Lemma ptree_ord_nf_hyp : forall (alpha : ord) (P : ptree), ptree_ord P = alpha -> valid P -> nf alpha.
+Lemma ptree_ord_nf_hyp : forall (alpha : ord) (P : ptree), alpha = ptree_ord P -> valid P -> nf alpha.
 Proof.
 intros.
-destruct H.
+rewrite H.
 apply ptree_ord_nf.
 apply X.
 Qed.

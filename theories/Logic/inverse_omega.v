@@ -682,7 +682,7 @@ Proof.
 unfold provable.
 intros P A D n d alpha c [[[PF PV] PD] PO].
 assert (valid (exchange_ab D (univ n A) (ptree_deg P) alpha P)).
-{ repeat split. apply PF. apply PV. symmetry. apply PO. }
+{ repeat split. apply PF. apply PV. apply PO. }
 exists (exchange_ab (substitution A n (projT1 c)) D (ptree_deg P) alpha (w_rule_sub_ptree (exchange_ab D (univ n A) (ptree_deg P) alpha P) A n c (lor_ind (1) (non_target D)))).
 repeat split.
 - unfold w_rule_sub_ptree, subst_ind_fit, ptree_formula, w_rule_sub_ptree_fit;
