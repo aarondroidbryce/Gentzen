@@ -2180,13 +2180,13 @@ rewrite H.
 apply nf_nat.
 Qed.
 
-Lemma ord_lt_one : forall alpha, ord_lt alpha (nat_ord 1) -> alpha = Zero.
+Lemma ord_lt_one : forall alpha, ord_lt alpha (nat_ord 1) -> Zero = alpha.
 Proof.
 intros. induction alpha. auto.
 inversion H; inversion H1.
 Qed.
 
-Lemma ord_succ_one : forall alpha, ord_succ alpha = cons Zero 0 Zero -> Zero = alpha.
+Lemma ord_succ_one : forall alpha, cons Zero 0 Zero = ord_succ alpha -> Zero = alpha.
 Proof.
 intros. unfold ord_succ in H. destruct alpha. auto. fold ord_succ in H. destruct alpha1. inversion H. inversion H.
 Qed.
@@ -2425,7 +2425,7 @@ intros alpha. induction alpha. intros. auto. intros. simpl. destruct alpha1. inv
   + destruct n0.
     * pose (IHalpha2 (nf_hered_third _ _ _ H)). simpl. pose (ord_succ_not_exp_fp alpha2 (ord_succ_nf _ (nf_hered_third _ _ _ H))). inversion H.
       --  inversion H2; inversion H8. symmetry in H1,H5,H7. destruct H1,H3,H4,H5,H7,H8,H9. simpl. destruct n0; auto.
-      --  inversion H5; inversion H10. symmetry in H1,H7,H9. destruct H1,H2,H3,H7,H9,H10,H11. apply ord_lt_one in H4. symmetry in H4. destruct H4. 
+      --  inversion H5; inversion H10. symmetry in H1,H7,H9. destruct H1,H2,H3,H7,H9,H10,H11. apply ord_lt_one in H4. destruct H4. 
           unfold ord_2_exp. unfold ord_succ. apply ltb_asymm. apply ord_lt_ltb. case (2 ^ (S (S n'))) eqn:Y. pose (exp_succ (S (S n'))). lia. simpl. destruct n0.
           destruct n. pose (nat_2_exp_succ_not_one (S n')). lia. apply coeff_lt. lia. apply head_lt. apply coeff_lt. lia.
     * simpl. inversion H. auto. inversion H5; inversion H10. symmetry in H1,H7,H9. destruct H1,H2,H3,H7,H9,H10,H11. apply ltb_asymm. apply ord_lt_ltb. apply (lt_trans _ (cons (cons (cons Zero n0 Zero) n1 Zero) 0 Zero)).
@@ -2930,4 +2930,18 @@ apply ord_succ_decr_false in IE.
 + apply ord_succ_nf.
   apply NA.
 Qed.
+
+Lemma ord_ltb_exp_false :
+    forall (alpha : ord),
+        nf alpha ->
+            ord_ltb (ord_2_exp alpha) alpha = false.
+Proof.
+intros alpha Na.
+destruct (ord_2_exp_fp alpha Na) as [LT | EQ].
+- apply (ltb_asymm _ _ (ord_lt_ltb _ _ LT)).
+- rewrite EQ.
+  unfold ord_2_exp, nat_ord, ord_mult, mul, minus, plus.
+  apply ord_ltb_irrefl.  
+Qed.
+
 Close Scope cantor_scope.

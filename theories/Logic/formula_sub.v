@@ -139,7 +139,7 @@ match P, S with
 | _, _ => P
 end.
 
-Fixpoint formula_sub_ptree
+Definition formula_sub_ptree
   (P : ptree) (E F : formula) (S : subst_ind) : ptree :=
 match subst_ind_fit (ptree_formula P) S with
 | false => P
@@ -147,8 +147,7 @@ match subst_ind_fit (ptree_formula P) S with
 end.
 
 
-(* Some preliminary lemmas *)
-(* *)
+(*
 Lemma formula_sub_ptree_formula_aux' :
   forall (P : ptree) (E F : formula) (S : subst_ind),
     subst_ind_fit (ptree_formula P) S = false ->
@@ -165,574 +164,347 @@ intros. rewrite formula_sub_ptree_formula_aux'.
 - unfold formula_sub_ind. rewrite sub_fit_false. auto. apply H.
 - apply H.
 Qed.
-
-Lemma formula_sub_ptree_formula_true :
-  forall (P : ptree) (E F : formula) (S : subst_ind),
-    subst_ind_fit (ptree_formula P) S = true ->
-    formula_sub_ptree_fit P E F S = formula_sub_ptree P E F S.
-Proof. intros. unfold formula_sub_ptree. destruct P; rewrite H; auto. Qed.
-
-Lemma formula_sub_ptree_fit_false :
-  forall (P : ptree) (E F : formula) (S : subst_ind),
-  subst_ind_fit (ptree_formula P) S = false -> 
-  formula_sub_ptree P E F S = P.
-Proof. intros. unfold formula_sub_ptree. destruct P; rewrite H; auto. Qed.
-
-Lemma formula_sub_ind_fit_closed : forall (A B C : formula),
-  closed A = true -> (closed B = true -> closed C = true) ->
-  forall (S : subst_ind),
-    subst_ind_fit A S = true ->
-    closed (formula_sub_ind_fit A B C S) = true.
-Proof.
-intros. destruct (closed (formula_sub_ind A B C S)) eqn:HC.
-- rewrite sub_fit_true in HC; auto.
-- rewrite formula_sub_ind_closed in HC; auto. inversion HC.
-Qed.
-
-Lemma sub_fit_neq_atom :
-  forall (a : atomic_formula) (E F : formula) (S : subst_ind),
-  eq_f (atom a) E = false ->
-  formula_sub_ind_fit (atom a) E F S = atom a.
-Proof. intros. unfold formula_sub_ind_fit. destruct S; rewrite H; auto. Qed.
-
-Lemma sub_fit_neq_neg : forall (a : atomic_formula) (E F : formula) (S : subst_ind),
-  eq_f (neg (atom a)) E = false ->
-  formula_sub_ind_fit (neg (atom a)) E F S = neg (atom a).
-Proof. intros. unfold formula_sub_ind_fit. destruct S; rewrite H; auto. Qed.
-
-
-
-
-(*
-###############################################################################
-Section 10.1: Here we show that for any incorrect atomic formula a,
-we can validly replace the formula (atom a) with any formula C in a proof tree.
-Consequently, if C \/ (atom a) is provable, so is C \/ C.
-###############################################################################
 *)
 
-(* First, we must prove that formula_sub_ptree simply changes the base formula
-of an ptree the way we expect with formula_sub_ind *)
+Lemma formula_sub_ptree_formula_true :
+    forall (P : ptree) (E F : formula) (S : subst_ind),
+        subst_ind_fit (ptree_formula P) S = true ->
+            formula_sub_ptree_fit P E F S = formula_sub_ptree P E F S.
+Proof.
+intros P E F S FS.
+unfold formula_sub_ptree.
+rewrite FS.
+reflexivity.
+Qed.
+
+Lemma formula_sub_ptree_fit_false :
+    forall (P : ptree) (E F : formula) (S : subst_ind),
+        subst_ind_fit (ptree_formula P) S = false -> 
+            formula_sub_ptree P E F S = P.
+Proof.
+intros P E F S FS.
+unfold formula_sub_ptree.
+rewrite FS.
+reflexivity.
+Qed.
+
+Lemma formula_sub_ind_fit_closed :
+    forall (A B C : formula),
+        closed A = true ->
+            (closed B = true -> closed C = true) ->
+                forall (S : subst_ind),
+                    subst_ind_fit A S = true ->
+                        closed (formula_sub_ind_fit A B C S) = true.
+Proof.
+intros A B C CA CBC S FS.
+destruct (closed (formula_sub_ind A B C S)) eqn:CFC.
+- rewrite (sub_fit_true _ _ _ _ FS) in CFC.
+  apply CFC.
+- rewrite (formula_sub_ind_closed _ _ _ CA CBC) in CFC.
+  inversion CFC.
+Qed.
+
+(*
+Lemma sub_fit_neq_atom :
+    forall (a : atomic_formula) (E F : formula) (S : subst_ind),
+        eq_f (atom a) E = false ->
+            formula_sub_ind_fit (atom a) E F S = atom a.
+Proof.
+intros a E F S EQ.
+unfold formula_sub_ind_fit.
+rewrite EQ.
+reflexivity.
+Qed.
+
+Lemma sub_fit_neq_neg :
+    forall (a : atomic_formula) (E F : formula) (S : subst_ind),
+        eq_f (neg (atom a)) E = false ->
+            formula_sub_ind_fit (neg (atom a)) E F S = neg (atom a).
+Proof.
+intros a E F S EQ.
+unfold formula_sub_ind_fit.
+rewrite EQ.
+reflexivity.
+Qed.
+*)
+
 (* *)
 Lemma formula_sub_ptree_formula_atom' :
-  forall (P : ptree) (a : atomic_formula) (F : formula),
-  valid P ->
-  forall (S : subst_ind),
-    subst_ind_fit (ptree_formula P) S = true ->
-    ptree_formula (formula_sub_ptree P (atom a) F S) =
-    formula_sub_ind (ptree_formula P) (atom a) F S.
+    forall (P : ptree) (a : atomic_formula) (F : formula),
+        valid P ->
+            forall (S : subst_ind),
+                subst_ind_fit (ptree_formula P) S = true ->
+                    ptree_formula (formula_sub_ptree P (atom a) F S) =
+                        formula_sub_ind (ptree_formula P) (atom a) F S.
 Proof.
-intros P a F.
-induction P; try intros H S Hs.
+intros P a F PV.
+induction P; intros S FS;
+unfold formula_sub_ptree;
+rewrite FS;
+unfold formula_sub_ptree_fit;
+fold formula_sub_ptree_fit.
 
-- simpl in Hs. simpl. rewrite Hs. simpl.
-  rewrite (formula_sub_ptree_formula_true _ _ _ _ Hs).
-  destruct H as [H1 H2]. apply (IHP H2). auto.
+1 : destruct PV as [ID PV].
 
-- simpl in Hs. simpl. rewrite Hs. simpl.
-  rewrite (formula_sub_ptree_formula_true _ _ _ _ Hs).
-  destruct H as [[H1 H2] H3]. apply (IHP H2). auto.
+2 : destruct PV as [[IO PV] NO].
 
-- simpl. inversion H.
-  destruct (axiom_atomic _ H1); destruct H0; rewrite H0;
-  unfold formula_sub_ind; simpl; destruct S; auto.
+1,2 : unfold ptree_formula in *; fold ptree_formula in *;
+      rewrite (formula_sub_ptree_formula_true _ _ _ _ FS);
+      apply (IHP PV _ FS).
 
-- simpl. destruct S; auto. inversion Hs. rewrite H1. simpl. auto.
+1 : { unfold ptree_formula, formula_sub_ind in *.
+      rewrite FS.
+      reflexivity. }
 
-- simpl. destruct S; auto. destruct S1; auto.
-  inversion Hs. rewrite H1. simpl. auto.
+1-4,6-15,18 : destruct S; inversion FS as [FS'];
+              try destruct (and_bool_prop _ _ FS') as [FS1 FS2].
 
-- simpl. destruct S; auto. destruct S1; auto.
-  inversion Hs. rewrite H1. simpl. auto.
+2-4,9,12,15,18 : destruct S1; inversion FS' as [FS''];
+      try destruct (and_bool_prop _ _ FS1) as [FS1_1 FS1_2].
 
-- simpl. destruct S; auto. destruct S1; auto. destruct S1_1; auto.
-  inversion Hs. rewrite H1. simpl. auto.
+4 : destruct S1_1; inversion FS'' as [FS'''];
+    try destruct (and_bool_prop _ _ FS1_1) as [FS1_1_1 FS1_1_2].
 
-- simpl. destruct (subst_ind_fit f S) eqn:HS.
-  + simpl. rewrite sub_fit_true; auto.
-  + simpl. rewrite sub_fit_false; auto.
-
-- simpl. destruct S; auto. inversion Hs. rewrite H1. simpl. auto.
-
-- simpl. destruct S; auto. inversion Hs. rewrite H1. simpl. auto.
-
-- simpl. destruct S; auto.
-
-- simpl. destruct S; auto.
-  destruct S1; auto; inversion Hs; rewrite H1; simpl; auto.
-
-- simpl. destruct S; auto.
-
-- simpl. destruct S; auto.
-  destruct S1; auto; inversion Hs; rewrite H1; simpl; auto.
-
-- simpl. destruct S; auto.
-
-- simpl. destruct S; auto.
-  destruct S1; auto; inversion Hs; rewrite H1; simpl; auto.
-
-- simpl. destruct S; auto.
-
-- intros Hv S Hs. simpl. destruct S; auto.
-  destruct S1; auto; inversion Hs; rewrite H1; simpl; auto.
-
-- simpl. destruct (subst_ind_fit f S) eqn:HS.
-  + simpl. rewrite sub_fit_true; auto.
-  + simpl. rewrite sub_fit_false; auto.
-
-- simpl. destruct (subst_ind_fit f0 S) eqn:HS.
-  + simpl. rewrite sub_fit_true; auto.
-  + simpl. rewrite sub_fit_false; auto.
-
-- simpl. destruct S; auto. inversion Hs. rewrite H1. simpl. auto.
+all : unfold ptree_formula in *; fold ptree_formula in *;
+      unfold formula_sub_ind, subst_ind_fit; fold subst_ind_fit;
+      try rewrite FS;
+      try rewrite FS1;
+      try rewrite FS2;
+      try rewrite FS1_1;
+      try rewrite FS1_2;
+      try rewrite FS1_1_1;
+      try rewrite FS1_1_2;
+      try reflexivity.
 Qed.
 
 Lemma formula_sub_ptree_formula_atom :
-  forall (P : ptree) (a : atomic_formula) (F : formula),
-  valid P ->
-  forall (S : subst_ind),
-    ptree_formula (formula_sub_ptree P (atom a) F S) =
-    formula_sub_ind (ptree_formula P) (atom a) F S.
+    forall (P : ptree) (a : atomic_formula) (F : formula),
+        valid P ->
+            forall (S : subst_ind),
+                ptree_formula (formula_sub_ptree P (atom a) F S) =
+                    formula_sub_ind (ptree_formula P) (atom a) F S.
 Proof.
-intros. destruct (subst_ind_fit (ptree_formula P) S) eqn:Hs.
-- apply formula_sub_ptree_formula_atom'; auto.
-- apply formula_sub_ptree_formula_aux. apply Hs.
+intros P a F PV S.
+destruct (subst_ind_fit (ptree_formula P) S) eqn:FS.
+- apply (formula_sub_ptree_formula_atom' _ _ _ PV _ FS).
+- unfold formula_sub_ptree, formula_sub_ind.
+  rewrite FS.
+  reflexivity.
 Qed.
 
+(*
 Lemma formula_sub_ptree_formula_atom_fit :
-  forall (P : ptree) (a : atomic_formula) (F : formula),
-  valid P ->
-  forall (S : subst_ind),
-    subst_ind_fit (ptree_formula P) S = true ->
-    ptree_formula (formula_sub_ptree P (atom a) F S) =
-    formula_sub_ind_fit (ptree_formula P) (atom a) F S.
+    forall (P : ptree) (a : atomic_formula) (F : formula),
+        valid P ->
+            forall (S : subst_ind),
+                subst_ind_fit (ptree_formula P) S = true ->
+                    ptree_formula (formula_sub_ptree P (atom a) F S) =
+                        formula_sub_ind_fit (ptree_formula P) (atom a) F S.
 Proof.
-intros. rewrite formula_sub_ptree_formula_atom'; auto.
+intros P a F PV s FS.
+rewrite formula_sub_ptree_formula_atom'; auto.
 rewrite sub_fit_true; auto.
 Qed.
+*)
 
-
-(* Second, we must prove that formula_sub_ptree does not change the degree
-of an ptree. *)
 (* *)
 Lemma formula_sub_ptree_deg_atom :
-  forall (P : ptree) (a : atomic_formula) (F : formula),
-  valid P ->
-  forall (S : subst_ind),
-    ptree_deg (formula_sub_ptree P (atom a) F S) = ptree_deg P.
+    forall (P : ptree) (a : atomic_formula) (F : formula),
+        valid P ->
+            forall (S : subst_ind),
+                ptree_deg (formula_sub_ptree P (atom a) F S) = ptree_deg P.
 Proof.
-intros P a F H. induction P; intros S.
-- simpl. case (subst_ind_fit (ptree_formula P) S); auto.
-- simpl. case (subst_ind_fit (ptree_formula P) S) eqn:Hfit; auto. simpl.
-  rewrite (formula_sub_ptree_formula_true _ _ _ _ Hfit).
-  apply IHP. inversion H. destruct X. auto.
-- simpl. case (subst_ind_fit f S); auto.
-- simpl.
-  destruct S; auto. case (subst_ind_fit f0 S1 && subst_ind_fit f S2); auto.
-- simpl. destruct S; auto. destruct S1; auto.
-  case (subst_ind_fit f S1_1 && subst_ind_fit f1 S1_2 && subst_ind_fit f0 S2);
-  auto.
-- simpl. destruct S; auto. destruct S1; auto.
-  case (subst_ind_fit f0 S1_1 && subst_ind_fit f S1_2 && subst_ind_fit f1 S2);
-  auto.
-- simpl. destruct S; auto. destruct S1; auto. destruct S1_1; auto.
-  case (subst_ind_fit f S1_1_1 && subst_ind_fit f1 S1_1_2 &&
-        subst_ind_fit f0 S1_2 && subst_ind_fit f2 S2); auto.
-- simpl. destruct (subst_ind_fit f S); auto.
-- simpl.
-  destruct S; auto. destruct (subst_ind_fit f S1 && subst_ind_fit f0 S2); auto.
-- simpl.
-  destruct S; auto. destruct (subst_ind_fit f S1 && subst_ind_fit f0 S2); auto.
-- simpl. destruct S; auto.
-- simpl. destruct S; auto. destruct S1; destruct (subst_ind_fit f1 S2); auto.
-- simpl. destruct S; auto.
-- simpl. destruct S; auto.
-  destruct S1; destruct (subst_ind_fit f0 S2) eqn:HS2; auto.
-- simpl. destruct S; auto.
-- simpl.
-  destruct S; auto; destruct S1; auto; destruct (subst_ind_fit f0 S2); auto.
-- simpl. destruct S; auto.
-- simpl.
-  destruct S; auto; destruct S1; auto; destruct (subst_ind_fit f0 S2); auto.
-- simpl. destruct (subst_ind_fit f S); auto.
-- simpl. destruct (subst_ind_fit f0 S); auto.
-- simpl.
-  destruct S; auto. destruct (subst_ind_fit f S1 && subst_ind_fit f1 S2); auto.
+intros P a F PV.
+pose (ptree_formula P) as A.
+induction P; intros S;
+case (subst_ind_fit A S) eqn:FS;
+unfold formula_sub_ptree;
+unfold A in FS;
+try rewrite FS;
+unfold formula_sub_ptree_fit;
+fold formula_sub_ptree_fit;
+try reflexivity.
+
+1 : destruct PV as [[IO PV] NO].
+    unfold ptree_formula in *; fold ptree_formula in *.
+    rewrite (formula_sub_ptree_formula_true _ _ _ _ FS).
+    apply (IHP PV).
+
+all : destruct S; inversion FS as [FS'];
+      try destruct (and_bool_prop _ _ FS') as [FS1 FS2].
+
+2-4,7-11 : destruct S1; inversion FS' as [FS''];
+      try destruct (and_bool_prop _ _ FS1) as [FS1_1 FS1_2].
+
+4 : destruct S1_1; inversion FS'' as [FS'''];
+    try destruct (and_bool_prop _ _ FS1_1) as [FS1_1_1 FS1_1_2].
+
+all : unfold ptree_deg; fold ptree_deg;
+      reflexivity.
 Qed.
 
 
-(* Third, we must prove that formula_sub_ptree does not change the ordinal
-of an ptree. *)
 (* *)
 Lemma formula_sub_ptree_ord_atom :
-  forall (P : ptree) (a : atomic_formula) (F : formula),
-  valid P ->
-  forall (S : subst_ind),
-    ptree_ord (formula_sub_ptree P (atom a) F S) = ptree_ord P.
+    forall (P : ptree) (a : atomic_formula) (F : formula),
+        valid P ->
+            forall (S : subst_ind),
+                ptree_ord (formula_sub_ptree P (atom a) F S) = ptree_ord P.
 Proof.
-intros P a F H. induction P; intros S.
-- simpl. case (subst_ind_fit (ptree_formula P) S) eqn:Hfit; auto. simpl.
-  rewrite (formula_sub_ptree_formula_true _ _ _ _ Hfit).
-  apply IHP. inversion H. auto.
-- simpl. case (subst_ind_fit (ptree_formula P) S); auto.
-- simpl. case (subst_ind_fit f S); auto.
-- simpl.
-  destruct S; auto. case (subst_ind_fit f0 S1 && subst_ind_fit f S2); auto.
-- simpl. destruct S; auto. destruct S1; auto.
-  case (subst_ind_fit f S1_1 && subst_ind_fit f1 S1_2 && subst_ind_fit f0 S2);
-  auto.
-- simpl. destruct S; auto. destruct S1; auto.
-  case (subst_ind_fit f0 S1_1 && subst_ind_fit f S1_2 && subst_ind_fit f1 S2);
-  auto.
-- simpl. destruct S; auto. destruct S1; auto. destruct S1_1; auto.
-  case (subst_ind_fit f S1_1_1 && subst_ind_fit f1 S1_1_2 &&
-        subst_ind_fit f0 S1_2 && subst_ind_fit f2 S2); auto.
-- simpl. destruct (subst_ind_fit f S); auto.
-- simpl.
-  destruct S; auto. destruct (subst_ind_fit f S1 && subst_ind_fit f0 S2); auto.
-- simpl.
-  destruct S; auto. destruct (subst_ind_fit f S1 && subst_ind_fit f0 S2); auto.
-- simpl. destruct S; auto.
-- simpl. destruct S; auto. destruct S1; destruct (subst_ind_fit f1 S2); auto.
-- simpl. destruct S; auto.
-- simpl. destruct S; auto.
-  destruct S1; destruct (subst_ind_fit f0 S2) eqn:HS2; auto.
-- simpl. destruct S; auto.
-- simpl.
-  destruct S; auto; destruct S1; auto; destruct (subst_ind_fit f0 S2); auto.
-- simpl. destruct S; auto.
-- simpl.
-  destruct S; auto; destruct S1; auto; destruct (subst_ind_fit f0 S2); auto.
-- simpl. destruct (subst_ind_fit f S); auto.
-- simpl. destruct (subst_ind_fit f0 S); auto.
-- simpl.
-  destruct S; auto. destruct (subst_ind_fit f S1 && subst_ind_fit f1 S2); auto.
+intros P a F PV.
+pose (ptree_formula P) as A.
+induction P; intros S;
+case (subst_ind_fit A S) eqn:FS;
+unfold formula_sub_ptree;
+unfold A in FS;
+try rewrite FS;
+unfold formula_sub_ptree_fit;
+fold formula_sub_ptree_fit;
+try reflexivity.
+
+1 : destruct PV as [ID PV].
+    unfold ptree_formula in *; fold ptree_formula in *.
+    rewrite (formula_sub_ptree_formula_true _ _ _ _ FS).
+    apply (IHP PV).
+
+all : destruct S; inversion FS as [FS'];
+      try destruct (and_bool_prop _ _ FS') as [FS1 FS2].
+
+2-4,7-11 : destruct S1; inversion FS' as [FS''];
+      try destruct (and_bool_prop _ _ FS1) as [FS1_1 FS1_2].
+
+4 : destruct S1_1; inversion FS'' as [FS'''];
+    try destruct (and_bool_prop _ _ FS1_1) as [FS1_1_1 FS1_1_2].
+
+all : unfold ptree_deg; fold ptree_deg;
+      reflexivity.
 Qed.
-
-
 
 
 (* Now we prove that if we have a valid ptree, performing our
 formula substitution on it results in a valid ptree *)
 (* *)
 Lemma formula_sub_valid_atom :
-  forall (P : ptree) (a : atomic_formula) (F : formula),
-    valid P ->
-    PA_omega_axiom (atom a) = false ->
-    closed F =true ->
-    forall (S : subst_ind),
-      subst_ind_fit (ptree_formula P) S = true ->
-      valid (formula_sub_ptree P (atom a) F S).
+    forall (P : ptree) (a : atomic_formula) (F : formula),
+        valid P ->
+            correct_a a = false ->
+                closed F =true ->
+                    forall (S : subst_ind),
+                        subst_ind_fit (ptree_formula P) S = true ->
+                            valid (formula_sub_ptree P (atom a) F S).
 Proof.
-intros P a F.
-induction P; try intros H Ha HF S Hs.
+intros P a F PV Aa CF.
+induction P; intros S FS;
+unfold formula_sub_ptree;
+rewrite FS;
+unfold formula_sub_ptree_fit;
+fold formula_sub_ptree_fit.
 
-- simpl. inversion H as [H1 H2]. inversion Hs. rewrite H3.
-  rewrite formula_sub_ptree_formula_true; auto. split.
-  + rewrite formula_sub_ptree_deg_atom; auto.
-  + apply (IHP H2 Ha HF S H3).
+1 : destruct PV as [ID PV].
+2 : destruct PV as [[IO PV] NO].
+4-9 : destruct PV as [[[PF PV] PD] PO].
+10 : destruct PV as [[[[PF FC] PV] PD] PO].
+11,12 : destruct PV as [[[[[[[P1F P1V] P2F] P2V] P1D] P2D] P1O] P2O].
+13-16 : destruct PV as [[[PF PV] PD] PO].
+19-21 : destruct PV as [[[[[[[P1F P1V] P2F] P2V] P1D] P2D] P1O] P2O].
 
-- simpl. inversion H as [[H1 H2] H3]. inversion Hs. rewrite H4.
-  rewrite formula_sub_ptree_formula_true; auto. split.
-  + rewrite formula_sub_ptree_ord_atom; auto.
-  + auto.
+4-7,9,10,12,14,16,18,21 : destruct S; inversion FS as [FS'];
+                          try destruct (and_bool_prop _ _ FS') as [FS1 FS2].
 
-- simpl. inversion Hs. rewrite H1. simpl. destruct (eq_f f (atom a)) eqn:Hf.
-  + inversion H. apply f_eq_decid in Hf.
-    rewrite Hf in H2. rewrite H2 in Ha. inversion Ha.
-  + inversion H. destruct (axiom_atomic _ H2) as [[a' Ha'] | [a' Ha']].
-    * rewrite Ha'. rewrite Ha' in Hf. rewrite sub_fit_neq_atom; auto.
-    * rewrite Ha'. rewrite Ha' in Hf. rewrite sub_fit_neq_neg; auto.
+5-7,9-13 :  destruct S1; inversion FS' as [FS''];
+            try destruct (and_bool_prop _ _ FS1) as [FS1_1 FS1_2].
 
-- simpl. destruct S; inversion Hs. rewrite H1. simpl.
-  inversion H as [[[H2 H3] H4] H5].
-  repeat split; rewrite formula_sub_ptree_formula_true.
-  + rewrite formula_sub_ptree_formula_atom_fit; auto; rewrite H2; simpl; auto.
-    apply and_bool_symm. auto.
-  + rewrite H2. simpl. apply (and_bool_symm _ _ H1).
-  + apply IHP; auto. rewrite H2. simpl. apply (and_bool_symm _ _ H1).
-  + rewrite H2. simpl. apply (and_bool_symm _ _ H1).
-  + rewrite formula_sub_ptree_deg_atom; auto.
-  + rewrite H2. simpl. apply (and_bool_symm _ _ H1).
-  + rewrite formula_sub_ptree_ord_atom; auto.
-  + rewrite H2. simpl. apply (and_bool_symm _ _ H1).
+7 : destruct S1_1; inversion FS'' as [FS'''];
+    try destruct (and_bool_prop _ _ FS1_1) as [FS1_1_1 FS1_1_2].
 
-- simpl. destruct S; try destruct S1; inversion Hs.
-  rewrite H1. simpl. inversion H as [[[H4 H5] H6] H7].
-  destruct (and_bool_prop _ _ H1). clear H1.
-  destruct (and_bool_prop _ _ H0). clear H0.
-  repeat split; rewrite formula_sub_ptree_formula_true.
-  + rewrite formula_sub_ptree_formula_atom_fit; auto; rewrite H4; simpl; auto.
-    rewrite H1, H2, H3. auto.
-  + rewrite H4. simpl. rewrite H1, H2, H3. auto.
-  + apply IHP; auto. rewrite H4. simpl. rewrite H1, H2, H3. auto.
-  + rewrite H4. simpl. rewrite H1, H2, H3. auto.
-  + rewrite formula_sub_ptree_deg_atom; auto.
-  + rewrite H4. simpl. rewrite H1, H2, H3. auto.
-  + rewrite formula_sub_ptree_ord_atom; auto.
-  + rewrite H4. simpl. rewrite H1, H2, H3. auto.
+3 : { unfold valid in *.
+      destruct f.
+      3,4 : inversion PV.
+      2 : unfold formula_sub_ind_fit, eq_f;
+          apply PV.
+      1 : destruct S;
+          unfold formula_sub_ind_fit, eq_f;
+          fold formula_sub_ind_fit;
+          case (eq_atom a0 a) eqn:EQ;
+          try apply PV.
+          apply atom_beq_eq in EQ.
+          destruct EQ.
+          unfold PA_omega_axiom in PV.
+          rewrite PV in Aa.
+          inversion Aa. }
 
-- simpl. destruct S; try destruct S1; inversion Hs.
-  rewrite H1. simpl. inversion H as [[[H4 H5] H6] H7].
-  destruct (and_bool_prop _ _ H1). clear H1.
-  destruct (and_bool_prop _ _ H0). clear H0.
-  repeat split; rewrite formula_sub_ptree_formula_true.
-  + rewrite formula_sub_ptree_formula_atom_fit; auto; rewrite H4; simpl; auto.
-    rewrite H1, H2, H3. auto.
-  + rewrite H4. simpl. rewrite H1, H2, H3. auto.
-  + apply IHP; auto. rewrite H4. simpl. rewrite H1, H2, H3. auto.
-  + rewrite H4. simpl. rewrite H1, H2, H3. auto.
-  + rewrite formula_sub_ptree_deg_atom; auto.
-  + rewrite H4. simpl. rewrite H1, H2, H3. auto.
-  + rewrite formula_sub_ptree_ord_atom; auto.
-  + rewrite H4. simpl. rewrite H1, H2, H3. auto.
+16,17 : repeat split;
+        destruct (PV t) as [[[PF PcV] PD] PO];
+        rewrite formula_sub_ptree_formula_true;
+        try rewrite PF;
+        try rewrite formula_sub_ptree_deg_atom;
+        try apply PD;
+        try rewrite formula_sub_ptree_ord_atom;
+        try apply PO;
+        try apply X;
+        try rewrite formula_sub_ptree_formula_atom;
+        try rewrite PF;
+        try apply PV;
+        try rewrite formula_sub_ind_lor;
+        try rewrite (non_target_term_sub _ n (projT1 t));
+        try rewrite non_target_sub;
+        unfold formula_sub_ind;
+        unfold subst_ind_fit; fold subst_ind_fit;
+        try rewrite FS;
+        try rewrite FS1;
+        try rewrite FS2;
+        try rewrite non_target_fit;
+        reflexivity.
 
-- simpl. destruct S; try destruct S1; try destruct S1_1; inversion Hs.
-  rewrite H1. simpl. inversion H as [[[H5 H6] H7] H8].
-  destruct (and_bool_prop _ _ H1). clear H1.
-  destruct (and_bool_prop _ _ H0). clear H0.
-  destruct (and_bool_prop _ _ H1). clear H1.
-  repeat split; rewrite formula_sub_ptree_formula_true.
-  + rewrite formula_sub_ptree_formula_atom_fit; auto; rewrite H5; simpl; auto.
-    rewrite H0, H2, H3, H4. auto.
-  + rewrite H5. simpl. rewrite H0, H2, H3, H4. auto.
-  + apply IHP; auto. rewrite H5. simpl. rewrite H0, H2, H3, H4. auto.
-  + rewrite H5. simpl. rewrite H0, H2, H3, H4. auto.
-  + rewrite formula_sub_ptree_deg_atom; auto.
-  + rewrite H5. simpl. rewrite H0, H2, H3, H4. auto.
-  + rewrite formula_sub_ptree_ord_atom; auto.
-  + rewrite H5. simpl. rewrite H0, H2, H3, H4. auto.
+all : repeat rewrite formula_sub_ptree_formula_true;
+      unfold ptree_formula in FS; fold ptree_formula in FS;
+      try rewrite PF;
+      try rewrite P1F;
+      try rewrite P2F;
+      repeat split;
+      try rewrite formula_sub_ptree_deg_atom;
+      try apply PD;
+      try apply P1D;
+      try apply P2D;
+      try rewrite formula_sub_ptree_ord_atom;
+      try apply PO;
+      try apply P1O;
+      try apply P2O;
+      try apply IHP;
+      try apply IHP1;
+      try apply IHP2;
+      try rewrite formula_sub_ptree_formula_atom;
+      try apply PV;
+      try apply P1V;
+      try apply P2V;
+      try rewrite PF;
+      try rewrite P1F;
+      try rewrite P2F;
+      try rewrite formula_sub_ind_lor;
+      try rewrite non_target_sub;
+      unfold formula_sub_ind;
+      unfold subst_ind_fit; fold subst_ind_fit;
+      try rewrite FS;
+      try rewrite FS1;
+      try rewrite FS2;
+      try rewrite FS1_1;
+      try rewrite FS1_2;
+      try rewrite FS1_1_1;
+      try rewrite FS1_1_2;
+      try rewrite non_target_fit;
+      unfold "&&";
+      try reflexivity;
+      try apply ID;
+      try apply IO;
+      try apply NO.
 
-- simpl. inversion Hs. rewrite H1. inversion H as [[[H2 H3] H4] H5].
-  repeat split; rewrite formula_sub_ptree_formula_true.
-  + rewrite formula_sub_ptree_formula_atom_fit; auto; rewrite H2; simpl; auto.
-    rewrite H1. auto.
-  + rewrite H2. simpl. rewrite H1. auto.
-  + apply IHP; auto. rewrite H2. simpl. rewrite H1. auto.
-  + rewrite H2. simpl. rewrite H1. auto.
-  + rewrite formula_sub_ptree_deg_atom; auto.
-  + rewrite H2. simpl. rewrite H1. auto.
-  + rewrite formula_sub_ptree_ord_atom; auto.
-  + rewrite H2. simpl. rewrite H1. auto.
-
-- simpl. destruct S; inversion Hs. rewrite H1.
-  inversion H as [[[H2 H3] H4] H5]. destruct (and_bool_prop _ _ H1).
-  repeat split; rewrite formula_sub_ptree_formula_true.
-  + rewrite formula_sub_ptree_formula_atom_fit; auto. rewrite H2. simpl. auto.
-    rewrite H2. simpl. rewrite H0, H6. auto.
-  + rewrite H2. simpl. rewrite H0, H6. auto.
-  + apply IHP; auto. rewrite H2. simpl. rewrite H0, H6. auto.
-  + rewrite H2. simpl. rewrite H0, H6. auto.
-  + rewrite formula_sub_ptree_deg_atom; auto.
-  + rewrite H2. simpl. rewrite H0, H6. auto.
-  + rewrite formula_sub_ptree_ord_atom; auto.
-  + rewrite H2. simpl. rewrite H0, H6. auto.
-
-- simpl. destruct S; inversion Hs. rewrite H1. simpl.
-  inversion H as [[[[H2 H3] H4] H5] H6]. destruct (and_bool_prop _ _ H1).
-  repeat split.
-  + rewrite formula_sub_ptree_formula_true.
-    * rewrite formula_sub_ptree_formula_atom_fit; auto; rewrite H2; auto.
-    * rewrite H2. auto.
-  + apply formula_sub_ind_fit_closed; auto.
-  + rewrite formula_sub_ptree_formula_true.
-    * apply IHP; auto. rewrite H2. auto.
-    * rewrite H2. auto.
-  + rewrite formula_sub_ptree_formula_true.
-    * rewrite formula_sub_ptree_deg_atom; auto.
-    * rewrite H2. auto.
-  + rewrite formula_sub_ptree_formula_true.
-    * rewrite formula_sub_ptree_ord_atom; auto.
-    * rewrite H2. auto.
-
-- simpl. destruct S; apply H.
-
-- simpl. destruct S; try apply H.
-  destruct S1; inversion Hs; rewrite H1; simpl.
-  + destruct H as [[[[[[[H2 H3] H4] H5] H6] H7] H8] H9].
-    repeat split; rewrite formula_sub_ptree_formula_true.
-    * rewrite formula_sub_ptree_formula_atom_fit; auto; rewrite H2; simpl; auto.
-    * rewrite H2. simpl. apply H1.
-    * apply IHP1; auto. rewrite H2. apply H1.
-    * rewrite H2. simpl. apply H1.
-    * rewrite formula_sub_ptree_formula_atom_fit; auto; rewrite H4; simpl; auto.
-    * rewrite H4. simpl. apply H1.
-    * apply IHP2; auto. rewrite H4. simpl. apply H1.
-    * rewrite H4. simpl. apply H1.
-    * rewrite formula_sub_ptree_deg_atom; auto.
-    * rewrite H2. simpl. apply H1.
-    * rewrite formula_sub_ptree_deg_atom; auto.
-    * rewrite H4. simpl. apply H1.
-    * rewrite formula_sub_ptree_ord_atom; auto.
-    * rewrite H2. simpl. apply H1.
-    * rewrite formula_sub_ptree_ord_atom; auto.
-    * rewrite H4. simpl. apply H1.
-  + destruct H as [[[[[[[H2 H3] H4] H5] H6] H7] H8] H9].
-    repeat split; rewrite formula_sub_ptree_formula_true.
-    * rewrite formula_sub_ptree_formula_atom_fit; auto; rewrite H2; simpl; auto.
-    * rewrite H2. simpl. apply H1.
-    * apply IHP1; auto. rewrite H2. apply H1.
-    * rewrite H2. simpl. apply H1.
-    * rewrite formula_sub_ptree_formula_atom_fit; auto; rewrite H4; simpl; auto.
-    * rewrite H4. simpl. apply H1.
-    * apply IHP2; auto. rewrite H4. simpl. apply H1.
-    * rewrite H4. simpl. apply H1.
-    * rewrite formula_sub_ptree_deg_atom; auto.
-    * rewrite H2. simpl. apply H1.
-    * rewrite formula_sub_ptree_deg_atom; auto.
-    * rewrite H4. simpl. apply H1.
-    * rewrite formula_sub_ptree_ord_atom; auto.
-    * rewrite H2. simpl. apply H1.
-    * rewrite formula_sub_ptree_ord_atom; auto.
-    * rewrite H4. simpl. apply H1.
-
-- simpl. destruct S; auto.
-
-- simpl. inversion H as [[[H2 H3] H4] H5]. destruct S; auto.
-  destruct S1; auto.
-  + inversion Hs. rewrite H1. simpl.
-    repeat split; rewrite formula_sub_ptree_formula_true.
-    * rewrite formula_sub_ptree_formula_atom_fit; auto; rewrite H2; simpl.
-      { rewrite non_target_sub'. auto. }
-      { rewrite non_target_fit, H1. auto. }
-    * rewrite H2. simpl. rewrite non_target_fit, H1. auto.
-    * apply IHP; auto. rewrite H2. simpl. rewrite non_target_fit, H1. auto.
-    * rewrite H2. simpl. rewrite non_target_fit, H1. auto.
-    * rewrite formula_sub_ptree_deg_atom; auto.
-    * rewrite H2. simpl. rewrite non_target_fit, H1. auto.
-    * rewrite formula_sub_ptree_ord_atom; auto.
-    * rewrite H2. simpl. rewrite non_target_fit, H1. auto.
-  + inversion Hs. rewrite H1. simpl.
-    repeat split; rewrite formula_sub_ptree_formula_true.
-    * rewrite formula_sub_ptree_formula_atom_fit; auto; rewrite H2; simpl.
-      { rewrite non_target_sub'. auto. }
-      { rewrite non_target_fit, H1. auto. }
-    * rewrite H2. simpl. rewrite non_target_fit, H1. auto.
-    * apply IHP; auto. rewrite H2. simpl. rewrite non_target_fit, H1. auto.
-    * rewrite H2. simpl. rewrite non_target_fit, H1. auto.
-    * rewrite formula_sub_ptree_deg_atom; auto.
-    * rewrite H2. simpl. rewrite non_target_fit, H1. auto.
-    * rewrite formula_sub_ptree_ord_atom; auto.
-    * rewrite H2. simpl. rewrite non_target_fit, H1. auto.
-
-- simpl. destruct S; auto.
-
-- simpl. destruct S; auto. inversion H as [[[H0 H1] H2] H3].
-  destruct S1; inversion Hs; rewrite H5; simpl.
-  + repeat split; auto; rewrite formula_sub_ptree_formula_true.
-    * rewrite formula_sub_ptree_formula_atom_fit;
-      auto; rewrite H0; simpl; auto.
-    * rewrite H0. simpl. apply H5.
-    * apply IHP; auto. rewrite H0. simpl. apply H5.
-    * rewrite H0. simpl. apply H5.
-    * rewrite formula_sub_ptree_deg_atom; auto.
-    * rewrite H0. simpl. auto.
-    * rewrite formula_sub_ptree_ord_atom; auto.
-    * rewrite H0. simpl. auto.
-  + repeat split; auto; rewrite formula_sub_ptree_formula_true.
-    * rewrite formula_sub_ptree_formula_atom_fit;
-      auto; rewrite H0; simpl; auto.
-    * rewrite H0. simpl. apply H5.
-    * apply IHP; auto. rewrite H0. simpl. apply H5.
-    * rewrite H0. simpl. apply H5.
-    * rewrite formula_sub_ptree_deg_atom; auto.
-    * rewrite H0. simpl. auto.
-    * rewrite formula_sub_ptree_ord_atom; auto.
-    * rewrite H0. simpl. auto.
-
-- intros. simpl. destruct S; auto.
-
-- rename H into H0. rename X into H. rename Hs into H1.
-  simpl. destruct S; auto. destruct S1; inversion H1.
-  + rewrite H3. simpl. intros. destruct (valid_w_rule_ad _ _ _ _ _ _ H0 t) as [[[H4 H5] H6] H7].
-    repeat split; rewrite formula_sub_ptree_formula_true.
-    * rewrite formula_sub_ptree_formula_atom_fit; auto; rewrite H4; simpl;
-      rewrite (non_target_term_sub f n (projT1 t)).
-      { rewrite non_target_sub'. auto. }
-      { rewrite non_target_fit. auto. }
-    * rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
-      rewrite non_target_fit. apply H3.
-    * apply H; auto. rewrite H4. simpl.
-      rewrite (non_target_term_sub f n (projT1 t)).
-      rewrite non_target_fit. apply H3.
-    * rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
-      rewrite non_target_fit. apply H3.
-    * rewrite formula_sub_ptree_deg_atom; auto.
-    * rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
-        rewrite non_target_fit. rewrite H3. auto.
-    * rewrite formula_sub_ptree_ord_atom; auto.
-    * rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
-      rewrite non_target_fit. rewrite H3. auto.
-  + rewrite H3. simpl. intros. destruct (valid_w_rule_ad _ _ _ _ _ _ H0 t) as [[[H4 H5] H6] H7].
-    repeat split; rewrite formula_sub_ptree_formula_true.
-    * rewrite formula_sub_ptree_formula_atom_fit; auto; rewrite H4; simpl;
-      rewrite (non_target_term_sub f n (projT1 t)).
-      { rewrite non_target_sub'. auto. }
-      { rewrite non_target_fit. auto. }
-    * rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
-      rewrite non_target_fit. apply H3.
-    * apply H; auto. rewrite H4. simpl.
-      rewrite (non_target_term_sub f n (projT1 t)).
-      rewrite non_target_fit. apply H3.
-    * rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
-      rewrite non_target_fit. apply H3.
-    * rewrite formula_sub_ptree_deg_atom; auto.
-    * rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
-        rewrite non_target_fit. rewrite H3. auto.
-    * rewrite formula_sub_ptree_ord_atom; auto.
-    * rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
-      rewrite non_target_fit. rewrite H3. auto.
-- clear IHP2. simpl. destruct (subst_ind_fit f S) eqn:Heq; auto. simpl.
-  inversion H as [[[[[[[H1 H2] H3] H4] H5] H6] H7] H8].
-  repeat split; auto; rewrite formula_sub_ptree_formula_true.
-  + rewrite formula_sub_ptree_formula_atom_fit; auto; rewrite H1; simpl.
-    { rewrite non_target_sub'. auto. }
-    { rewrite non_target_fit, Heq. auto. }
-  + rewrite H1. simpl. rewrite Heq, non_target_fit. auto.
-  + apply IHP1; auto. rewrite H1. simpl. rewrite Heq, non_target_fit. auto.
-  + rewrite H1. simpl. rewrite Heq, non_target_fit. auto.
-  + rewrite formula_sub_ptree_deg_atom; auto.
-  + rewrite H1. simpl. rewrite Heq, non_target_fit. auto.
-  + rewrite formula_sub_ptree_ord_atom; auto.
-  + rewrite H1. simpl. rewrite Heq, non_target_fit. auto.
-
-- clear IHP1. simpl. destruct (subst_ind_fit f0 S) eqn:Heq; auto. simpl.
-  inversion H as [[[[[[[H1 H2] H3] H4] H5] H6] H7] H8].
-  repeat split; auto; rewrite formula_sub_ptree_formula_true.
-  + rewrite formula_sub_ptree_formula_atom_fit; auto; rewrite H3; simpl; auto.
-  + rewrite H3. simpl. auto.
-  + apply IHP2; auto. rewrite H3. simpl. auto.
-  + rewrite H3. simpl. auto.
-  + rewrite formula_sub_ptree_deg_atom; auto.
-  + rewrite H3. simpl. auto.
-  + rewrite formula_sub_ptree_ord_atom; auto.
-  + rewrite H3. simpl. auto.
-
-- simpl. inversion H as [[[[[[[H1 H2] H3] H4] H5] H6] H7] H8].
-  destruct S; try inversion Hs. rewrite H9.
-  destruct (and_bool_prop _ _ H9) as [H10 H11].
-  simpl. repeat split; rewrite formula_sub_ptree_formula_true.
-  + rewrite formula_sub_ptree_formula_atom_fit; auto; rewrite H1; simpl.
-    { rewrite non_target_sub'. auto. }
-    { rewrite non_target_fit, H10. auto. }
-  + rewrite H1. simpl. rewrite H10, non_target_fit. auto.
-  + apply IHP1; auto. rewrite H1. simpl. rewrite H10, non_target_fit. auto.
-  + rewrite H1. simpl. rewrite H10, non_target_fit. auto.
-  + rewrite formula_sub_ptree_formula_atom_fit; auto; rewrite H3; simpl; auto.
-  + rewrite H3. simpl. auto.
-  + apply IHP2; auto. rewrite H3. simpl. auto.
-  + rewrite H3. simpl. auto.
-  + rewrite formula_sub_ptree_deg_atom; auto.
-  + rewrite H1. simpl. rewrite H10, non_target_fit. auto.
-  + rewrite formula_sub_ptree_deg_atom; auto.
-  + rewrite H3. simpl. auto.
-  + rewrite formula_sub_ptree_ord_atom; auto.
-  + rewrite H1. simpl. rewrite H10, non_target_fit. auto.
-  + rewrite formula_sub_ptree_ord_atom; auto.
-  + rewrite H3. simpl. auto.
+all : refine (formula_sub_ind_fit_closed _ _ _ FC _ _ FS1);
+      intros Caa;
+      apply CF.
 Qed.
 
 
+(*
 (* We finally show that if the C \/ (atom a) is provable
 where 'a' is incorrect, then C \/ C is provable. *)
 (* *)
@@ -756,7 +528,7 @@ unfold P_proves. repeat split.
 - rewrite formula_sub_ptree_ord_atom; auto.
 Qed.
 
-
+*)
 
 
 
@@ -777,534 +549,283 @@ Consequently, if C \/ (neg (atom a)) is provable, so is C \/ C.
 of an ptree the way we expect with formula_sub_ind *)
 (* *)
 Lemma formula_sub_ptree_formula_neg' :
-  forall (P : ptree) (a : atomic_formula) (F : formula),
-  valid P ->
-  forall (S : subst_ind),
-    subst_ind_fit (ptree_formula P) S = true ->
-    ptree_formula (formula_sub_ptree P (neg (atom a)) F S) =
-    formula_sub_ind (ptree_formula P) (neg (atom a)) F S.
+    forall (P : ptree) (a : atomic_formula) (F : formula),
+        valid P ->
+            forall (S : subst_ind),
+                subst_ind_fit (ptree_formula P) S = true ->
+                    ptree_formula (formula_sub_ptree P (neg (atom a)) F S) =
+                        formula_sub_ind (ptree_formula P) (neg (atom a)) F S.
 Proof.
-intros P a F.
-induction P; try intros H S Hs.
+intros P a F PV.
+induction P; intros S FS;
+unfold formula_sub_ptree;
+rewrite FS;
+unfold formula_sub_ptree_fit;
+fold formula_sub_ptree_fit.
 
-- simpl in Hs. simpl. rewrite Hs. simpl.
-  rewrite (formula_sub_ptree_formula_true _ _ _ _ Hs).
-  destruct H as [H1 H2]. apply (IHP H2). auto.
+1 : destruct PV as [ID PV].
 
-- simpl in Hs. simpl. rewrite Hs. simpl.
-  rewrite (formula_sub_ptree_formula_true _ _ _ _ Hs).
-  destruct H as [[H1 H2] H3]. apply (IHP H2). auto.
+2 : destruct PV as [[IO PV] NO].
 
-- simpl. inversion H.
-  destruct (axiom_atomic _ H1); destruct H0; rewrite H0;
-  unfold formula_sub_ind; simpl; destruct S; auto.
+1,2 : unfold ptree_formula in *; fold ptree_formula in *;
+      rewrite (formula_sub_ptree_formula_true _ _ _ _ FS);
+      apply (IHP PV _ FS).
 
-- simpl. destruct S; auto. inversion Hs. rewrite H1. simpl. auto.
+1 : { unfold ptree_formula, formula_sub_ind in *.
+      rewrite FS.
+      reflexivity. }
 
-- simpl. destruct S; auto. destruct S1; auto.
-  inversion Hs. rewrite H1. simpl. auto.
+1-4,6-15,18 : destruct S; inversion FS as [FS'];
+              try destruct (and_bool_prop _ _ FS') as [FS1 FS2].
 
-- simpl. destruct S; auto. destruct S1; auto.
-  inversion Hs. rewrite H1. simpl. auto.
+2-4,9,12,15,18 : destruct S1; inversion FS' as [FS''];
+      try destruct (and_bool_prop _ _ FS1) as [FS1_1 FS1_2].
 
-- simpl. destruct S; auto. destruct S1; auto. destruct S1_1; auto.
-  inversion Hs. rewrite H1. simpl. auto.
+4 : destruct S1_1; inversion FS'' as [FS'''];
+    try destruct (and_bool_prop _ _ FS1_1) as [FS1_1_1 FS1_1_2].
 
-- simpl. destruct (subst_ind_fit f S) eqn:HS.
-  + simpl. rewrite sub_fit_true; auto.
-  + simpl. rewrite sub_fit_false; auto.
-
-- simpl. destruct S; auto. inversion Hs. rewrite H1. simpl. auto.
-
-- simpl. destruct S; auto. inversion Hs. rewrite H1. simpl. auto.
-
-- simpl. destruct S; auto.
-
-- simpl. destruct S; auto.
-  destruct S1; auto; inversion Hs; rewrite H1; simpl; auto.
-
-- simpl. destruct S; auto.
-
-- simpl. destruct S; auto.
-  destruct S1; auto; inversion Hs; rewrite H1; simpl; auto.
-
-- simpl. destruct S; auto.
-
-- simpl. destruct S; auto.
-  destruct S1; auto; inversion Hs; rewrite H1; simpl; auto.
-
-- simpl. destruct S; auto.
-
-- intros Hv S Hs. simpl. destruct S; auto.
-  destruct S1; auto; inversion Hs; rewrite H1; simpl; auto.
-
-- simpl. destruct (subst_ind_fit f S) eqn:HS.
-  + simpl. rewrite sub_fit_true; auto.
-  + simpl. rewrite sub_fit_false; auto.
-
-- simpl. destruct (subst_ind_fit f0 S) eqn:HS.
-  + simpl. rewrite sub_fit_true; auto.
-  + simpl. rewrite sub_fit_false; auto.
-
-- simpl. destruct S; auto. inversion Hs. rewrite H1. simpl. auto.
+all : unfold ptree_formula in *; fold ptree_formula in *;
+      unfold formula_sub_ind, subst_ind_fit; fold subst_ind_fit;
+      try rewrite FS;
+      try rewrite FS1;
+      try rewrite FS2;
+      try rewrite FS1_1;
+      try rewrite FS1_2;
+      try rewrite FS1_1_1;
+      try rewrite FS1_1_2;
+      try reflexivity.
 Qed.
 
 Lemma formula_sub_ptree_formula_neg :
-  forall (P : ptree) (a : atomic_formula) (F : formula),
-  valid P ->
-  forall (S : subst_ind),
-    ptree_formula (formula_sub_ptree P (neg (atom a)) F S) =
-    formula_sub_ind (ptree_formula P) (neg (atom a)) F S.
+    forall (P : ptree) (a : atomic_formula) (F : formula),
+        valid P ->
+            forall (S : subst_ind),
+                ptree_formula (formula_sub_ptree P (neg (atom a)) F S) =
+                    formula_sub_ind (ptree_formula P) (neg (atom a)) F S.
 Proof.
-intros. destruct (subst_ind_fit (ptree_formula P) S) eqn:Hs.
-- apply formula_sub_ptree_formula_neg'; auto.
-- apply formula_sub_ptree_formula_aux. apply Hs.
+intros P a F PV S.
+destruct (subst_ind_fit (ptree_formula P) S) eqn:FS.
+- apply (formula_sub_ptree_formula_neg' _ _ _ PV _ FS).
+- unfold formula_sub_ptree,formula_sub_ind.
+  rewrite FS.
+  reflexivity.
 Qed.
 
+(*
 Lemma formula_sub_ptree_formula_neg_fit :
-  forall (P : ptree) (a : atomic_formula) (F : formula),
-  valid P ->
-  forall (S : subst_ind),
-    subst_ind_fit (ptree_formula P) S = true ->
-    ptree_formula (formula_sub_ptree P (neg (atom a)) F S) =
-    formula_sub_ind_fit (ptree_formula P) (neg (atom a)) F S.
+    forall (P : ptree) (a : atomic_formula) (F : formula),
+        valid P ->
+            forall (S : subst_ind),
+                subst_ind_fit (ptree_formula P) S = true ->
+                    ptree_formula (formula_sub_ptree P (neg (atom a)) F S) =
+                        formula_sub_ind_fit (ptree_formula P) (neg (atom a)) F S.
 Proof.
+
 intros. rewrite formula_sub_ptree_formula_neg'; auto.
 rewrite sub_fit_true; auto.
 Qed.
+*)
 
 
-(* Second, we must prove that formula_sub_ptree does not change the degree
-of an ptree. *)
 (* *)
 Lemma formula_sub_ptree_deg_neg :
-  forall (P : ptree) (a : atomic_formula) (F : formula),
-  valid P ->
-  forall (S : subst_ind),
-    ptree_deg (formula_sub_ptree P (neg (atom a)) F S) = ptree_deg P.
+    forall (P : ptree) (a : atomic_formula) (F : formula),
+        valid P ->
+            forall (S : subst_ind),
+                ptree_deg (formula_sub_ptree P (neg (atom a)) F S) = ptree_deg P.
 Proof.
-intros P a F H. induction P; intros S.
-- simpl. case (subst_ind_fit (ptree_formula P) S); auto.
-- simpl. case (subst_ind_fit (ptree_formula P) S) eqn:Hfit; auto. simpl.
-  rewrite (formula_sub_ptree_formula_true _ _ _ _ Hfit).
-  apply IHP. inversion H. destruct X. auto.
-- simpl. case (subst_ind_fit f S); auto.
-- simpl.
-  destruct S; auto. case (subst_ind_fit f0 S1 && subst_ind_fit f S2); auto.
-- simpl. destruct S; auto. destruct S1; auto.
-  case (subst_ind_fit f S1_1 && subst_ind_fit f1 S1_2 && subst_ind_fit f0 S2);
-  auto.
-- simpl. destruct S; auto. destruct S1; auto.
-  case (subst_ind_fit f0 S1_1 && subst_ind_fit f S1_2 && subst_ind_fit f1 S2);
-  auto.
-- simpl. destruct S; auto. destruct S1; auto. destruct S1_1; auto.
-  case (subst_ind_fit f S1_1_1 && subst_ind_fit f1 S1_1_2 &&
-        subst_ind_fit f0 S1_2 && subst_ind_fit f2 S2); auto.
-- simpl. destruct (subst_ind_fit f S); auto.
-- simpl.
-  destruct S; auto. destruct (subst_ind_fit f S1 && subst_ind_fit f0 S2); auto.
-- simpl.
-  destruct S; auto. destruct (subst_ind_fit f S1 && subst_ind_fit f0 S2); auto.
-- simpl. destruct S; auto.
-- simpl. destruct S; auto. destruct S1; destruct (subst_ind_fit f1 S2); auto.
-- simpl. destruct S; auto.
-- simpl. destruct S; auto.
-  destruct S1; destruct (subst_ind_fit f0 S2) eqn:HS2; auto.
-- simpl. destruct S; auto.
-- simpl.
-  destruct S; auto; destruct S1; auto; destruct (subst_ind_fit f0 S2); auto.
-- simpl. destruct S; auto.
-- simpl.
-  destruct S; auto; destruct S1; auto; destruct (subst_ind_fit f0 S2); auto.
-- simpl. destruct (subst_ind_fit f S); auto.
-- simpl. destruct (subst_ind_fit f0 S); auto.
-- simpl.
-  destruct S; auto. destruct (subst_ind_fit f S1 && subst_ind_fit f1 S2); auto.
-Qed.
+intros P a F PV.
+pose (ptree_formula P) as A.
+induction P; intros S;
+case (subst_ind_fit A S) eqn:FS;
+unfold formula_sub_ptree;
+unfold A in FS;
+try rewrite FS;
+unfold formula_sub_ptree_fit;
+fold formula_sub_ptree_fit;
+try reflexivity.
 
+1 : destruct PV as [[IO PV] NO].
+    unfold ptree_formula in *; fold ptree_formula in *.
+    rewrite (formula_sub_ptree_formula_true _ _ _ _ FS).
+    apply (IHP PV).
+
+all : destruct S; inversion FS as [FS'];
+      try destruct (and_bool_prop _ _ FS') as [FS1 FS2].
+
+2-4,7-11 : destruct S1; inversion FS' as [FS''];
+      try destruct (and_bool_prop _ _ FS1) as [FS1_1 FS1_2].
+
+4 : destruct S1_1; inversion FS'' as [FS'''];
+    try destruct (and_bool_prop _ _ FS1_1) as [FS1_1_1 FS1_1_2].
+
+all : unfold ptree_deg; fold ptree_deg;
+      reflexivity.
+Qed.
 
 (* Third, we must prove that formula_sub_ptree does not change the ordinal
 of an ptree. *)
 (* *)
 Lemma formula_sub_ptree_ord_neg :
-  forall (P : ptree) (a : atomic_formula) (F : formula),
-  valid P ->
-  forall (S : subst_ind),
-    ptree_ord (formula_sub_ptree P (neg (atom a)) F S) = ptree_ord P.
+    forall (P : ptree) (a : atomic_formula) (F : formula),
+        valid P ->
+            forall (S : subst_ind),
+                ptree_ord (formula_sub_ptree P (neg (atom a)) F S) = ptree_ord P.
 Proof.
-intros P a F H. induction P; intros S.
-- simpl. case (subst_ind_fit (ptree_formula P) S) eqn:Hfit; auto. simpl.
-  rewrite (formula_sub_ptree_formula_true _ _ _ _ Hfit).
-  apply IHP. inversion H. auto.
-- simpl. case (subst_ind_fit (ptree_formula P) S); auto.
-- simpl. case (subst_ind_fit f S); auto.
-- simpl.
-  destruct S; auto. case (subst_ind_fit f0 S1 && subst_ind_fit f S2); auto.
-- simpl. destruct S; auto. destruct S1; auto.
-  case (subst_ind_fit f S1_1 && subst_ind_fit f1 S1_2 && subst_ind_fit f0 S2);
-  auto.
-- simpl. destruct S; auto. destruct S1; auto.
-  case (subst_ind_fit f0 S1_1 && subst_ind_fit f S1_2 && subst_ind_fit f1 S2);
-  auto.
-- simpl. destruct S; auto. destruct S1; auto. destruct S1_1; auto.
-  case (subst_ind_fit f S1_1_1 && subst_ind_fit f1 S1_1_2 &&
-        subst_ind_fit f0 S1_2 && subst_ind_fit f2 S2); auto.
-- simpl. destruct (subst_ind_fit f S); auto.
-- simpl.
-  destruct S; auto. destruct (subst_ind_fit f S1 && subst_ind_fit f0 S2); auto.
-- simpl.
-  destruct S; auto. destruct (subst_ind_fit f S1 && subst_ind_fit f0 S2); auto.
-- simpl. destruct S; auto.
-- simpl. destruct S; auto. destruct S1; destruct (subst_ind_fit f1 S2); auto.
-- simpl. destruct S; auto.
-- simpl. destruct S; auto.
-  destruct S1; destruct (subst_ind_fit f0 S2) eqn:HS2; auto.
-- simpl. destruct S; auto.
-- simpl.
-  destruct S; auto; destruct S1; auto; destruct (subst_ind_fit f0 S2); auto.
-- simpl. destruct S; auto.
-- simpl.
-  destruct S; auto; destruct S1; auto; destruct (subst_ind_fit f0 S2); auto.
-- simpl. destruct (subst_ind_fit f S); auto.
-- simpl. destruct (subst_ind_fit f0 S); auto.
-- simpl.
-  destruct S; auto. destruct (subst_ind_fit f S1 && subst_ind_fit f1 S2); auto.
+intros P a F PV.
+pose (ptree_formula P) as A.
+induction P; intros S;
+case (subst_ind_fit A S) eqn:FS;
+unfold formula_sub_ptree;
+unfold A in FS;
+try rewrite FS;
+unfold formula_sub_ptree_fit;
+fold formula_sub_ptree_fit;
+try reflexivity.
+
+1 : destruct PV as [ID PV].
+    unfold ptree_formula in *; fold ptree_formula in *.
+    rewrite (formula_sub_ptree_formula_true _ _ _ _ FS).
+    apply (IHP PV).
+
+all : destruct S; inversion FS as [FS'];
+      try destruct (and_bool_prop _ _ FS') as [FS1 FS2].
+
+2-4,7-11 : destruct S1; inversion FS' as [FS''];
+      try destruct (and_bool_prop _ _ FS1) as [FS1_1 FS1_2].
+
+4 : destruct S1_1; inversion FS'' as [FS'''];
+    try destruct (and_bool_prop _ _ FS1_1) as [FS1_1_1 FS1_1_2].
+
+all : unfold ptree_deg; fold ptree_deg;
+      reflexivity.
 Qed.
 
 
-
-
-(* Now we prove that if we have a valid ptree, performing our
-formula substitution on it results in a valid ptree *)
 (* *)
 Lemma formula_sub_valid_neg :
-  forall (P : ptree) (a : atomic_formula) (F : formula),
-    valid P ->
-    PA_omega_axiom (neg (atom a)) = false ->
-    closed F =true ->
-    forall (S : subst_ind),
-      subst_ind_fit (ptree_formula P) S = true ->
-      valid (formula_sub_ptree P (neg (atom a)) F S).
+    forall (P : ptree) (a : atomic_formula) (F : formula),
+      valid P ->
+          correct_a a = true ->
+              closed F = true ->
+                  forall (S : subst_ind),
+                      subst_ind_fit (ptree_formula P) S = true ->
+                          valid (formula_sub_ptree P (neg (atom a)) F S).
 Proof.
-intros P a F.
-induction P; try intros H Ha HF S Hs.
+intros P a F PV Aa CF.
+induction P; intros S FS;
+unfold formula_sub_ptree;
+rewrite FS;
+unfold formula_sub_ptree_fit;
+fold formula_sub_ptree_fit.
 
-- simpl. inversion H as [H1 H2]. inversion Hs. rewrite H3.
-  rewrite formula_sub_ptree_formula_true; auto. split.
-  + rewrite formula_sub_ptree_deg_neg; auto.
-  + apply (IHP H2 Ha HF S H3).
+1 : destruct PV as [ID PV].
+2 : destruct PV as [[IO PV] NO].
+4-9 : destruct PV as [[[PF PV] PD] PO].
+10 : destruct PV as [[[[PF FC] PV] PD] PO].
+11,12 : destruct PV as [[[[[[[P1F P1V] P2F] P2V] P1D] P2D] P1O] P2O].
+13-16 : destruct PV as [[[PF PV] PD] PO].
+19-21 : destruct PV as [[[[[[[P1F P1V] P2F] P2V] P1D] P2D] P1O] P2O].
 
-- simpl. inversion H as [[H1 H2] H3]. inversion Hs. rewrite H4.
-  rewrite formula_sub_ptree_formula_true; auto. split.
-  + rewrite formula_sub_ptree_ord_neg; auto.
-  + auto.
+4-7,9,10,12,14,16,18,21 : destruct S; inversion FS as [FS'];
+                          try destruct (and_bool_prop _ _ FS') as [FS1 FS2].
 
-- simpl. inversion Hs. rewrite H1. simpl.
-  destruct (eq_f f (neg (atom a))) eqn:Hf.
-  + inversion H. apply f_eq_decid in Hf.
-    rewrite Hf in H2. rewrite H2 in Ha. inversion Ha.
-  + inversion H. destruct (axiom_atomic _ H2) as [[a' Ha'] | [a' Ha']].
-    * rewrite Ha'. simpl. auto.
-    * rewrite H2. rewrite Ha'. rewrite Ha' in Hf. inversion Hf.
-      simpl. rewrite H3. rewrite Ha' in H2. auto.
+5-7,9-13 :  destruct S1; inversion FS' as [FS''];
+            try destruct (and_bool_prop _ _ FS1) as [FS1_1 FS1_2].
 
-- simpl. destruct S; inversion Hs. rewrite H1. simpl.
-  inversion H as [[[H2 H3] H4] H5].
-  repeat split; rewrite formula_sub_ptree_formula_true.
-  + rewrite formula_sub_ptree_formula_neg_fit; auto; rewrite H2; simpl; auto.
-    apply and_bool_symm. auto.
-  + rewrite H2. simpl. apply (and_bool_symm _ _ H1).
-  + apply IHP; auto. rewrite H2. simpl. apply (and_bool_symm _ _ H1).
-  + rewrite H2. simpl. apply (and_bool_symm _ _ H1).
-  + rewrite formula_sub_ptree_deg_neg; auto.
-  + rewrite H2. simpl. apply (and_bool_symm _ _ H1).
-  + rewrite formula_sub_ptree_ord_neg; auto.
-  + rewrite H2. simpl. apply (and_bool_symm _ _ H1).
+7 : destruct S1_1; inversion FS'' as [FS'''];
+    try destruct (and_bool_prop _ _ FS1_1) as [FS1_1_1 FS1_1_2].
 
-- simpl. destruct S; try destruct S1; inversion Hs.
-  rewrite H1. simpl. inversion H as [[[H4 H5] H6] H7].
-  destruct (and_bool_prop _ _ H1). clear H1.
-  destruct (and_bool_prop _ _ H0). clear H0.
-  repeat split; rewrite formula_sub_ptree_formula_true.
-  + rewrite formula_sub_ptree_formula_neg_fit; auto; rewrite H4; simpl; auto.
-    rewrite H1, H2, H3. auto.
-  + rewrite H4. simpl. rewrite H1, H2, H3. auto.
-  + apply IHP; auto. rewrite H4. simpl. rewrite H1, H2, H3. auto.
-  + rewrite H4. simpl. rewrite H1, H2, H3. auto.
-  + rewrite formula_sub_ptree_deg_neg; auto.
-  + rewrite H4. simpl. rewrite H1, H2, H3. auto.
-  + rewrite formula_sub_ptree_ord_neg; auto.
-  + rewrite H4. simpl. rewrite H1, H2, H3. auto.
+3 : { unfold valid in *.
+      destruct f.
+      3,4 : inversion PV.
+      1 : unfold formula_sub_ind_fit, eq_f;
+          apply PV.
+      1 : destruct S;
+          unfold formula_sub_ind_fit, eq_f;
+          fold formula_sub_ind_fit eq_f;
+          case (eq_f f (atom a)) eqn:EQ;
+          try apply PV.
+          apply f_eq_decid in EQ.
+          rewrite EQ in *.
+          unfold PA_omega_axiom in PV.
+          pose proof (correct_correctness _ Aa) as Ra.
+          rewrite (incorrect_correctness _ PV) in Ra.
+          inversion Ra. }
 
-- simpl. destruct S; try destruct S1; inversion Hs.
-  rewrite H1. simpl. inversion H as [[[H4 H5] H6] H7].
-  destruct (and_bool_prop _ _ H1). clear H1.
-  destruct (and_bool_prop _ _ H0). clear H0.
-  repeat split; rewrite formula_sub_ptree_formula_true.
-  + rewrite formula_sub_ptree_formula_neg_fit; auto; rewrite H4; simpl; auto.
-    rewrite H1, H2, H3. auto.
-  + rewrite H4. simpl. rewrite H1, H2, H3. auto.
-  + apply IHP; auto. rewrite H4. simpl. rewrite H1, H2, H3. auto.
-  + rewrite H4. simpl. rewrite H1, H2, H3. auto.
-  + rewrite formula_sub_ptree_deg_neg; auto.
-  + rewrite H4. simpl. rewrite H1, H2, H3. auto.
-  + rewrite formula_sub_ptree_ord_neg; auto.
-  + rewrite H4. simpl. rewrite H1, H2, H3. auto.
+16,17 : repeat split;
+        destruct (PV t) as [[[PF PcV] PD] PO];
+        rewrite formula_sub_ptree_formula_true;
+        try rewrite PF;
+        try rewrite formula_sub_ptree_deg_neg;
+        try apply PD;
+        try rewrite formula_sub_ptree_ord_neg;
+        try apply PO;
+        try apply X;
+        try rewrite formula_sub_ptree_formula_neg;
+        try rewrite PF;
+        try apply PV;
+        try rewrite formula_sub_ind_lor;
+        try rewrite (non_target_term_sub _ n (projT1 t));
+        try rewrite non_target_sub;
+        unfold formula_sub_ind;
+        unfold subst_ind_fit; fold subst_ind_fit;
+        try rewrite FS;
+        try rewrite FS1;
+        try rewrite FS2;
+        try rewrite non_target_fit;
+        try reflexivity.
 
-- simpl. destruct S; try destruct S1; try destruct S1_1; inversion Hs.
-  rewrite H1. simpl. inversion H as [[[H5 H6] H7] H8].
-  destruct (and_bool_prop _ _ H1). clear H1.
-  destruct (and_bool_prop _ _ H0). clear H0.
-  destruct (and_bool_prop _ _ H1). clear H1.
-  repeat split; rewrite formula_sub_ptree_formula_true.
-  + rewrite formula_sub_ptree_formula_neg_fit; auto; rewrite H5; simpl; auto.
-    rewrite H0, H2, H3, H4. auto.
-  + rewrite H5. simpl. rewrite H0, H2, H3, H4. auto.
-  + apply IHP; auto. rewrite H5. simpl. rewrite H0, H2, H3, H4. auto.
-  + rewrite H5. simpl. rewrite H0, H2, H3, H4. auto.
-  + rewrite formula_sub_ptree_deg_neg; auto.
-  + rewrite H5. simpl. rewrite H0, H2, H3, H4. auto.
-  + rewrite formula_sub_ptree_ord_neg; auto.
-  + rewrite H5. simpl. rewrite H0, H2, H3, H4. auto.
+all : repeat rewrite formula_sub_ptree_formula_true;
+      unfold ptree_formula in FS; fold ptree_formula in FS;
+      try rewrite PF;
+      try rewrite P1F;
+      try rewrite P2F;
+      repeat split;
+      try rewrite formula_sub_ptree_deg_neg;
+      try apply PD;
+      try apply P1D;
+      try apply P2D;
+      try rewrite formula_sub_ptree_ord_neg;
+      try apply PO;
+      try apply P1O;
+      try apply P2O;
+      try apply IHP;
+      try apply IHP1;
+      try apply IHP2;
+      try rewrite formula_sub_ptree_formula_neg;
+      try apply PV;
+      try apply P1V;
+      try apply P2V;
+      try rewrite PF;
+      try rewrite P1F;
+      try rewrite P2F;
+      try rewrite formula_sub_ind_lor;
+      try rewrite non_target_sub;
+      unfold formula_sub_ind;
+      unfold subst_ind_fit; fold subst_ind_fit;
+      try rewrite FS;
+      try rewrite FS1;
+      try rewrite FS2;
+      try rewrite FS1_1;
+      try rewrite FS1_2;
+      try rewrite FS1_1_1;
+      try rewrite FS1_1_2;
+      try rewrite non_target_fit;
+      unfold "&&";
+      try reflexivity;
+      try apply ID;
+      try apply IO;
+      try apply NO.
 
-- simpl. inversion Hs. rewrite H1. inversion H as [[[H2 H3] H4] H5].
-  repeat split; rewrite formula_sub_ptree_formula_true.
-  + rewrite formula_sub_ptree_formula_neg_fit; auto; rewrite H2; simpl; auto.
-    rewrite H1. auto.
-  + rewrite H2. simpl. rewrite H1. auto.
-  + apply IHP; auto. rewrite H2. simpl. rewrite H1. auto.
-  + rewrite H2. simpl. rewrite H1. auto.
-  + rewrite formula_sub_ptree_deg_neg; auto.
-  + rewrite H2. simpl. rewrite H1. auto.
-  + rewrite formula_sub_ptree_ord_neg; auto.
-  + rewrite H2. simpl. rewrite H1. auto.
-
-- simpl. destruct S; inversion Hs. rewrite H1.
-  inversion H as [[[H2 H3] H4] H5]. destruct (and_bool_prop _ _ H1).
-  repeat split; rewrite formula_sub_ptree_formula_true.
-  + rewrite formula_sub_ptree_formula_neg_fit; auto. rewrite H2. simpl. auto.
-    rewrite H2. simpl. rewrite H0, H6. auto.
-  + rewrite H2. simpl. rewrite H0, H6. auto.
-  + apply IHP; auto. rewrite H2. simpl. rewrite H0, H6. auto.
-  + rewrite H2. simpl. rewrite H0, H6. auto.
-  + rewrite formula_sub_ptree_deg_neg; auto.
-  + rewrite H2. simpl. rewrite H0, H6. auto.
-  + rewrite formula_sub_ptree_ord_neg; auto.
-  + rewrite H2. simpl. rewrite H0, H6. auto.
-
-- simpl. destruct S; inversion Hs. rewrite H1. simpl.
-  inversion H as [[[[H2 H3] H4] H5] H6]. destruct (and_bool_prop _ _ H1).
-  repeat split.
-  + rewrite formula_sub_ptree_formula_true.
-    * rewrite formula_sub_ptree_formula_neg_fit; auto; rewrite H2; auto.
-    * rewrite H2. auto.
-  + apply formula_sub_ind_fit_closed; auto.
-  + rewrite formula_sub_ptree_formula_true.
-    * apply IHP; auto. rewrite H2. auto.
-    * rewrite H2. auto.
-  + rewrite formula_sub_ptree_formula_true.
-    * rewrite formula_sub_ptree_deg_neg; auto.
-    * rewrite H2. auto.
-  + rewrite formula_sub_ptree_formula_true.
-    * rewrite formula_sub_ptree_ord_neg; auto.
-    * rewrite H2. auto.
-
-- simpl. destruct S; apply H.
-
-- simpl. destruct S; try apply H.
-  destruct S1; inversion Hs; rewrite H1; simpl.
-  + destruct H as [[[[[[[H2 H3] H4] H5] H6] H7] H8] H9].
-    repeat split; rewrite formula_sub_ptree_formula_true.
-    * rewrite formula_sub_ptree_formula_neg_fit; auto; rewrite H2; simpl; auto.
-      case (eq_f f (atom a)); auto.
-    * rewrite H2. simpl. apply H1.
-    * apply IHP1; auto. rewrite H2. apply H1.
-    * rewrite H2. simpl. apply H1.
-    * rewrite formula_sub_ptree_formula_neg_fit; auto; rewrite H4; simpl; auto.
-      case (eq_f f0 (atom a)); auto.
-    * rewrite H4. simpl. apply H1.
-    * apply IHP2; auto. rewrite H4. simpl. apply H1.
-    * rewrite H4. simpl. apply H1.
-    * rewrite formula_sub_ptree_deg_neg; auto.
-    * rewrite H2. simpl. apply H1.
-    * rewrite formula_sub_ptree_deg_neg; auto.
-    * rewrite H4. simpl. apply H1.
-    * rewrite formula_sub_ptree_ord_neg; auto.
-    * rewrite H2. simpl. apply H1.
-    * rewrite formula_sub_ptree_ord_neg; auto.
-    * rewrite H4. simpl. apply H1.
-  + destruct H as [[[[[[[H2 H3] H4] H5] H6] H7] H8] H9].
-    repeat split; rewrite formula_sub_ptree_formula_true.
-    * rewrite formula_sub_ptree_formula_neg_fit; auto; rewrite H2; simpl; auto.
-      case (eq_f f (atom a)); auto.
-    * rewrite H2. simpl. apply H1.
-    * apply IHP1; auto. rewrite H2. apply H1.
-    * rewrite H2. simpl. apply H1.
-    * rewrite formula_sub_ptree_formula_neg_fit; auto; rewrite H4; simpl; auto.
-      case (eq_f f0 (atom a)); auto.
-    * rewrite H4. simpl. apply H1.
-    * apply IHP2; auto. rewrite H4. simpl. apply H1.
-    * rewrite H4. simpl. apply H1.
-    * rewrite formula_sub_ptree_deg_neg; auto.
-    * rewrite H2. simpl. apply H1.
-    * rewrite formula_sub_ptree_deg_neg; auto.
-    * rewrite H4. simpl. apply H1.
-    * rewrite formula_sub_ptree_ord_neg; auto.
-    * rewrite H2. simpl. apply H1.
-    * rewrite formula_sub_ptree_ord_neg; auto.
-    * rewrite H4. simpl. apply H1.
-
-- simpl. destruct S; auto.
-
-- simpl. inversion H as [[[H2 H3] H4] H5]. destruct S; auto.
-  destruct S1; auto.
-  + inversion Hs. rewrite H1. simpl.
-    repeat split; rewrite formula_sub_ptree_formula_true.
-    * rewrite formula_sub_ptree_formula_neg_fit; auto; rewrite H2; simpl.
-      { rewrite non_target_sub'. auto. }
-      { rewrite non_target_fit, H1. auto. }
-    * rewrite H2. simpl. rewrite non_target_fit, H1. auto.
-    * apply IHP; auto. rewrite H2. simpl. rewrite non_target_fit, H1. auto.
-    * rewrite H2. simpl. rewrite non_target_fit, H1. auto.
-    * rewrite formula_sub_ptree_deg_neg; auto.
-    * rewrite H2. simpl. rewrite non_target_fit, H1. auto.
-    * rewrite formula_sub_ptree_ord_neg; auto.
-    * rewrite H2. simpl. rewrite non_target_fit, H1. auto.
-  + inversion Hs. rewrite H1. simpl.
-    repeat split; rewrite formula_sub_ptree_formula_true.
-    * rewrite formula_sub_ptree_formula_neg_fit; auto; rewrite H2; simpl.
-      { rewrite non_target_sub'. auto. }
-      { rewrite non_target_fit, H1. auto. }
-    * rewrite H2. simpl. rewrite non_target_fit, H1. auto.
-    * apply IHP; auto. rewrite H2. simpl. rewrite non_target_fit, H1. auto.
-    * rewrite H2. simpl. rewrite non_target_fit, H1. auto.
-    * rewrite formula_sub_ptree_deg_neg; auto.
-    * rewrite H2. simpl. rewrite non_target_fit, H1. auto.
-    * rewrite formula_sub_ptree_ord_neg; auto.
-    * rewrite H2. simpl. rewrite non_target_fit, H1. auto.
-
-- simpl. destruct S; auto.
-
-- simpl. destruct S; auto. inversion H as [[[H0 H1] H2] H3].
-  destruct S1; inversion Hs; rewrite H5; simpl.
-  + repeat split; auto; rewrite formula_sub_ptree_formula_true.
-    * rewrite formula_sub_ptree_formula_neg_fit; auto; rewrite H0; simpl; auto.
-      case (eq_f (substitution f n (projT1 c)) (atom a)); auto.
-    * rewrite H0. simpl. apply H5.
-    * apply IHP; auto. rewrite H0. simpl. apply H5.
-    * rewrite H0. simpl. apply H5.
-    * rewrite formula_sub_ptree_deg_neg; auto.
-    * rewrite H0. simpl. auto.
-    * rewrite formula_sub_ptree_ord_neg; auto.
-    * rewrite H0. simpl. auto.
-  + repeat split; auto; rewrite formula_sub_ptree_formula_true.
-    * rewrite formula_sub_ptree_formula_neg_fit; auto; rewrite H0; simpl; auto.
-      case (eq_f (substitution f n (projT1 c)) (atom a)); auto.
-    * rewrite H0. simpl. apply H5.
-    * apply IHP; auto. rewrite H0. simpl. apply H5.
-    * rewrite H0. simpl. apply H5.
-    * rewrite formula_sub_ptree_deg_neg; auto.
-    * rewrite H0. simpl. auto.
-    * rewrite formula_sub_ptree_ord_neg; auto.
-    * rewrite H0. simpl. auto.
-
-- intros. simpl. destruct S; auto.
-
-- rename H into H0. rename X into H. rename Hs into H1.
-  simpl. destruct S; auto. destruct S1; inversion H1.
-  + rewrite H3. simpl. intros. destruct (valid_w_rule_ad _ _ _ _ _ _ H0 t) as [[[H4 H5] H6] H7].
-    repeat split; rewrite formula_sub_ptree_formula_true.
-    * rewrite formula_sub_ptree_formula_neg_fit; auto; rewrite H4; simpl;
-      rewrite (non_target_term_sub f n (projT1 t)).
-      { rewrite non_target_sub'. auto. }
-      { rewrite non_target_fit. auto. }
-    * rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
-      rewrite non_target_fit. apply H3.
-    * apply H; auto. rewrite H4. simpl.
-      rewrite (non_target_term_sub f n (projT1 t)).
-      rewrite non_target_fit. apply H3.
-    * rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
-      rewrite non_target_fit. apply H3.
-    * rewrite formula_sub_ptree_deg_neg; auto.
-    * rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
-        rewrite non_target_fit. rewrite H3. auto.
-    * rewrite formula_sub_ptree_ord_neg; auto.
-    * rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
-      rewrite non_target_fit. rewrite H3. auto.
-  + rewrite H3. simpl. intros. destruct (valid_w_rule_ad _ _ _ _ _ _ H0 t) as [[[H4 H5] H6] H7].
-    repeat split; rewrite formula_sub_ptree_formula_true.
-    * rewrite formula_sub_ptree_formula_neg_fit; auto; rewrite H4; simpl;
-      rewrite (non_target_term_sub f n (projT1 t)).
-      { rewrite non_target_sub'. auto. }
-      { rewrite non_target_fit. auto. }
-    * rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
-      rewrite non_target_fit. apply H3.
-    * apply H; auto. rewrite H4. simpl.
-      rewrite (non_target_term_sub f n (projT1 t)).
-      rewrite non_target_fit. apply H3.
-    * rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
-      rewrite non_target_fit. apply H3.
-    * rewrite formula_sub_ptree_deg_neg; auto.
-    * rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
-        rewrite non_target_fit. rewrite H3. auto.
-    * rewrite formula_sub_ptree_ord_neg; auto.
-    * rewrite H4. simpl. rewrite (non_target_term_sub f n (projT1 t)).
-      rewrite non_target_fit. rewrite H3. auto.
-- clear IHP2. simpl. destruct (subst_ind_fit f S) eqn:Heq; auto. simpl.
-  inversion H as [[[[[[[H1 H2] H3] H4] H5] H6] H7] H8].
-  repeat split; auto; rewrite formula_sub_ptree_formula_true.
-  + rewrite formula_sub_ptree_formula_neg_fit; auto; rewrite H1; simpl.
-    { rewrite non_target_sub'. auto. }
-    { rewrite non_target_fit, Heq. auto. }
-  + rewrite H1. simpl. rewrite Heq, non_target_fit. auto.
-  + apply IHP1; auto. rewrite H1. simpl. rewrite Heq, non_target_fit. auto.
-  + rewrite H1. simpl. rewrite Heq, non_target_fit. auto.
-  + rewrite formula_sub_ptree_deg_neg; auto.
-  + rewrite H1. simpl. rewrite Heq, non_target_fit. auto.
-  + rewrite formula_sub_ptree_ord_neg; auto.
-  + rewrite H1. simpl. rewrite Heq, non_target_fit. auto.
-
-- clear IHP1. simpl. destruct (subst_ind_fit f0 S) eqn:Heq; auto. simpl.
-  inversion H as [[[[[[[H1 H2] H3] H4] H5] H6] H7] H8].
-  repeat split; auto; rewrite formula_sub_ptree_formula_true.
-  + rewrite formula_sub_ptree_formula_neg_fit; auto; rewrite H3; simpl; auto.
-    case (eq_f f (atom a)); auto.
-  + rewrite H3. simpl. auto.
-  + apply IHP2; auto. rewrite H3. simpl. auto.
-  + rewrite H3. simpl. auto.
-  + rewrite formula_sub_ptree_deg_neg; auto.
-  + rewrite H3. simpl. auto.
-  + rewrite formula_sub_ptree_ord_neg; auto.
-  + rewrite H3. simpl. auto.
-
-- simpl. inversion H as [[[[[[[H1 H2] H3] H4] H5] H6] H7] H8].
-  destruct S; try inversion Hs. rewrite H9.
-  destruct (and_bool_prop _ _ H9) as [H10 H11].
-  simpl. repeat split; rewrite formula_sub_ptree_formula_true.
-  + rewrite formula_sub_ptree_formula_neg_fit; auto; rewrite H1; simpl.
-    { rewrite non_target_sub'. auto. }
-    { rewrite non_target_fit, H10. auto. }
-  + rewrite H1. simpl. rewrite H10, non_target_fit. auto.
-  + apply IHP1; auto. rewrite H1. simpl. rewrite H10, non_target_fit. auto.
-  + rewrite H1. simpl. rewrite H10, non_target_fit. auto.
-  + rewrite formula_sub_ptree_formula_neg_fit; auto; rewrite H3; simpl; auto.
-    case (eq_f f0 (atom a)); auto.
-  + rewrite H3. simpl. auto.
-  + apply IHP2; auto. rewrite H3. simpl. auto.
-  + rewrite H3. simpl. auto.
-  + rewrite formula_sub_ptree_deg_neg; auto.
-  + rewrite H1. simpl. rewrite H10, non_target_fit. auto.
-  + rewrite formula_sub_ptree_deg_neg; auto.
-  + rewrite H3. simpl. auto.
-  + rewrite formula_sub_ptree_ord_neg; auto.
-  + rewrite H1. simpl. rewrite H10, non_target_fit. auto.
-  + rewrite formula_sub_ptree_ord_neg; auto.
-  + rewrite H3. simpl. auto.
+all : refine (formula_sub_ind_fit_closed _ _ _ FC _ _ FS1);
+      intros Caa;
+      apply CF.
 Qed.
 
 
-(* We finally show that if the C \/ (neg (atom a)) is provable
-where 'a' is correct, then C \/ C is provable. *)
+
+(* 
 (* *)
 Lemma neg_sub_valid :
   forall (D : formula) (a : atomic_formula) (d : nat) (alpha : ord),
@@ -1325,4 +846,4 @@ unfold P_proves. repeat split.
 - rewrite formula_sub_ptree_deg_neg; auto.
 - rewrite formula_sub_ptree_ord_neg; auto.
 Qed.
-
+*)
