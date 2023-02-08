@@ -233,7 +233,7 @@ Lemma provable_not_danger :
 Proof.
 intros A d alpha X.
 case (dangerous_disjunct A) eqn:Y.
-- destruct (cut_elim_aux3 _ _ _ X) as [beta [P HP]].
+- destruct (cut_elim _ _ _ X) as [beta [P HP]].
   pose proof (danger_not_deg_0 P A 0 beta HP Y) as Deg.
   inversion Deg.
 - reflexivity.

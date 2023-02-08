@@ -2700,6 +2700,21 @@ refine (ord_trans_inv _ _ _ _  (ord_add_le_dub_max _ _ _ _ )); auto. rewrite ord
 - apply ord_max_nf; auto.
 Qed.
 
+Lemma exp_succ_lt_add :
+    forall alpha beta,
+        nf alpha ->
+            nf beta ->
+                ord_ltb (ord_2_exp (ord_succ (ord_max alpha beta))) (ord_add (ord_2_exp alpha) (ord_2_exp beta)) = false.
+Proof.
+intros alpha beta NA NB.
+rewrite (ord_2_exp_succ_mult _ (ord_max_nf _ _ NA NB)).
+rewrite <- (ord_max_exp_equiv _ _ NA NB).
+refine (ord_trans_inv _ _ _ _  (ord_add_le_dub_max _ _ (nf_2_exp _ NA) (nf_2_exp _ NB))); auto.
+rewrite (ord_max_mult_right_2 _ _ (nf_2_exp _ NA) (nf_2_exp _ NB)).
+apply ord_max_split_false;
+apply ord_ltb_irrefl.
+Qed.
+
 Lemma plus_2_ge_exp_succ_zero : forall alpha, nf alpha -> ord_ltb (ord_succ (ord_succ (ord_2_exp alpha))) (ord_succ (ord_2_exp (ord_succ alpha))) = false -> alpha = Zero.
 Proof.
 intros. destruct alpha. auto. pose proof (ord_succ_lt_exp_succ _ H (zero_lt _ _ _)). apply ord_lt_succ in H1. apply ord_lt_ltb in H1. rewrite H1 in H0. inversion H0.
@@ -2893,9 +2908,27 @@ intros. rewrite <- ord_2_exp_succ_mult. rewrite <- ord_max_succ_succ. pose proof
 - apply ord_max_nf; auto.
 Qed.
 
-Lemma plus_two_lt_times_four : forall alpha, nf alpha -> Zero < alpha -> (ord_succ (ord_succ (ord_2_exp alpha))) < (ord_2_exp (ord_succ (ord_succ alpha))).
+Lemma plus_two_lt_times_four_aux:
+    forall alpha,
+        nf alpha ->
+            Zero < alpha ->
+                (ord_succ (ord_succ (ord_2_exp alpha))) < (ord_2_exp (ord_succ (ord_succ alpha))).
 Proof.
 intros. refine (lt_trans _ _ _ _ (ord_succ_lt_exp_succ _ _ _)); auto. apply ord_lt_succ. apply ord_succ_lt_exp_succ; auto. apply ord_succ_nf. auto. apply (lt_trans _ _ _ H0). apply ord_succ_monot.
+Qed.
+
+Lemma plus_two_lt_times_four:
+    forall alpha,
+        nf alpha ->
+            (ord_succ (ord_succ (ord_2_exp alpha))) < (ord_2_exp (ord_succ (ord_succ alpha))).
+Proof.
+intros.
+destruct alpha.
+unfold ord_succ, ord_2_exp, nat_ord, pow, mul, plus.
+apply coeff_lt.
+lia.
+apply (plus_two_lt_times_four_aux _ H).
+apply zero_lt.
 Qed.
 
 Lemma ord_max_self : forall (alpha : ord), alpha = ord_max alpha alpha.
