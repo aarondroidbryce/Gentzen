@@ -41,17 +41,20 @@ Qed.
 
 Lemma nat_ltb_irrefl : forall (n : nat), ltb n n = false.
 Proof.
-intros n.
 induction n.
-- auto.
-- rewrite <- IHn. auto.
+- unfold ltb.
+  reflexivity.
+- rewrite <- IHn.
+  unfold ltb.
+  reflexivity.
 Qed.
 
 Lemma succ_not_eq : forall (n : nat), nat_eqb n (S n) = false.
 Proof.
-intros. induction n.
-- auto.
-- rewrite <- IHn. auto.
+induction n.
+- reflexivity.
+- rewrite <- IHn.
+  reflexivity.
 Qed.
 
 Lemma nat_ltb_lt :

@@ -543,7 +543,7 @@ fold ptree_deg ptree_ord ptree_formula in *.
       lia.
 1 : { destruct PV as [[IO PV] NO].
       destruct PO'.
-      apply zero_minimal in IO.
+      exfalso.
       inversion IO. }
 
 7-18 :  try pose proof (ord_succ_non_Zero o) as NZ1;
