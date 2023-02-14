@@ -14,10 +14,6 @@ From Systems Require Import definitions.
 From Systems Require Import fol.
 From Systems Require Import PA_omega.
 
-Notation "b1 && b2" := (andb b1 b2).
-Notation "b1 || b2" := (orb b1 b2).
-Notation eq_nat := Nat.eqb.
-
 Definition impl (A B : formula) := (lor (neg A) B).
 Notation "A1 ~> A2" := (impl A1 A2) (at level 60).
 Notation "t # s" := (atom (equ t s)) (at level 80).
@@ -159,7 +155,6 @@ try rewrite IHm;
 unfold "&&", "~>", closed; fold closed;
 rewrite succ_repr;
 repeat rewrite (closed_univ_sub_repr _ _ CA _);
-unfold "&&";
 reflexivity.
 Qed.
 
@@ -187,14 +182,14 @@ induction (value c).
 - assert ((ord_add (nat_ord (S (num_conn A + num_conn A))) (nat_ord (3 * S (S n0)))) = (ord_succ (ord_max (ord_succ (ord_succ (ord_add (nat_ord (S (num_conn A + num_conn A))) (nat_ord (3 * (S (n0))))))) (ord_succ (ord_succ (nat_ord (num_conn A + num_conn A))))))) as EQ.
   { repeat rewrite <- ord_add_nat.
     repeat rewrite ord_max_succ_succ.
-    rewrite ord_max_lem2.
+    rewrite ord_max_ltb_not_l.
     { repeat rewrite ord_succ_nat.
       unfold mul.
       repeat rewrite plus_n_0.
       repeat rewrite plus_assoc.
       repeat rewrite <- plus_n_Sm.
       reflexivity. }
-    { apply ltb_asymm.
+    { apply ord_ltb_asymm.
       apply ord_lt_ltb.
       apply nat_ord_lt.
       lia. } }
@@ -238,7 +233,6 @@ induction (value c).
         --  unfold closed; fold closed.
             rewrite (ind_chain_closed _ _ _ CA).
             rewrite (closed_univ_sub_repr _ _ CA).
-            unfold "&&".
             reflexivity.
         --  rewrite <- (num_conn_sub A n (represent (S (S n0)))).
             apply LEM.
@@ -254,9 +248,8 @@ intros A n c LIST.
 apply inductive_implication_theorem.
 unfold closed; fold closed.
 rewrite LIST.
-rewrite eq_nat_refl.
-rewrite eq_list_refl.
-unfold "&&".
+rewrite nat_eqb_refl.
+rewrite list_eqb_refl.
 destruct (closed A);
 reflexivity.
 Qed.
@@ -392,8 +385,8 @@ destruct (value c) eqn:V.
           unfold concat.
           unfold remove_dups.
           unfold remove.
-          rewrite eq_nat_refl.
-          apply eq_list_refl.
+          rewrite nat_eqb_refl.
+          apply list_eqb_refl.
     * apply exchange1.
       apply (ord_incr _ _ (ord_succ (nat_ord (num_conn A + num_conn A)))).
       --  rewrite <- (num_conn_sub _ n zero).
@@ -403,10 +396,10 @@ destruct (value c) eqn:V.
           ++  repeat rewrite ord_succ_nat.
               apply nat_ord_lt.
               lia.
-          ++  repeat apply ord_succ_nf.
+          ++  repeat apply nf_nf_succ.
               apply nf_nat.
       --  refine (nf_add _ _ _ (nf_nat _)).
-          repeat apply ord_succ_nf.
+          repeat apply nf_nf_succ.
           apply nf_nat. 
   + unfold nat_ord.
     unfold ord_succ.
@@ -430,19 +423,18 @@ destruct (value c) eqn:V.
     * unfold concat.
       unfold remove_dups.
       unfold remove.
-      rewrite eq_nat_refl.
-      rewrite eq_list_refl.
-      unfold "&&".
+      rewrite nat_eqb_refl.
+      rewrite list_eqb_refl.
       case (closed A);
       case (closed (substitution A n (succ (var n))));
       reflexivity.
     * unfold member.
-      rewrite eq_nat_refl.
+      rewrite nat_eqb_refl.
       reflexivity.
   + rewrite <- ord_add_succ_nat_succ_add.
     * repeat rewrite <- ord_add_nat.
       rewrite ord_succ_nat.
-      apply nat_lt_omega.
+      apply head_lt.
       apply zero_lt.
     * apply nf_add;
       apply nf_nat.
@@ -473,7 +465,6 @@ destruct (value c) eqn:V.
   + unfold closed.
     fold closed.
     rewrite CA.
-    unfold "&&".
     reflexivity.
   + apply exchange1.
     apply Y1.
@@ -484,7 +475,6 @@ destruct (value c) eqn:V.
   + unfold closed.
     fold closed.
     rewrite CA.
-    unfold "&&".
     reflexivity.
   + apply exchange1.
     apply (ord_incr _ _ _ _ (LEM _ CA)).
@@ -654,7 +644,7 @@ intros c; unfold "~>" in *.
       unfold substitution.
       unfold substitution_a.
       unfold substitution_t; fold substitution_t.
-      unfold eq_nat.
+      unfold nat_eqb.
       rewrite closure_type_equiv.
       rewrite closed_subst_eq_t. reflexivity.
       apply closure_closed_t. }
@@ -663,7 +653,7 @@ intros c; unfold "~>" in *.
       unfold substitution.
       unfold substitution_a.
       unfold substitution_t; fold substitution_t.
-      unfold eq_nat.
+      unfold nat_eqb.
       rewrite closure_type_equiv.
       rewrite closed_subst_eq_t. reflexivity.
       apply closure_closed_t. }
@@ -679,8 +669,8 @@ intros c; unfold "~>" in *.
           ++  inversion Xb.
           ++  destruct (eval (closure_t t c)).
               **  inversion Xa.
-              **  case (eq_nat (S n0) (S n)) eqn:X1.
-                  { rewrite eq_nat_symm in X1. rewrite X1. reflexivity. }
+              **  case (nat_eqb (S n0) (S n)) eqn:X1.
+                  { rewrite nat_eqb_symm in X1. rewrite X1. reflexivity. }
                   { inversion X. }
       --  unfold F.
           unfold free_list.
@@ -696,7 +686,6 @@ intros c; unfold "~>" in *.
     apply weakening.
     * unfold closed; fold closed.
       repeat rewrite closure_closed.
-      unfold "&&".
       reflexivity.
     * apply (ord_incr _ _ Zero).
       --  apply axiom.
@@ -704,7 +693,6 @@ intros c; unfold "~>" in *.
           destruct (correctness_decid (equ (closure_t t c) (closure_t s c))) as [X1 | X1].
           ++  unfold closed_a.
               repeat rewrite closure_closed_t.
-              unfold "&&".
               reflexivity.
           ++  rewrite X1 in X.
               inversion X.
@@ -712,7 +700,7 @@ intros c; unfold "~>" in *.
               apply X1.
       --  rewrite ord_succ_nat.
           apply zero_lt.
-      --  apply ord_succ_nf.
+      --  apply nf_nf_succ.
           apply nf_nat.
 
 - rewrite closure_lor.
@@ -732,7 +720,7 @@ intros c; unfold "~>" in *.
       --  inversion Xb.
       --  destruct (eval (closure_t t c)).
           ++  inversion Xa.
-          ++  unfold eq_nat in *; fold eq_nat in *.
+          ++  unfold nat_eqb in *; fold nat_eqb in *.
               apply X.
   + apply exchange1.
     apply weakening.
@@ -742,7 +730,6 @@ intros c; unfold "~>" in *.
       destruct (correctness_decid (equ (closure_t t c) (closure_t s c))) as [X1 | X1].
       --  unfold closed_a.
           repeat rewrite closure_closed_t.
-          unfold "&&".
           reflexivity.
       --  rewrite X1 in X.
           inversion X.
@@ -758,7 +745,6 @@ intros c; unfold "~>" in *.
   + unfold closed_a.
     rewrite closure_closed_t.
     unfold closed_t.
-    unfold "&&".
     reflexivity.
   + unfold correct_a in X.
     unfold correctness in X.
@@ -785,7 +771,7 @@ intros c; unfold "~>" in *.
       --  inversion Xb.
       --  destruct (eval (closure_t t c)).
           ++  inversion Xa.
-          ++  unfold eq_nat in *; fold eq_nat in *.
+          ++  unfold nat_eqb in *; fold nat_eqb in *.
               apply X.
   + apply exchange1.
     apply weakening.
@@ -795,7 +781,6 @@ intros c; unfold "~>" in *.
       destruct (correctness_decid (equ (closure_t t c) (closure_t s c))) as [X1 | X1].
       --  unfold closed_a.
           repeat rewrite closure_closed_t.
-          unfold "&&".
           reflexivity.
       --  rewrite X1 in X.
           inversion X.
@@ -819,7 +804,6 @@ intros c; unfold "~>" in *.
   + unfold closed_a.
     unfold closed_t; fold closed_t.
     repeat rewrite closure_closed_t.
-    unfold "&&".
     reflexivity.
   + apply X.
   + unfold incorrect_a in X.
@@ -827,8 +811,8 @@ intros c; unfold "~>" in *.
     unfold eval in X; fold eval in X.
     destruct (eval (closure_t t c)).
     * inversion X.
-    * rewrite plus_n_0 in X.
-      rewrite eq_nat_refl in X.
+    * rewrite <- plus_n_O in X.
+      rewrite nat_eqb_refl in X.
       inversion X.
 
 - rewrite closure_type_equiv.
@@ -841,7 +825,6 @@ intros c; unfold "~>" in *.
   + unfold closed_a.
     unfold closed_t; fold closed_t.
     repeat rewrite closure_closed_t.
-    unfold "&&".
     reflexivity.
   + apply X.
   + unfold incorrect_a in X.
@@ -852,7 +835,7 @@ intros c; unfold "~>" in *.
     * destruct (eval (closure_t s c)).
       --  inversion X.
       --  rewrite <- plus_n_Sm in X.
-          rewrite eq_nat_refl in X.
+          rewrite nat_eqb_refl in X.
           inversion X.
 
 - rewrite closure_type_equiv.
@@ -864,7 +847,6 @@ intros c; unfold "~>" in *.
   + unfold closed_a.
     unfold closed_t; fold closed_t.
     repeat rewrite closure_closed_t.
-    unfold "&&".
     reflexivity.
   + apply X.
   + unfold incorrect_a in X.
@@ -872,8 +854,8 @@ intros c; unfold "~>" in *.
     unfold eval in X; fold eval in X.
     destruct (eval (closure_t t c)).
     * inversion X.
-    * rewrite mult_0_r in X.
-      rewrite eq_nat_refl in X.
+    * rewrite <- mult_n_O in X.
+      rewrite nat_eqb_refl in X.
       inversion X.
 
 - rewrite closure_type_equiv.
@@ -886,7 +868,6 @@ intros c; unfold "~>" in *.
   + unfold closed_a.
     unfold closed_t; fold closed_t.
     repeat rewrite closure_closed_t.
-    unfold "&&".
     reflexivity.
   + apply X.
   + unfold incorrect_a in X.
@@ -897,7 +878,7 @@ intros c; unfold "~>" in *.
     * destruct (eval (closure_t s c)).
       --  inversion X.
       --  rewrite mult_n_Sm in X.
-          rewrite eq_nat_refl in X.
+          rewrite nat_eqb_refl in X.
           inversion X.
   
 - repeat rewrite closure_lor.
@@ -928,9 +909,9 @@ intros c; unfold "~>" in *.
     * lia.
     * apply ord_lt_succ.
       rewrite <- ord_add_nat.
-      apply nat_lt_omega.
+      apply head_lt.
       apply zero_lt.
-    * apply ord_succ_nf.
+    * apply nf_nf_succ.
       apply single_nf.
       apply nf_nat.
   + assert (free_list (closure_type A c (free_list (univ n A))) = [n]) as HL.
@@ -956,15 +937,16 @@ intros c; unfold "~>" in *.
         unfold num_conn; fold num_conn.
         rewrite num_conn_sub.
         rewrite <- num_conn_closure_eq_list.
-        rewrite plus_n_1.
+        rewrite <- plus_n_Sm.
+        rewrite <- plus_n_O.
         reflexivity. }
     assert ((ord_max (cons (nat_ord 1) 0 Zero) (ord_succ (nat_ord (num_conn (closure_type A c (free_list (univ n A))) + num_conn (closure_type A c (free_list (univ n A))))))) = (cons (nat_ord 1) 0 Zero)) as Z3.
-    { rewrite ord_max_lem2.
+    { rewrite ord_max_ltb_not_l.
       { reflexivity. }
-      { apply ltb_asymm.
+      { apply ord_ltb_asymm.
         rewrite ord_succ_nat.
         apply ord_lt_ltb.
-        apply nat_lt_omega.
+        apply head_lt.
         apply zero_lt. } }
     destruct Z1,Z2,Z3.
     pose proof (induction_single_aux _ _ (closing m Hm) HL) as Y1.
@@ -999,14 +981,14 @@ unfold num_conn; fold num_conn.
   apply I_FOL3.
 
 - rename e into Ht.
-  case (eq_nat n0 n) eqn:X.
-  + apply nat_eq_decid in X.
+  case (nat_eqb n0 n) eqn:X.
+  + apply nat_eqb_eq in X.
     destruct X.
     rewrite closed_subst_eq_aux.
     apply (I_FOL4 _ _ _ Ht).
     rewrite (subst_remove _ _ _ Ht).
     apply remove_not_member.
-  + rewrite eq_nat_symm in X.
+  + rewrite nat_eqb_symm in X.
     rewrite (substitution_order _ _ _ _ _ Ht HC X).
     rewrite num_conn_sub.
     rewrite <- (num_conn_sub A n c).
@@ -1014,8 +996,8 @@ unfold num_conn; fold num_conn.
     apply (I_FOL4 _ _ _ Ht).
 
 - rename e into LIST.
-  case (eq_nat n0 n) eqn:X.
-  + apply nat_eq_decid in X.
+  case (nat_eqb n0 n) eqn:X.
+  + apply nat_eqb_eq in X.
     destruct X.
     rewrite (closed_subst_eq_aux _ _ _ LIST). 
     apply (I_FOL5 _ _ _ LIST).
@@ -1030,8 +1012,8 @@ unfold num_conn; fold num_conn.
   + apply IHPeano_Theorems_Implication1.
   + apply IHPeano_Theorems_Implication2.
   
-- case (eq_nat n0 n) eqn:X.
-  + apply nat_eq_decid in X.
+- case (nat_eqb n0 n) eqn:X.
+  + apply nat_eqb_eq in X.
     destruct X.
     apply (I_UG _ _ _ _ H0 p).
   + apply (I_UG _ _ _ _ IHPeano_Theorems_Implication).
@@ -1062,21 +1044,21 @@ unfold num_conn; fold num_conn.
 
 - apply I_mlS.
 
-- case (eq_nat n0 n) eqn:X.
-  + apply nat_eq_decid in X.
+- case (nat_eqb n0 n) eqn:X.
+  + apply nat_eqb_eq in X.
     destruct X.
     rewrite closed_subst_eq_aux.
     * apply I_induct.
     * rewrite (subst_remove _ _ _ (repr_closed 0)).
       apply remove_not_member.
-  + rewrite eq_nat_symm in X.
+  + rewrite nat_eqb_symm in X.
     rewrite (substitution_order _ _ _ _ _ (repr_closed 0) HC X).
     rewrite (weak_substitution_order _ _ _ (succ (var n0))).
     * rewrite <- (num_conn_sub A n c).
       apply I_induct.
     * unfold free_list_t.
       unfold member.
-      rewrite eq_nat_symm in X.
+      rewrite nat_eqb_symm in X.
       rewrite X.
       reflexivity.
     * rewrite (closed_free_list_t _ HC).
@@ -1136,11 +1118,11 @@ intros A T. induction T.
   apply I_UG; intros;
     unfold substitution;
     fold substitution;
-    unfold eq_nat;
+    unfold nat_eqb;
     apply I_UG; intros;
       unfold substitution;
       fold substitution;
-      unfold eq_nat;
+      unfold nat_eqb;
       apply I_UG; intros;
   apply I_equ_trans.
 
@@ -1149,11 +1131,11 @@ intros A T. induction T.
   apply I_UG; intros;
     unfold substitution;
     fold substitution;
-    unfold eq_nat;
+    unfold nat_eqb;
     apply I_UG; intros;
       unfold substitution;
       fold substitution;
-      unfold eq_nat;
+      unfold nat_eqb;
   apply I_equ_succ.
 
 - exists 0.
@@ -1161,7 +1143,7 @@ intros A T. induction T.
   apply I_UG; intros;
     unfold substitution;
     fold substitution;
-    unfold eq_nat;
+    unfold nat_eqb;
   apply I_non_zero.
 
 - exists 0.
@@ -1169,11 +1151,11 @@ intros A T. induction T.
   apply I_UG; intros;
     unfold substitution;
     fold substitution;
-    unfold eq_nat;
+    unfold nat_eqb;
     apply I_UG; intros;
       unfold substitution;
       fold substitution;
-      unfold eq_nat;
+      unfold nat_eqb;
   apply I_succ_equ.
 
 - exists 0.
@@ -1181,7 +1163,7 @@ intros A T. induction T.
   apply I_UG; intros;
     unfold substitution;
     fold substitution;
-    unfold eq_nat;
+    unfold nat_eqb;
   apply I_pl0.
 
 - exists 0.
@@ -1189,11 +1171,11 @@ intros A T. induction T.
   apply I_UG; intros;
     unfold substitution;
     fold substitution;
-    unfold eq_nat;
+    unfold nat_eqb;
     apply I_UG; intros;
       unfold substitution;
       fold substitution;
-      unfold eq_nat;
+      unfold nat_eqb;
   apply I_plS.
 
 - exists 0.
@@ -1201,7 +1183,7 @@ intros A T. induction T.
   apply I_UG; intros;
     unfold substitution;
     fold substitution;
-    unfold eq_nat;
+    unfold nat_eqb;
   apply I_ml0.
 
 - exists 0.
@@ -1209,11 +1191,11 @@ intros A T. induction T.
   apply I_UG; intros;
     unfold substitution;
     fold substitution;
-    unfold eq_nat;
+    unfold nat_eqb;
     apply I_UG; intros;
       unfold substitution;
       fold substitution;
-      unfold eq_nat;
+      unfold nat_eqb;
   apply I_mlS.
 
 - exists (num_conn A + 1).

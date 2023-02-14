@@ -128,14 +128,12 @@ match n with
 | S n' => succ (represent n')
 end.
 
-(*
 Lemma succ_repr : forall (n : nat), succ (represent n) = represent (S n).
 Proof.
 intros n.
 unfold represent.
 reflexivity.
 Qed.
-*)
 
 (* Given some atomic formula a, returns whether the statement is correct,
 incorrect, or undefined (i.e. not closed) *)
@@ -1138,14 +1136,14 @@ Proof.
 intros. unfold closure. simpl. rewrite <- remove_idem at 2. apply closure_univ_list.
 Qed.
 
-Lemma num_conn_closure_list_eqb : forall (L : list nat) (A : formula) (c : c_term), num_conn A = num_conn (closure_type A c L).
+Lemma num_conn_closure_eq_list : forall (L : list nat) (A : formula) (c : c_term), num_conn A = num_conn (closure_type A c L).
 Proof.
 intros L. induction L. auto. intros. simpl. rewrite <- IHL. rewrite num_conn_sub. auto.
 Qed.
 
 Lemma num_conn_closure_eq : forall (A : formula) (c : c_term), num_conn A = num_conn (closure A c).
 Proof.
-intros. apply num_conn_closure_list_eqb.
+intros. apply num_conn_closure_eq_list.
 Qed.
 
 Lemma closure_subst_list :  forall (L : list nat) (A : formula) (c1 c2 : c_term) (n : nat), (substitution (closure_type A c1 (remove n L)) n (projT1 c2)) = (closure_type (substitution A n (projT1 c2)) c1 L).

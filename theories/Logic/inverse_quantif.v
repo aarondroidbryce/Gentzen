@@ -236,30 +236,6 @@ match subst_ind_fit (ptree_formula P) S with
 | true => quantif_sub_ptree_fit P Q E F n dQ beta QP S
 end.
 
-(*
-Lemma quantif_ptree_formula_aux' :
-  forall (P Q : ptree) (E F : formula) (n dQ : nat) (beta : ord) (QP : P_proves Q (lor F (univ n E)) dQ beta) (S : subst_ind),
-    subst_ind_fit (ptree_formula P) S = false ->
-        quantif_sub_ptree P Q E F n dQ beta QP S = P.
-Proof.
-intros P Q E F n dQ beta QP S FS.
-unfold quantif_sub_ptree.
-rewrite FS.
-reflexivity.
-Qed.
-
-Lemma quantif_ptree_formula_aux :
-  forall (P Q : ptree) (E F : formula) (n dQ : nat) (beta : ord) (QP : P_proves Q (lor F (univ n E)) dQ beta) (S : subst_ind),
-    subst_ind_fit (ptree_formula P) S = false ->
-      ptree_formula (quantif_sub_ptree P Q E F n dQ beta QP S) =
-      quantif_sub_formula (ptree_formula P) E F n S.
-Proof.
-intros. rewrite quantif_ptree_formula_aux'.
-- unfold quantif_sub_formula. rewrite sub_fit_false. auto. apply H0.
-- apply H0.
-Qed.
-*)
-
 Lemma quantif_ptree_formula_true :
     forall (P Q : ptree) (E F : formula) (n dQ : nat) (beta : ord) (QP : P_proves Q (lor F (univ n E)) dQ beta) (S : subst_ind),
         subst_ind_fit (ptree_formula P) S = true ->
@@ -320,7 +296,6 @@ all : destruct S; inversion FS as [FS'];
       unfold ptree_formula, quantif_sub_formula, formula_sub_ind, subst_ind_fit, formula_sub_ind_fit, form_eqb;
       fold form_eqb;
       rewrite EQ1,EQ2;
-      unfold "&&";
       reflexivity.
 
 all : destruct S1; inversion FS' as [FS''].
@@ -346,10 +321,8 @@ all : unfold ptree_formula, quantif_sub_formula, formula_sub_ind, formula_sub_in
       try rewrite EQ2;
       try rewrite FS1_1,FS1_2,FS2;
       try rewrite FS1_1_1,FS1_1_2,FS1_2,FS2;      
-      unfold "&&";
-      try reflexivity.
+      reflexivity.
 Qed.
-
 
 Lemma quantif_ptree_formula :
     forall (P Q : ptree) (E F : formula) (n dQ : nat) (beta : ord) (QP : P_proves Q (lor F (univ n E)) dQ beta),
@@ -368,7 +341,6 @@ destruct (subst_ind_fit (ptree_formula P) S) eqn:FS.
   reflexivity.
 Qed.
 
-(* *)
 Lemma quantif_ptree_deg :
     forall (P Q : ptree) (E F : formula) (n dQ : nat) (beta : ord) (QP : P_proves Q (lor F (univ n E)) dQ beta),
         valid P ->
@@ -432,8 +404,7 @@ try lia.
           unfold subst_ind_fit, ptree_formula in *; fold subst_ind_fit ptree_formula in *;
           try rewrite FS;
           try rewrite non_target_fit;
-          unfold "&&";
-          try reflexivity.
+          reflexivity.
 
 all : destruct S; inversion FS as [FS'];
       try destruct (and_bool_prop _ _ FS') as [FS1 FS2];
@@ -500,8 +471,6 @@ all : unfold ptree_deg; fold ptree_deg;
       reflexivity.
 Qed.
 
-
-(* *)
 Lemma quantif_ptree_ord :
     forall (P Q : ptree) (E F : formula) (n dQ : nat) (beta : ord) (QP : P_proves Q (lor F (univ n E)) dQ beta),
         valid P ->
@@ -598,11 +567,10 @@ all : unfold ptree_ord; fold ptree_ord;
       try rewrite <- P2O in IHP2;
       repeat rewrite quantif_ptree_formula_true;
       try rewrite (ord_succ_add_succ _ _ (ptree_ord_nf_hyp _ _ QO QV) (ptree_ord_nf_hyp _ _ PO PV));
-      try rewrite (ord_succ_add_succ _ _ (ptree_ord_nf_hyp _ _ QO QV) (ord_succ_nf _ (ord_max_nf _ _ (ptree_ord_nf_hyp _ _ P1O P1V) (ptree_ord_nf_hyp _ _ P2O P2V))));
-      try rewrite (ord_succ_add_succ _ _ (ptree_ord_nf_hyp _ _ QO QV) (ord_max_nf _ _ (ptree_ord_nf_hyp _ _ P1O P1V) (ptree_ord_nf_hyp _ _ P2O P2V)));
+      try rewrite (ord_succ_add_succ _ _ (ptree_ord_nf_hyp _ _ QO QV) (nf_ord_max _ _ (ptree_ord_nf_hyp _ _ P1O P1V) (ptree_ord_nf_hyp _ _ P2O P2V)));
       try rewrite ord_max_add_comm;
-      repeat apply ord_ltb_succ_false;
-      try apply ord_max_split_false;
+      repeat apply ord_geb_succ;
+      try apply ord_max_geb_split;
       try apply (IHP PV);
       try apply (IHP1 P1V);
       try apply (IHP2 P2V);
@@ -619,18 +587,14 @@ all : unfold ptree_ord; fold ptree_ord;
       try rewrite FS1_2;
       try rewrite FS1_1_1;
       try rewrite FS1_1_2;
-      unfold "&&";
       try reflexivity.
 
 1 : { rewrite (ord_max_self (ord_add beta o)).
-      apply ord_max_split_false.
+      apply ord_max_geb_split.
       apply add_right_non_decr.
       apply (IHP PV). }
 Qed.
 
-(* Now we prove that if we have a valid ptree, performing our
-w_rule substitution on it results in a valid ptree *)
-(* *)
 Lemma quantif_valid :
     forall (P Q : ptree) (E F : formula) (n dQ : nat) (beta : ord) (QP : P_proves Q (lor F (univ n E)) dQ beta),
         valid P ->
@@ -649,7 +613,6 @@ rewrite FS;
 unfold quantif_sub_ptree_fit; fold quantif_sub_ptree_fit;
 unfold ptree_formula in *; fold ptree_formula in *;
 try apply PV.
-(*intros P Q E F n dQ beta QP*)
 
 1 : destruct PV as [ID PV].
 2 : destruct PV as [[IO PV] NO].
@@ -663,7 +626,7 @@ try apply PV.
       rewrite (quantif_ptree_formula_true _ _ _ _ _ _ _ _ _ FS).
       case (nat_ltb (ptree_deg (quantif_sub_ptree P Q E F n dQ beta QP S)) n0) eqn:EQ.
       split.
-      1 : { apply nat_ltb_decid. apply EQ. } 
+      1 : { apply nat_ltb_lt. apply EQ. } 
       all : refine (IHP PV _ _ FS);
             lia. }
 
@@ -739,8 +702,8 @@ try apply PV.
             case (nat_eqb n0 n) eqn:EQ2.
 
 all : repeat rewrite quantif_ptree_formula_true;
-      try apply f_eq_decid in EQ1;
-      try apply nat_eq_decid in EQ2;
+      try apply form_eqb_eq in EQ1;
+      try apply nat_eqb_eq in EQ2;
       try destruct EQ1;
       try destruct EQ2;
       repeat split;
@@ -790,7 +753,6 @@ all : repeat rewrite quantif_ptree_formula_true;
       fold formula_sub_ind_fit subst_ind_fit;
       try rewrite form_eqb_refl;
       try rewrite FS1;
-      unfold "&&";
       try reflexivity.
 
 1 : { rewrite <- (sub_fit_true _ _ _ _ FS1).

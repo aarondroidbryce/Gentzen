@@ -212,19 +212,6 @@ induction n.
   reflexivity.
 Qed.
 
-(*
-Lemma mult_0_r : forall n:nat,
-  n * 0 = 0.
-Proof.
-intros n.
-induction n as [| n' IH].
-- auto.
-- simpl.
-  rewrite IH.
-  auto.
-Qed.
-*)
-
 Lemma mult1_r : forall (n : nat), n * 1 = n.
 Proof.
 induction n.
@@ -425,7 +412,15 @@ intros n m LTB.
 apply (max_l _ _ (le_S_n _ _ (le_S _ _ (nat_ltb_lt _ _ LTB)))).
 Qed.
 
-(*Lemma exp_succ : forall n, 2^n <> 0. intros. induction n; simpl; lia. Qed.*)
+Lemma nat_2_exp_not_zero :
+    forall n,
+        2^n <> 0.
+Proof.
+induction n;
+unfold pow;
+fold pow;
+lia.
+Qed.
 
 Lemma nat_2_exp_succ_not_one :
     forall n,
@@ -437,7 +432,7 @@ unfold pow.
 lia.
 Qed.
 
-(* Lemma two_mul : forall n, n * 2 = n + n. lia. Qed. *)
+Lemma two_mul : forall n, n * 2 = n + n. lia. Qed.
 
 (* Lemma nat_max_right_not : forall n m, eq_nat m (max n m) = false -> eq_nat n (max n m) = true.
 Proof.

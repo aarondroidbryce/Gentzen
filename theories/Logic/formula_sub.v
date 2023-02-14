@@ -11,8 +11,6 @@ From Systems Require Import PA_omega.
 From Systems Require Import proof_trees.
 From Systems Require Import substitute.
 
-(* Defining vanilla formula substitution on proof trees *)
-(* *)
 Fixpoint formula_sub_ptree_fit
   (P : ptree) (E F : formula) (S : subst_ind) : ptree :=
 match P, S with
@@ -146,26 +144,6 @@ match subst_ind_fit (ptree_formula P) S with
 | true => formula_sub_ptree_fit P E F S
 end.
 
-
-(*
-Lemma formula_sub_ptree_formula_aux' :
-  forall (P : ptree) (E F : formula) (S : subst_ind),
-    subst_ind_fit (ptree_formula P) S = false ->
-    formula_sub_ptree P E F S = P.
-Proof. intros. unfold formula_sub_ptree. destruct P; rewrite H; auto. Qed.
-
-Lemma formula_sub_ptree_formula_aux :
-  forall (P : ptree) (E F : formula) (S : subst_ind),
-    subst_ind_fit (ptree_formula P) S = false ->
-      ptree_formula (formula_sub_ptree P E F S) =
-      formula_sub_ind (ptree_formula P) E F S.
-Proof.
-intros. rewrite formula_sub_ptree_formula_aux'.
-- unfold formula_sub_ind. rewrite sub_fit_false. auto. apply H.
-- apply H.
-Qed.
-*)
-
 Lemma formula_sub_ptree_formula_true :
     forall (P : ptree) (E F : formula) (S : subst_ind),
         subst_ind_fit (ptree_formula P) S = true ->
@@ -204,31 +182,6 @@ destruct (closed (formula_sub_ind A B C S)) eqn:CFC.
   inversion CFC.
 Qed.
 
-(*
-Lemma sub_fit_neq_atom :
-    forall (a : atomic_formula) (E F : formula) (S : subst_ind),
-        eq_f (atom a) E = false ->
-            formula_sub_ind_fit (atom a) E F S = atom a.
-Proof.
-intros a E F S EQ.
-unfold formula_sub_ind_fit.
-rewrite EQ.
-reflexivity.
-Qed.
-
-Lemma sub_fit_neq_neg :
-    forall (a : atomic_formula) (E F : formula) (S : subst_ind),
-        eq_f (neg (atom a)) E = false ->
-            formula_sub_ind_fit (neg (atom a)) E F S = neg (atom a).
-Proof.
-intros a E F S EQ.
-unfold formula_sub_ind_fit.
-rewrite EQ.
-reflexivity.
-Qed.
-*)
-
-(* *)
 Lemma formula_sub_ptree_formula_atom' :
     forall (P : ptree) (a : atomic_formula) (F : formula),
         valid P ->
@@ -292,22 +245,6 @@ destruct (subst_ind_fit (ptree_formula P) S) eqn:FS.
   reflexivity.
 Qed.
 
-(*
-Lemma formula_sub_ptree_formula_atom_fit :
-    forall (P : ptree) (a : atomic_formula) (F : formula),
-        valid P ->
-            forall (S : subst_ind),
-                subst_ind_fit (ptree_formula P) S = true ->
-                    ptree_formula (formula_sub_ptree P (atom a) F S) =
-                        formula_sub_ind_fit (ptree_formula P) (atom a) F S.
-Proof.
-intros P a F PV s FS.
-rewrite formula_sub_ptree_formula_atom'; auto.
-rewrite sub_fit_true; auto.
-Qed.
-*)
-
-(* *)
 Lemma formula_sub_ptree_deg_atom :
     forall (P : ptree) (a : atomic_formula) (F : formula),
         valid P ->
@@ -343,8 +280,6 @@ all : unfold ptree_deg; fold ptree_deg;
       reflexivity.
 Qed.
 
-
-(* *)
 Lemma formula_sub_ptree_ord_atom :
     forall (P : ptree) (a : atomic_formula) (F : formula),
         valid P ->
@@ -380,10 +315,6 @@ all : unfold ptree_deg; fold ptree_deg;
       reflexivity.
 Qed.
 
-
-(* Now we prove that if we have a valid ptree, performing our
-formula substitution on it results in a valid ptree *)
-(* *)
 Lemma formula_sub_valid_atom :
     forall (P : ptree) (a : atomic_formula) (F : formula),
         valid P ->
@@ -420,12 +351,12 @@ fold formula_sub_ptree_fit.
 3 : { unfold valid in *.
       destruct f.
       3,4 : inversion PV.
-      2 : unfold formula_sub_ind_fit, eq_f;
+      2 : unfold formula_sub_ind_fit, form_eqb;
           apply PV.
       1 : destruct S;
-          unfold formula_sub_ind_fit, eq_f;
+          unfold formula_sub_ind_fit, form_eqb;
           fold formula_sub_ind_fit;
-          case (eq_atom a0 a) eqn:EQ;
+          case (atom_eqb a0 a) eqn:EQ;
           try apply PV.
           apply atom_beq_eq in EQ.
           destruct EQ.
@@ -503,51 +434,6 @@ all : refine (formula_sub_ind_fit_closed _ _ _ FC _ _ FS1);
       apply CF.
 Qed.
 
-
-(*
-(* We finally show that if the C \/ (atom a) is provable
-where 'a' is incorrect, then C \/ C is provable. *)
-(* *)
-Lemma atom_sub_valid :
-  forall (C : formula) (a : atomic_formula) (d : nat) (alpha : ord),
-  PA_omega_axiom (atom a) = false ->
-  provable (lor C (atom a)) d alpha ->
-  provable (lor C C) d alpha.
-Proof.
-unfold provable. intros C a d alpha Ha H. destruct H as [P [[[HP1 HP2] HP3] HP4]].
-exists (formula_sub_ptree P (atom a) C (lor_ind (non_target C) (1))).
-unfold P_proves. repeat split.
-- rewrite formula_sub_ptree_formula_atom; auto. rewrite HP1.
-  unfold formula_sub_ind. simpl. rewrite non_target_fit. simpl.
-  rewrite eq_atom_refl. rewrite non_target_sub'. auto.
-- apply formula_sub_valid_atom; auto.
-  + pose proof (provable_closed' P (lor C (atom a)) HP2 HP1).
-    simpl in H. destruct (and_bool_prop _ _ H). auto.
-  + rewrite HP1. simpl. rewrite non_target_fit. auto.
-- rewrite formula_sub_ptree_deg_atom; auto.
-- rewrite formula_sub_ptree_ord_atom; auto.
-Qed.
-
-*)
-
-
-
-
-
-
-
-
-(*
-###############################################################################
-Section 10.2: Here we show that for any correct atomic formula a, we can
-validly replace the formula (neg (atom a)) with any formula C in a proof tree.
-Consequently, if C \/ (neg (atom a)) is provable, so is C \/ C.
-###############################################################################
-*)
-
-(* First, we must prove that formula_sub_ptree simply changes the base formula
-of an ptree the way we expect with formula_sub_ind *)
-(* *)
 Lemma formula_sub_ptree_formula_neg' :
     forall (P : ptree) (a : atomic_formula) (F : formula),
         valid P ->
@@ -611,23 +497,6 @@ destruct (subst_ind_fit (ptree_formula P) S) eqn:FS.
   reflexivity.
 Qed.
 
-(*
-Lemma formula_sub_ptree_formula_neg_fit :
-    forall (P : ptree) (a : atomic_formula) (F : formula),
-        valid P ->
-            forall (S : subst_ind),
-                subst_ind_fit (ptree_formula P) S = true ->
-                    ptree_formula (formula_sub_ptree P (neg (atom a)) F S) =
-                        formula_sub_ind_fit (ptree_formula P) (neg (atom a)) F S.
-Proof.
-
-intros. rewrite formula_sub_ptree_formula_neg'; auto.
-rewrite sub_fit_true; auto.
-Qed.
-*)
-
-
-(* *)
 Lemma formula_sub_ptree_deg_neg :
     forall (P : ptree) (a : atomic_formula) (F : formula),
         valid P ->
@@ -663,9 +532,6 @@ all : unfold ptree_deg; fold ptree_deg;
       reflexivity.
 Qed.
 
-(* Third, we must prove that formula_sub_ptree does not change the ordinal
-of an ptree. *)
-(* *)
 Lemma formula_sub_ptree_ord_neg :
     forall (P : ptree) (a : atomic_formula) (F : formula),
         valid P ->
@@ -701,8 +567,6 @@ all : unfold ptree_deg; fold ptree_deg;
       reflexivity.
 Qed.
 
-
-(* *)
 Lemma formula_sub_valid_neg :
     forall (P : ptree) (a : atomic_formula) (F : formula),
       valid P ->
@@ -739,14 +603,14 @@ fold formula_sub_ptree_fit.
 3 : { unfold valid in *.
       destruct f.
       3,4 : inversion PV.
-      1 : unfold formula_sub_ind_fit, eq_f;
+      1 : unfold formula_sub_ind_fit, form_eqb;
           apply PV.
       1 : destruct S;
-          unfold formula_sub_ind_fit, eq_f;
-          fold formula_sub_ind_fit eq_f;
-          case (eq_f f (atom a)) eqn:EQ;
+          unfold formula_sub_ind_fit, form_eqb;
+          fold formula_sub_ind_fit form_eqb;
+          case (form_eqb f (atom a)) eqn:EQ;
           try apply PV.
-          apply f_eq_decid in EQ.
+          apply form_eqb_eq in EQ.
           rewrite EQ in *.
           unfold PA_omega_axiom in PV.
           pose proof (correct_correctness _ Aa) as Ra.

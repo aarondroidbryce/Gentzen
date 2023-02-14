@@ -19,22 +19,6 @@ From Systems Require Import inverse_dem_2.
 From Systems Require Import inverse_omega.
 From Systems Require Import inverse_quantif.
 
-
-Notation "b1 && b2" := (andb b1 b2).
-Notation "b1 || b2" := (orb b1 b2).
-Notation eq_nat := Nat.eqb.
-
-(*
-Definition cut_elimination_0 (P : ptree) : ptree :=
-match P with
-| ord_up alpha P' => P'
-| deg_up d P' => P'
-| _ => P
-end.
-*)
-
-(* Defining cut_elimination_atom, the case where the cut formula is atom a *)
-(* *)
 Fixpoint cut_elimination_atom (P : ptree) : ptree :=
 match P with
 | cut_ca C (atom a) d1 d2 alpha1 alpha2 P1 P2 =>
@@ -78,9 +62,6 @@ match P with
 | _ => P
 end.
 
-
-(* Defining cut_elimination_neg, the case where the cut formula is ~E *)
-(* *)
 Fixpoint cut_elimination_neg (P : ptree) : ptree :=
 match P with
 | cut_ca C (neg E) d1 d2 alpha1 alpha2 P1 P2 =>
@@ -116,9 +97,6 @@ match P with
 | _ => P
 end.
 
-
-(* Defining cut_elimination_lor, the case where the cut formula is E \/ F *)
-(* *)
 Definition associativity_1' (P : ptree) : ptree :=
 match ptree_formula P, ptree_deg P, ptree_ord P with
 | lor (lor C A) B, d, alpha =>
@@ -178,7 +156,7 @@ Qed.
 Definition contraction_help (P : ptree) : ptree :=
 match ptree_formula P, ptree_deg P, ptree_ord P with
 | lor (lor C D) E, d, alpha =>
-    (match eq_f D E with
+    (match form_eqb D E with
     | true =>
         exchange_ab
           D C d alpha
@@ -250,8 +228,6 @@ match P with
 | _ => P
 end.
 
-(* Define cut_elimination, an operation on ptrees *)
-(* *)
 Fixpoint cut_elimination (P : ptree) : ptree :=
 match P with
 | cut_ca C A d1 d2 alpha1 alpha2 P1 P2 =>
@@ -280,16 +256,6 @@ match P with
 | _ => P
 end.
 
-
-(*
-###############################################################################
-Section 12:
-Here we prove that if P is a valid ptree with ordinal alpha and degree d+1,
-then cut_elimination(P) is a valid ptree with ordinal 2^alpha and degree d
-###############################################################################
-*)
-(* *)
-
 Theorem cut_elimination_formula :
     forall (P : ptree),
         valid P ->
@@ -315,7 +281,7 @@ all : unfold ptree_formula;
       try reflexivity.
 
 3 : { unfold contraction_help, ptree_formula;
-      rewrite eq_f_refl;
+      rewrite form_eqb_refl;
       reflexivity. }
 2 : { rewrite (formula_sub_ptree_formula_atom P1 a f0 P1V (1)).
       rewrite P1F.
@@ -373,10 +339,10 @@ unfold cut_elimination, cut_elimination_atom, cut_elimination_neg, cut_eliminati
       destruct (ord_semiconnex_bool (ord_2_exp (ptree_ord P)) (ptree_ord (cut_elimination P))) as [LT | [ GT | EQ]].
     + rewrite LT in IHPV.
       inversion IHPV.
-    + apply (ltb_asymm _ _ (ord_ltb_trans _ _ _ GT (ord_lt_ltb _ _ (ord_2_exp_monot _ NO _ (ptree_ord_nf _ PV) IO)))).
+    + apply (ord_ltb_asymm _ _ (ord_ltb_trans _ _ _ GT (ord_lt_ltb _ _ (ord_2_exp_monot _ NO _ (ptree_ord_nf _ PV) IO)))).
     + apply ord_eqb_eq in EQ.
       destruct EQ.
-      apply (ltb_asymm _ _ (ord_lt_ltb _ _ (ord_2_exp_monot _ NO _ (ptree_ord_nf _ PV) IO))). }
+      apply (ord_ltb_asymm _ _ (ord_lt_ltb _ _ (ord_2_exp_monot _ NO _ (ptree_ord_nf _ PV) IO))). }
 
 1 : { fold cut_elimination cut_elimination_atom cut_elimination_neg cut_elimination_lor. fold cut_elimination.
       unfold ptree_ord; fold ptree_ord.
@@ -391,7 +357,7 @@ all : unfold ptree_ord in *; fold ptree_ord in *;
 1,5,9 : destruct (correct_a a).
 
 all : unfold contraction_help, ptree_formula, ptree_ord;
-      try rewrite eq_f_refl;
+      try rewrite form_eqb_refl;
       try rewrite formula_sub_ptree_ord_atom;
       try rewrite formula_sub_ptree_ord_neg;
       try rewrite P1O in *;
@@ -439,7 +405,7 @@ unfold cut_elimination, cut_elimination_atom, cut_elimination_neg, cut_eliminati
 17,18,19 : unfold PA_omega_axiom.
 19 :  destruct f0; try case (correct_a a) eqn:Ra;
       unfold contraction_help, ptree_formula;
-      try rewrite eq_f_refl.
+      try rewrite form_eqb_refl.
 18 : destruct f; try case (correct_a a) eqn:Ra.
 17 : destruct f0; try case (correct_a a) eqn:Ra.
 
@@ -476,7 +442,7 @@ all : unfold associativity_1', associativity_2';
       unfold subst_ind_fit; fold subst_ind_fit;
       unfold formula_sub_ind_fit; fold formula_sub_ind_fit;
       try rewrite non_target_fit;
-      try rewrite eq_f_refl;
+      try rewrite form_eqb_refl;
       unfold "&&";
       try rewrite non_target_sub';
       try apply PV;
@@ -1091,7 +1057,7 @@ all : repeat split;
                 try apply NA;
                 unfold cut_elimination, cut_elimination_atom, cut_elimination_neg, cut_elimination_lor, contraction_help, PA_omega_axiom, weak_ord_up;
                 unfold ptree_formula; fold ptree_formula;
-                try rewrite eq_f_refl;
+                try rewrite form_eqb_refl;
                 try case (correct_a a) eqn:Ra;
                 unfold ptree_deg, ptree_ord; fold ptree_deg ptree_ord;
                 try rewrite (formula_sub_ptree_deg_neg _ _ _ T2V);
@@ -1167,7 +1133,7 @@ all : repeat split;
       fold subst_ind_fit formula_sub_ind_fit;
       try rewrite non_target_fit;
       try rewrite non_target_sub';
-      try rewrite eq_f_refl;
+      try rewrite form_eqb_refl;
       try reflexivity;
       try apply nf_2_exp;
       try apply NA;
