@@ -124,14 +124,14 @@ match P, S with
       (w_rule_sub_ptree_fit P' E n c (lor_ind (0) S_D))
 
 | w_rule_a A k d alpha g, _ =>
-    (match eq_f A E, eq_nat d (ptree_deg (g c)), eq_nat k n, S with
+    (match form_eqb A E, nat_eqb d (ptree_deg (g c)), nat_eqb k n, S with
     | true, true, true, (1) => ord_up (ord_succ alpha) (g c)
     | true, false, true, (1) => deg_up d (ord_up (ord_succ alpha) (g c))
     | _, _, _, _ => P
     end)
 
 | w_rule_ad A D k d alpha g, lor_ind S_A S_D =>
-    (match eq_f A E, eq_nat d (ptree_deg (g c)), eq_nat k n, S_A with
+    (match form_eqb A E, nat_eqb d (ptree_deg (g c)), nat_eqb k n, S_A with
     | true, true, true, (1) =>
         ord_up (ord_succ alpha) (w_rule_sub_ptree_fit (g c) E n c (lor_ind (non_target A) S_D))
     | true, false, true, (1) =>
@@ -251,7 +251,7 @@ unfold w_rule_sub_ptree_fit; fold w_rule_sub_ptree_fit.
       destruct (axiom_atomic _ PX) as [[a fa] | [a fa]];
       rewrite fa;
       unfold formula_sub_ind_fit; fold formula_sub_ind_fit;
-      unfold eq_f;
+      unfold form_eqb;
       reflexivity. }
 
 all : destruct S; inversion FS as [FS'];
@@ -276,29 +276,29 @@ all : destruct S; inversion FS as [FS'];
 
 
 8 : { destruct (PV c) as [[[PF PCV ] PD] PO].
-      case (eq_f f E) eqn:EQ1;
-      case (eq_nat n0 n) eqn:EQ2;
-      case (eq_nat n1 (ptree_deg (p c))) eqn:E3;
+      case (form_eqb f E) eqn:EQ1;
+      case (nat_eqb n0 n) eqn:EQ2;
+      case (nat_eqb n1 (ptree_deg (p c))) eqn:E3;
       unfold ptree_formula, w_rule_sub_formula;
       fold ptree_formula;
       try rewrite PF;
-      try apply f_eq_decid in EQ1;
+      try apply form_eqb_eq in EQ1;
       try rewrite EQ1;
-      try apply nat_eq_decid in EQ2;
+      try apply nat_eqb_eq in EQ2;
       try rewrite EQ2;
       try rewrite (formula_sub_ind_1 _ _ FS);
-      unfold formula_sub_ind, subst_ind_fit, formula_sub_ind_fit, eq_f;
-      fold eq_f;
-      try rewrite eq_nat_refl;
-      try rewrite eq_f_refl;
+      unfold formula_sub_ind, subst_ind_fit, formula_sub_ind_fit, form_eqb;
+      fold form_eqb;
+      try rewrite nat_eqb_refl;
+      try rewrite form_eqb_refl;
       try rewrite EQ1;
       try rewrite EQ2;
       unfold "&&";
       try reflexivity. }
 
-7 : { case (eq_f f E) eqn:EQ1;
-      case (eq_nat n0 n) eqn:EQ2;
-      case (eq_nat n1 (ptree_deg (p c))) eqn:E3;
+7 : { case (form_eqb f E) eqn:EQ1;
+      case (nat_eqb n0 n) eqn:EQ2;
+      case (nat_eqb n1 (ptree_deg (p c))) eqn:E3;
       unfold ptree_formula, w_rule_sub_formula;
       fold ptree_formula;
       try rewrite formula_sub_ind_0;
@@ -316,12 +316,12 @@ all : destruct S1; inversion FS' as [FS''].
     destruct FS1_1 as [FS1_1_1 FS1_1_2].
   
 
-10,11 : case (eq_f f E) eqn:EQ1;
-        case (eq_nat n0 n) eqn:EQ2;
-        case (eq_nat n1 (ptree_deg (p c))) eqn:E3.
+10,11 : case (form_eqb f E) eqn:EQ1;
+        case (nat_eqb n0 n) eqn:EQ2;
+        case (nat_eqb n1 (ptree_deg (p c))) eqn:E3.
 
-all : unfold ptree_formula, w_rule_sub_formula, formula_sub_ind, formula_sub_ind_fit, eq_f;
-      fold ptree_formula eq_f formula_sub_ind_fit;
+all : unfold ptree_formula, w_rule_sub_formula, formula_sub_ind, formula_sub_ind_fit, form_eqb;
+      fold ptree_formula form_eqb formula_sub_ind_fit;
       try rewrite FS;
       try rewrite FS'';
       try rewrite EQ1;
@@ -331,9 +331,9 @@ all : unfold ptree_formula, w_rule_sub_formula, formula_sub_ind, formula_sub_ind
       unfold "&&";
       try reflexivity.
 
-all : apply f_eq_decid in EQ1;
+all : apply form_eqb_eq in EQ1;
       destruct EQ1;
-      apply nat_eq_decid in EQ2;
+      apply nat_eqb_eq in EQ2;
       destruct EQ2;
       rewrite (w_rule_ptree_formula_true _ _ _ _ _ FSP);
       rewrite (H _ PCV _ FSP);
@@ -390,13 +390,13 @@ try reflexivity.
 all : destruct S; inversion FS as [FS'];
       try reflexivity.
 
-4-6 : case (eq_f f E) eqn:EQ1;
-      case (eq_nat n0 n) eqn:EQ2;
-      case (eq_nat n1 (ptree_deg (p c))) eqn:EQ3;
+4-6 : case (form_eqb f E) eqn:EQ1;
+      case (nat_eqb n0 n) eqn:EQ2;
+      case (nat_eqb n1 (ptree_deg (p c))) eqn:EQ3;
       unfold ptree_deg; fold ptree_deg;
-      try apply f_eq_decid in EQ1;
+      try apply form_eqb_eq in EQ1;
       try destruct EQ1;
-      try apply nat_eq_decid in EQ2,EQ3;
+      try apply nat_eqb_eq in EQ2,EQ3;
       try rewrite EQ3;
       try reflexivity.
 
@@ -448,13 +448,13 @@ try reflexivity.
 all : destruct S; inversion FS as [FS'];
       try reflexivity.
 
-4-6 : case (eq_f f E) eqn:EQ1;
-      case (eq_nat n0 n) eqn:EQ2;
-      case (eq_nat n1 (ptree_deg (p c))) eqn:EQ3;
+4-6 : case (form_eqb f E) eqn:EQ1;
+      case (nat_eqb n0 n) eqn:EQ2;
+      case (nat_eqb n1 (ptree_deg (p c))) eqn:EQ3;
       unfold ptree_deg; fold ptree_deg;
-      try apply f_eq_decid in EQ1;
+      try apply form_eqb_eq in EQ1;
       try destruct EQ1;
-      try apply nat_eq_decid in EQ2,EQ3;
+      try apply nat_eqb_eq in EQ2,EQ3;
       try apply EQ3;
       try reflexivity.
 
@@ -531,9 +531,9 @@ all : try apply PV.
 
 7,8,15,16 : destruct (PV c) as [[[PF PCV] PD] PO].
 
-9,10 :  case (eq_f f E) eqn:EQ1;
-        case (eq_nat n0 n) eqn:EQ2;
-        case (eq_nat n1 (ptree_deg (p c))) eqn:EQ3;
+9,10 :  case (form_eqb f E) eqn:EQ1;
+        case (nat_eqb n0 n) eqn:EQ2;
+        case (nat_eqb n1 (ptree_deg (p c))) eqn:EQ3;
         try apply PV;
         repeat split;
         try rewrite PO;
@@ -544,16 +544,16 @@ all : try apply PV.
         try apply PCV;
         inversion PD as [EQ4 | ];
         try destruct EQ4;
-        try rewrite eq_nat_refl in EQ3;
+        try rewrite nat_eqb_refl in EQ3;
         inversion EQ3;
         try lia.
 
-7,8 : case (eq_f f E) eqn:EQ1;
-      case (eq_nat n0 n) eqn:EQ2;
-      case (eq_nat n1 (ptree_deg (p c))) eqn:EQ3;
+7,8 : case (form_eqb f E) eqn:EQ1;
+      case (nat_eqb n0 n) eqn:EQ2;
+      case (nat_eqb n1 (ptree_deg (p c))) eqn:EQ3;
       try apply VSC.
 
-all : try apply f_eq_decid in EQ1;
+all : try apply form_eqb_eq in EQ1;
       try destruct EQ1;
       repeat rewrite w_rule_ptree_formula_true;
       repeat split;
@@ -596,59 +596,21 @@ all : try apply f_eq_decid in EQ1;
       try rewrite FS2;
       unfold "&&";
       unfold formula_sub_ind_fit; fold formula_sub_ind_fit;
-      unfold eq_f; fold eq_f;
+      unfold form_eqb; fold form_eqb;
       try rewrite non_target_sub';
       try rewrite <- (sub_fit_true _ _ _ _ FS1);
       try apply (formula_sub_ind_closed _ _ _ FC CIMP);
       try apply ord_succ_monot;
-      try apply ord_succ_nf;
+      try apply nf_nf_succ;
       try apply ptree_ord_nf;
       try apply PCV;
       unfold subst_ind_fit; fold subst_ind_fit;
       try reflexivity.
       inversion PD as [EQ4 | ];
       try destruct EQ4;
-      try rewrite eq_nat_refl in EQ3;
+      try rewrite nat_eqb_refl in EQ3;
       try lia.
 Qed.
-
-
-(*
-
-(* We finally show that if the formulas (univ n E) and/or (univ n E) \/ D are provable,
-so are the formulas E(m) and/or E(m) \/ D for any c *)
-(* *)
-Lemma w_rule_invertible_a :
-  forall (A : formula) (n d : nat) (alpha : ord) (c : c_term),
-  provable (univ n A) d alpha ->
-  provable (substitution A n (projT1 c)) d alpha.
-Proof.
-unfold provable. intros A n d alpha c H.
-destruct H as [t [[[Ht1 Ht2] Ht3] Ht4]].
-exists (w_rule_sub_ptree t A n c (1)). unfold P_proves. repeat split.
-- rewrite w_rule_ptree_formula; auto. rewrite Ht1. unfold w_rule_sub_formula.
-  simpl. rewrite eq_nat_refl,eq_f_refl. auto.
-- apply w_rule_valid; auto. rewrite Ht1. auto.
-- rewrite <- (w_rule_ptree_deg t); auto.
-- rewrite w_rule_ptree_ord; auto.
-Qed.
-
-Lemma w_rule_invertible_ad :
-  forall (A D : formula) (n d : nat) (alpha : ord) (c : c_term),
-  provable (lor (univ n A) D) d alpha ->
-  provable (lor (substitution A n (projT1 c)) D) d alpha.
-Proof.
-unfold provable. intros A D n d alpha c H.
-destruct H as [t [[[Ht1 Ht2] Ht3] Ht4]].
-pose proof (w_rule_ptree_deg t A n c Ht2 (lor_ind (1) (non_target D))).
-exists (w_rule_sub_ptree t A n c (lor_ind (1) (non_target D))). unfold P_proves. repeat split.
-- rewrite w_rule_ptree_formula; auto. rewrite Ht1. unfold w_rule_sub_formula.
-  simpl. rewrite eq_nat_refl,eq_f_refl,non_target_fit. simpl.
-  rewrite non_target_sub'. auto.
-- apply w_rule_valid; auto. rewrite Ht1. simpl. rewrite non_target_fit. auto.
-- rewrite <- (w_rule_ptree_deg t); auto.
-- rewrite w_rule_ptree_ord; auto.
-Qed. *)
 
 Lemma w_rule_invertible_cut_ad :
     forall (P : ptree) (A : formula) (n d : nat) (alpha : ord) (c : c_term),
@@ -662,7 +624,7 @@ repeat split.
 - rewrite (w_rule_ptree_formula _ _ _ _ PV).
   rewrite PF.
   unfold w_rule_sub_formula, formula_sub_ind, formula_sub_ind_fit, subst_ind_fit.
-  rewrite eq_f_refl.
+  rewrite form_eqb_refl.
   reflexivity.
 - apply (w_rule_valid _ _ _ _ PV).
   rewrite PF.
@@ -690,7 +652,7 @@ repeat split.
   unfold w_rule_sub_formula, "&&".
   rewrite non_target_sub, non_target_fit.
   unfold formula_sub_ind, formula_sub_ind_fit, subst_ind_fit.
-  rewrite eq_f_refl.
+  rewrite form_eqb_refl.
   reflexivity.
 - apply (w_rule_valid _ _ _ _ X).
   unfold ptree_formula, subst_ind_fit.

@@ -14,11 +14,6 @@ From Maths_Facts Require Import ordinals.
 From Systems Require Import definitions.
 From Systems Require Import fol.
 
-Notation "b1 && b2" := (andb b1 b2).
-Notation "b1 || b2" := (orb b1 b2).
-Notation eq_nat := Nat.eqb.
-
-
 Definition PA_omega_axiom (A : formula) : bool :=
 match A with
 | atom a => correct_a a
@@ -159,30 +154,28 @@ Qed.
 
 Lemma deg_monot :
   forall (A : formula) (d d' : nat) (alpha : ord),
-    d' >= d ->
-      PA_omega_theorem A d alpha ->
-        PA_omega_theorem A d' alpha.
+      d' >= d ->
+          PA_omega_theorem A d alpha ->
+              PA_omega_theorem A d' alpha.
 Proof.
-intros A d d' alpha I T.
-destruct (leq_type _ _ I) as [I1 | I1].
+intros A d d' alpha IE T.
+destruct (nat_ge_case_type _ _ IE) as [LT | EQ].
 
-- apply (deg_incr A d d').
-  + apply T.
-  + apply I1.
+- apply (deg_incr A d d' _ T LT).
 
-- destruct I1.
+- destruct EQ.
   apply T.
 Qed.
 
 Lemma ord_nf :
-  forall (A : formula) (d : nat) (alpha : ord),
-    PA_omega_theorem A d alpha ->
-      nf alpha.
+    forall (A : formula) (d : nat) (alpha : ord),
+        PA_omega_theorem A d alpha ->
+            nf alpha.
 Proof.
 intros A d alpha T.
 induction T;
-repeat apply ord_succ_nf;
-try apply ord_max_nf;
+repeat apply nf_nf_succ;
+try apply nf_ord_max;
 try apply zero_nf;
 try apply IHT;
 try apply IHT1;
@@ -272,19 +265,17 @@ Lemma P3_strongind_aux :
       (forall n m, m <= n -> P3 m).
 Proof.
 intros Ind0 Ind.
-induction n as [ | n' IHn' ].
-- intros m I.
-  assert (0 = m) as I1.
-  { inversion I. reflexivity. }
-  destruct I1.
-  apply Ind0.
-- intros m I.
-  destruct (leq_type _ _ I) as [I1 | I1].
+induction n as [ | n' IHn' ];
+intros m IE.
+- destruct m.
+  + apply Ind0.
+  + exfalso.
+    inversion IE.
+- destruct (nat_ge_case_type _ _ IE) as [LT | EQ].
   + apply IHn'.
     lia.
-  + destruct I1.
-    apply Ind.
-    apply IHn'.
+  + destruct EQ.
+    apply (Ind _ IHn').
 Qed.
 
 Lemma P3_strongind :
@@ -294,7 +285,7 @@ Lemma P3_strongind :
 Proof.
 intros Ind0 Ind n.
 apply (P3_strongind_aux Ind0 Ind n n).
-apply leq_refl.
+reflexivity.
 Qed.
 
 Lemma P3_inductive :
@@ -310,14 +301,15 @@ destruct A as [a | B | B C | m B].
   apply (ord_incr _ _ (ord_succ (ord_succ (nat_ord ((num_conn B) + (num_conn B)))))).
   + apply negation2.
     apply exchange1.
-    apply (Ind n (leq_refl n) B NA1 CA).
+    apply (Ind _ (nat_le_refl _) _ NA1 CA).
   + apply ord_lt_succ.
     unfold num_conn. fold num_conn.
     repeat rewrite ord_succ_nat.
     apply nat_ord_lt.
     rewrite <- plus_n_Sm.
-    apply nat_lt_succ.
-  + repeat apply ord_succ_nf.
+    unfold lt.
+    reflexivity.
+  + apply nf_nf_succ.
     apply nf_nat.
 
 - destruct (closed_lor _ _ CA) as [CB CC].
@@ -336,14 +328,15 @@ destruct A as [a | B | B C | m B].
   case (num_conn B) eqn:X2;
   unfold num_conn in *; fold num_conn in *;
   rewrite X1,X2.
-  + rewrite (ord_max_lem2 _ _ (ord_ltb_irrefl _)) in T3.
+  + unfold ord_max in T3.
+    rewrite ord_ltb_irrefl in T3.
     apply T3.
-  + rewrite plus_n_0 in *.
+  + rewrite <- plus_n_O in *.
     repeat rewrite <- plus_n_Sm in *.
     repeat rewrite ord_succ_nat in *.
-    rewrite ord_max_lem2 in T3.
+    rewrite ord_max_ltb_not_l in T3.
     * apply T3.
-    * apply ltb_asymm.
+    * apply ord_ltb_asymm.
       apply ord_lt_ltb.
       apply nat_ord_lt.
       lia.
@@ -351,9 +344,9 @@ destruct A as [a | B | B C | m B].
     repeat rewrite <- plus_n_Sm in *.
     repeat rewrite ord_succ_nat in *.
     rewrite ord_max_symm in T3.
-    rewrite ord_max_lem2 in T3.
+    rewrite ord_max_ltb_not_l in T3.
     * apply T3.
-    * apply ltb_asymm.
+    * apply ord_ltb_asymm.
       apply ord_lt_ltb.
       apply nat_ord_lt.
       lia.
@@ -376,13 +369,13 @@ destruct A as [a | B | B C | m B].
     rewrite plus_comm.
     repeat rewrite plus_n_Sm in *.
     case (ord_ltb (nat_ord (n1 + S (S (S (S n1))))) (nat_ord (n0 + S (S (S (S n0)))))) eqn:X3.
-    * rewrite (ord_max_lem1 _ _ X3) in T3 .
+    * rewrite (ord_max_ltb_is_r _ _ X3) in T3 .
       apply (ord_incr _ _ _ _ T3).
       --  repeat rewrite ord_succ_nat.
           apply nat_ord_lt.
           lia.
       --  apply nf_nat.
-    * rewrite (ord_max_lem2 _ _ X3) in T3. 
+    * rewrite (ord_max_ltb_not_l _ _ X3) in T3. 
       apply (ord_incr _ _ _ _ T3).
       --  repeat rewrite ord_succ_nat.
           apply nat_ord_lt.
@@ -401,7 +394,7 @@ destruct A as [a | B | B C | m B].
   rewrite <- (num_conn_sub _ m (projT1 c)).
   apply exchange1.
   apply (quantification2 _ _ _ c).
-  apply (Ind _ (leq_refl _) _ (num_conn_sub _ _ _) (closed_univ_sub _ _ CA _ (projT2 c))).
+  apply (Ind _ (nat_le_refl _) _ (num_conn_sub _ _ _) (closed_univ_sub _ _ CA _ (projT2 c))).
 Qed.
 
 Lemma P3_lemma :
@@ -518,7 +511,7 @@ induction n as [| n' IHn' ].
   apply Ind0.
 
 - intros m I.
-  destruct (leq_type _ _ I) as [I1 | I1].
+  destruct (nat_ge_case_type _ _ I) as [I1 | I1].
   + apply IHn'.
     lia.
 + destruct I1.
@@ -533,7 +526,7 @@ Lemma Q3_strongind :
 Proof.
 intros Ind0 Ind n.
 apply (Q3_strongind_aux Ind0 Ind n n).
-apply leq_refl.
+reflexivity.
 Qed.
 
 Lemma Q3_0 : Q3 0.
@@ -560,7 +553,7 @@ destruct A as [| B | B C | m B].
   apply exchange1.
   unfold num_conn. fold num_conn.
   apply (ord_incr _ _ (ord_succ (nat_ord ((num_conn B)+(num_conn B))))).
-  + apply (Ind n (leq_refl n) B NB i t s (equ_symm _ _ COR) LIST).
+  + apply (Ind _ (nat_le_refl _) _ NB _ _ _ (equ_symm _ _ COR) LIST).
   + repeat rewrite ord_succ_nat.
     apply nat_ord_lt.
     lia.
@@ -571,7 +564,7 @@ destruct A as [| B | B C | m B].
   pose proof (subst_remove (lor B C) i _ CT) as LISTSUB.
   rewrite LIST in LISTSUB.
   unfold remove in LISTSUB.
-  rewrite eq_nat_refl in LISTSUB.
+  rewrite nat_eqb_refl in LISTSUB.
   unfold substitution in LISTSUB. fold substitution in LISTSUB.
   apply free_list_closed in LISTSUB.
   unfold closed in LISTSUB. fold closed in LISTSUB.
@@ -652,8 +645,8 @@ destruct A as [| B | B C | m B].
       destruct (num_conn C);
       unfold add in *; fold add in *;
       unfold max in *; fold max in *;
-      try rewrite plus_n_0 in *;
-      try rewrite eq_nat_refl in X1; inversion X1.
+      try rewrite <- plus_n_O in *;
+      try rewrite nat_eqb_refl in X1; inversion X1.
       lia.
     * rewrite ord_succ_nat.
       apply nf_nat.
@@ -676,7 +669,7 @@ destruct A as [| B | B C | m B].
   rewrite (substitution_order B m i s _ CS (projT2 c) Heq).
   rewrite (substitution_order B m i t _ CT (projT2 c) Heq).
   rewrite <- (num_conn_sub B m (projT1 c)).
-  apply (Ind n (leq_refl n) (substitution B m (projT1 c))).
+  apply (Ind n (nat_le_refl n) (substitution B m (projT1 c))).
   + rewrite num_conn_sub.
     apply NB.
   + apply COR.

@@ -88,9 +88,9 @@ match P, S with
       (demorgan1_sub_ptree_fit P' E F S_D)
 
 | demorgan_ab A B d1 d2 alpha1 alpha2 P1 P2, _ =>
-    (match eq_f A E, eq_f B F, S with
+    (match form_eqb A E, form_eqb B F, S with
     | true, true, (1) =>
-      (match eq_nat d1 (ptree_deg P) with
+      (match nat_eqb d1 (ptree_deg P) with
       | true => ord_up (ptree_ord P) P1
       | false => deg_up (ptree_deg P) (ord_up (ptree_ord P) P1)
       end)
@@ -98,9 +98,9 @@ match P, S with
     end)
 
 | demorgan_abd A B D d1 d2 alpha1 alpha2 P1 P2, lor_ind S_AB S_D =>
-    (match eq_f A E, eq_f B F, S_AB with
+    (match form_eqb A E, form_eqb B F, S_AB with
     | true, true, (1) =>
-      (match eq_nat d1 (ptree_deg P) with
+      (match nat_eqb d1 (ptree_deg P) with
       | true =>
           ord_up
             (ptree_ord P)
@@ -246,12 +246,12 @@ unfold demorgan1_sub_ptree_fit; fold demorgan1_sub_ptree_fit.
       destruct (axiom_atomic _ PX) as [[a fa] | [a fa]];
       rewrite fa;
       unfold formula_sub_ind_fit; fold formula_sub_ind_fit;
-      unfold eq_f;
+      unfold form_eqb;
       reflexivity. }
 
 5 : reflexivity.
 
-9,11,13,15,16 : unfold ptree_formula, demorgan1_sub_formula, formula_sub_ind, formula_sub_ind_fit, eq_f;
+9,11,13,15,16 : unfold ptree_formula, demorgan1_sub_formula, formula_sub_ind, formula_sub_ind_fit, form_eqb;
                 destruct S;
                 try reflexivity.
 
@@ -265,10 +265,10 @@ all : destruct S; inversion FS as [FS'];
             rewrite FS,FS1,FS2;
             reflexivity.
 
-4-6 : case (eq_f f E) eqn:EQ1;
-      case (eq_f f0 F) eqn:EQ2;
-      unfold ptree_formula, demorgan1_sub_formula, formula_sub_ind, subst_ind_fit, formula_sub_ind_fit, eq_f;
-      fold ptree_formula eq_f formula_sub_ind_fit subst_ind_fit;
+4-6 : case (form_eqb f E) eqn:EQ1;
+      case (form_eqb f0 F) eqn:EQ2;
+      unfold ptree_formula, demorgan1_sub_formula, formula_sub_ind, subst_ind_fit, formula_sub_ind_fit, form_eqb;
+      fold ptree_formula form_eqb formula_sub_ind_fit subst_ind_fit;
       try rewrite EQ1;
       try rewrite EQ2;
       try reflexivity.
@@ -276,22 +276,22 @@ all : destruct S; inversion FS as [FS'];
 all : unfold "&&".
 
 4 : { destruct PV as [[[[[[[P1F P1V] P2F] P2V] P1D] P2D] P1O] P2O].
-      apply f_eq_decid in EQ1,EQ2.
+      apply form_eqb_eq in EQ1,EQ2.
       destruct EQ1,EQ2.
-      case (eq_nat n (ptree_deg (demorgan_ab f f0 n n0 o o0 P1 P2))) eqn:EQ;
+      case (nat_eqb n (ptree_deg (demorgan_ab f f0 n n0 o o0 P1 P2))) eqn:EQ;
       unfold ptree_formula; fold ptree_formula;
       apply P1F. }
 
 all : destruct S1; inversion FS' as [FS''].
 
 5 : { destruct PV as [[[[[[[P1F P1V] P2F] P2V] P1D] P2D] P1O] P2O].
-      apply f_eq_decid in EQ1,EQ2.
+      apply form_eqb_eq in EQ1,EQ2.
       destruct EQ1,EQ2.
       assert (subst_ind_fit (ptree_formula P1) (lor_ind (non_target (neg f)) S2) = true) as FS1.
       { rewrite P1F.
         unfold subst_ind_fit, non_target; fold subst_ind_fit.
         apply FS'. }
-      case (eq_nat n (ptree_deg (demorgan_abd f f0 f1 n n0 o o0 P1 P2))) eqn:EQ;
+      case (nat_eqb n (ptree_deg (demorgan_abd f f0 f1 n n0 o o0 P1 P2))) eqn:EQ;
       unfold ptree_formula; fold ptree_formula;
       rewrite (demorgan1_ptree_formula_true _ _ _ _ FS1);
       rewrite (IHP1 P1V _ FS1);
@@ -311,8 +311,8 @@ all : destruct S1; inversion FS' as [FS''].
     apply and_bool_prop in FS1_1;
     destruct FS1_1 as [FS1_1_1 FS1_1_2].
 
-all : unfold ptree_formula, demorgan1_sub_formula, formula_sub_ind, formula_sub_ind_fit, eq_f;
-      fold ptree_formula eq_f formula_sub_ind_fit;
+all : unfold ptree_formula, demorgan1_sub_formula, formula_sub_ind, formula_sub_ind_fit, form_eqb;
+      fold ptree_formula form_eqb formula_sub_ind_fit;
       try rewrite FS;
       try rewrite FS'';
       try rewrite EQ;
@@ -368,16 +368,16 @@ try reflexivity.
 all : destruct S; inversion FS as [FS'];
       try reflexivity.
 
-4-6 : case (eq_f f E) eqn:EQ1;
-      case (eq_f f0 F) eqn:EQ2;
+4-6 : case (form_eqb f E) eqn:EQ1;
+      case (form_eqb f0 F) eqn:EQ2;
       unfold ptree_deg; fold ptree_deg;
       try rewrite P1D;
       try rewrite P2D;
-      case (eq_nat (ptree_deg P1) (Nat.max (ptree_deg P1) (ptree_deg P2))) eqn:EQ;
+      case (nat_eqb (ptree_deg P1) (Nat.max (ptree_deg P1) (ptree_deg P2))) eqn:EQ;
       unfold ptree_deg; fold ptree_deg;
       try reflexivity.
 
-4 : apply nat_eq_decid in EQ;
+4 : apply nat_eqb_eq in EQ;
     destruct EQ;
     reflexivity.
 
@@ -388,7 +388,7 @@ all : destruct S1; inversion FS' as [FS''].
 all : unfold ptree_deg; fold ptree_deg;
       try reflexivity.
 
-- apply nat_eq_decid in EQ;
+- apply nat_eqb_eq in EQ;
   destruct EQ.
   rewrite <- (IHP1 P1V (lor_ind (non_target (neg f)) S2)).
   rewrite P1F.
@@ -428,10 +428,10 @@ try reflexivity.
 all : destruct S; inversion FS as [FS'];
       try reflexivity.
 
-4-6 : case (eq_f f E) eqn:EQ1;
-      case (eq_f f0 F) eqn:EQ2;
+4-6 : case (form_eqb f E) eqn:EQ1;
+      case (form_eqb f0 F) eqn:EQ2;
       unfold ptree_deg; fold ptree_deg;
-      case (eq_nat n (Nat.max n n0)) eqn:EQ;
+      case (nat_eqb n (Nat.max n n0)) eqn:EQ;
       try reflexivity.
 
 all : destruct S1; inversion FS' as [FS''].
@@ -503,16 +503,16 @@ all : try apply PV.
 10 :  { unfold closed; fold closed;
         apply and_bool_prop. }
 
-7,8,11,12 : case (eq_f f E) eqn:EQ1;
-            case (eq_f f0 F) eqn:EQ2;
+7,8,11,12 : case (form_eqb f E) eqn:EQ1;
+            case (form_eqb f0 F) eqn:EQ2;
             unfold ptree_deg; fold ptree_deg;
             try apply PV.
 
-11,15 : case (eq_nat n (Nat.max n n0)) eqn:EQ.
+11,15 : case (nat_eqb n (Nat.max n n0)) eqn:EQ.
             
-all : try apply f_eq_decid in EQ1;
+all : try apply form_eqb_eq in EQ1;
       try destruct EQ1;
-      try apply f_eq_decid in EQ2;
+      try apply form_eqb_eq in EQ2;
       try destruct EQ2;
       repeat rewrite demorgan1_ptree_formula_true;
       repeat split;
@@ -556,56 +556,22 @@ all : try apply f_eq_decid in EQ1;
       unfold "&&";
       try reflexivity;
       unfold formula_sub_ind_fit; fold formula_sub_ind_fit;
-      unfold eq_f; fold eq_f;
+      unfold form_eqb; fold form_eqb;
       try rewrite non_target_sub';
       try reflexivity;
       try rewrite <- (sub_fit_true _ _ _ _ FS1);
       try apply (formula_sub_ind_closed _ _ _ FC CIMP);
       try apply max_lem1;
       try apply EQ;
-      try apply ord_max_succ_l;
-      try case (eq_f f (lor E F));
-      try case (eq_f f0 (lor E F));
-      try case (eq_f (substitution f n (projT1 c)) (lor E F));
-      try case (eq_f f (lor f f0));
-      try case (eq_f f0 (lor f f0));
-      try case (eq_f f (lor f F));
-      try case (eq_f f0 (lor f F));
-      try case (eq_f f (lor E f0));
-      try case (eq_f f0 (lor E f0));
+      try apply ord_lt_max_succ_l;
+      try case (form_eqb f (lor E F));
+      try case (form_eqb f0 (lor E F));
+      try case (form_eqb (substitution f n (projT1 c)) (lor E F));
+      try case (form_eqb f (lor f f0));
+      try case (form_eqb f0 (lor f f0));
+      try case (form_eqb f (lor f F));
+      try case (form_eqb f0 (lor f F));
+      try case (form_eqb f (lor E f0));
+      try case (form_eqb f0 (lor E f0));
       try reflexivity.
 Qed.
-
-
-
-(* 
-Lemma demorgan1_invertible_a :
-  forall (A B : formula) (d : nat) (alpha : ord),
-  provable (neg (lor A B)) d alpha -> provable (neg A) d alpha.
-Proof.
-unfold provable. intros A B d alpha H. destruct H as [t [[[Ht1 Ht2] Ht3] Ht4]].
-exists (demorgan1_sub_ptree t A B (1)). unfold P_proves. repeat split.
-- rewrite demorgan1_ptree_formula; auto. rewrite Ht1.
-  unfold demorgan1_sub_formula. simpl. repeat rewrite eq_f_refl. auto.
-- apply demorgan1_valid; auto. rewrite Ht1. auto.
-- rewrite demorgan1_ptree_deg; auto.
-- rewrite demorgan1_ptree_ord; auto.
-Qed.
-
-Lemma demorgan1_invertible_ad :
-  forall (A B D : formula) (d : nat) (alpha : ord),
-  provable (lor (neg (lor A B)) D) d alpha -> provable (lor (neg A) D) d alpha.
-Proof.
-unfold provable. intros A B D d alpha H. destruct H as [t [[[Ht1 Ht2] Ht3] Ht4]].
-exists (demorgan1_sub_ptree t A B (lor_ind (1) (non_target D))).
-unfold P_proves. repeat split.
-- rewrite demorgan1_ptree_formula; auto. rewrite Ht1.
-  unfold demorgan1_sub_formula. simpl. rewrite non_target_fit.
-  repeat rewrite eq_f_refl. simpl. rewrite <- sub_fit_true.
-  + rewrite non_target_sub. auto.
-  + apply non_target_fit.
-- apply demorgan1_valid; auto. rewrite Ht1. simpl. apply non_target_fit.
-- rewrite demorgan1_ptree_deg; auto.
-- rewrite demorgan1_ptree_ord; auto.
-Qed.
-*)

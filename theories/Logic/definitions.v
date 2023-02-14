@@ -1,6 +1,4 @@
-Notation "b1 && b2" := (andb b1 b2).
-Notation "b1 || b2" := (orb b1 b2).
-Notation eq_nat := Nat.eqb.
+Open Scope bool.
 
 Lemma and_bool_symm : forall (b1 b2 : bool),
   b1 && b2 = true -> b2 && b1 = true.

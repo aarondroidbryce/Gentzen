@@ -57,7 +57,7 @@ match A with
   | _ => A
   end)
 | _ =>
-  (match eq_f A D, S with
+  (match form_eqb A D, S with
   | true, (1) => E
   | _, _ => A
   end)
@@ -102,9 +102,9 @@ Proof.
 intros A D E.
 destruct A;
 unfold formula_sub_ind_fit.
-4 : case (eq_f (univ n A) D).
-2 : case (eq_f (neg A) D).
-1 : case (eq_f (atom a) D).
+4 : case (form_eqb (univ n A) D).
+2 : case (form_eqb (neg A) D).
+1 : case (form_eqb (atom a) D).
 all : reflexivity.
 Qed.
 
@@ -155,8 +155,7 @@ Proof.
 intros A.
 unfold subst_ind_fit, non_target.
 induction A.
-3 : rewrite IHA1, IHA2;
-    unfold "&&".
+3 : rewrite IHA1, IHA2.
 all : reflexivity.
 Qed.
 
@@ -167,9 +166,8 @@ Proof.
 intros A n t.
 unfold subst_ind_fit, non_target, substitution.
 induction A.
-3 : rewrite IHA1, IHA2;
-    unfold "&&".
-4 : case (eq_nat n0 n).
+3 : rewrite IHA1, IHA2.
+4 : case (nat_eqb n0 n).
 all : reflexivity.
 Qed.
 
@@ -181,10 +179,10 @@ intros A D E.
 induction A;
 unfold non_target, formula_sub_ind_fit;
 fold non_target formula_sub_ind_fit.
-4 : case (eq_f (univ n A) D).
+4 : case (form_eqb (univ n A) D).
 3 : rewrite IHA1, IHA2.
-2 : case (eq_f (neg A) D).
-1 : case (eq_f (atom a) D).
+2 : case (form_eqb (neg A) D).
+1 : case (form_eqb (atom a) D).
 all : reflexivity.
 Qed.
 
@@ -207,7 +205,6 @@ intros A B D E S.
 unfold formula_sub_ind, subst_ind_fit, formula_sub_ind_fit;
 fold subst_ind_fit formula_sub_ind_fit.
 rewrite non_target_fit, non_target_sub'.
-unfold "&&".
 case (subst_ind_fit B S) eqn:HB;
 reflexivity.
 Qed.
@@ -221,7 +218,7 @@ induction A;
 unfold non_target, substitution;
 fold non_target substitution.
 3 : rewrite IHA1,IHA2.
-4 : case (eq_nat n0 n).
+4 : case (nat_eqb n0 n).
 all : reflexivity.
 Qed.
 
@@ -280,13 +277,12 @@ all : try apply CA;
       pose proof (IHA2 CA2 CBC S2) as CFA2.
       rewrite FS2 in CFA2.
       rewrite CFA2.
-      unfold "&&".
       reflexivity. }
-7-9 : case (eq_f (univ n A) B) eqn:EQ.
-4-6 : case (eq_f (neg A) B) eqn:EQ.
-1-3 : case (eq_f (atom a) B) eqn:EQ.
+7-9 : case (form_eqb (univ n A) B) eqn:EQ.
+4-6 : case (form_eqb (neg A) B) eqn:EQ.
+1-3 : case (form_eqb (atom a) B) eqn:EQ.
 all : try apply CA;
-      apply f_eq_decid in EQ;
+      apply form_eqb_eq in EQ;
       destruct EQ;
       apply (CBC CA).
 Qed.
@@ -300,7 +296,7 @@ intros A B FS.
 destruct A;
 unfold formula_sub_ind, subst_ind_fit, formula_sub_ind_fit.
 3 : inversion FS.
-all : rewrite eq_f_refl;
+all : rewrite form_eqb_refl;
       reflexivity.
 Qed.
 
@@ -315,7 +311,6 @@ rewrite formula_sub_ind_lor.
   rewrite non_target_sub.
   reflexivity.
 - rewrite non_target_fit.
-  unfold "&&".
   apply FS.
 Qed.
 
@@ -330,6 +325,5 @@ rewrite formula_sub_ind_lor.
   rewrite non_target_sub.
   reflexivity.
 - rewrite FS.
-  unfold "&&".
   apply non_target_fit.
 Qed.

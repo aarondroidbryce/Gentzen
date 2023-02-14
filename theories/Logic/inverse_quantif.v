@@ -79,7 +79,7 @@ Qed.
 Fixpoint quantif_sub_ptree_fit
   (P Q : ptree) (E F : formula) (n dQ : nat) (beta : ord) (QP : P_proves Q (lor F (univ n E)) dQ beta) (S : subst_ind) : ptree :=
   match P, S with
-| deg_up d P', _ => match lt_nat (ptree_deg (quantif_sub_ptree_fit P' Q E F n dQ beta QP S)) d with
+| deg_up d P', _ => match nat_ltb (ptree_deg (quantif_sub_ptree_fit P' Q E F n dQ beta QP S)) d with
     | true => deg_up d (quantif_sub_ptree_fit P' Q E F n dQ beta QP S)
     | false => (quantif_sub_ptree_fit P' Q E F n dQ beta QP S)
     end
@@ -173,13 +173,13 @@ Fixpoint quantif_sub_ptree_fit
       (quantif_sub_ptree_fit P' Q E F n dQ beta QP (lor_ind (non_target A) S_D))
 
 | quantification_a A k t d alpha P', _ =>
-    (match eq_f A E, eq_nat k n, S with
+    (match form_eqb A E, nat_eqb k n, S with
     | true, true, (1) => (cut_ca F (substitution E n (projT1 t)) (ptree_deg (w_rule_sub_ptree Q E n t (lor_ind (non_target F) (1)))) d beta alpha (w_rule_sub_ptree Q E n t (lor_ind (non_target F) (1))) P')
     | _, _, _ => P
     end)
 
 | quantification_ad A D k t d alpha P', lor_ind S_A S_D =>
-    (match eq_f A E, eq_nat k n, S_A with
+    (match form_eqb A E, nat_eqb k n, S_A with
     | true, true, (1) => (cut_cad F (substitution E n (projT1 t)) (quantif_sub_formula D E F n S_D)
                               (ptree_deg (w_rule_sub_ptree Q E n t (lor_ind (non_target F) (1))))
                               (ptree_deg (quantif_sub_ptree_fit P' Q E F n dQ beta QP (lor_ind (0) S_D)))
@@ -287,7 +287,7 @@ unfold ptree_formula in *; fold ptree_formula in *;
 unfold quantif_sub_ptree_fit; fold quantif_sub_ptree_fit.
   
 1 : destruct PV as [ID PV];
-    case (lt_nat (ptree_deg (quantif_sub_ptree_fit P Q E F n dQ beta QP S)) n0) eqn:IE.
+    case (nat_ltb (ptree_deg (quantif_sub_ptree_fit P Q E F n dQ beta QP S)) n0) eqn:IE.
 3 : destruct PV as [[IO PV] NO];
     case (ord_ltb (ptree_ord (quantif_sub_ptree_fit P Q E F n dQ beta QP S)) o) eqn:IE.
 
@@ -302,7 +302,7 @@ unfold quantif_sub_ptree_fit; fold quantif_sub_ptree_fit.
       destruct (axiom_atomic _ PX) as [[a fa] | [a fa]];
       rewrite fa;
       unfold formula_sub_ind_fit; fold formula_sub_ind_fit;
-      unfold eq_f;
+      unfold form_eqb;
       reflexivity. }
 
 all : destruct S; inversion FS as [FS'];
@@ -315,10 +315,10 @@ all : destruct S; inversion FS as [FS'];
             rewrite FS,FS1,FS2;
             reflexivity.
 
-6,7 : case (eq_f f E) eqn:EQ1;
-      case (eq_nat n0 n) eqn:EQ2;
-      unfold ptree_formula, quantif_sub_formula, formula_sub_ind, subst_ind_fit, formula_sub_ind_fit, eq_f;
-      fold eq_f;
+6,7 : case (form_eqb f E) eqn:EQ1;
+      case (nat_eqb n0 n) eqn:EQ2;
+      unfold ptree_formula, quantif_sub_formula, formula_sub_ind, subst_ind_fit, formula_sub_ind_fit, form_eqb;
+      fold form_eqb;
       rewrite EQ1,EQ2;
       unfold "&&";
       reflexivity.
@@ -335,11 +335,11 @@ all : destruct S1; inversion FS' as [FS''].
     destruct FS1_1 as [FS1_1_1 FS1_1_2].
   
 
-8,9 : case (eq_f f E) eqn:EQ1;
-      case (eq_nat n0 n) eqn:EQ2.
+8,9 : case (form_eqb f E) eqn:EQ1;
+      case (nat_eqb n0 n) eqn:EQ2.
 
-all : unfold ptree_formula, quantif_sub_formula, formula_sub_ind, formula_sub_ind_fit, eq_f;
-      fold ptree_formula eq_f formula_sub_ind_fit;
+all : unfold ptree_formula, quantif_sub_formula, formula_sub_ind, formula_sub_ind_fit, form_eqb;
+      fold ptree_formula form_eqb formula_sub_ind_fit;
       try rewrite FS;
       try rewrite FS'';
       try rewrite EQ1;
@@ -396,7 +396,7 @@ try lia.
 10,15,16,17: destruct PV as [[[[[[[P1F P1V] P2F] P2V] P1D] P2D] P1O] P2O].
 
 1 : { unfold ptree_formula in FS; fold ptree_formula in FS.
-      case (lt_nat (ptree_deg (quantif_sub_ptree_fit P Q E F n dQ beta QP S)) n0) eqn:EQ.
+      case (nat_ltb (ptree_deg (quantif_sub_ptree_fit P Q E F n dQ beta QP S)) n0) eqn:EQ.
       - unfold ptree_deg. lia.
       - rewrite (quantif_ptree_formula_true _ _ _ _ _ _ _ _ _ FS).
         assert (Nat.max dQ (ptree_deg P) < num_conn E + 2) as IE1.
@@ -439,8 +439,8 @@ all : destruct S; inversion FS as [FS'];
       try destruct (and_bool_prop _ _ FS') as [FS1 FS2];
       try reflexivity.
 
-10-12 : case (eq_f f E) eqn:EQ1;
-        case (eq_nat n0 n) eqn:EQ2;
+10-12 : case (form_eqb f E) eqn:EQ1;
+        case (nat_eqb n0 n) eqn:EQ2;
         unfold ptree_deg; fold ptree_deg;
         try lia;
         try rewrite (w_rule_ptree_deg _ _ _ _ QV);
@@ -497,8 +497,7 @@ all : unfold ptree_deg; fold ptree_deg;
       try rewrite FS1_2;
       try rewrite FS1_1_1;
       try rewrite FS1_1_2;
-      unfold "&&";
-      try reflexivity.
+      reflexivity.
 Qed.
 
 
@@ -529,7 +528,7 @@ try apply add_left_non_decr.
 10,15,16,17: destruct PV as [[[[[[[P1F P1V] P2F] P2V] P1D] P2D] P1O] P2O].
 
 1 : { unfold ptree_formula in FS; fold ptree_formula in FS.
-      case (lt_nat (ptree_deg (quantif_sub_ptree_fit P Q E F n dQ beta QP S)) n0) eqn:EQ;
+      case (nat_ltb (ptree_deg (quantif_sub_ptree_fit P Q E F n dQ beta QP S)) n0) eqn:EQ;
       rewrite (quantif_ptree_formula_true _ _ _ _ _ _ _ _ _ FS);
       unfold ptree_ord; fold ptree_ord;
       apply (IHP PV). }
@@ -539,8 +538,8 @@ try apply add_left_non_decr.
       unfold ptree_ord; fold ptree_ord.
       - apply add_left_non_decr.
       - rewrite (quantif_ptree_formula_true _ _ _ _ _ _ _ _ _ FS).
-        apply (ord_trans_inv _ (ord_add beta (ptree_ord P))).
-        + apply ltb_asymm.
+        apply (ord_geb_trans _ (ord_add beta (ptree_ord P))).
+        + apply ord_ltb_asymm.
           apply ord_lt_ltb.
           apply add_right_incr.
           apply IO.
@@ -550,17 +549,17 @@ try apply add_left_non_decr.
     rewrite <- PO in IHP;
     try apply (IHP PV).
 
-9-10 :  rewrite quantif_ptree_formula_true;
+9,10 :  rewrite quantif_ptree_formula_true;
         rewrite <- P1O in IHP1;
         rewrite <- P2O in IHP2;
         pose (IHP1 P1V (lor_ind S (non_target f0))) as IHnP1;
         pose (IHP2 P2V (lor_ind (0) S)) as IHnP2;
-        try rewrite (ord_succ_add_succ _ _ (ptree_ord_nf_hyp _ _ QO QV) (ord_succ_nf _ (ord_max_nf _ _ (ptree_ord_nf_hyp _ _ P1O P1V) (ptree_ord_nf_hyp _ _ P2O P2V))));
-        try rewrite (ord_succ_add_succ _ _ (ptree_ord_nf_hyp _ _ QO QV) (ord_max_nf _ _ (ptree_ord_nf_hyp _ _ P1O P1V) (ptree_ord_nf_hyp _ _ P2O P2V)));
+        try rewrite (ord_succ_add_succ _ _ (ptree_ord_nf_hyp _ _ QO QV) (nf_nf_succ _ (nf_ord_max _ _ (ptree_ord_nf_hyp _ _ P1O P1V) (ptree_ord_nf_hyp _ _ P2O P2V))));
+        try rewrite (ord_succ_add_succ _ _ (ptree_ord_nf_hyp _ _ QO QV) (nf_ord_max _ _ (ptree_ord_nf_hyp _ _ P1O P1V) (ptree_ord_nf_hyp _ _ P2O P2V)));
         try rewrite ord_max_add_comm;
-        repeat apply ord_ltb_succ_false;
-        try apply (ord_max_split_false _ _ _ _ IHnP1 (add_left_non_decr _ _));
-        try apply (ord_max_split_false _ _ _ _ (add_left_non_decr _ _) IHnP2).
+        repeat apply ord_geb_succ;
+        try apply (ord_max_geb_split _ _ _ _ IHnP1 (add_left_non_decr _ _));
+        try apply (ord_max_geb_split _ _ _ _ (add_left_non_decr _ _) IHnP2).
 
 5,9,10 :  try rewrite PF;
           try rewrite P1F;
@@ -568,8 +567,7 @@ try apply add_left_non_decr.
           unfold subst_ind_fit, ptree_formula in *; fold subst_ind_fit ptree_formula in *;
           try rewrite FS;
           try rewrite non_target_fit;
-          unfold "&&";
-          try reflexivity.
+          reflexivity.
 
 all : destruct S; inversion FS as [FS'];
       try destruct (and_bool_prop _ _ FS') as [FS1 FS2];
@@ -579,13 +577,13 @@ all : destruct S; inversion FS as [FS'];
        rewrite (ord_succ_add_succ _ _ (ptree_ord_nf_hyp _ _ QO QV) (ptree_ord_nf_hyp _ _ PO PcV)).
        apply ord_ltb_irrefl. }
 
-10-12 : case (eq_f f E) eqn:EQ1;
-        case (eq_nat n0 n) eqn:EQ2;
+10-12 : case (form_eqb f E) eqn:EQ1;
+        case (nat_eqb n0 n) eqn:EQ2;
         unfold ptree_ord; fold ptree_ord;
         try apply add_left_non_decr.
 
 10 :  { rewrite (ord_succ_add_succ _ _ (ptree_ord_nf_hyp _ _ QO QV) (ptree_ord_nf_hyp _ _ PO PV)).
-        apply ord_ltb_succ_false.  
+        apply ord_geb_succ.  
         apply (ord_max_le_add _ _ (ptree_ord_nf_hyp _ _ QO QV) (ptree_ord_nf_hyp _ _ PO PV)). }
 
 2,3,4,10 :  destruct S1; inversion FS' as [FS''];
@@ -663,9 +661,9 @@ try apply PV.
 1 : { unfold ptree_formula in FS; fold ptree_formula in FS.
       unfold ptree_deg in IE.
       rewrite (quantif_ptree_formula_true _ _ _ _ _ _ _ _ _ FS).
-      case (lt_nat (ptree_deg (quantif_sub_ptree P Q E F n dQ beta QP S)) n0) eqn:EQ.
+      case (nat_ltb (ptree_deg (quantif_sub_ptree P Q E F n dQ beta QP S)) n0) eqn:EQ.
       split.
-      1 : { apply lt_nat_decid. apply EQ. } 
+      1 : { apply nat_ltb_decid. apply EQ. } 
       all : refine (IHP PV _ _ FS);
             lia. }
 
@@ -737,8 +735,8 @@ try apply PV.
             rewrite ord_ltb_irrefl.
             reflexivity. }
 
-5,6,12,13 : case (eq_f f E) eqn:EQ1;
-            case (eq_nat n0 n) eqn:EQ2.
+5,6,12,13 : case (form_eqb f E) eqn:EQ1;
+            case (nat_eqb n0 n) eqn:EQ2.
 
 all : repeat rewrite quantif_ptree_formula_true;
       try apply f_eq_decid in EQ1;
@@ -790,7 +788,7 @@ all : repeat rewrite quantif_ptree_formula_true;
       try apply P2O;
       unfold formula_sub_ind, formula_sub_ind_fit, subst_ind_fit;
       fold formula_sub_ind_fit subst_ind_fit;
-      try rewrite eq_f_refl;
+      try rewrite form_eqb_refl;
       try rewrite FS1;
       unfold "&&";
       try reflexivity.

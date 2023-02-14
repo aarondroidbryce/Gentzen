@@ -447,7 +447,7 @@ Lemma theorem_provable : forall (A : formula) (d : nat) (alpha : ord),
   provable A d alpha -> PA_omega_theorem A d alpha.
 Proof.
 intros A d alpha H. unfold provable in H. destruct H as [t [[[H1 H2] H3] H4]].
-apply leq_type in H3. destruct H3 as [H3 | H3].
+apply nat_ge_case_type in H3. destruct H3 as [H3 | H3].
 - assert (valid (deg_up d t)). simpl. auto.
   assert (ptree_formula (deg_up d t) = A) as X1. auto.
   assert (ptree_ord (deg_up d t) = alpha) as X2. auto.
@@ -573,23 +573,23 @@ try rewrite IHT1; try rewrite IHT2; auto.
 - destruct (subst_one_var_free _ _ _ (projT2 c) IHT) as [LIST | LIST].
   + case (closed A) eqn:X.
     * reflexivity.
-    * rewrite LIST. rewrite eq_nat_refl. rewrite eq_list_refl. auto.
+    * rewrite LIST. rewrite nat_eqb_refl. rewrite list_eqb_refl. auto.
   + apply free_list_closed in LIST. rewrite LIST. reflexivity.
 
 - destruct (subst_one_var_free _ _ _ (projT2 c) C2) as [LIST | LIST].
   + case (closed A) eqn:X.
     * reflexivity.
-    * rewrite LIST. rewrite eq_nat_refl. rewrite eq_list_refl. auto.
+    * rewrite LIST. rewrite nat_eqb_refl. rewrite list_eqb_refl. auto.
   + apply free_list_closed in LIST. rewrite LIST. reflexivity.
 
 - destruct (subst_one_var_free A n zero (repr_closed 0) (H czero)) as [LIST | LIST]; simpl.
-  + case (closed A) eqn:X; auto. rewrite LIST. rewrite eq_nat_refl. auto.
+  + case (closed A) eqn:X; auto. rewrite LIST. rewrite nat_eqb_refl. auto.
   + apply free_list_closed in LIST. rewrite LIST. auto.
 
 - pose proof (H czero). simpl in H0. destruct (and_bool_prop _ _ H0).
   rewrite H2.
   destruct (subst_one_var_free A n zero (repr_closed 0) H1) as [LIST | LIST]; simpl.
-  + case (closed A) eqn:X; auto. rewrite LIST. rewrite eq_nat_refl. auto.
+  + case (closed A) eqn:X; auto. rewrite LIST. rewrite nat_eqb_refl. auto.
   + apply free_list_closed in LIST. rewrite LIST. auto.
 
 Qed.

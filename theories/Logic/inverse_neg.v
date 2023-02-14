@@ -99,13 +99,13 @@ match P, S with
       (dub_neg_sub_ptree_fit P2 E (lor_ind (0) S_D))
 
 | negation_a A d alpha P', _ =>
-    (match eq_f A E, S with
+    (match form_eqb A E, S with
     | true, (1) => ord_up (ord_succ alpha) P'
     | _, _ => P
     end)
 
 | negation_ad A D d alpha P', lor_ind S_A S_D =>
-    (match eq_f A E, S_A with
+    (match form_eqb A E, S_A with
     | true, (1) => ord_up (ord_succ alpha) (dub_neg_sub_ptree_fit P' E (lor_ind (non_target A) S_D))
     | _, _ => 
         negation_ad
@@ -232,7 +232,7 @@ unfold dub_neg_sub_ptree_fit; fold dub_neg_sub_ptree_fit.
       destruct (axiom_atomic _ PX) as [[a fa] | [a fa]];
       rewrite fa;
       unfold formula_sub_ind_fit; fold formula_sub_ind_fit;
-      unfold eq_f;
+      unfold form_eqb;
       reflexivity. }
 
 5 : reflexivity.
@@ -247,13 +247,13 @@ all : destruct S; inversion FS as [FS'];
             rewrite FS,FS1,FS2;
             reflexivity.
 
-5-6 : case (eq_f f E) eqn:EQ;
-      unfold ptree_formula, dub_neg_sub_formula, formula_sub_ind, subst_ind_fit, formula_sub_ind_fit, eq_f;
-      fold ptree_formula eq_f;
+5-6 : case (form_eqb f E) eqn:EQ;
+      unfold ptree_formula, dub_neg_sub_formula, formula_sub_ind, subst_ind_fit, formula_sub_ind_fit, form_eqb;
+      fold ptree_formula form_eqb;
       rewrite EQ;
       try reflexivity.
 
-5 : apply f_eq_decid in EQ;
+5 : apply form_eqb_eq in EQ;
     destruct EQ;
     apply PF.
 
@@ -268,10 +268,10 @@ all : destruct S1; inversion FS' as [FS''].
     apply and_bool_prop in FS1_1;
     destruct FS1_1 as [FS1_1_1 FS1_1_2].
 
-5-7 : case (eq_f f E) eqn:EQ.
+5-7 : case (form_eqb f E) eqn:EQ.
 
-all : unfold ptree_formula, dub_neg_sub_formula, formula_sub_ind, formula_sub_ind_fit, eq_f;
-      fold ptree_formula eq_f formula_sub_ind_fit;
+all : unfold ptree_formula, dub_neg_sub_formula, formula_sub_ind, formula_sub_ind_fit, form_eqb;
+      fold ptree_formula form_eqb formula_sub_ind_fit;
       try rewrite FS;
       try rewrite FS'';
       try rewrite EQ;
@@ -280,7 +280,7 @@ all : unfold ptree_formula, dub_neg_sub_formula, formula_sub_ind, formula_sub_in
       unfold "&&";
       try reflexivity.
 
-- apply f_eq_decid in EQ.
+- apply form_eqb_eq in EQ.
   destruct EQ.
   assert (subst_ind_fit (ptree_formula P) (lor_ind (non_target f) S2) = true) as FSP.
   { rewrite PF.
@@ -350,7 +350,7 @@ try reflexivity.
 all : destruct S; inversion FS as [FS'];
       try reflexivity.
 
-4-6 : case (eq_f f E) eqn:EQ;
+4-6 : case (form_eqb f E) eqn:EQ;
       unfold ptree_deg; fold ptree_deg;
       try rewrite PD;
       try reflexivity.
@@ -405,7 +405,7 @@ try reflexivity.
 all : destruct S; inversion FS as [FS'];
       try reflexivity.
 
-4-6 : case (eq_f f E) eqn:EQ;
+4-6 : case (form_eqb f E) eqn:EQ;
       unfold ptree_deg; fold ptree_deg;
       try rewrite PD;
       try reflexivity.
@@ -482,9 +482,9 @@ all : try apply PV.
         intros CE;
         apply CE. }
 
-7,8,13,14 : case (eq_f f E) eqn:EQ.
+7,8,13,14 : case (form_eqb f E) eqn:EQ.
 
-all : try apply f_eq_decid in EQ;
+all : try apply form_eqb_eq in EQ;
       try destruct EQ;
       repeat rewrite dub_neg_ptree_formula_true;
       repeat split;
@@ -523,54 +523,18 @@ all : try apply f_eq_decid in EQ;
       try rewrite FS2;
       unfold "&&";
       unfold formula_sub_ind_fit; fold formula_sub_ind_fit;
-      unfold eq_f; fold eq_f;
+      unfold form_eqb; fold form_eqb;
       try rewrite non_target_sub';
       try rewrite <- (sub_fit_true _ _ _ _ FS1);
       try apply (formula_sub_ind_closed _ _ _ FC CIMP);
-      try case (eq_f f (neg E));
-      try case (eq_f f0 (neg E));
-      try case (eq_f (substitution f n (projT1 c)) (neg E));
+      try case (form_eqb f (neg E));
+      try case (form_eqb f0 (neg E));
+      try case (form_eqb (substitution f n (projT1 c)) (neg E));
       try reflexivity.
 
 1,3 : apply ord_succ_monot.
 
-all : apply ord_succ_nf;
+all : apply nf_nf_succ;
       apply ptree_ord_nf;
       apply PV.
 Qed.
-
-
-
-(*
-
-(* We finally show that if the formulas ~~A and/or ~~A \/ D are provable,
-so are the formulas A and/or A \/ D *)
-(* *)
-Lemma double_negation_invertible_a :
-  forall (A : formula) (d : nat) (alpha : ord),
-  provable (neg (neg A)) d alpha -> provable A d alpha.
-Proof.
-unfold provable. intros A d alpha H. destruct H as [t [[[Ht1 Ht2] Ht3] Ht4]].
-exists (dub_neg_sub_ptree t A (1)). unfold P_proves. repeat split.
-- rewrite dub_neg_ptree_formula; auto.
-  rewrite Ht1. unfold dub_neg_sub_formula. simpl. rewrite eq_f_refl. auto.
-- apply dub_neg_valid; auto. rewrite Ht1. auto.
-- rewrite dub_neg_ptree_deg; auto.
-- rewrite dub_neg_ptree_ord; auto.
-Qed.
-
-Lemma double_negation_invertible_ad :
-  forall (A D : formula) (d : nat) (alpha : ord),
-  provable (lor (neg (neg A)) D) d alpha -> provable (lor A D) d alpha.
-Proof.
-unfold provable. intros A D d alpha H. destruct H as [t [[[Ht1 Ht2] Ht3] Ht4]].
-exists (dub_neg_sub_ptree t A (lor_ind (1) (non_target D))).
-unfold P_proves. repeat split.
-- rewrite dub_neg_ptree_formula; auto.
-  rewrite Ht1. unfold dub_neg_sub_formula. simpl. rewrite eq_f_refl.
-  rewrite non_target_fit. rewrite non_target_sub'. auto.
-- apply dub_neg_valid; auto. rewrite Ht1. simpl. rewrite non_target_fit. auto.
-- rewrite dub_neg_ptree_deg; auto.
-- rewrite dub_neg_ptree_ord; auto.
-Qed.
-*)

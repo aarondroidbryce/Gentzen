@@ -4,6 +4,8 @@ Require Import Nat.
 Open Scope bool_scope.
 
 Notation nat_eqb := Nat.eqb.
+Notation nat_ltb := Nat.ltb.
+
 
 Lemma nat_eqb_refl :
     forall (n : nat),
@@ -13,6 +15,11 @@ induction n as [| n IH].
 - reflexivity.
 - apply IH.
 Qed.
+
+Lemma nat_le_refl :
+    forall (n : nat),
+        n <= n.
+Proof. reflexivity. Qed.
 
 Lemma leb_type :
     forall (n m : nat),
@@ -266,17 +273,89 @@ destruct (nat_semiconnex m n) as [LT | [GT | EQ]].
   apply nat_eqb_refl.
 Qed.
 
-Lemma ge_type : forall (m n : nat), m >= n -> (m > n) \/ (m = n).
+Definition less (m n : nat) := { z : nat & S (z + m) = n}.
+
+Lemma less_lt :
+    forall (m n : nat),
+        less m n ->
+            m < n.
+Proof. intros m n L. destruct L as [p EQ]. lia. Qed.
+
+Theorem nat_semiconnex_type_aux :
+    forall (m n : nat),
+        (less n m) + (n = m) + (less m n).
 Proof.
-intros n m GT.
-inversion GT as [EQ | p LT EQ];
-destruct EQ.
-- right.
-  reflexivity.
-- unfold ge in GT.
+intros m n.
+induction n.
+- destruct m.
+  + left.
+    right.
+    reflexivity.
+  + left.
+    left.
+    exists m.
+    rewrite plus_n_O.
+    reflexivity.
+- destruct m.
+  + right.
+    exists n.
+    rewrite plus_n_O.
+    reflexivity.
+  + destruct IHn as [[IHn | IHn] | IHn].
+    * destruct IHn as [p EQ].
+      destruct p.
+      --  left.
+          right.
+          apply EQ.
+      --  left.
+          left.
+          exists p.
+          rewrite plus_comm.
+          rewrite plus_n_Sm.
+          rewrite plus_comm.
+          rewrite plus_n_Sm in EQ.
+          apply EQ.
+    * right.
+      exists 0.
+      apply eq_S.
+      symmetry.
+      apply IHn.
+    * right.
+      destruct IHn as [p EQ].
+      exists (S p).
+      apply eq_S.
+      apply EQ.
+Qed.
+
+Lemma nat_semiconnex_type :
+    forall (m n : nat),
+        (m > n) + (m = n) + (n > m).
+Proof.
+intros m n.
+destruct (nat_semiconnex_type_aux m n) as [[GT | EQ] | LT].
+- left.
   left.
-  apply le_n_S.
-  apply LT.
+  apply (less_lt _ _ GT).
+- left.
+  right.
+  symmetry.
+  apply EQ.
+- right.
+  apply (less_lt _ _ LT).
+Qed.
+
+Lemma nat_ge_case_type :
+    forall (m n : nat),
+        m >= n ->
+            (m > n) + (m = n).
+Proof.
+intros m n GE.
+destruct (nat_semiconnex_type m n) as [[GT | EQ] | LT].
+- left.
+  apply GT.
+- right.
+  apply EQ.
+- lia.
 Qed.
 
 Lemma max_lem1 :
@@ -366,17 +445,18 @@ intros n. induction n. intros. rewrite eq_nat_refl in H. inversion H. intros. de
 Qed.
 *)
 
-(*
-Lemma nat_eqb_symm : forall (n m : nat),
-  nat_eqb m n = nat_eqb n m.
+
+Lemma nat_eqb_symm :
+    forall (n m : nat),
+        nat_eqb m n = nat_eqb n m.
 Proof.
 induction n;
 destruct m;
 try reflexivity.
-unfold nat_eqb. fold nat_eqb.
+unfold nat_eqb; fold nat_eqb.
 apply IHn.
 Qed.
-*)
+
 
 (*Lemma nat_max_symm : forall n m, max n m = max m n.
 Proof.
@@ -445,4 +525,14 @@ Proof.
 induction n; unfold pow, lt.
 reflexivity.
 fold pow. lia.
+Qed.
+
+Lemma nat_lt_mul_S_lt :
+    forall (m n p : nat),
+        m < n ->
+            (m + p * S m < n + p * S n).
+Proof.
+induction p;
+intros LT;
+lia.
 Qed.
