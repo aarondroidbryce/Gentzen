@@ -445,7 +445,7 @@ unfold correct_a.
 unfold correct_a in T.
 case (correctness (substitution_a a n s)) eqn:COR1;
 inversion T.
-rewrite (eval_eq_subst_cor _ s).
+rewrite (eval_eq_subst_cor_eq _ s).
 - reflexivity.
 - apply (equ_cor_eval_eq _ _ COR).
 - apply COR1. 
@@ -553,7 +553,7 @@ destruct A as [| B | B C | m B].
   apply exchange1.
   unfold num_conn. fold num_conn.
   apply (ord_incr _ _ (ord_succ (nat_ord ((num_conn B)+(num_conn B))))).
-  + apply (Ind _ (nat_le_refl _) _ NB _ _ _ (equ_symm _ _ COR) LIST).
+  + apply (Ind _ (nat_le_refl _) _ NB _ _ _ (correct_atom_symm _ _ COR) LIST).
   + repeat rewrite ord_succ_nat.
     apply nat_ord_lt.
     lia.

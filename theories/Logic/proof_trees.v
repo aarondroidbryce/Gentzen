@@ -512,20 +512,6 @@ apply axiom_correct in H. destruct H.
   apply incorrect_closed. apply Ha.
 Qed.
 
-Lemma subst_one_var_free : forall (A : formula) (n : nat) (t : term),
-  closed_t t = true ->
-  closed (substitution A n t) = true ->
-  free_list A = [n] \/ free_list A = [].
-Proof.
-intros.
-pose proof (subst_remove A n t H).
-apply closed_free_list in H0. rewrite H0 in H1. symmetry in H1.
-rewrite free_list_remove_dups in H1. apply remove_n_dups_empty in H1.
-destruct H1.
-- left. rewrite free_list_remove_dups. apply H1.
-- right. rewrite free_list_remove_dups. apply H1.
-Qed.
-
 Lemma theorem_closed : forall (A : formula) (d : nat) (alpha : ord),
   PA_omega_theorem A d alpha -> closed A = true.
 Proof.
@@ -555,13 +541,13 @@ try rewrite IHT1; try rewrite IHT2; auto.
     * rewrite LIST. rewrite nat_eqb_refl. rewrite list_eqb_refl. auto.
   + apply free_list_closed in LIST. rewrite LIST. reflexivity.
 
-- destruct (subst_one_var_free A n zero (repr_closed 0) (H czero)) as [LIST | LIST]; simpl.
+- destruct (subst_one_var_free A n zero (represent_closed 0) (H czero)) as [LIST | LIST]; simpl.
   + case (closed A) eqn:X; auto. rewrite LIST. rewrite nat_eqb_refl. auto.
   + apply free_list_closed in LIST. rewrite LIST. auto.
 
 - pose proof (H czero). simpl in H0. destruct (and_bool_prop _ _ H0).
   rewrite H2.
-  destruct (subst_one_var_free A n zero (repr_closed 0) H1) as [LIST | LIST]; simpl.
+  destruct (subst_one_var_free A n zero (represent_closed 0) H1) as [LIST | LIST]; simpl.
   + case (closed A) eqn:X; auto. rewrite LIST. rewrite nat_eqb_refl. auto.
   + apply free_list_closed in LIST. rewrite LIST. auto.
 

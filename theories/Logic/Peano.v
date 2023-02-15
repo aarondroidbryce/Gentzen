@@ -153,7 +153,7 @@ induction m;
 unfold inductive_chain, closed; fold inductive_chain closed;
 try rewrite IHm;
 unfold "&&", "~>", closed; fold closed;
-rewrite succ_repr;
+rewrite succ_represent_comm;
 repeat rewrite (closed_univ_sub_repr _ _ CA _);
 reflexivity.
 Qed.
@@ -282,7 +282,7 @@ unfold inductive_chain in T1. fold inductive_chain in T1. unfold "~>" in T1.
 apply exchange1.
 apply contraction2.
 apply associativity2.
-apply (quantification2 _ _ _ (closing (represent (S m)) (repr_closed _))).
+apply (quantification2 _ _ _ (closing (represent (S m)) (represent_closed _))).
 unfold represent in *. fold represent in *.
 unfold closing. unfold projT1.
 unfold substitution. fold substitution.
@@ -348,7 +348,7 @@ intros A n m t alpha T1.
 apply exchange1.
 apply contraction2.
 apply associativity2.
-apply (quantification2 _ _ _ (closing (represent 0) (repr_closed _))).
+apply (quantification2 _ _ _ (closing (represent 0) (represent_closed _))).
 unfold substitution; fold substitution.
 rewrite sub_succ_self.
 apply associativity1.
@@ -391,7 +391,7 @@ destruct (value c) eqn:V.
       apply (ord_incr _ _ (ord_succ (nat_ord (num_conn A + num_conn A)))).
       --  rewrite <- (num_conn_sub _ n zero).
           apply LEM.
-          apply (one_var_free_lemma _ _ _ (repr_closed 0) LIST).
+          apply (one_var_free_lemma _ _ _ (represent_closed 0) LIST).
       --  rewrite ord_add_one_succ.
           ++  repeat rewrite ord_succ_nat.
               apply nat_ord_lt.
@@ -738,7 +738,7 @@ intros c; unfold "~>" in *.
 
 - rewrite closure_neg.
   rewrite closure_type_equiv.
-  rewrite (closure_closed_id_t _ _ (repr_closed 0)).
+  rewrite (closure_closed_id_t _ _ (represent_closed 0)).
   apply axiom.
   unfold PA_omega_axiom. 
   destruct (correctness_decid (equ zero (closure_t (succ t) c))) as [X | X].
@@ -797,7 +797,7 @@ intros c; unfold "~>" in *.
 
 - rewrite closure_type_equiv.
   rewrite closure_t_plus.
-  rewrite (closure_closed_id_t _ _ (repr_closed 0)).
+  rewrite (closure_closed_id_t _ _ (represent_closed 0)).
   apply axiom.
   unfold PA_omega_axiom.
   destruct (correctness_decid (equ (plus (closure_t t c) zero) (closure_t t c))) as [X | X].
@@ -840,7 +840,7 @@ intros c; unfold "~>" in *.
 
 - rewrite closure_type_equiv.
   rewrite closure_t_times.
-  rewrite (closure_closed_id_t _ _ (repr_closed 0)).
+  rewrite (closure_closed_id_t _ _ (represent_closed 0)).
   apply axiom.
   unfold PA_omega_axiom.
   destruct (correctness_decid (equ (times (closure_t t c) zero) zero)) as [X | X].
@@ -898,11 +898,11 @@ intros c; unfold "~>" in *.
       case (member n (free_list A)) eqn:X1.
       { rewrite (free_list_sub_self _ _ m X1).
         rewrite remove_dups_concat_self.
-        rewrite <- free_list_remove_dups.
+        rewrite <- free_list_remove_dups_idem.
         reflexivity. }
       { rewrite (closed_subst_eq_aux _ _ _ X1).
         rewrite remove_dups_concat_self.
-        rewrite <- free_list_remove_dups.
+        rewrite <- free_list_remove_dups_idem.
         reflexivity. } }
     rewrite LIST.
     refine (ord_incr _ _ _ _ (deg_incr _ _ _ _ (induction_closed_aux _ _ (closing m Hm) X) _) _ _).
@@ -926,11 +926,11 @@ intros c; unfold "~>" in *.
       case (member n (free_list A)) eqn:X1. 
       { rewrite (free_list_sub_self _ _ m X1).
         rewrite remove_dups_concat_self.
-        rewrite <- free_list_remove_dups.
+        rewrite <- free_list_remove_dups_idem.
         reflexivity. }
       { rewrite (closed_subst_eq_aux _ _ _ X1).
         rewrite remove_dups_concat_self.
-        rewrite <- free_list_remove_dups.
+        rewrite <- free_list_remove_dups_idem.
         reflexivity. } }
     assert ((max (max 0 0) (num_conn (neg (substitution (closure_type A c (free_list (univ n A))) n (represent (value (closing m Hm))))))) = (num_conn A + 1)) as Z2.
       { unfold max.
@@ -1049,10 +1049,10 @@ unfold num_conn; fold num_conn.
     destruct X.
     rewrite closed_subst_eq_aux.
     * apply I_induct.
-    * rewrite (subst_remove _ _ _ (repr_closed 0)).
+    * rewrite (subst_remove _ _ _ (represent_closed 0)).
       apply remove_not_member.
   + rewrite nat_eqb_symm in X.
-    rewrite (substitution_order _ _ _ _ _ (repr_closed 0) HC X).
+    rewrite (substitution_order _ _ _ _ _ (represent_closed 0) HC X).
     rewrite (weak_substitution_order _ _ _ (succ (var n0))).
     * rewrite <- (num_conn_sub A n c).
       apply I_induct.
