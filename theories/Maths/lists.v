@@ -9,8 +9,6 @@ From Systems Require Import definitions.
 
 Open Scope bool_scope.
 
-(* Basic properties of lists and lists of nats *)
-(* *)
 Inductive list (X : Type) : Type :=
 | nil : list X
 | constr : X -> list X -> list X.
@@ -36,23 +34,6 @@ match l1,l2 with
 | m :: l1', n :: l2' => nat_eqb m n && list_eqb l1' l2'
 end.
 
-(*
-Lemma eq_list_symm :
-  forall l1 l2,
-      eq_list l1 l2 = eq_list l2 l1.
-Proof.
-induction l1.
-- destruct l2;
-  reflexivity.
-- destruct l2.
-  + reflexivity.
-  + unfold eq_list; fold eq_list.
-    rewrite IHl1.
-    rewrite nat_eqb_symm.
-    reflexivity.
-Qed.
-*)
-
 Lemma list_eqb_eq :
     forall (l1 l2 : list nat),
         list_eqb l1 l2 = true ->
@@ -72,24 +53,6 @@ intros l2 EQ.
     reflexivity.
 Qed.
 
-(*
-Lemma list_ne_cons : forall (l1 : list nat) (n : nat), eq_list l1 (n :: l1) = false.
-Proof.
-intros l1 n.
-induction l1.
-- unfold eq_list.
-  reflexivity.
-- unfold eq_list. fold eq_list.
-  case (eq_nat x n) eqn:X1.
-  + apply nat_eqb_eq in X1.
-    destruct X1.
-    rewrite IHl1.
-    unfold "&&".
-    reflexivity.
-  + unfold "&&".
-    reflexivity.
-Qed.
-*)
 Lemma list_eqb_refl :
     forall (l : list nat),
         list_eqb l l = true.
@@ -100,19 +63,6 @@ induction l.
   rewrite nat_eqb_refl.
   apply IHl.
 Qed.
-
-(*
-Lemma eq_list_decid_conv :
-  forall (l1 l2 : list nat),
-    eq_list l1 l2 = false -> l1 <> l2.
-Proof.
-unfold "<>".
-intros l1 l2 NEQ EQ.
-destruct EQ.
-rewrite eq_list_refl in NEQ.
-inversion NEQ.
-Qed.
-*)
 
 Fixpoint remove (n : nat) (l : list nat) : list nat :=
 match l with
@@ -169,7 +119,6 @@ try reflexivity;
 inversion CL.
 Qed.
 
-
 Lemma remove_dups_empty :
     forall (l : list nat),
         remove_dups l = [] -> l = [].
@@ -179,7 +128,6 @@ destruct l.
 - reflexivity.
 - inversion lE.
 Qed.
-
 
 Lemma remove_comm :
     forall (l : list nat) (n m : nat),
@@ -233,19 +181,6 @@ induction l.
     rewrite IHl.
     reflexivity.
 Qed.
-
-(*
-Lemma remove_n_n :
-    forall (l : list nat) (n : nat),
-        remove n (remove_dups (n :: l)) = remove n (remove_dups l).
-Proof.
-intros l n.
-rewrite remove_dups_order.
-unfold remove; fold remove.
-rewrite nat_eqb_refl.
-rewrite <- remove_dups_order.
-reflexivity.
-Qed. *)
 
 Lemma remove_n_dups_empty :
     forall (l : list nat) (n : nat),

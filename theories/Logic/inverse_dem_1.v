@@ -185,26 +185,6 @@ match subst_ind_fit (ptree_formula P) S with
 | true => demorgan1_sub_ptree_fit P E F S
 end.
 
-
-(* 
-Lemma demorgan1_ptree_formula_aux' :
-  forall (P : ptree) (E F : formula) (S : subst_ind),
-    subst_ind_fit (ptree_formula P) S = false ->
-    demorgan1_sub_ptree P E F S = P.
-Proof. intros. unfold demorgan1_sub_ptree. destruct P; rewrite H; auto. Qed.
-
-Lemma demorgan1_ptree_formula_aux :
-  forall (P : ptree) (E F : formula) (S : subst_ind),
-    subst_ind_fit (ptree_formula P) S = false ->
-      ptree_formula (demorgan1_sub_ptree P E F S) =
-      demorgan1_sub_formula (ptree_formula P) E F S.
-Proof.
-intros. rewrite demorgan1_ptree_formula_aux'.
-- unfold demorgan1_sub_formula. rewrite sub_fit_false. auto. apply H.
-- apply H.
-Qed.
-*)
-
 Lemma demorgan1_ptree_formula_true :
     forall (P : ptree) (E F : formula) (S : subst_ind),
         subst_ind_fit (ptree_formula P) S = true ->
@@ -322,7 +302,6 @@ all : unfold ptree_formula, demorgan1_sub_formula, formula_sub_ind, formula_sub_
       try reflexivity.
 Qed.
 
-
 Lemma demorgan1_ptree_formula :
     forall (P : ptree) (E F : formula),
         valid P ->
@@ -337,7 +316,6 @@ destruct (subst_ind_fit (ptree_formula P) S) eqn:FS.
   rewrite FS.
   reflexivity.
 Qed.
-
 
 Lemma demorgan1_ptree_deg :
     forall (P : ptree) (E F : formula),
@@ -396,8 +374,6 @@ all : unfold ptree_deg; fold ptree_deg;
   rewrite FS'.
   reflexivity.
 Qed.
-
-
 
 Lemma demorgan1_ptree_ord :
     forall (P : ptree) (E F : formula),

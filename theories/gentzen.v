@@ -15,23 +15,13 @@ From Systems Require Import proof_trees.
 From Systems Require Import substitute.
 From Systems Require Import cut_elim.
 From Systems Require Import Peano.
-Notation "b1 && b2" := (andb b1 b2).
-Notation "b1 || b2" := (orb b1 b2).
-Notation eq_nat := Nat.eqb.
 
-
-
-(*
-###############################################################################
-Section 13: The consistency of PA
-###############################################################################
-*)
 Fixpoint disjunction_of (A E : formula) : bool :=
-match eq_f A E with
+match form_eqb A E with
 | true => true
 | false => match A with
   | lor B C =>
-    (match eq_f B E, eq_f C E with
+    (match form_eqb B E, form_eqb C E with
     | true, true => true
     | true, false => disjunction_of C E
     | false, true => disjunction_of B E
@@ -52,12 +42,12 @@ Proof.
 intros A B.
 unfold dangerous_disjunct.
 unfold disjunction_of; fold disjunction_of.
-case (eq_f A danger) eqn:X;
-case (eq_f B danger) eqn:X1;
+case (form_eqb A danger) eqn:X;
+case (form_eqb B danger) eqn:X1;
 case (disjunction_of A danger) eqn:X2;
 case (disjunction_of B danger) eqn:X3;
-unfold danger, "&&", eq_f;
-fold eq_f;
+unfold danger, "&&", form_eqb;
+fold form_eqb;
 reflexivity.
 Qed.
 
@@ -69,17 +59,17 @@ intros A B.
 unfold dangerous_disjunct.
 unfold disjunction_of; fold disjunction_of.
 unfold danger. 
-unfold eq_f; fold eq_f.
+unfold form_eqb; fold form_eqb.
 fold danger.
-case (eq_f A danger) eqn:X;
-case (eq_f B danger) eqn:X1;
-try apply f_eq_decid in X;
-try apply f_eq_decid in X1;
+case (form_eqb A danger) eqn:X;
+case (form_eqb B danger) eqn:X1;
+try apply form_eqb_eq in X;
+try apply form_eqb_eq in X1;
 try rewrite X;
 try rewrite X1;
 unfold danger;
 unfold disjunction_of; fold disjunction_of;
-try rewrite eq_f_refl;
+try rewrite form_eqb_refl;
 unfold "&&";
 try reflexivity.
 case (disjunction_of A (zero # succ zero));
@@ -94,8 +84,8 @@ Proof.
 intros A DA.
 induction A.
 2,4 : inversion DA.
-- case (eq_f (atom a) danger) eqn:X.
-  + apply f_eq_decid in X.
+- case (form_eqb (atom a) danger) eqn:X.
+  + apply form_eqb_eq in X.
     rewrite X.
     unfold danger.
     unfold closed.
@@ -144,13 +134,13 @@ induction P.
       unfold ptree_formula,ptree_deg,ptree_ord in *;
       rewrite HP1 in HP2;
       inversion HP2 as [RA].
-      - case (eq_f (atom a) danger) eqn:X; inversion DA.
-        unfold eq_f, danger in X.
+      - case (form_eqb (atom a) danger) eqn:X; inversion DA.
+        unfold form_eqb, danger in X.
         apply atom_beq_eq in X.
         symmetry in X.
         destruct X.
         inversion RA.
-      - case (eq_f (neg A) danger) eqn:Y.
+      - case (form_eqb (neg A) danger) eqn:Y.
         inversion Y.
         inversion DA. }
 
@@ -243,14 +233,14 @@ Lemma danger_not_provable' :
     forall A P,
         dangerous_disjunct A = true ->
             valid P ->
-                eq_f (ptree_formula P) A = false.
+                form_eqb (ptree_formula P) A = false.
 Proof.
 intros A P DA PV.
-case (eq_f (ptree_formula P) A) eqn:Y.
+case (form_eqb (ptree_formula P) A) eqn:Y.
 - assert (provable (ptree_formula P) (ptree_deg P) (ptree_ord P)) as HP.
   { exists P. repeat split. apply PV. lia. }
   pose (provable_not_danger _ _ _ HP) as Danger.
-  apply f_eq_decid in Y.
+  apply form_eqb_eq in Y.
   destruct Y.
   rewrite DA in Danger.
   inversion Danger.
@@ -266,7 +256,7 @@ Proof.
 intros A DA P d alpha [[[PF PV] PD] PO].
 pose proof (danger_not_provable' _ _ DA PV) as Danger.
 destruct PF.
-rewrite eq_f_refl in Danger.
+rewrite form_eqb_refl in Danger.
 inversion Danger.
 Qed.
 
@@ -292,7 +282,7 @@ assert (closed danger = true) as CD.
   reflexivity. }
 assert (dangerous_disjunct danger = true) as DD.
 { unfold dangerous_disjunct, disjunction_of, danger.
-  rewrite eq_f_refl.
+  rewrite form_eqb_refl.
   reflexivity. }
 apply (danger_not_theorem _ DD _ _ (cut2 _ _ _ _ _ _ T1 (exchange1 _ _ _ _ (weakening (danger) _ _ _ CD T2)))).
 Qed.

@@ -24,9 +24,6 @@ Inductive formula : Type :=
 | lor : formula -> formula -> formula
 | univ : nat -> formula -> formula.
 
-
-(* Count number of connectives and quantifiers appearing in a formula *)
-(* *)
 Fixpoint num_conn (a : formula) : nat :=
 match a with
 | atom a' => 0
@@ -35,8 +32,6 @@ match a with
 | univ n a' => S (num_conn a')
 end.
 
-(* Check syntactic equality of formulas *)
-(* *)
 Fixpoint term_eqb (s t : term) : bool :=
 match s, t with
 | zero, zero => true
@@ -100,7 +95,6 @@ Qed.
 
 
 (* Given some term t, returns t+1 if the formula is closed, 0 otherwise *)
-(* *)
 Fixpoint eval (t : term) : nat :=
 match t with
 | zero => 1
@@ -135,8 +129,6 @@ unfold represent.
 reflexivity.
 Qed.
 
-(* Given some atomic formula a, returns whether the statement is correct,
-incorrect, or undefined (i.e. not closed) *)
 Inductive ternary : Type :=
 | correct : ternary
 | incorrect : ternary
@@ -167,8 +159,6 @@ match correctness a with
 | _ => false
 end.
 
-(* Free variable lists *)
-(* *)
 Fixpoint free_list_t (t : term) : list nat :=
 match t with
 | zero => nil
@@ -191,9 +181,6 @@ match A with
 | univ n B => remove n (free_list B)
 end.
 
-
-(* Some lemmas about free variable lists we will later use *)
-(* *)
 Lemma free_list_remove_dups_t : forall (t : term),
   free_list_t t = remove_dups (free_list_t t).
 Proof. intros. induction t; auto; simpl; rewrite remove_dups_twice; auto. Qed.
@@ -266,7 +253,6 @@ Definition closing (t : term) (Ht : closed_t t = true) : c_term. exists t. exact
 
 Definition value (c : c_term) : nat := eval (projT1 c) - 1.
 
-
 Lemma closed_univ' : forall (B : formula) (n : nat),
   closed (univ n B) = true -> closed B = false -> free_list B = [n].
 Proof.
@@ -287,9 +273,6 @@ intros. destruct (closed B) eqn:HB.
 - right. apply (closed_univ' _ _ H HB).
 Qed.
 
-
-(* A formula is closed iff its free_list is empty *)
-(* *)
 Lemma free_list_closed_t : forall (t : term),
   free_list_t t = [] -> closed_t t = true.
 Proof.
@@ -374,9 +357,6 @@ intros. induction A; auto; simpl.
   + rewrite H0. simpl. rewrite nat_eqb_refl. auto.
 Qed.
 
-
-(* Closed atomic formulas are either correct or incorrect *)
-(* *)
 Lemma eval_succ_lemma : forall (s : term), eval (succ s) > 0 -> eval s > 0.
 Proof.
 intros.
@@ -513,10 +493,6 @@ match A with
     end)
 end.
 
-
-(* If a formula has exactly one free variable x_n, and a closed term t is
-substituted in place of that variable, the resulting formula is closed *)
-(* *)
 Lemma subst_remove_t : forall (T t : term) (n : nat),
   closed_t t = true ->
   free_list_t (substitution_t T n t) = remove n (free_list_t T).
@@ -975,8 +951,6 @@ intros A. induction A; intros.
 - simpl. case (nat_eqb n n0) eqn:X. apply nat_eqb_eq in X. destruct X. simpl. rewrite nat_eqb_refl. auto. simpl. rewrite X. rewrite IHA. auto.
 Qed.
 
-(* Boolean equality on formulas implies actual equality *)
-(* *)
 Definition term_beq_eq_nice (t : term) : Prop := forall (s : term),
   term_eqb s t = true -> s = t.
 
@@ -1338,7 +1312,6 @@ Lemma free_list_univ_closure : forall (A : formula) (c : c_term) (n : nat), free
 Proof.
 intros. simpl. apply closure_type_list_remove; auto.
 Qed.
-
 
 Lemma correct_correctness : forall (a : atomic_formula),
   correct_a a = true -> correctness a = correct.

@@ -31,7 +31,6 @@ destruct c as [t Ct].
 apply Ct.
 Qed.
 
-
 Fixpoint w_rule_sub_ptree_fit
   (P : ptree) (E : formula) (n : nat) (c : c_term) (S : subst_ind) : ptree :=
 match P, S with
@@ -179,37 +178,6 @@ match subst_ind_fit (ptree_formula P) S with
 | false => P
 | true => w_rule_sub_ptree_fit P E n c S
 end.
-
-
-(*
-Lemma w_rule_simp :
-    forall (P : ptree) (E : formula) (n : nat) (c : c_term) (S : subst_ind),
-          subst_ind_fit (ptree_formula P) S = true ->
-              w_rule_sub_ptree P E n c S = w_rule_sub_ptree_fit P E n c S .
-Proof.
-intros.
-destruct P; simpl; simpl in H; rewrite H; auto.
-Qed.
-*)
-
-(*
-Lemma w_rule_ptree_formula_aux' :
-  forall (P : ptree) (E : formula) (n : nat) (c : c_term) (S : subst_ind),
-    subst_ind_fit (ptree_formula P) S = false ->
-    w_rule_sub_ptree P E n c S = P.
-Proof. intros. unfold w_rule_sub_ptree. destruct P; rewrite H; auto. Qed.
-
-Lemma w_rule_ptree_formula_aux :
-  forall (P : ptree) (E : formula) (n : nat) (c : c_term) (S : subst_ind),
-    subst_ind_fit (ptree_formula P) S = false ->
-      ptree_formula (w_rule_sub_ptree P E n c S) =
-      w_rule_sub_formula (ptree_formula P) E n c S.
-Proof.
-intros. rewrite w_rule_ptree_formula_aux'.
-- unfold w_rule_sub_formula. rewrite sub_fit_false. auto. apply H.
-- apply H.
-Qed.
-*)
 
 Lemma w_rule_ptree_formula_true :
     forall (P : ptree) (E : formula) (n : nat) (c : c_term) (S : subst_ind),
@@ -418,7 +386,6 @@ all : unfold ptree_deg; fold ptree_deg;
   apply IHPS.
 Qed.
 
-(* *)
 Lemma w_rule_ptree_ord :
     forall (P : ptree) (E : formula) (n : nat) (c : c_term),
         valid P ->
@@ -466,7 +433,6 @@ all : unfold ptree_deg; fold ptree_deg;
       try reflexivity.
 Qed.
 
-(* *)
 Lemma w_rule_valid :
     forall (P : ptree) (E : formula) (n : nat) (c : c_term),
         valid P ->
@@ -611,59 +577,3 @@ all : try apply form_eqb_eq in EQ1;
       try rewrite nat_eqb_refl in EQ3;
       try lia.
 Qed.
-
-Lemma w_rule_invertible_cut_ad :
-    forall (P : ptree) (A : formula) (n d : nat) (alpha : ord) (c : c_term),
-        P_proves P (univ n A) d alpha ->
-            provable (substitution A n (projT1 c)) d alpha.
-Proof.
-unfold provable.
-intros P A n d alpha c [[[PF PV] PD] PO].
-exists (w_rule_sub_ptree P A n c (1)).
-repeat split.
-- rewrite (w_rule_ptree_formula _ _ _ _ PV).
-  rewrite PF.
-  unfold w_rule_sub_formula, formula_sub_ind, formula_sub_ind_fit, subst_ind_fit.
-  rewrite form_eqb_refl.
-  reflexivity.
-- apply (w_rule_valid _ _ _ _ PV).
-  rewrite PF.
-  unfold subst_ind_fit.
-  reflexivity.
-- rewrite ((w_rule_ptree_deg P) _ _ _ PV).
-  apply PD.
-- rewrite ((w_rule_ptree_ord P) _ _ _ PV).
-  apply PO.
-Defined.
-
-Lemma w_rule_invertible_cut_cad :
-    forall (P : ptree) (A D : formula) (n d : nat) (alpha : ord) (c : c_term),
-        P_proves P (lor D (univ n A)) d alpha ->
-            provable (lor D (substitution A n (projT1 c))) d alpha.
-Proof.
-unfold provable.
-intros P A D n d alpha c [[[PF PV] PD] PO].
-assert (valid (exchange_ab D (univ n A) (ptree_deg P) alpha P)).
-{ repeat split. apply PF. apply PV. apply PO. }
-exists (exchange_ab (substitution A n (projT1 c)) D (ptree_deg P) alpha (w_rule_sub_ptree (exchange_ab D (univ n A) (ptree_deg P) alpha P) A n c (lor_ind (1) (non_target D)))).
-repeat split.
-- unfold w_rule_sub_ptree, subst_ind_fit, ptree_formula, w_rule_sub_ptree_fit;
-  fold subst_ind_fit w_rule_sub_ptree_fit.
-  unfold w_rule_sub_formula, "&&".
-  rewrite non_target_sub, non_target_fit.
-  unfold formula_sub_ind, formula_sub_ind_fit, subst_ind_fit.
-  rewrite form_eqb_refl.
-  reflexivity.
-- apply (w_rule_valid _ _ _ _ X).
-  unfold ptree_formula, subst_ind_fit.
-  fold subst_ind_fit.
-  unfold "&&".
-  apply non_target_fit.
-- rewrite (w_rule_ptree_deg _ _ _ _ X).
-  unfold ptree_deg.
-  reflexivity.
-- rewrite (w_rule_ptree_ord _ _ _ _ X).
-  unfold ptree_ord.
-  reflexivity.
-- apply PD.
-Defined.

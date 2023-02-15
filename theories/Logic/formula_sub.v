@@ -686,28 +686,3 @@ all : refine (formula_sub_ind_fit_closed _ _ _ FC _ _ FS1);
       intros Caa;
       apply CF.
 Qed.
-
-
-
-(* 
-(* *)
-Lemma neg_sub_valid :
-  forall (D : formula) (a : atomic_formula) (d : nat) (alpha : ord),
-  PA_omega_axiom (neg (atom a)) = false ->
-  provable (lor (neg (atom a)) D) d alpha ->
-  provable (lor D D) d alpha.
-Proof.
-unfold provable. intros D a d alpha Ha H. destruct H as [P [[[HP1 HP2] HP3] HP4]].
-exists (formula_sub_ptree P (neg (atom a)) D (lor_ind (1) (non_target D))).
-unfold P_proves. repeat split.
-- rewrite formula_sub_ptree_formula_neg; auto. rewrite HP1.
-  unfold formula_sub_ind. simpl. rewrite non_target_fit. simpl.
-  rewrite eq_atom_refl. rewrite non_target_sub'. auto.
-- apply formula_sub_valid_neg; auto.
-  + pose proof (provable_closed' P (lor (neg (atom a)) D) HP2 HP1).
-    simpl in H. destruct (and_bool_prop _ _ H). auto.
-  + rewrite HP1. simpl. rewrite non_target_fit. auto.
-- rewrite formula_sub_ptree_deg_neg; auto.
-- rewrite formula_sub_ptree_ord_neg; auto.
-Qed.
-*)

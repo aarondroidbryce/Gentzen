@@ -11,7 +11,6 @@ From Systems Require Import fol.
 From Systems Require Import proof_trees.
 From Systems Require Import substitute.
 
-
 Definition demorgan2_sub_formula (A E F : formula) (S : subst_ind) : formula :=
     formula_sub_ind A (neg (lor E F)) (neg F) S.
   
@@ -187,26 +186,6 @@ match subst_ind_fit (ptree_formula P) S with
 | true => demorgan2_sub_ptree_fit P E F S
 end.
 
-
-(* 
-Lemma demorgan2_ptree_formula_aux' :
-  forall (P : ptree) (E F : formula) (S : subst_ind),
-    subst_ind_fit (ptree_formula P) S = false ->
-    demorgan2_sub_ptree P E F S = P.
-Proof. intros. unfold demorgan2_sub_ptree. destruct P; rewrite H; auto. Qed.
-
-Lemma demorgan2_ptree_formula_aux :
-  forall (P : ptree) (E F : formula) (S : subst_ind),
-    subst_ind_fit (ptree_formula P) S = false ->
-      ptree_formula (demorgan2_sub_ptree P E F S) =
-      demorgan2_sub_formula (ptree_formula P) E F S.
-Proof.
-intros. rewrite demorgan2_ptree_formula_aux'.
-- unfold demorgan2_sub_formula. rewrite sub_fit_false. auto. apply H.
-- apply H.
-Qed.
-*)
-
 Lemma demorgan2_ptree_formula_true :
     forall (P : ptree) (E F : formula) (S : subst_ind),
         subst_ind_fit (ptree_formula P) S = true ->
@@ -324,7 +303,6 @@ all : unfold ptree_formula, demorgan2_sub_formula, formula_sub_ind, formula_sub_
       try reflexivity.
 Qed.
 
-
 Lemma demorgan2_ptree_formula :
     forall (P : ptree) (E F : formula),
         valid P ->
@@ -339,7 +317,6 @@ destruct (subst_ind_fit (ptree_formula P) S) eqn:FS.
   rewrite FS.
   reflexivity.
 Qed.
-
 
 Lemma demorgan2_ptree_deg :
     forall (P : ptree) (E F : formula),
@@ -399,8 +376,6 @@ all : unfold ptree_deg; fold ptree_deg;
   reflexivity.
 Qed.
 
-
-
 Lemma demorgan2_ptree_ord :
     forall (P : ptree) (E F : formula),
         valid P ->
@@ -444,7 +419,6 @@ all : unfold ptree_ord; fold ptree_ord;
       try reflexivity.
 Qed.
 
-(* *)
 Lemma demorgan2_valid :
     forall (P : ptree) (E F : formula),
         valid P ->

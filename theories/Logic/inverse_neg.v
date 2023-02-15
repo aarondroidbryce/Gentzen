@@ -10,7 +10,6 @@ From Systems Require Import fol.
 From Systems Require Import proof_trees.
 From Systems Require Import substitute.
 
-
 Definition dub_neg_sub_formula (A E : formula) (S : subst_ind) : formula :=
   formula_sub_ind A (neg (neg E)) E S.
 
@@ -27,7 +26,6 @@ unfold closed; fold closed.
 intros CE.
 apply CE.
 Qed.
-
 
 Fixpoint dub_neg_sub_ptree_fit
   (P : ptree) (E : formula) (S : subst_ind) : ptree :=
@@ -165,38 +163,6 @@ match subst_ind_fit (ptree_formula P) S with
 | true => dub_neg_sub_ptree_fit P E S
 end.
 
-
-(* First, we must prove that dub_neg_sub_ptree simply changes the base formula
-of an ptree the way we expect with dub_neg_sub_formula *)
-(* *)
-
-(*
-Lemma dub_neg_ptree_formula_aux' :
-    forall (P : ptree) (E : formula) (S : subst_ind),
-      subst_ind_fit (ptree_formula P) S = false ->
-          dub_neg_sub_ptree P E S = P.
-Proof.
-intros P E S FS.
-unfold dub_neg_sub_ptree.
-rewrite FS.
-reflexivity.
-Qed.
-*)
-(*
-Lemma dub_neg_ptree_formula_aux :
-  forall (P : ptree) (E : formula) (S : subst_ind),
-      subst_ind_fit (ptree_formula P) S = false ->
-          ptree_formula (dub_neg_sub_ptree P E S) =
-              dub_neg_sub_formula (ptree_formula P) E S.
-Proof.
-intros P E S FS.
-rewrite (dub_neg_ptree_formula_aux' _ _ _ FS).
-unfold dub_neg_sub_formula.
-symmetry.
-apply (sub_fit_false _ _ _ _ FS). 
-Qed.
-*)
-
 Lemma dub_neg_ptree_formula_true :
     forall (P : ptree) (E : formula) (S : subst_ind),
         subst_ind_fit (ptree_formula P) S = true ->
@@ -298,7 +264,6 @@ all : unfold ptree_formula, dub_neg_sub_formula, formula_sub_ind, formula_sub_in
   reflexivity.
 Qed.
 
-
 Lemma dub_neg_ptree_formula :
     forall (P : ptree) (E : formula),
         valid P ->
@@ -314,13 +279,6 @@ destruct (subst_ind_fit (ptree_formula P) S) eqn:FS.
   reflexivity.
 Qed.
 
-
-
-
-
-(* Second, we must prove that dub_neg_sub_ptree does not change the degree
-of an ptree. *)
-(* *)
 Lemma dub_neg_ptree_deg :
     forall (P : ptree) (E : formula),
         valid P ->
@@ -373,9 +331,6 @@ all : unfold ptree_deg; fold ptree_deg;
   apply IHPS.
 Qed.
 
-(* Third, we must prove that dub_neg_sub_ptree does not change the ordinal
-of an ptree. *)
-(* *)
 Lemma dub_neg_ptree_ord :
     forall (P : ptree) (E : formula),
         valid P ->
@@ -418,9 +373,6 @@ all : unfold ptree_deg; fold ptree_deg;
       try reflexivity.
 Qed.
 
-(* Now we prove that if we have a valid ptree, performing our
-double negation substitution on it results in a valid ptree *)
-(* *)
 Lemma dub_neg_valid :
     forall (P : ptree) (E : formula),
         valid P ->

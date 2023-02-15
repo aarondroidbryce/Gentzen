@@ -424,7 +424,6 @@ all : destruct S; inversion FS as [FS'];
         try rewrite PF;
         unfold subst_ind_fit; fold subst_ind_fit;
         try apply FS';
-        unfold w_rule_invertible_cut_cad;
         destruct QP; repeat destruct p;
         unfold projT1;
         unfold ptree_deg; fold ptree_deg;

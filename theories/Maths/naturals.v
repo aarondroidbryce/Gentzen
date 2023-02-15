@@ -6,7 +6,6 @@ Open Scope bool_scope.
 Notation nat_eqb := Nat.eqb.
 Notation nat_ltb := Nat.ltb.
 
-
 Lemma nat_eqb_refl :
     forall (n : nat),
         nat_eqb n n = true.
@@ -152,31 +151,6 @@ Proof. induction p; lia. Qed.
 Lemma minus_n_0 : forall (n : nat), n - 0 = n.
 Proof. induction n; reflexivity. Qed.
 
-(*
-Lemma plus_n_1 : forall n:nat,
-  n + 1 = S n.
-Proof.
-intros n.
-induction n as [| n' IH].
-- auto.
-- simpl.
-  rewrite IH.
-  auto.
-Qed.
-*)
-(*
-Lemma plus_n_Sm : forall n m : nat,
-  S (n + m) = n + (S m).
-Proof.
-intros m n.
-induction m as [| m' IH].
-- auto.
-- simpl.
-  rewrite IH.
-  auto.
-Qed.
-*)
-
 Lemma nat_exp_monot_lem : forall (n : nat), S n < (2 ^ n) + (2 ^ n).
 Proof.
 induction n.
@@ -220,20 +194,6 @@ induction n.
   rewrite IHn.
   reflexivity.
 Qed.
-
-(*
-Lemma mult_n_Sm : forall (n m : nat), n * S (m) = n * m + n.
-Proof.
-intros.
-induction n.
-- rewrite plus_n_0. unfold mul. reflexivity.
-- unfold mul. fold mul. rewrite IHn. rewrite plus_comm.
-  rewrite <- plus_n_Sm. rewrite <- plus_assoc.
-  rewrite plus_n_Sm. rewrite plus_comm. rewrite (plus_comm n).
-  rewrite plus_n_Sm. rewrite plus_comm. rewrite plus_assoc.
-  rewrite (plus_comm m). reflexivity.
-Qed.
-*)
 
 Lemma nat_semiconnex : forall (m n : nat), m < n \/ n < m \/ m = n.
 Proof. intros. lia. Qed.
@@ -434,12 +394,22 @@ Qed.
 
 Lemma two_mul : forall n, n * 2 = n + n. lia. Qed.
 
-(* Lemma nat_max_right_not : forall n m, eq_nat m (max n m) = false -> eq_nat n (max n m) = true.
+Lemma nat_max_neb_r_eqb_l :
+    forall (n m : nat),
+        nat_eqb m (max n m) = false ->
+            nat_eqb n (max n m) = true.
 Proof.
-intros n. induction n. intros. rewrite eq_nat_refl in H. inversion H. intros. destruct m. simpl. apply eq_nat_refl. simpl in H. simpl. auto. 
+induction n;
+intros m EQ.
+- unfold max in EQ.
+  rewrite nat_eqb_refl in EQ.
+  inversion EQ.
+- destruct m.
+  + unfold max.
+    apply nat_eqb_refl.
+  + unfold max, nat_eqb in *; fold max nat_eqb in *.
+    apply (IHn _ EQ). 
 Qed.
-*)
-
 
 Lemma nat_eqb_symm :
     forall (n m : nat),
@@ -451,43 +421,6 @@ try reflexivity.
 unfold nat_eqb; fold nat_eqb.
 apply IHn.
 Qed.
-
-
-(*Lemma nat_max_symm : forall n m, max n m = max m n.
-Proof.
-intros.
-intros. destruct (nat_semiconnex_bool n m) as [H | [H | H]].
-- rewrite (max_split1 _ _ H). rewrite (max_split2 _ _ H). auto.
-- rewrite (max_split1 _ _ H). rewrite (max_split2 _ _ H). auto.
-- apply nat_eqb_eq in H. destruct H. auto.
-Qed.
-*)
-(*
-Lemma nat_max_comm :
-    forall n m p,
-        max (max n m) p = max n (max m p).
-Proof.
-intros. destruct (nat_semiconnex_bool n m) as [H | [H | H]].
-- rewrite (max_split1 _ _ H). rewrite (max_split1 n); auto. destruct (nat_semiconnex_bool m p) as [H1 | [H1 | H1]].
-  + rewrite (max_split1 _ _ H1). apply (nat_ltb_trans _ _ _ H H1).
-  + rewrite (max_split2 _ _ H1). auto.
-  + apply nat_eqb_eq in H1. destruct H1. rewrite max_n_n. auto.
-- rewrite (max_split2 _ _ H). destruct (nat_semiconnex_bool m p) as [H1 | [H1 | H1]].
-  + rewrite (max_split1 _ _ H1). auto.
-  + rewrite (max_split2 _ _ H1). rewrite (max_split2 _ _ H). refine (max_split2 _ _ _). apply (lt_nat_trans _ _ _ H1 H).
-  + apply nat_eqb_eq in H1. destruct H1. rewrite max_n_n. auto.
-- apply nat_eqb_eq in H. destruct H. rewrite max_n_n. destruct (nat_semiconnex_bool n p) as [H1 | [H1 | H1]].
-  + rewrite (max_split1 _ _ H1). rewrite (max_split1 _ _ H1). auto.
-  + rewrite (max_split2 _ _ H1). rewrite max_n_n. auto.
-  + apply nat_eqb_eq in H1. destruct H1. rewrite max_n_n. rewrite max_n_n. auto.
-Qed.
-*)
-(*
-Lemma nat_max_order : forall n m p, max (max n m) p = max (max n p) m.
-Proof.
-intros. rewrite (nat_max_symm _ p). rewrite <- (nat_max_comm p). rewrite (nat_max_symm p). auto.
-Qed.
-*)
 
 Lemma nat_lt_max_shuffle_l :
     forall (s l r e b : nat),

@@ -14,7 +14,6 @@ certain places in A. Substitution indicators will control this.
 For instance, if A is "B \/ (C \/ D)" we might be given a substitution
 indicator S that looks like "0 (1 0)" which indicates that we want to
 substitute C (if C is E) but leave B,D alone even if they are E. *)
-(* *)
 Inductive subst_ind : Type :=
 | ind_0 : subst_ind
 | ind_1 : subst_ind
@@ -36,9 +35,6 @@ match A with
 | _ => (1)
 end.
 
-
-(* Replace formula E with formula F at certain places in a formula A *)
-(* *)
 Fixpoint subst_ind_fit (A : formula) (S : subst_ind) : bool :=
 match A, S with
 | lor B C, lor_ind S_B S_C =>
@@ -69,8 +65,6 @@ match subst_ind_fit A S with
 | true => formula_sub_ind_fit A D E S
 end.
 
-(* Some miscellaneous lemmas about formula substitution we will need *)
-(* *)
 Lemma sub_fit_true :
     forall (A D E : formula) (S : subst_ind),
         subst_ind_fit A S = true ->
@@ -136,17 +130,6 @@ rewrite FS.
 unfold formula_sub_ind_fit; fold formula_sub_ind_fit.
 reflexivity.
 Qed.
-
-(*
-Lemma subst_ind_fit_lor :
-    forall (A B : formula) (S_A S_B : subst_ind),
-        subst_ind_fit (lor A B) (lor_ind S_A S_B) = true ->
-            subst_ind_fit A S_A && subst_ind_fit B S_B = true.
-Proof.
-intros A B S_A S_B FAB.
-apply FAB.
-Qed.
-*)
 
 Lemma non_target_fit :
     forall (A : formula),
@@ -221,31 +204,6 @@ fold non_target substitution.
 4 : case (nat_eqb n0 n).
 all : reflexivity.
 Qed.
-
-(*
-Lemma target_fit :
-    forall (A : formula),
-        subst_ind_fit A (target A) = true.
-Proof.
-intros A.
-induction A;
-unfold subst_ind_fit, target;
-fold subst_ind_fit target.
-3 : rewrite IHA1,IHA2;
-    unfold "&&".
-all : reflexivity.
-Qed.
-*)
-
-(*
-Lemma target_term_sub : forall (A : formula) (n : nat) (t : term),
-  target A = target (substitution A n t).
-Proof.
-intros. induction A; auto; simpl.
-- rewrite IHA1, IHA2. auto.
-- destruct (eq_nat n0 n); auto.
-Qed.
-*)
 
 Lemma formula_sub_ind_closed :
     forall (A B C : formula),

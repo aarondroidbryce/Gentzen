@@ -17,7 +17,6 @@ Inductive ptree : Type :=
 
 | node : formula -> ptree
 
-
 | exchange_ab : formula -> formula -> nat -> ord -> ptree -> ptree
 
 | exchange_cab : formula -> formula -> formula -> nat -> ord -> ptree -> ptree
@@ -30,7 +29,6 @@ Inductive ptree : Type :=
 | contraction_a : formula -> nat -> ord -> ptree -> ptree
 
 | contraction_ad : formula -> formula -> nat -> ord -> ptree -> ptree
-
 
 | weakening_ad : formula -> formula -> nat -> ord -> ptree -> ptree
 
@@ -45,8 +43,6 @@ Inductive ptree : Type :=
 | negation_a : formula -> nat -> ord -> ptree -> ptree
 
 | negation_ad : formula -> formula -> nat -> ord -> ptree -> ptree
-
-
 
 | quantification_a : formula -> nat -> c_term -> nat -> ord -> ptree -> ptree
 
@@ -70,7 +66,6 @@ Inductive ptree : Type :=
     formula -> formula -> formula -> nat -> nat -> ord -> ord ->
     ptree -> ptree -> ptree.
 
-
 Fixpoint ptree_formula (P : ptree) : formula :=
 match P with
 | deg_up d P' => ptree_formula P'
@@ -78,7 +73,6 @@ match P with
 | ord_up alpha P' => ptree_formula P'
 
 | node A => A
-
 
 | exchange_ab A B d alpha P' => lor B A
 
@@ -91,7 +85,6 @@ match P with
 | contraction_a A d alpha P' => A
 
 | contraction_ad A D d alpha P' => lor A D
-
 
 | weakening_ad A D d alpha P' => lor A D
 
@@ -111,13 +104,11 @@ match P with
 
 | w_rule_ad A D n d alpha g => lor (univ n A) D
 
-
 | cut_ca C A d1 d2 alpha1 alpha2 P1 P2 => C
 
 | cut_ad A D d1 d2 alpha1 alpha2 P1 P2 => D
 
 | cut_cad C A D d1 d2 alpha1 alpha2 P1 P2 => lor C D
-
 end.
 
 
@@ -128,7 +119,6 @@ match P with
 | ord_up alpha P' => ptree_deg P'
 
 | node A => 0
-
 
 | exchange_ab A B d alpha P' => d
 
@@ -141,7 +131,6 @@ match P with
 | contraction_a A d alpha P' => d
 
 | contraction_ad A D d alpha P' => d
-
 
 | weakening_ad A D d alpha P' => d
 
@@ -161,15 +150,12 @@ match P with
 
 | w_rule_ad A D n d alpha g => d
 
-
 | cut_ca E A d1 d2 alpha1 alpha2 P1 P2 => max (max d1 d2) (num_conn (neg A))
 
 | cut_ad A D d1 d2 alpha1 alpha2 P1 P2 => max (max d1 d2) (num_conn (neg A))
 
 | cut_cad E A D d1 d2 alpha1 alpha2 P1 P2 => max (max d1 d2) (num_conn (neg A))
-
 end.
-
 
 Fixpoint ptree_ord (P : ptree) : ord :=
 match P with
@@ -178,7 +164,6 @@ match P with
 | ord_up alpha P' => alpha
 
 | node A => Zero
-
 
 | exchange_ab A B d alpha P' => alpha
 
@@ -215,9 +200,7 @@ match P with
 | cut_ad A D d1 d2 alpha1 alpha2 P1 P2 => ord_succ (ord_succ (ord_max alpha1 alpha2))
 
 | cut_cad E A D d1 d2 alpha1 alpha2 P1 P2 => ord_succ (ord_max alpha1 alpha2)
-
 end.
-
 
 Fixpoint valid (P : ptree) : Type :=
 match P with
@@ -315,8 +298,6 @@ match P with
 
 end.
 
-(* Proof trees are equivalent to theorems *)
-(* *)
 Definition P_proves (P : ptree) (A : formula) (d : nat) (alpha : ord) : Type :=
   (ptree_formula P = A) * (valid P) *
   (d >= ptree_deg P) * (alpha = ptree_ord P).
@@ -364,7 +345,6 @@ induction T; try destruct IHT as [P [[[PF PV] PD] PO]].
   destruct IHT2 as [P2 [[[P2F P2V] P2D] P2H]].
   exists (cut_cad C A D (ptree_deg P1) (ptree_deg P2) alpha1 alpha2 P1 P2). repeat split; auto. simpl. lia.
 Qed.
-
 
 Lemma valid_w_rule_a :
   forall (A : formula) (n d : nat) (alpha : ord) (g : c_term -> ptree),
@@ -473,8 +453,6 @@ apply ptree_ord_nf.
 apply X.
 Qed.
 
-(* Show that PA_omega proves the associativity laws *)
-(* *)
 Lemma associativity_1 : forall (C A B : formula) (d : nat) (alpha : ord),
   provable (lor (lor C A) B) d alpha -> provable (lor C (lor A B)) d alpha.
 Proof.
@@ -499,10 +477,6 @@ exists (exchange_abd
 repeat split; auto.
 Qed.
 
-
-
-(* We will need these properties in the next section *)
-(* *)
 Lemma axiom_atomic : forall (A : formula),
   PA_omega_axiom A = true ->
     (exists (a : atomic_formula), A = atom a) \/
@@ -552,7 +526,6 @@ destruct H1.
 - right. rewrite free_list_remove_dups. apply H1.
 Qed.
 
-
 Lemma theorem_closed : forall (A : formula) (d : nat) (alpha : ord),
   PA_omega_theorem A d alpha -> closed A = true.
 Proof.
@@ -593,7 +566,6 @@ try rewrite IHT1; try rewrite IHT2; auto.
   + apply free_list_closed in LIST. rewrite LIST. auto.
 
 Qed.
-
 
 Lemma provable_closed : forall (A : formula) (d : nat) (alpha : ord),
   provable A d alpha -> closed A = true.

@@ -321,7 +321,7 @@ Theorem cut_elimination_ord :
 Proof.
 intros P PV.
 pose (ptree_ord P) as alpha.
-pose proof (ptree_ord_nf _ PV) as Na.
+pose proof (ptree_ord_nf _ PV) as NA.
 induction P;
 unfold cut_elimination, cut_elimination_atom, cut_elimination_neg, cut_elimination_lor; fold cut_elimination.
 
@@ -346,10 +346,10 @@ unfold cut_elimination, cut_elimination_atom, cut_elimination_neg, cut_eliminati
 
 1 : { fold cut_elimination cut_elimination_atom cut_elimination_neg cut_elimination_lor. fold cut_elimination.
       unfold ptree_ord; fold ptree_ord.
-      apply (IHP PV Na). }
+      apply (IHP PV NA). }
 
 all : unfold ptree_ord in *; fold ptree_ord in *;
-      try apply (ord_ltb_exp_false _ Na);
+      try apply (ord_ltb_exp_false _ NA);
       unfold PA_omega_axiom.
 
 2 : destruct f.
@@ -366,19 +366,22 @@ all : unfold contraction_help, ptree_formula, ptree_ord;
       try apply P2V;
       fold ptree_ord;
       try apply ord_ltb_exp_false;
-      try apply Na.
+      try apply NA.
 
 7,10 : rewrite (ord_max_symm (ptree_ord P2)).
-9,10 : rewrite (ord_max_lem2 _ _ (ltb_asymm _ _ (ord_lt_ltb _ _ (ord_max_succ_r _ _)))).
-7,9,10 : apply (ord_succ_lt_exp_succ_dub_succ _ (ord_nf_succ _ Na) (ord_lt_ltb _ _ (ord_succ_not_exp_fp _ Na))).
+9,10 : rewrite (ord_max_ltb_not_l _ _ (ord_ltb_asymm _ _ (ord_lt_ltb _ _ (ord_lt_max_succ_r _ _)))).
+7,9,10 : apply (ord_ltb_succ_leb _ _ NA (nf_2_exp _ NA) (ord_lt_ltb _ _ (ord_succ_not_exp_fp _ NA))).
 
-- apply (ltb_asymm _ _  (ord_lt_ltb _ _ (lt_trans _ _ _ (ord_succ_monot _) (ord_succ_lt_exp_succ_max_right _ _ (ptree_ord_nf _ P1V) (ptree_ord_nf _ P2V))))).
-- apply (ltb_asymm _ _  (ord_lt_ltb _ _ (lt_trans _ _ _ (ord_succ_monot _) (ord_succ_lt_exp_succ_max_left _ _ (ptree_ord_nf _ P1V) (ptree_ord_nf _ P2V))))).
-- apply (ltb_asymm _ _  (ord_lt_ltb _ _ (ord_succ_lt_exp_succ_max_right _ _ (ptree_ord_nf _ P1V) (ptree_ord_nf _ P2V)))).
-- apply (ltb_asymm _ _  (ord_lt_ltb _ _ (ord_succ_lt_exp_succ_max_left _ _ (ptree_ord_nf _ P1V) (ptree_ord_nf _ P2V)))).
-- apply (ltb_asymm _ _  (ord_lt_ltb _ _ (lt_trans _ _ _ (ord_succ_monot _) (lt_trans _ _ _ (ord_succ_lt_exp_succ_max_right _ _ (ptree_ord_nf _ P1V) (ptree_ord_nf _ P2V)) (ord_2_exp_monot _ Na _ (ord_nf_succ _ Na) (ord_succ_monot _)))))).
-- apply (ltb_asymm _ _  (ord_lt_ltb _ _ (lt_trans _ _ _ (ord_succ_monot _) (lt_trans _ _ _ (ord_succ_lt_exp_succ_max_left _ _ (ptree_ord_nf _ P1V) (ptree_ord_nf _ P2V)) (ord_2_exp_monot _ Na _ (ord_nf_succ _ Na) (ord_succ_monot _)))))).
-- apply (ltb_asymm _ _  (ord_lt_ltb _ _ (lt_trans _ _ _ (ord_succ_monot _) (ord_succ_not_exp_fp _ Na)))).
+all : apply (ord_geb_trans _ (ord_succ (ord_max (ptree_ord P1) (ptree_ord P2))));
+      try apply (ord_geb_trans (ord_2_exp (ord_succ (ord_succ (ord_max (ptree_ord P1) (ptree_ord P2))))) (ord_succ (ord_succ (ord_max (ptree_ord P1) (ptree_ord P2)))) (ord_succ (ord_max (ptree_ord P1) (ptree_ord P2))));
+      try apply (ord_ltb_asymm _ _ (ord_lt_ltb _ _ (ord_succ_monot _)));
+      try apply (ord_ltb_exp_false _ NA);
+      try apply ord_geb_succ;
+      try apply (ord_ltb_asymm _ _ (ord_lt_ltb _ _ (ord_lt_max_succ_l _ _)));
+      try apply (ord_ltb_asymm _ _ (ord_lt_ltb _ _ (ord_lt_max_succ_r _ _)));
+      try apply ord_ltb_irrefl;
+      try apply ord_max_geb_l;
+      try apply ord_max_geb_r.
 Qed.
 
 Theorem cut_elimination_valid :
@@ -388,7 +391,7 @@ Theorem cut_elimination_valid :
 Proof.
 intros P PV.
 pose (ptree_ord P) as alpha.
-pose proof (ptree_ord_nf _ PV) as Na.
+pose proof (ptree_ord_nf _ PV) as NA.
 induction P;
 unfold cut_elimination, cut_elimination_atom, cut_elimination_neg, cut_elimination_lor; fold cut_elimination.
 
@@ -461,7 +464,7 @@ all : unfold associativity_1', associativity_2';
 10 :  rewrite ord_max_symm;
       reflexivity.
 
-5 : rewrite (ord_max_lem2 _ _ (ltb_asymm _ _ (ord_lt_ltb _ _ (ord_max_succ_r _ _))));
+5 : rewrite (ord_max_ltb_not_l _ _ (ord_ltb_asymm _ _ (ord_lt_ltb _ _ (ord_lt_max_succ_r _ _))));
     reflexivity.
 
 all : try apply (formula_sub_valid_atom _ _ _ P1V Ra);
@@ -479,7 +482,6 @@ all : try apply (formula_sub_valid_atom _ _ _ P1V Ra);
       try rewrite non_target_fit;
       try reflexivity.
 Qed.
-
 
 Lemma cut_elim_ord_Zero :
     forall (P : ptree) (A : formula) (d : nat),
@@ -512,9 +514,9 @@ fold ptree_deg ptree_ord ptree_formula in *.
       exfalso.
       inversion IO. }
 
-7-18 :  try pose proof (ord_succ_non_Zero o) as NZ1;
-        try pose proof (ord_succ_non_Zero (ord_max o o0)) as NZ2;
-        try pose proof (ord_succ_non_Zero (ord_succ (ord_max o o0))) as NZ3;
+7-18 :  try pose proof (ord_succ_neb_zero o) as NZ1;
+        try pose proof (ord_succ_neb_zero (ord_max o o0)) as NZ2;
+        try pose proof (ord_succ_neb_zero (ord_succ (ord_max o o0))) as NZ3;
         destruct PO';
         inversion NZ1;
         inversion NZ2;
@@ -578,9 +580,9 @@ all : unfold ptree_ord in PO'; fold ptree_ord in PO'.
       destruct f;
       discriminate. }
 
-7-18 :  try pose proof (ord_succ_non_Zero o) as NZ1;
-        try pose proof (ord_succ_non_Zero (ord_max o o0)) as NZ2;
-        try pose proof (ord_succ_non_Zero (ord_succ (ord_max o o0))) as NZ3;
+7-18 :  try pose proof (ord_succ_neb_zero o) as NZ1;
+        try pose proof (ord_succ_neb_zero (ord_max o o0)) as NZ2;
+        try pose proof (ord_succ_neb_zero (ord_succ (ord_max o o0))) as NZ3;
         destruct PO';
         inversion NZ1;
         inversion NZ2;
@@ -649,7 +651,7 @@ fold ptree_deg ptree_ord ptree_formula in *.
 1 : { inversion PO'. }
 
 9,15,16,18 :  apply ord_succ_one in PO';
-              try destruct (ord_max_0 _ _ PO') as [OZ1 OZ2];
+              try destruct (ord_max_zero _ _ PO') as [OZ1 OZ2];
               try destruct PO';
               try destruct OZ1,OZ2;
               try pose proof (height_zero_not_lor _ P1V P1O (neg f) f1) as NE1;
@@ -660,12 +662,12 @@ fold ptree_deg ptree_ord ptree_formula in *.
               contradiction.
 
 14 :  { apply ord_succ_one in PO'.
-        pose proof (ord_succ_non_Zero (ord_max o o0)) as NE. 
+        pose proof (ord_succ_neb_zero (ord_max o o0)) as NE. 
         destruct PO'.
         inversion NE. }
 
 8 : { apply ord_succ_one in PO'.
-      try destruct (ord_max_0 _ _ PO') as [OZ1 OZ2].
+      try destruct (ord_max_zero _ _ PO') as [OZ1 OZ2].
       try destruct OZ1,OZ2.
       assert (S (pred n) >= ptree_deg P1) as IE1. lia.
       destruct (cut_elim_ord_Zero _ _ _ (P1F, P1V, IE1, P1O)) as [P3 [[[P3F P3V] P3D] P3O]].
@@ -684,7 +686,7 @@ fold ptree_deg ptree_ord ptree_formula in *.
         reflexivity. }
 
 7-12 : apply ord_succ_one in PO';
-      try destruct (ord_max_0 _ _ PO') as [OZ1 OZ2];
+      try destruct (ord_max_zero _ _ PO') as [OZ1 OZ2];
       try destruct OZ1,OZ2;
       try rewrite PD,PO in *;
       try destruct (cut_elim_ord_Zero P _ _ (PF, PV, PD', PO')) as [P1 [[[P1F P1V] P1D] P1O]].
@@ -846,17 +848,17 @@ all : destruct PP as [[[PF' PV] PD'] PO'];
       try destruct (IHP _ _ (PF, PV, PD', PO)) as [P1 [[[P1F P1V] P1D] P1O]].
 
 7 : rewrite PD,PO' in *;
-    destruct (IND _ (ord_nf_succ _ NA) (ord_succ_monot _) _ _ _ (PF, PV, PD', PO)) as [P1 [[[P1F P1V] P1D] P1O]].
+    destruct (IND _ (nf_succ_nf _ NA) (ord_succ_monot _) _ _ _ (PF, PV, PD', PO)) as [P1 [[[P1F P1V] P1D] P1O]].
 
 8,9 : assert (S d >= n0) as IE1;
       assert (S d >= n1) as IE2;
       rewrite P1D,P2D,PO' in *;
       try lia;
-      destruct (IND _ (ptree_ord_nf_hyp _ _ P1O P1V) (ord_max_succ_l _ _) _ _ _ (P1F, P1V, IE1, P1O)) as [P3 [[[P3F P3V] P3D] P3O]];
-      destruct (IND _ (ptree_ord_nf_hyp _ _ P2O P2V) (ord_max_succ_r _ _) _ _ _ (P2F, P2V, IE2, P2O)) as [P4 [[[P4F P4V] P4D] P4O]].
+      destruct (IND _ (ptree_ord_nf_hyp _ _ P1O P1V) (ord_lt_max_succ_l _ _) _ _ _ (P1F, P1V, IE1, P1O)) as [P3 [[[P3F P3V] P3D] P3O]];
+      destruct (IND _ (ptree_ord_nf_hyp _ _ P2O P2V) (ord_lt_max_succ_r _ _) _ _ _ (P2F, P2V, IE2, P2O)) as [P4 [[[P4F P4V] P4D] P4O]].
 
 10-13 : rewrite PD,PO' in *;
-        destruct (IND _ (ord_nf_succ _ NA) (ord_succ_monot _) _ _ _ (PF, PV, PD', PO)) as [P1 [[[P1F P1V] P1D] P1O]].
+        destruct (IND _ (nf_succ_nf _ NA) (ord_succ_monot _) _ _ _ (PF, PV, PD', PO)) as [P1 [[[P1F P1V] P1D] P1O]].
 
 14 :  assert (forall c, P_proves (p c) (substitution f n0 (projT1 c)) (S d) o) as IHP.
 
@@ -932,41 +934,42 @@ all : repeat split;
       try apply NA.
 
 1,4-9 : apply ord_succ_lt_exp_succ;
-        try apply (ord_nf_succ _ NA);
-        try apply (succ_gt_one_gt_zero _ IEO).
+        try apply (nf_succ_nf _ NA);
+        try apply (ord_succ_lt Zero _ IEO).
 
-1,2 : rewrite ord_max_exp_equiv;
+
+1,2 : rewrite ord_max_exp_comm;
       try apply ord_succ_lt_exp_succ;
-      try apply (succ_gt_one_gt_zero _ IEO);
-      try apply ord_max_nf;
+      try apply (ord_succ_lt Zero _ IEO);
+      try apply nf_ord_max;
       try apply (ptree_ord_nf_hyp _ _ P1O P1V);
       try apply (ptree_ord_nf_hyp _ _ P2O P2V).
 
-3 : case (eq_nat (max (max n0 n1) (S (num_conn f0))) (S (num_conn f0))) eqn:E1.
-2 : case (eq_nat (max (max n0 n1) (S (num_conn f))) (S (num_conn f))) eqn:E1.
-1 : case (eq_nat (max (max n0 n1) (S (num_conn f0))) (S (num_conn f0))) eqn:E1.
+3 : case (nat_eqb (max (max n0 n1) (S (num_conn f0))) (S (num_conn f0))) eqn:E1.
+2 : case (nat_eqb (max (max n0 n1) (S (num_conn f))) (S (num_conn f))) eqn:E1.
+1 : case (nat_eqb (max (max n0 n1) (S (num_conn f0))) (S (num_conn f0))) eqn:E1.
 
 2,6 : rewrite PO' in *;
       assert (S d >= ptree_deg P1) as IE1;
       assert (S d >= ptree_deg P2) as IE2;
       try lia;
       assert ((S (num_conn f0)) < (max n0 n1)) as E2;
-      rewrite eq_nat_symm in E1;
-      try rewrite (nat_eq_decid _ _ (nat_max_right_not _ _ E1));
+      rewrite nat_eqb_symm in E1;
+      try rewrite (nat_eqb_eq _ _ (nat_max_neb_r_eqb_l _ _ E1));
       try apply (max_lem2 _ _ E1);
-      destruct (IND _ (ptree_ord_nf_hyp _ _ P1O P1V) (ord_max_succ_l _ _) _ _ _ (P1F, P1V, IE1, P1O)) as [T1 [[[T1F T1V] T1D] T1O]];
-      destruct (IND _ (ptree_ord_nf_hyp _ _ P2O P2V) (ord_max_succ_r _ _) _ _ _ (P2F, P2V, IE2, P2O)) as [T2 [[[T2F T2V] T2D] T2O]].
+      destruct (IND _ (ptree_ord_nf_hyp _ _ P1O P1V) (ord_lt_max_succ_l _ _) _ _ _ (P1F, P1V, IE1, P1O)) as [T1 [[[T1F T1V] T1D] T1O]];
+      destruct (IND _ (ptree_ord_nf_hyp _ _ P2O P2V) (ord_lt_max_succ_r _ _) _ _ _ (P2F, P2V, IE2, P2O)) as [T2 [[[T2F T2V] T2D] T2O]].
       
 5 : rewrite PO' in *;
     assert (S d >= ptree_deg P1) as IE1;
     assert (S d >= ptree_deg P2) as IE2;
     try lia;
     assert ((S (num_conn f)) < (max n0 n1)) as E2;
-    rewrite eq_nat_symm in E1;
-    try rewrite (nat_eq_decid _ _ (nat_max_right_not _ _ E1));
+    rewrite nat_eqb_symm in E1;
+    try rewrite (nat_eqb_eq _ _ (nat_max_neb_r_eqb_l _ _ E1));
     try apply (max_lem2 _ _ E1);
-    destruct (IND _ (ptree_ord_nf_hyp _ _ P1O P1V) (lt_trans _ _ _ (ord_max_succ_l _ _) (ord_succ_monot _)) _ _ _ (P1F, P1V, IE1, P1O)) as [T1 [[[T1F T1V] T1D] T1O]];
-    destruct (IND _ (ptree_ord_nf_hyp _ _ P2O P2V) (lt_trans _ _ _ (ord_max_succ_r _ _) (ord_succ_monot _)) _ _ _ (P2F, P2V, IE2, P2O)) as [T2 [[[T2F T2V] T2D] T2O]].
+    destruct (IND _ (ptree_ord_nf_hyp _ _ P1O P1V) (ord_lt_trans _ _ _ (ord_lt_max_succ_l _ _) (ord_succ_monot _)) _ _ _ (P1F, P1V, IE1, P1O)) as [T1 [[[T1F T1V] T1D] T1O]];
+    destruct (IND _ (ptree_ord_nf_hyp _ _ P2O P2V) (ord_lt_trans _ _ _ (ord_lt_max_succ_r _ _) (ord_succ_monot _)) _ _ _ (P2F, P2V, IE2, P2O)) as [T2 [[[T2F T2V] T2D] T2O]].
 
 
 2 : exists (ord_up (ord_2_exp (ord_succ (ord_max o o0))) (cut_ca f f0 (ptree_deg T1) (ptree_deg T2) (ptree_ord T1) (ptree_ord T2) T1 T2)).
@@ -986,11 +989,11 @@ all : repeat split;
         unfold num_conn in *; fold num_conn in *;
         try lia;
         rewrite <- T1O, <- T2O;
-        rewrite ord_max_exp_equiv;
+        rewrite ord_max_exp_comm;
         try apply ord_succ_lt_exp_succ;
-        try apply plus_two_lt_times_four;
-        try apply (succ_gt_one_gt_zero _ IEO);
-        try apply ord_max_nf;
+        try apply dub_succ_exp_lt_exp_dub_succ;
+        try apply (ord_succ_lt Zero _ IEO);
+        try apply nf_ord_max;
         try apply (ptree_ord_nf_hyp _ _ P1O P1V);
         try apply (ptree_ord_nf_hyp _ _ P2O P2V).
 
@@ -998,9 +1001,9 @@ all : repeat split;
       assert (n0 >= ptree_deg P1) as IE1;
       assert (n1 >= ptree_deg P2) as IE2;
       try lia;
-      apply nat_eq_decid in E1;
-      destruct (IHP_PRED _ (ptree_ord_nf_hyp _ _ P1O P1V) (ord_max_succ_l _ _) P1 _ _ (P1F, P1V, IE1, P1O)) as [T1 [[[T1F T1V] T1D] T1O]];
-      destruct (IHP_PRED _ (ptree_ord_nf_hyp _ _ P2O P2V) (ord_max_succ_r _ _) P2 _ _ (P2F, P2V, IE2, P2O)) as [T2 [[[T2F T2V] T2D] T2O]];
+      apply nat_eqb_eq in E1;
+      destruct (IHP_PRED _ (ptree_ord_nf_hyp _ _ P1O P1V) (ord_lt_max_succ_l _ _) P1 _ _ (P1F, P1V, IE1, P1O)) as [T1 [[[T1F T1V] T1D] T1O]];
+      destruct (IHP_PRED _ (ptree_ord_nf_hyp _ _ P2O P2V) (ord_lt_max_succ_r _ _) P2 _ _ (P2F, P2V, IE2, P2O)) as [T2 [[[T2F T2V] T2D] T2O]];
       unfold provable;
       destruct f0.
 
@@ -1008,9 +1011,9 @@ all : repeat split;
     assert (n0 >= ptree_deg P1) as IE1;
     assert (n1 >= ptree_deg P2) as IE2;
     try lia;
-    apply nat_eq_decid in E1;
-    destruct (IHP_PRED _ (ptree_ord_nf_hyp _ _ P1O P1V) (lt_trans _ _ _ (ord_max_succ_l _ _) (ord_succ_monot _ )) P1 _ _ (P1F, P1V, IE1, P1O)) as [T1 [[[T1F T1V] T1D] T1O]];
-    destruct (IHP_PRED _ (ptree_ord_nf_hyp _ _ P2O P2V) (lt_trans _ _ _ (ord_max_succ_r _ _) (ord_succ_monot _ )) P2 _ _ (P2F, P2V, IE2, P2O)) as [T2 [[[T2F T2V] T2D] T2O]];
+    apply nat_eqb_eq in E1;
+    destruct (IHP_PRED _ (ptree_ord_nf_hyp _ _ P1O P1V) (ord_lt_trans _ _ _ (ord_lt_max_succ_l _ _) (ord_succ_monot _ )) P1 _ _ (P1F, P1V, IE1, P1O)) as [T1 [[[T1F T1V] T1D] T1O]];
+    destruct (IHP_PRED _ (ptree_ord_nf_hyp _ _ P2O P2V) (ord_lt_trans _ _ _ (ord_lt_max_succ_r _ _) (ord_succ_monot _ )) P2 _ _ (P2F, P2V, IE2, P2O)) as [T2 [[[T2F T2V] T2D] T2O]];
     unfold provable;
     destruct f.
 
@@ -1066,9 +1069,9 @@ all : repeat split;
                 try rewrite (formula_sub_ptree_ord_atom _ _ _ T1V);
                 try rewrite <- T1O;
                 try rewrite <- T2O;
-                try rewrite (ord_lt_ltb _ _ (ord_2_exp_monot _ NA _ (ptree_ord_nf_hyp _ _ P2O P2V) (ord_max_succ_r _ _)));
-                try rewrite (ord_lt_ltb _ _ (ord_2_exp_monot _ NA _ (ptree_ord_nf_hyp _ _ P1O P1V) (ord_max_succ_l _ _)));
-                try rewrite (ord_max_lem2 _ _ (ltb_asymm _ _ (ord_lt_ltb _ _ (ord_max_succ_r _ _))));
+                try rewrite (ord_lt_ltb _ _ (ord_2_exp_monot _ NA _ (ptree_ord_nf_hyp _ _ P2O P2V) (ord_lt_max_succ_r _ _)));
+                try rewrite (ord_lt_ltb _ _ (ord_2_exp_monot _ NA _ (ptree_ord_nf_hyp _ _ P1O P1V) (ord_lt_max_succ_l _ _)));
+                try rewrite (ord_max_ltb_not_l _ _ (ord_ltb_asymm _ _ (ord_lt_ltb _ _ (ord_lt_max_succ_r _ _))));
                 unfold ptree_ord; fold ptree_ord;
                 unfold num_conn in *; fold num_conn in *;
                 try lia;
@@ -1077,19 +1080,19 @@ all : repeat split;
                 try rewrite (ord_max_symm (ord_2_exp o) _) in *;
                 case (ord_ltb (ord_succ (ord_succ (ord_max (ord_2_exp o0) (ord_2_exp o)))) (ord_2_exp (ord_succ (ord_max o0 o)))) eqn:IO1;
                 unfold ptree_ord; fold ptree_ord;
-                try refine (lt_trans _ _ _ _ (ord_ltb_lt _ _ IO1));
-                try rewrite (ord_max_exp_equiv _ _ (ptree_ord_nf_hyp _ _ P2O P2V) (ptree_ord_nf_hyp _ _ P1O P1V)) in *;
-                try rewrite <- (ord_eqb_eq _ _ (dub_succ_exp_eq _ (succ_gt_one_gt_zero _ IEO) (ord_nf_succ _ NA) IO1));
-                try apply (lt_trans _ _ _ (ord_succ_monot _) (plus_two_lt_times_four _ (ord_nf_succ _ (ord_nf_succ _ NA))));
-                try rewrite (ord_lt_ltb _ _ (plus_two_lt_times_four _ (ord_nf_succ _ (ord_nf_succ _ NA))));
-                try rewrite <- (ord_max_exp_equiv _ _ (ptree_ord_nf_hyp _ _ P2O P2V) (ptree_ord_nf_hyp _ _ P1O P1V));
+                try refine (ord_lt_trans _ _ _ _ (ord_ltb_lt _ _ IO1));
+                try rewrite (ord_max_exp_comm _ _ (ptree_ord_nf_hyp _ _ P2O P2V) (ptree_ord_nf_hyp _ _ P1O P1V)) in *;
+                try rewrite <- (ord_eqb_eq _ _ (dub_succ_geb_exp_succ_eqb _ (ord_succ_lt Zero _ IEO) (nf_succ_nf _ NA) IO1));
+                try apply (ord_lt_trans _ _ _ (ord_succ_monot _) (dub_succ_exp_lt_exp_dub_succ _ (nf_succ_nf _ (nf_succ_nf _ NA))));
+                try rewrite (ord_lt_ltb _ _ (dub_succ_exp_lt_exp_dub_succ _ (nf_succ_nf _ (nf_succ_nf _ NA))));
+                try rewrite <- (ord_max_exp_comm _ _ (ptree_ord_nf_hyp _ _ P2O P2V) (ptree_ord_nf_hyp _ _ P1O P1V));
                 repeat apply ord_lt_succ;
-                try rewrite (ord_max_lem2 _ _ (ltb_asymm _ _ (ord_lt_ltb _ _ (ord_max_succ_l _ _))));
-                try apply (ord_max_succ_l _ _);
-                try apply (ord_max_succ_r _ _);
+                try rewrite (ord_max_ltb_not_l _ _ (ord_ltb_asymm _ _ (ord_lt_ltb _ _ (ord_lt_max_succ_l _ _))));
+                try apply (ord_lt_max_succ_l _ _);
+                try apply (ord_lt_max_succ_r _ _);
                 try apply ord_succ_monot;
-                try apply (ord_2_exp_monot _ NA _ (ptree_ord_nf_hyp _ _ P2O P2V) (lt_trans _ _ _ (ord_max_succ_l _ _) (ord_succ_monot _)));
-                try apply (ord_2_exp_monot _ NA _ (ptree_ord_nf_hyp _ _ P1O P1V) (lt_trans _ _ _ (ord_max_succ_r _ _) (ord_succ_monot _)));
+                try apply (ord_2_exp_monot _ NA _ (ptree_ord_nf_hyp _ _ P2O P2V) (ord_lt_trans _ _ _ (ord_lt_max_succ_l _ _) (ord_succ_monot _)));
+                try apply (ord_2_exp_monot _ NA _ (ptree_ord_nf_hyp _ _ P1O P1V) (ord_lt_trans _ _ _ (ord_lt_max_succ_r _ _) (ord_succ_monot _)));
                 try reflexivity.
 
 all : try destruct (and_bool_prop _ _ (provable_closed' _ _ T1V T1F)) as [Cf Cuf];
@@ -1145,23 +1148,23 @@ all : repeat split;
       try reflexivity.
 
 3 : { apply nf_add;
-      try apply ord_succ_nf;
+      try apply nf_nf_succ;
       try apply (ptree_ord_nf_hyp _ _ T1O T1V);
       try apply (ptree_ord_nf_hyp _ _ T2O T2V). }
 
-all : try refine (ord_trans_inv _ _ _ _ (quantif_ptree_ord _ _ _ _ _ _ _ _ T2V _));
+all : try refine (ord_geb_trans _ _ _ _ (quantif_ptree_ord _ _ _ _ _ _ _ _ T2V _));
       try rewrite <- T2O;
       try rewrite ord_ltb_irrefl;
       try apply (exp_succ_lt_add _ _ (ptree_ord_nf_hyp _ _ P1O P1V) (ptree_ord_nf_hyp _ _ P2O P2V));
       try reflexivity.
 
 1 : rewrite <- ord_max_succ_succ.
-    apply (ord_trans_inv _ _ _ (exp_succ_lt_add _ _ (ord_succ_nf _ (ptree_ord_nf_hyp _ _ P1O P1V)) (ord_succ_nf _ (ptree_ord_nf_hyp _ _ P2O P2V)))).
-    apply (ord_trans_inv _ _ _ (ltb_asymm _ _ (ord_lt_ltb _ _ (add_right_incr _ _ _ (ord_2_exp_monot _ (ord_succ_nf _ (ptree_ord_nf_hyp _ _ P2O P2V)) _ (ptree_ord_nf_hyp _ _ P2O P2V) (ord_succ_monot _)))))).
-    apply add_left_lt_false.
+    apply (ord_geb_trans _ _ _ (exp_succ_lt_add _ _ (nf_nf_succ _ (ptree_ord_nf_hyp _ _ P1O P1V)) (nf_nf_succ _ (ptree_ord_nf_hyp _ _ P2O P2V)))).
+    apply (ord_geb_trans _ _ _ (ord_ltb_asymm _ _ (ord_lt_ltb _ _ (add_right_incr _ _ _ (ord_2_exp_monot _ (nf_nf_succ _ (ptree_ord_nf_hyp _ _ P2O P2V)) _ (ptree_ord_nf_hyp _ _ P2O P2V) (ord_succ_monot _)))))).
+    apply add_left_weak_monot.
     destruct o.
     apply ord_ltb_irrefl.
-    apply ltb_asymm.
+    apply ord_ltb_asymm.
     apply ord_lt_ltb.
     apply ord_succ_lt_exp_succ.
     apply (ptree_ord_nf_hyp _ _ P1O P1V).
@@ -1202,121 +1205,3 @@ apply (cut_elim_aux2 A d).
 exists alpha.
 auto.
 Qed.
-
-(*
-Fixpoint cut_free (P : ptree) : Type :=
-match P with
-| deg_up d P' => cut_free P'
-
-| ord_up alpha P' => cut_free P'
-
-| node A => True
-
-
-| exchange_ab A B d alpha P' => cut_free P'
-
-| exchange_cab C A B d alpha P' => cut_free P'
-
-| exchange_abd A B D d alpha P' => cut_free P'
-
-| exchange_cabd C A B D d alpha P' => cut_free P'
-
-| contraction_a A d alpha P' => cut_free P'
-
-| contraction_ad A D d alpha P' => cut_free P'
-
-
-| weakening_ad A D d alpha P' => cut_free P'
-
-| demorgan_ab A B d1 d2 alpha1 alpha2 P1 P2 => (cut_free P1) * (cut_free P2)
-
-| demorgan_abd A B D d1 d2 alpha1 alpha2 P1 P2 => (cut_free P1) * (cut_free P2)
-
-| negation_a A d alpha P' => cut_free P'
-
-| negation_ad A D d alpha P' => cut_free P'
-
-
-| quantification_a A n t d alpha P' => cut_free P'
-
-| quantification_ad A D n t d alpha P' => cut_free P'
-
-| w_rule_a A n d alpha g => forall (c : c_term), cut_free (g c)
-
-| w_rule_ad A D n d alpha g => forall (c : c_term), cut_free (g c)
-
-
-| cut_ca C A d1 d2 alpha1 alpha2 P1 P2 => False
-
-| cut_ad A D d1 d2 alpha1 alpha2 P1 P2 => False
-
-| cut_cad C A D d1 d2 alpha1 alpha2 P1 P2 => False
-
-end.
-
-
-Lemma cut_elim_aux4 : forall (P : ptree),
-  valid P -> ptree_deg P = 0 -> cut_free P.
-Proof.
-intros. induction P; simpl; auto.
-- destruct X as [H1 H2]. simpl in H. rewrite H in H1. lia.
-- destruct X as [[H1 H2] H3]. simpl in H. apply IHP; auto.
-- destruct X as [[[H1 H2] H3] H4]. simpl in H. rewrite H in H3.
-  apply IHP; auto.
-- destruct X as [[[H1 H2] H3] H4]. simpl in H. rewrite H in H3.
-  apply IHP; auto.
-- destruct X as [[[H1 H2] H3] H4]. simpl in H. rewrite H in H3.
-  apply IHP; auto.
-- destruct X as [[[H1 H2] H3] H4]. simpl in H. rewrite H in H3.
-  apply IHP; auto.
-- destruct X as [[[H1 H2] H3] H4]. simpl in H. rewrite H in H3.
-  apply IHP; auto.
-- destruct X as [[[H1 H2] H3] H4]. simpl in H. rewrite H in H3.
-  apply IHP; auto.
-- destruct X as [[[H1 H2] H3] H4]. simpl in H. rewrite H in H3.
-  apply IHP; auto.
-- destruct X as [[[[[[[H1 H2] H3] H4] H5] H6] H7] H8].
-  simpl in H. rewrite H5 in H. rewrite H6 in H.
-  destruct (max_0 _ _ H). split.
-  + apply IHP1; auto.
-  + apply IHP2; auto.
-- destruct X as [[[[[[[H1 H2] H3] H4] H5] H6] H7] H8].
-  simpl in H. rewrite H5 in H. rewrite H6 in H.
-  destruct (max_0 _ _ H). split.
-  + apply IHP1; auto.
-  + apply IHP2; auto.
-- destruct X as [[[H1 H2] H3] H4]. simpl in H. rewrite H in H3.
-  apply IHP; auto.
-- destruct X as [[[H1 H2] H3] H4]. simpl in H. rewrite H in H3.
-  apply IHP; auto.
-- destruct X as [[[H1 H2] H3] H4]. simpl in H. rewrite H in H3.
-  apply IHP; auto.
-- destruct X as [[[H1 H2] H3] H4]. simpl in H. rewrite H in H3.
-  apply IHP; auto.
-- rename f into A. rename p into g. rename n0 into d. rename o into alpha.
-  intros. simpl in H. simpl in X. destruct (X c) as [[[H1 H2] H3] H4].
-  rewrite H in H3. apply X0; auto. lia.
-- rename f into A. rename f0 into D. rename p into g.
-  rename n0 into d. rename o into alpha.
-  intros. simpl in H. simpl in X. destruct (X c) as [[[H1 H2] H3] H4].
-  rewrite H in H3. apply X0; auto. lia.
-- simpl in H. apply max_succ_0 in H. auto.
-- simpl in H. apply max_succ_0 in H. auto.
-- simpl in H. apply max_succ_0 in H. auto.
-Qed.
-
-
-Definition P_proves' (P : ptree) (A : formula) : Type :=
-  (ptree_formula P = A) * (valid P) *
-  {d : nat & ptree_deg P = d & {alpha : ord & ptree_ord P = alpha}}.
-
-Lemma cut_elim_aux5 : forall (A : formula) (d : nat) (alpha : ord),
-  provable A d alpha -> {P : ptree & P_proves' P A & cut_free P}.
-Proof.
-intros. apply cut_elim_aux3 in X. destruct X as [gamma [P [[[H1 H2] H3] H4]]].
-exists P.
-- unfold P_proves'. repeat split; auto.
-  exists 0; auto. lia. exists gamma; auto.
-- apply cut_elim_aux4; auto. lia.
-Qed.
-*)
